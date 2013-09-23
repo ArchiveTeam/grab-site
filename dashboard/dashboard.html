@@ -1,0 +1,823 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="referrer" content="never">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<base target="_blank">
+<link rel="alternate" type="application/rss+xml" title="RSS Feed" href="/feed/archivebot.rss">
+<link rel="alternate" type="application/atom+xml" title="Atom Feed" href="/feed/archivebot.atom">
+<link rel="icon" type="image/png" href="/assets/favicon.png">
+<title>ArchiveBot dashboard 2.0</title>
+</head>
+<body>
+<style>
+html, body {
+	background-color: #D0C0AE;
+	font-family: Tahoma, Arial, sans-serif;
+	font-size: 13px;
+}
+
+.padded-page {
+	padding: 20px 27px 20px 27px;
+}
+
+.header {
+	font-family: Arial, sans-serif;
+	font-weight: bold;
+	font-size: 18px;
+	margin: 0 0 20px 0;
+	display: flex;
+	align-items: flex-end;
+	justify-content: space-between;
+	flex-flow: row nowrap;
+}
+
+.job-header {
+	display: flex;
+	align-items: flex-end;
+	justify-content: space-between;
+	flex-flow: row nowrap;
+}
+
+.job-info {
+	white-space: nowrap;
+	overflow: hidden;
+}
+
+.job-url {
+	font-family: Arial, sans-serif;
+	font-size: 14px;
+	font-weight: bold;
+	text-decoration: none;
+}
+
+.job-ident {
+	margin: 0 1px 0 0;
+	border: 0;
+	background-color: #D0C0AE;
+	color: #786552;
+	font-weight: bold;
+	text-align: right;
+}
+
+.log-window {
+	background-color: #FFF7E1;
+	overflow-y: scroll;
+	height: 192px;
+	border: 1px solid #999;
+	margin: 0 0 1em 0;
+	border-radius: 3px;
+}
+
+.log-window-stopped {
+	border: 1px solid #222;
+	box-shadow: 2px 2px 4px #888;
+
+}
+
+.line-normal {
+	white-space: pre;
+	width: 100%;
+	padding: 0 0 0 5px;
+	box-sizing: border-box;
+}
+
+.line-error {
+	white-space: pre;
+	width: 100%;
+	background-color: #FFB9B9;
+	padding: 0 0 0 5px;
+	box-sizing: border-box;
+}
+
+.line-warning {
+	white-space: pre;
+	width: 100%;
+	background-color: #F7DB7D;
+	padding: 0 0 0 5px;
+	box-sizing: border-box;
+}
+
+.line-redirect {
+	white-space: pre;
+	width: 100%;
+	background-color: #E7CEEA;
+	padding: 0 0 0 5px;
+	box-sizing: border-box;
+}
+
+.line-ignore {
+	white-space: pre;
+	width: 100%;
+	color: #999;
+	padding: 0 0 0 5px;
+	box-sizing: border-box;
+}
+
+.line-stdout {
+	white-space: pre;
+	width: 100%;
+	background-color: #DCD8CB;
+	padding: 0 0 0 5px;
+	box-sizing: border-box;
+}
+
+a {
+	color: #000;
+	text-decoration: none;
+}
+
+a.ignore {
+	color: #999 !important;
+}
+
+.underlined-a {
+	text-decoration: underline;
+}
+
+.bold {
+	font-weight: bold;
+}
+
+#help {
+	background-color: #FFF7E1;
+	font-family: Arial, sans-serif;
+	font-size: 14px;
+	border-radius: 5px;
+	padding: 0.01em 1em 0.01em 1em;
+	margin-bottom: 1em;
+}
+
+#help p {
+	padding: 0.20em 0 0.20em 0;
+}
+
+#help p a {
+	text-decoration: underline;
+}
+
+.undisplayed {
+	display: none;
+}
+</style>
+<div class="padded-page">
+	<div class="header">
+		<div>
+			<a href="http://archiveteam.org/index.php?title=ArchiveBot" class="underlined-a">ArchiveBot</a>
+			tracking ~<span id="num-crawls">0</span> crawls.<br>
+		</div>
+		<div>
+			<a href="#" onclick="ds.toggleHelp();return false;" class="underlined-a">Help!</a>
+		</div>
+	</div>
+
+	<div id="critical-info">
+		<noscript>
+			Need JavaScript (ES5+) and WebSocket -&gt; TCP:4567
+		</noscript>
+		<div id="help" class="undisplayed">
+			<p>
+				This page shows all of the crawls that <a href="http://archiveteam.org/index.php?title=ArchiveBot">ArchiveBot</a> is currently running.
+			</p>
+			<p>
+				To pause scrolling, move your mouse inside a log window.
+			</p>
+			<p>
+				To clear all finished jobs, reload the page.
+			</p>
+			<p>
+				Mouse over the job start date or the response count for additional information.
+			</p>
+			<p>
+				If your adblocker is enabled for this domain, you will see slower performance, and some URLs will not be displayed.
+			</p>
+			<p>
+				To use ArchiveBot, drop by <a href="http://chat.efnet.org:9090/?nick=&channels=%23archivebot&Login=Login">#archivebot</a> on EFNet.  <a href="https://raw2.github.com/ArchiveTeam/ArchiveBot/master/COMMANDS">Issue commands</a> by typing them into the channel.  You will need channel operator (@) or voice (+) status to issue archiving jobs; just ask for help or leave a message with the website you want to archive.
+			</p>
+			<p>
+				These <a href="https://github.com/ArchiveTeam/ArchiveBot/tree/master/db/ignore_patterns">ignore sets</a> are available for crawls.  The <a href="https://github.com/ArchiveTeam/ArchiveBot/blob/master/db/ignore_patterns/global.json">global</a> ignore set automatically applies to all crawls.
+			</p>
+			<p>
+				GitHub: <a href="https://github.com/ArchiveTeam/ArchiveBot">ArchiveBot</a> and <a href="https://github.com/ArchiveTeam/dashboard2">dashboard2</a>.
+			</p>
+		</div>
+	</div>
+	<div id="traffic"></div>
+	<div id="logs"></div>
+</div>
+<script>
+"use strict";
+
+var assert = function(condition, message) {
+	if(!condition) {
+		throw message || "Assertion failed";
+	}
+};
+
+var byId = function(id) {
+	return document.getElementById(id);
+};
+
+var text = function(s) {
+	return document.createTextNode(s);
+};
+
+/**
+ * appendChild but accepts strings and arrays of children|strings
+ */
+var appendAny = function(e, thing) {
+	if(Array.isArray(thing)) {
+		for(var i=0; i < thing.length; i++) {
+			appendAny(e, thing[i]);
+		}
+	} else if(typeof thing == "string") {
+		e.appendChild(text(thing));
+	} else {
+		// TODO: Check that it's actually a DOM node first
+		e.appendChild(thing);
+	}
+};
+
+/**
+ * Create DOM element with attributes and children from Array<node|string>|node|string
+ */
+var h = function(elem, attrs, thing) {
+	var e = document.createElement(elem);
+	if(attrs != null) {
+		for(var attr in attrs) {
+			if(attr == "spellcheck" || attr == "readonly") {
+				e.setAttribute(attr, attrs[attr]);
+			} else {
+				e[attr] = attrs[attr];
+			}
+		}
+	}
+	if(thing != null) {
+		appendAny(e, thing);
+	}
+	return e;
+};
+
+var href = function(href, text) {
+	var a = h("a");
+	a.href = href;
+	a.textContent = text;
+	return a;
+};
+
+var prettyJson = function(obj) {
+	return JSON.stringify(obj, undefined, 2);
+};
+
+// Copied from Coreweb/js_coreweb/cw/string.js
+/**
+ * Like Python's s.split(delim, num) and s.split(delim)
+ * This does *NOT* implement Python's no-argument s.split()
+ *
+ * @param {string} s The string to split.
+ * @param {string} sep The separator to split by.
+ * @param {number} maxsplit Maximum number of times to split.
+ *
+ * @return {!Array.<string>} The splitted string, as an array.
+ */
+var split = function(s, sep, maxsplit) {
+	assert(typeof sep == "string",
+		"arguments[1] of split must be a separator string");
+	if(maxsplit === undefined || maxsplit < 0) {
+		return s.split(sep);
+	}
+	var pieces = s.split(sep);
+	var head = pieces.splice(0, maxsplit);
+	// after the splice, pieces is shorter and no longer has the `head` elements.
+	if(pieces.length > 0) {
+		var tail = pieces.join(sep);
+		head.push(tail); // no longer just the head.
+	}
+	return head;
+};
+
+/**
+ * [[1, 2], [3, 4]] -> {1: 2, 3: 4}
+ */
+var intoObject = function(arr) {
+	var obj = {};
+	arr.forEach(function(e) {
+		obj[e[0]] = e[1];
+	});
+	return obj;
+};
+
+var getQueryArgs = function() {
+	var pairs = location.search.replace("?", "").split("&");
+	if(pairs == "") {
+		return {};
+	}
+	return intoObject(pairs.map(function(e) { return split(e, "=", 1); }));
+};
+
+var isSafari = navigator.userAgent.indexOf("Safari") != -1;
+
+/*** End of utility code ***/
+
+
+
+var JobsTracker = function() {
+	this.known = {};
+	this.sorted = [];
+	this.finishedArray = [];
+	this.finishedSet = {};
+};
+
+JobsTracker.prototype.countActive = function() {
+	return this.sorted.length - this.finishedArray.length;
+};
+
+JobsTracker.prototype.resort = function() {
+	this.sorted.sort(function(a, b) { return a["started_at"] > b["started_at"] ? -1 : 1 });
+};
+
+/**
+ * Returns true if a new job was added
+ */
+JobsTracker.prototype.handleJobData = function(jobData) {
+	var ident = jobData["ident"];
+	var alreadyKnown = ident in this.known;
+	if(!alreadyKnown) {
+		this.known[ident] = true;
+		this.sorted.push(jobData);
+		this.resort();
+	}
+	if(jobData["finished"] && !(ident in this.finishedSet)) {
+		this.finishedSet[ident] = true;
+		this.finishedArray.push(ident);
+	}
+	return !alreadyKnown;
+};
+
+
+
+var JobRenderInfo = function(logWindow, logSegment, statsElements, lineCountWindow, lineCountSegments) {
+	this.logWindow = logWindow;
+	this.logSegment = logSegment;
+	this.statsElements = statsElements;
+	this.lineCountWindow = lineCountWindow;
+	this.lineCountSegments = lineCountSegments;
+};
+
+
+
+var Reusable = {
+	obj_className_line_normal: {"className": "line-normal"},
+	obj_className_line_error: {"className": "line-error"},
+	obj_className_line_warning: {"className": "line-warning"},
+	obj_className_line_redirect: {"className": "line-redirect"},
+	obj_className_line_ignore: {"className": "line-ignore"},
+	obj_className_line_stdout: {"className": "line-stdout"},
+	obj_className_bold: {"className": "bold"}
+};
+
+
+
+// http://stackoverflow.com/questions/2901102/how-to-print-a-number-with-commas-as-thousands-separators-in-javascript
+var numberWithCommas = function(s) {
+	assert(typeof s == "string", "pass string to numberWithCommas");
+	return s.replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+};
+
+var toStringTenths = function(n) {
+	var s = "" + (Math.round(10 * n) / 10);
+	if(s.indexOf(".") == -1) {
+		s += ".0";
+	}
+	return s;
+};
+
+var getTotalResponses = function(jobData) {
+	return (
+		parseInt(jobData["r1xx"]) +
+		parseInt(jobData["r2xx"]) +
+		parseInt(jobData["r3xx"]) +
+		parseInt(jobData["r4xx"]) +
+		parseInt(jobData["r5xx"]) +
+		parseInt(jobData["runk"]));
+};
+
+var getSummaryResponses = function(jobData) {
+	return (
+		"1xx: " + numberWithCommas(String(jobData["r1xx"])) + "\n" +
+		"2xx: " + numberWithCommas(String(jobData["r2xx"])) + "\n" +
+		"3xx: " + numberWithCommas(String(jobData["r3xx"])) + "\n" +
+		"4xx: " + numberWithCommas(String(jobData["r4xx"])) + "\n" +
+		"5xx: " + numberWithCommas(String(jobData["r5xx"])) + "\n" +
+		"Unknown: " + numberWithCommas(String(jobData["runk"])));
+};
+
+
+
+var JobsRenderer = function(container, historyLines, showNicks) {
+	this.container = container;
+	this.historyLines = historyLines;
+	this.showNicks = showNicks;
+	this.linesPerSegment = Math.max(1, Math.round(this.historyLines / 10));
+	this.jobs = new JobsTracker();
+	// ident -> JobRenderInfo
+	this.renderInfo = {};
+	this.mouseInside = null;
+	this.numCrawls = byId('num-crawls');
+};
+
+JobsRenderer.prototype._getNextJobInSorted = function(ident) {
+	for(var i=0; i < this.jobs.sorted.length; i++) {
+		var e = this.jobs.sorted[i];
+		if(e["ident"] == ident) {
+			return this.jobs.sorted[i+1];
+		}
+	}
+	return null;
+};
+
+JobsRenderer.prototype._createLogSegment = function() {
+	return h('div');
+};
+
+JobsRenderer.prototype._createLogContainer = function(jobData) {
+	var ident = jobData["ident"];
+	var beforeJob = this._getNextJobInSorted(ident);
+	var beforeElement = beforeJob == null ? null : byId("log-container-" + beforeJob["ident"]);
+
+	var logSegment = this._createLogSegment();
+
+	var logWindowAttrs = {
+		"className": "log-window",
+		"id": "log-window-" + ident,
+		"onmouseenter": function(ev) {
+			this.mouseInside = ident;
+			ev.target.classList.add('log-window-stopped');
+		}.bind(this),
+		"onmouseleave": function(ev) {
+			this.mouseInside = null;
+			ev.target.classList.remove('log-window-stopped');
+		}.bind(this)
+	}
+
+	// If you reach the end of a log window, the browser annoyingly
+	// starts to scroll the page instead.  We prevent this behavior here.
+	// If the user wants to scroll the page, they need to move their
+	// mouse outside a log window first.
+	if(!isSafari) {
+		logWindowAttrs["onwheel"] = function(ev) {
+			// Note: offsetHeight is "wrong" by 2px but it doesn't matter
+			//console.log(ev, logWindow.scrollTop, (logWindow.scrollHeight - logWindow.offsetHeight));
+			if(ev.deltaY < 0 && logWindow.scrollTop == 0) {
+				ev.preventDefault();
+			} else if(ev.deltaY > 0 && logWindow.scrollTop >= (logWindow.scrollHeight - logWindow.offsetHeight)) {
+				ev.preventDefault();
+			}
+		}
+	} else {
+		// Safari 7.0.5 can't preventDefault or stopPropagation an onwheel event,
+		// so use onmousewheel instead.
+		logWindowAttrs["onmousewheel"] = function(ev) {
+			//console.log(ev, logWindow.scrollTop, (logWindow.scrollHeight - logWindow.offsetHeight));
+			if(ev.wheelDeltaY > 0 && logWindow.scrollTop == 0) {
+				ev.preventDefault();
+			} else if(ev.wheelDeltaY < 0 && logWindow.scrollTop >= (logWindow.scrollHeight - logWindow.offsetHeight)) {
+				ev.preventDefault();
+			}
+		}
+	}
+
+	var statsElements = {
+		mb: h("span", null, "?"),
+		responses: h("span", null, "?"),
+		responsesPerSecond: h("span", null, "?"),
+		connections: h("span", null, "?"),
+		delay: h("span", null, "?"),
+		ignores: h("span", null, "?")
+	};
+
+	var logWindow = h('div', logWindowAttrs, logSegment);
+	var startedISOString = new Date(parseFloat(jobData["started_at"]) * 1000).toISOString();
+	var div = h(
+		'div',
+		{"id": "log-container-" + ident}, [
+			h("div", {"className": "job-header"}, [
+				h("span", {"className": "job-info"}, [
+					h("a", {"className": "job-url", "href": jobData["url"]}, jobData["url"]),
+					" on ",
+					h("span", {"title": startedISOString}, startedISOString.split("T")[0]),
+					(this.showNicks ? " by " + jobData["started_by"] : "") + "; ",
+					statsElements.mb,
+					h("span", null, " MB in "),
+					statsElements.responses,
+					" at ",
+					statsElements.responsesPerSecond,
+					"/s; ",
+					statsElements.connections,
+					" con. w/ ",
+					statsElements.delay,
+					" ms delay; ",
+					statsElements.ignores
+				]),
+				h("input", {
+					"className": "job-ident",
+					"type": "text",
+					"value": ident,
+					"size": "28",
+					"spellcheck": "false",
+					"readonly": "",
+					"onclick": function() { this.select(); }
+				})
+			]),
+			logWindow
+		]
+	);
+	this.renderInfo[ident] = new JobRenderInfo(logWindow, logSegment, statsElements, 0, [0]);
+	this.container.insertBefore(div, beforeElement);
+}
+
+JobsRenderer.prototype._renderDownloadLine = function(data, logSegment) {
+	if(data["is_warning"]) {
+		var attrs = Reusable.obj_className_line_warning;
+	} else if(data["is_error"]) {
+		var attrs = Reusable.obj_className_line_error;
+	} else if(data["response_code"] && data["response_code"] >= 300 && data["response_code"] < 400) {
+		var attrs = Reusable.obj_className_line_redirect;
+	} else {
+		var attrs = Reusable.obj_className_line_normal;
+	}
+	logSegment.appendChild(h("div", attrs, [
+		data["response_code"] + " " + data["wget_code"] + " ",
+		href(data["url"], data["url"])
+	]));
+	return 1;
+};
+
+JobsRenderer.prototype._renderIgnoreLine = function(data, logSegment) {
+	var attrs = Reusable.obj_className_line_ignore;
+	logSegment.appendChild(h("div", attrs, [
+		h('span', null, " IGNOR "),
+		h('a', {"href": data["url"], "className": "ignore"}, data["url"]),
+		h('span', Reusable.obj_className_bold, " by "),
+		data["pattern"]
+	]));
+	return 1;
+};
+
+JobsRenderer.prototype._renderStdoutLine = function(data, logSegment) {
+	var cleanedMessage = data["message"].replace(/[\r\n]+$/, "");
+	var renderedLines = 0;
+	if(!cleanedMessage) {
+		return renderedLines;
+	}
+	var lines = cleanedMessage.split("\n");
+	for(var i=0; i < lines.length; i++) {
+		var line = lines[i];
+		if(!line) {
+			continue;
+		}
+		logSegment.appendChild(h("div", Reusable.obj_className_line_stdout, line));
+		renderedLines += 1;
+	}
+	return renderedLines;
+};
+
+JobsRenderer.prototype.handleData = function(data) {
+	var jobData = data["job_data"];
+	var added = this.jobs.handleJobData(jobData);
+	this.numCrawls.textContent = this.jobs.countActive();
+	if(added) {
+		this._createLogContainer(jobData);
+	}
+	var type = data["type"];
+	var ident = jobData["ident"];
+
+	var info = this.renderInfo[ident];
+	if(!info) {
+		console.warn("No render info for " + ident);
+		return;
+	}
+
+	var totalResponses = parseInt(getTotalResponses(jobData));
+	if(type == "download") {
+		var linesRendered = this._renderDownloadLine(data, info.logSegment);
+	} else if(type == "stdout") {
+		var linesRendered = this._renderStdoutLine(data, info.logSegment);
+	} else if(type == "ignore") {
+		var linesRendered = this._renderIgnoreLine(data, info.logSegment);
+	} else {
+		assert(false, "Unexpected message type " + type);
+	}
+
+	// Update stats
+	info.statsElements.mb.textContent =
+		numberWithCommas(
+			toStringTenths(
+				(parseInt(jobData["bytes_downloaded"]) / (1024 * 1024)).toString()));
+	info.statsElements.responses.textContent =
+		numberWithCommas(totalResponses.toString()) + " resp.";
+	info.statsElements.responses.title = getSummaryResponses(jobData);
+	var duration = Date.now()/1000 - parseFloat(jobData["started_at"]);
+	info.statsElements.responsesPerSecond.textContent =
+		toStringTenths(totalResponses/duration);
+	info.statsElements.connections.textContent = jobData["concurrency"];
+	var delayMin = parseInt(jobData["delay_min"]);
+	var delayMax = parseInt(jobData["delay_max"]);
+	info.statsElements.delay.textContent =
+		delayMin == delayMax ?
+			delayMin :
+			delayMin + "-" + delayMax;
+	info.statsElements.ignores.textContent =
+		jobData["suppress_ignore_reports"] ?
+			'hiding ignores' :
+			'showing ignores';
+
+	info.lineCountWindow += linesRendered;
+	info.lineCountSegments[info.lineCountSegments.length - 1] += linesRendered;
+
+	if(info.lineCountSegments[info.lineCountSegments.length - 1] >= this.linesPerSegment) {
+		//console.log("Created new segment", info);
+		var newSegment = this._createLogSegment();
+		info.logWindow.appendChild(newSegment);
+		info.logSegment = newSegment;
+		info.lineCountSegments.push(0);
+	}
+
+	if(this.mouseInside != ident) {
+		// We may have to remove more than one segment, if the user
+		// has paused the log window for a while.
+		while(info.lineCountWindow >= this.historyLines + this.linesPerSegment) {
+			var firstLogSegment = info.logWindow.firstChild;
+			assert(firstLogSegment != null, "info.logWindow.firstChild is null; " +
+				JSON.stringify({
+					"lineCountWindow": info.lineCountWindow,
+					"lineCountSegments": info.lineCountSegments}));
+			info.logWindow.removeChild(firstLogSegment);
+			info.lineCountWindow -= info.lineCountSegments[0];
+			info.lineCountSegments.shift();
+		}
+
+		// Scroll to the bottom
+		info.logWindow.scrollTop = info.logWindow.scrollHeight;
+	}
+};
+
+
+
+var BatchingQueue = function(callable, minInterval) {
+	this.callable = callable;
+	this._minInterval = minInterval;
+	this.queue = [];
+	this._timeout = null;
+	this._boundRunCallable = this._runCallable.bind(this);
+};
+
+BatchingQueue.prototype.setMinInterval = function(minInterval) {
+	this._minInterval = minInterval;
+};
+
+BatchingQueue.prototype._runCallable = function() {
+	this._timeout = null;
+	var queue = this.queue;
+	this.queue = [];
+	this.callable(queue);
+};
+
+BatchingQueue.prototype.callNow = function() {
+	if(this._timeout !== null) {
+		clearTimeout(this._timeout);
+		this._timeout = null;
+	}
+	this._runCallable();
+};
+
+BatchingQueue.prototype.push = function(v) {
+	this.queue.push(v);
+	if(this._timeout === null) {
+		this._timeout = setTimeout(this._boundRunCallable, this._minInterval);
+	}
+};
+
+
+
+var Decayer = function(initial, multiplier, max) {
+	this.initial = initial;
+	this.multiplier = multiplier;
+	this.max = max;
+	this.reset();
+};
+
+Decayer.prototype.reset = function() {
+	// First call to .decay() will multiply, but we want to get the `intitial`
+	// value on the first call to .decay(), so divide.
+	this.current = this.initial / this.multiplier;
+	return this.current;
+};
+
+Decayer.prototype.decay = function() {
+	this.current = Math.min(this.current * this.multiplier, this.max);
+	return this.current;
+};
+
+
+
+var Dashboard = function() {
+	this.messageCount = 0;
+
+	var args = getQueryArgs();
+
+	var historyLines =
+		args["historyLines"] ?
+			Number(args["historyLines"]) :
+			navigator.userAgent.match(/Mobi/) ? 250 : 1000;
+	var batchTimeWhenVisible =
+		args["batchTimeWhenVisible"] ?
+			Number(args["batchTimeWhenVisible"]) :
+			125;
+	var showNicks =
+		args["showNicks"] ?
+			Number(args["showNicks"]) :
+			false;
+	this.dumpTraffic = args["dumpMax"] && Number(args["dumpMax"]) > 0;
+	if(this.dumpTraffic) {
+		this.dumpMax = Number(args["dumpMax"]);
+	}
+	this.jobsRenderer = new JobsRenderer(byId('logs'), historyLines, showNicks);
+
+	var batchTimeWhenHidden = 5000;
+
+	var xhr = new XMLHttpRequest();
+	xhr.onload = function() {
+		var recentLines = JSON.parse(xhr.responseText);
+		for(var i=0; i < recentLines.length; i++) {
+			this.handleData(recentLines[i]);
+		}
+
+		this.queue = new BatchingQueue(function(queue) {
+			//console.log("Queue has ", queue.length, "items");
+			for(var i=0; i < queue.length; i++) {
+				this.handleData(JSON.parse(queue[i]));
+			}
+		}.bind(this), batchTimeWhenVisible);
+
+		this.decayer = new Decayer(1000, 1.5, 60000);
+		this.connectWebSocket();
+
+		document.addEventListener("visibilitychange", function() {
+			if(document.hidden) {
+				//console.log("Page has become hidden");
+				this.queue.setMinInterval(batchTimeWhenHidden);
+			} else {
+				//console.log("Page has become visible");
+				this.queue.setMinInterval(batchTimeWhenVisible);
+				this.queue.callNow();
+			}
+		}.bind(this), false);
+	}.bind(this);
+	xhr.open("GET", "http://arshboard.at.ninjawedding.org:4567/logs/recent?cb=" + Date.now() + Math.random());
+	xhr.send("");
+};
+
+Dashboard.prototype.handleData = function(data) {
+	this.messageCount += 1;
+	if(this.dumpTraffic && this.messageCount <= this.dumpMax) {
+		byId('traffic').appendChild(h("pre", null, prettyJson(data)));
+	}
+	this.jobsRenderer.handleData(data);
+};
+
+Dashboard.prototype.connectWebSocket = function() {
+	this.ws = new WebSocket("ws://arshboard.at.ninjawedding.org:4567/stream");
+
+	this.ws.onmessage = function(ev) {
+		this.queue.push(ev["data"]);
+	}.bind(this);
+
+	this.ws.onopen = function(ev) {
+		console.log("WebSocket opened:", ev);
+		this.decayer.reset();
+	}.bind(this);
+
+	this.ws.onclose = function(ev) {
+		console.log("WebSocket closed:", ev);
+		var delay = this.decayer.decay();
+		console.log("Reconnecting in", delay, "ms");
+		setTimeout(this.connectWebSocket.bind(this), delay);
+	}.bind(this);
+};
+
+Dashboard.prototype.toggleHelp = function() {
+	var help = byId('help');
+	if(help.classList.contains('undisplayed')) {
+		help.classList.remove('undisplayed');
+	} else {
+		help.classList.add('undisplayed');
+	}
+};
+
+var ds = new Dashboard();
+
+</script>
+</body>
+</html>
