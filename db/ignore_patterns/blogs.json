@@ -21,7 +21,7 @@
        "http://pixel.quantserve.com/pixel/",
        "'%%20%+%%20liker.profile_URL%%20%+%%20'",
        "'%%20%+%%20liker.avatar_URL%%20%+%%20'",
-       "%%22%%20%+%%20$wrapper.data(",
+       "%%22%%20%+%%20$wrapper%.data%(",
        "http://%.*.blogspot.com/search%?"
    ]
 }
