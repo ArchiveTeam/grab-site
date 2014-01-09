@@ -4,12 +4,7 @@
    "type": "ignore_patterns",
    "patterns": [
        "%?replytocom=",
-       "%?share=email",
-       "%?share=linkedin",
-       "%?share=twitter",
-       "%?share=stumbleupon",
-       "%?share=google-plus-1",
-       "%?share=digg",
+       "%?share=",
        "%?showComment=",
        "^https://plus%.google%.com/share%?url=",
        "^http://www%.facebook%.com/login%.php",
