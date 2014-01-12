@@ -6,6 +6,7 @@
        "%?replytocom=",
        "%?share=",
        "%?showComment=",
+       "^https?://r%-login%.wordpress%.com/remote%-login%.php",
        "^https://plus%.google%.com/share%?url=",
        "^http://www%.facebook%.com/login%.php",
        "^https://ssl%.reddit%.com/login%?dest=",
