@@ -1,5 +1,4 @@
 {
-   "_id": "ignore_patterns:blogs",
    "name": "blogs",
    "type": "ignore_patterns",
    "patterns": [
