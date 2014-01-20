@@ -22,6 +22,7 @@
        "^http://.+%.blogspot%.com/search/label/",
        "livejournal%.com/ljcounter%?",
        "%?replyto=%d+",
+       "%&mode=reply",
        "xiti%.com/hit%.xiti%?"
    ]
 }
