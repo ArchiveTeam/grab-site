@@ -1,0 +1,11 @@
+{
+   "name": "forums",
+   "type": "ignore_patterns",
+   "patterns": [
+      "login%.php%?",
+      "newreply%.php%?",
+      "subscription%.php%?",
+      "private%.php%?",
+      "search%.php%?do=finduser"
+   ]
+}
