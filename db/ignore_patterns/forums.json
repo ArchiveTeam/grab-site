@@ -9,6 +9,6 @@
       "private%.php%?",
       "register%.php%?",
       "sendmessage%.php%?",
-      "subscription%.php%?",
+      "subscription%.php%?"
    ]
 }
