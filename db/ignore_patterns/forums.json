@@ -2,10 +2,13 @@
    "name": "forums",
    "type": "ignore_patterns",
    "patterns": [
+      "cron%.php%?",
+      "external%.php%?type=rss",
       "login%.php%?",
       "newreply%.php%?",
-      "subscription%.php%?",
       "private%.php%?",
-      "search%.php%?do=finduser"
+      "register%.php%?",
+      "sendmessage%.php%?",
+      "subscription%.php%?",
    ]
 }
