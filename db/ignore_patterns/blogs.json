@@ -15,6 +15,7 @@
        "^http://www%.facebook%.com/sharer%.php%?",
        "^http://www%.facebook%.com/sharer/sharer%.php%?",
        "^http://pixel%.quantserve%.com/pixel/",
+       "^http://www%.tumblr%.com/impixu%?",
        "'%%20%+%%20liker%.profile_URL%%20%+%%20'",
        "'%%20%+%%20liker%.avatar_URL%%20%+%%20'",
        "%%22%%20%+%%20$wrapper%.data%(",
