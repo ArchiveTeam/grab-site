@@ -1,14 +1,14 @@
 {
-   "name": "forums",
-   "type": "ignore_patterns",
-   "patterns": [
-      "cron%.php%?",
-      "external%.php%?type=rss",
-      "login%.php%?",
-      "newreply%.php%?",
-      "private%.php%?",
-      "register%.php%?",
-      "sendmessage%.php%?",
-      "subscription%.php%?"
-   ]
+    "name": "forums",
+    "patterns": [
+        "cron\\.php\\?",
+        "external\\.php\\?type=rss",
+        "login\\.php\\?",
+        "newreply\\.php\\?",
+        "private\\.php\\?",
+        "register\\.php\\?",
+        "sendmessage\\.php\\?",
+        "subscription\\.php\\?"
+    ],
+    "type": "ignore_patterns"
 }
