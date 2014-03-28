@@ -10,7 +10,11 @@
         "/sendmessage\\.php\\?",
         "/subscription\\.php\\?",
         "/posting\\.php\\?",
-        "/viewtopic\\.php\\?.+&view=(next|previous)"
+        "/viewtopic\\.php\\?.+&view=(next|previous)",
+        "/feed\\.php\\?",
+        "/index\\.php\\?option=com_mailto",
+        "&view=login&return=",
+        "&format=opensearch"
     ],
     "type": "ignore_patterns"
 }
