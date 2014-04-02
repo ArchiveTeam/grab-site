@@ -11,7 +11,8 @@
         "^http://www\\.imdb\\.com/help/boards_posting\\.html",
         "^http://www\\.imdb\\.com/register/",
         "^http://www\\.imdb\\.com/.+/board/.+/\\d+\\?d=",
-        "^http://www\\.imdb\\.com/.+/videogallery/related"
+        "^http://www\\.imdb\\.com/.+/videogallery/related",
+        "^http://www\\.imdb\\.com/.+/videogallery/genre-"
     ],
     "type": "ignore_patterns"
 }
