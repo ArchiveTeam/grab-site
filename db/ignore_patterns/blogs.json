@@ -23,7 +23,8 @@
         "livejournal\\.com/ljcounter\\?",
         "\\?replyto=[0-9]+",
         "\\&mode=reply",
-        "xiti\\.com/hit\\.xiti\\?"
+        "xiti\\.com/hit\\.xiti\\?",
+        "/jetpack-comment/\\?"
     ],
     "type": "ignore_patterns"
 }
