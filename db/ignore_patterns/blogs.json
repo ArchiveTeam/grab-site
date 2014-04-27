@@ -22,7 +22,7 @@
         "^http://.+\\.blogspot\\.(com|in|com\\.au|co\\.uk|jp|co\\.nz|ca|de|it|fr|se|es|pt|com\\.br|ar|mx)/search(\\?|/label/)",
         "livejournal\\.com/ljcounter\\?",
         "\\?replyto=[0-9]+",
-        "\\&mode=reply",
+        "[\\?&]mode=reply",
         "xiti\\.com/hit\\.xiti\\?",
         "/jetpack-comment/\\?"
     ],
