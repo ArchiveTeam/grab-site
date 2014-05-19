@@ -26,7 +26,8 @@
         "\\?replyto=[0-9]+",
         "[\\?&]mode=reply",
         "xiti\\.com/hit\\.xiti\\?",
-        "/jetpack-comment/\\?"
+        "/jetpack-comment/\\?",
+        "\\?like_comment=\\d+"
     ],
     "type": "ignore_patterns"
 }
