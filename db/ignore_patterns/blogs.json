@@ -4,6 +4,7 @@
         "[\\?&]replytocom=",
         "\\?share=",
         "\\?showComment=",
+        "\\?showComment%5C",
         "^https?://r\\-login\\.wordpress\\.com/remote\\-login\\.php",
         "^https://plus\\.google\\.com/share\\?url=",
         "^https?://apis\\.google\\.com/_/\\+1/fastbutton",
