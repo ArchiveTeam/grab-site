@@ -28,7 +28,8 @@
         "[\\?&]mode=reply",
         "xiti\\.com/hit\\.xiti\\?",
         "/jetpack-comment/\\?",
-        "\\?like_comment=\\d+"
+        "\\?like_comment=\\d+",
+        "%5Cx26route=/archive"
     ],
     "type": "ignore_patterns"
 }
