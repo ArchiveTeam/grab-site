@@ -2,7 +2,7 @@
     "name": "blogs",
     "patterns": [
         "[\\?&]replytocom=",
-        "\\?share=",
+        "[\\?&]share=",
         "\\?showComment=",
         "\\?showComment%5C",
         "^https?://r\\-login\\.wordpress\\.com/remote\\-login\\.php",
