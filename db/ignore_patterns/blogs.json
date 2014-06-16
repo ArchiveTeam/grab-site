@@ -29,7 +29,10 @@
         "xiti\\.com/hit\\.xiti\\?",
         "/jetpack-comment/\\?",
         "\\?like_comment=\\d+",
-        "%5Cx26route=/archive"
+        "%5Cx26route=/archive",
+        "\\?route=/page/:page",
+        "\\?route=/archive/:year/:month",
+        "\\?route=/tagged/:tag"
     ],
     "type": "ignore_patterns"
 }
