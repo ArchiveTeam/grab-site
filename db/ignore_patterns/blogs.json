@@ -30,9 +30,7 @@
         "/jetpack-comment/\\?",
         "\\?like_comment=\\d+",
         "%5Cx26route=/archive",
-        "\\?route=/page/:page",
-        "\\?route=/archive/:year/:month",
-        "\\?route=/tagged/:tag"
+        "\\?route=(/page/:page|/archive/:year/:month|/tagged/:tag|/post/:id/:summary)"
     ],
     "type": "ignore_patterns"
 }
