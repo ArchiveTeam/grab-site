@@ -3,24 +3,19 @@
     "patterns": [
         "[\\?&]replytocom=",
         "[\\?&]share=",
-        "\\?showComment=",
-        "\\?showComment%5C",
+        "\\?showComment(=|%5C)",
         "^https?://r\\-login\\.wordpress\\.com/remote\\-login\\.php",
         "^https://plus\\.google\\.com/share\\?url=",
         "^https?://apis\\.google\\.com/_/\\+1/fastbutton",
         "^http://www\\.facebook\\.com/login\\.php",
-        "^https://ssl\\.reddit\\.com/login\\?dest=",
-        "^http://www\\.reddit\\.com/login\\?dest=",
-        "^http://www\\.reddit\\.com/submit\\?url=",
+        "^https?://(ssl|www)\\.reddit\\.com/(login\\?dest=|submit\\?url=)",
         "^http://digg\\.com/submit\\?url=",
-        "^http://www\\.facebook\\.com/sharer\\.php\\?",
-        "^http://www\\.facebook\\.com/sharer/sharer\\.php\\?",
+        "^http://www\\.facebook\\.com/(sharer/sharer\\.php|sharer\\.php)\\?",
         "^http://www\\.facebook\\.com/plugins/like\\.php",
         "^https?://twitter\\.com/intent/tweet",
         "^http://pixel\\.quantserve\\.com/pixel/",
         "^http://www\\.tumblr\\.com/impixu\\?",
-        "'\\%20\\+\\%20liker\\.profile_URL\\%20\\+\\%20'",
-        "'\\%20\\+\\%20liker\\.avatar_URL\\%20\\+\\%20'",
+        "'\\%20\\+\\%20liker\\.(avatar|profile)_URL\\%20\\+\\%20'",
         "\\%22\\%20\\+\\%20$wrapper\\.data\\(",
         "^http://.+\\.blogspot\\.(com|in|com\\.au|co\\.uk|jp|co\\.nz|ca|de|it|fr|se|es|pt|com\\.br|ar|mx)/search(\\?|/label/)",
         "livejournal\\.com/ljcounter\\?",
@@ -29,8 +24,7 @@
         "xiti\\.com/hit\\.xiti\\?",
         "/jetpack-comment/\\?",
         "\\?like_comment=\\d+",
-        "%5Cx26route=/archive",
-        "\\?route=(/page/:page|/archive/:year/:month|/tagged/:tag|/post/:id/:summary)"
+        "(\\?|%5Cx26)route=(/page/:page|/archive/:year/:month|/tagged/:tag|/post/:id/:summary)"
     ],
     "type": "ignore_patterns"
 }
