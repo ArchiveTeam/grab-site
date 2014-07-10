@@ -2,6 +2,11 @@
     "name": "mediawiki",
     "patterns": [
         "[\\?&]oldid=\\d+",
+        "[\\?&]limit=(20|100|250|500)",
+        "[\\?&]hide(minor|bots|anons|liu|myself)=",
+        "[\\?&]title=Special:UserLogin",
+        "[\\?&]feed=atom",
+        "[\\?&]redlink=1"
     ],
     "type": "ignore_patterns"
 }
