@@ -1,0 +1,7 @@
+{
+    "name": "mediawiki",
+    "patterns": [
+        "[\\?&]oldid=\\d+",
+    ],
+    "type": "ignore_patterns"
+}
