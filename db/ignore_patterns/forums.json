@@ -16,7 +16,8 @@
         "&view=login&return=",
         "&format=opensearch",
         "/misc\\.php\\?do=whoposted",
-        "/userpoll/vote\\.php\\?"
+        "/userpoll/vote\\.php\\?",
+        "/showthread\\.php.*[\\?&]goto=(next(old|new)est|newpost)"
     ],
     "type": "ignore_patterns"
 }
