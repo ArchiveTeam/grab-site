@@ -2,6 +2,7 @@
     "name": "mediawiki",
     "patterns": [
         "[\\?&]oldid=\\d+",
+        "[\\?&]curid=\\d+",
         "[\\?&]limit=(20|100|250|500)",
         "[\\?&]hide(minor|bots|anons|liu|myself)=",
         "[\\?&]title=Special:UserLogin",
