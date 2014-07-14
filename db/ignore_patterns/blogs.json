@@ -24,7 +24,7 @@
         "xiti\\.com/hit\\.xiti\\?",
         "/jetpack-comment/\\?",
         "\\?like_comment=\\d+",
-        "(\\?|%5Cx26)route=(/page/:page|/archive/:year/:month|/tagged/:tag|/post/:id/:summary)",
+        "(\\?|%5Cx26)route=(/page/:page|/archive/:year/:month|/tagged/:tag|/post/:id/:summary|/image/:post_id)",
         "%5Cx26route=/archive",
         "^http://\\d+\\.media\\.tumblr\\.com/avatar_.+_16\\.png$"
     ],
