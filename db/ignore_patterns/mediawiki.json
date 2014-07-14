@@ -7,7 +7,8 @@
         "[\\?&]hide(minor|bots|anons|liu|myself)=",
         "[\\?&]title=Special:UserLogin",
         "[\\?&]feed=atom",
-        "[\\?&]redlink=1"
+        "[\\?&]redlink=1",
+        "[\\?&]undo(after)?=\\d+"
     ],
     "type": "ignore_patterns"
 }
