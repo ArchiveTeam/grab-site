@@ -6,7 +6,7 @@
         "[\\?&]limit=(20|100|250|500)",
         "[\\?&]hide(minor|bots|anons|liu|myself)=",
         "[\\?&]title=Special:UserLogin",
-        "[\\?&]feed=atom",
+        "[\\?&]feed(format)?=atom",
         "[\\?&]redlink=1",
         "[\\?&]undo(after)?=\\d+"
     ],
