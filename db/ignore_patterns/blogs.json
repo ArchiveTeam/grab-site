@@ -5,7 +5,7 @@
         "[\\?&]share=",
         "\\?showComment(=|%5C)",
         "^https?://r\\-login\\.wordpress\\.com/remote\\-login\\.php",
-        "^https://plus\\.google\\.com/share\\?url=",
+        "^https?://plus\\.google\\.com/share\\?url=",
         "^https?://apis\\.google\\.com/_/\\+1/fastbutton",
         "^https?://(ssl|www)\\.reddit\\.com/(login\\?dest=|submit\\?url=)",
         "^https?://digg\\.com/submit\\?url=",
