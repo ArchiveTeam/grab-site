@@ -7,7 +7,7 @@
         "^https?://r\\-login\\.wordpress\\.com/remote\\-login\\.php",
         "^https?://plus\\.google\\.com/share\\?url=",
         "^https?://apis\\.google\\.com/_/\\+1/fastbutton",
-        "^https?://(ssl|www)\\.reddit\\.com/(login\\?dest=|submit\\?url=)",
+        "^https?://(ssl|www)\\.reddit\\.com/(login\\?dest=|submit\\?url=|static/button/button)",
         "^https?://digg\\.com/submit\\?url=",
         "^https?://www\\.facebook\\.com/(plugins/like\\.php|sharer/sharer\\.php|sharer\\.php|dialog/feed)\\?",
         "^https?://twitter\\.com/(share\\?url=|intent/tweet)",
