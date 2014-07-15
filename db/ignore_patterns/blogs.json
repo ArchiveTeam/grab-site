@@ -27,6 +27,7 @@
         "xiti\\.com/hit\\.xiti\\?",
         "/jetpack-comment/\\?",
         "\\?like_comment=\\d+",
+        "^https?://.+/.+/disqus\\.com/forums/$",
         "^https?://\\d\\.gravatar\\.com/avatar/ad516503a11cd5ca435acc9bb6523536",
         "^http://www\\.tumblr\\.com/impixu\\?",
         "(\\?|%5Cx26)route=(/page/:page|/archive/:year/:month|/tagged/:tag|/post/:id/:summary|/image/:post_id)",
