@@ -14,6 +14,7 @@
         "^https?://platform\\.twitter\\.com/widgets/tweet_button.html\\?url=",
         "^http://www\\.addtoany\\.com/add_to/",
         "^https?://www\\.pinterest\\.com/pin/create/button/\\?url=",
+        "^https?://www\\.linkedin\\.com/cws/share\\?",
         "^http://pixel\\.quantserve\\.com/pixel/",
         "'\\%20\\+\\%20liker\\.(avatar|profile)_URL\\%20\\+\\%20'",
         "\\%22\\%20\\+\\%20$wrapper\\.data\\(",
