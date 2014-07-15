@@ -13,6 +13,7 @@
         "^https?://twitter\\.com/(share\\?|intent/tweet|home/?\\?status=)",
         "^https?://platform\\.twitter\\.com/widgets/tweet_button.html\\?url=",
         "^http://www\\.addtoany\\.com/add_to/",
+        "^https?://www\\.addthis\\.com/bookmark\\.php\\?",
         "^https?://www\\.pinterest\\.com/pin/create/button/\\?url=",
         "^https?://www\\.linkedin\\.com/cws/share\\?",
         "^https?://www\\.stumbleupon\\.com/submit\\?",
