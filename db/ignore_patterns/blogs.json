@@ -17,6 +17,7 @@
         "^https?://www\\.linkedin\\.com/cws/share\\?",
         "^https?://www\\.stumbleupon\\.com/submit\\?",
         "^https://share\\.flipboard\\.com/bookmarklet/popout\\?",
+        "^https?://flattr.com/submit/auto\\?",
         "^http://pixel\\.quantserve\\.com/pixel/",
         "'\\%20\\+\\%20liker\\.(avatar|profile)_URL\\%20\\+\\%20'",
         "\\%22\\%20\\+\\%20$wrapper\\.data\\(",
