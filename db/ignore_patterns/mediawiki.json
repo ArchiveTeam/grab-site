@@ -8,6 +8,7 @@
         "[\\?&]title=Special:UserLogin",
         "[\\?&]feed(format)?=atom",
         "[\\?&]redlink=1",
+        "[\\?&]printable=yes",
         "[\\?&]undo(after)?=\\d+"
     ],
     "type": "ignore_patterns"
