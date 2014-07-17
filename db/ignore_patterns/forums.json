@@ -17,7 +17,8 @@
         "&format=opensearch",
         "/misc\\.php\\?do=whoposted",
         "/userpoll/vote\\.php\\?",
-        "/showthread\\.php.*[\\?&]goto=(next(old|new)est|newpost)"
+        "/showthread\\.php.*[\\?&]goto=(next(old|new)est|newpost)",
+        "/editpost\\.php\\?"
     ],
     "type": "ignore_patterns"
 }
