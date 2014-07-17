@@ -22,6 +22,7 @@
         "^https?://flattr.com/submit/auto\\?",
         "^http://www\\.myspace\\.com/Modules/PostTo/Pages/\\?",
         "^https?://www\\.google\\.com/bookmarks/mark\\?",
+        "^http://vuible\\.com/pins-settings/",
         "^https?://news\\.ycombinator\\.com/submitlink\\?",
         "^http://reporter\\.es\\.msn\\.com/\\?fn=contribute",
         "^http://www\\.blinklist\\.com/index\\.php\\?Action=Blink/addblink\\.php",
