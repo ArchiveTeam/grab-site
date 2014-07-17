@@ -1,0 +1,10 @@
+{
+    "name": "reddit",
+    "patterns": [
+        "^http://www\\.reddit\\.com/gold\\?goldtype=",
+        "^http://www\\.reddit\\.com/r/[^/]+/comments/[a-z0-9]+/[^/]+/[a-z0-9]+$",
+        "^http://www\\.reddit\\.com/r/[^/]+/comments/[a-z0-9]+/[^/]+/\\?sort=",
+        "^http://www\\.reddit\\.com/r/[^/]+/(top|new|rising|controversial|gilded|ads)/.+[\\?&]after="
+    ],
+    "type": "ignore_patterns"
+}
