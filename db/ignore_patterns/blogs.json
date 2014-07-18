@@ -15,7 +15,7 @@
         "^https?://platform\\.twitter\\.com/widgets/tweet_button.html\\?url=",
         "^http://www\\.addtoany\\.com/add_to/",
         "^https?://www\\.addthis\\.com/bookmark\\.php\\?",
-        "^https?://www\\.pinterest\\.com/pin/create/button/\\?url=",
+        "^https?://(www\\.)?pinterest\\.com/pin/create/button/\\?url=",
         "^https?://www\\.linkedin\\.com/(cws/share|shareArticle)\\?",
         "^https?://www\\.stumbleupon\\.com/submit\\?",
         "^https://share\\.flipboard\\.com/bookmarklet/popout\\?",
