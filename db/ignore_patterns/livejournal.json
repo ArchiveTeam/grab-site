@@ -1,0 +1,8 @@
+{
+    "name": "livejournal",
+    "patterns": [
+        "^http://www\\.livejournal\\.com/tools/memadd\\.bml\\?",
+        "^http://www\\.livejournal\\.com/login\\.bml\\?"
+    ],
+    "type": "ignore_patterns"
+}
