@@ -9,7 +9,7 @@
         "^https?://apis\\.google\\.com/_/\\+1/fastbutton",
         "^https?://(ssl\\.|www\\.)?reddit\\.com/(login\\?dest=|submit\\?|static/button/button)",
         "^https?://digg\\.com/submit\\?",
-        "^https?://www\\.facebook\\.com/(plugins/like\\.php|sharer/sharer\\.php|sharer?\\.php|dialog/feed)\\?",
+        "^https?://www\\.facebook\\.com/(plugins/like(box)?\\.php|sharer/sharer\\.php|sharer?\\.php|dialog/feed)\\?",
         "^http://static\\.ak\\.fbcdn\\.net/connect\\.php/js/rsrc\\.php",
         "^https?://twitter\\.com/(share\\?|intent/tweet|home/?\\?status=)",
         "^https?://platform\\.twitter\\.com/widgets/tweet_button.html\\?url=",
