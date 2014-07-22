@@ -2,7 +2,8 @@
     "name": "livejournal",
     "patterns": [
         "^http://www\\.livejournal\\.com/tools/memadd\\.bml\\?",
-        "^http://www\\.livejournal\\.com/login\\.bml\\?"
+        "^http://www\\.livejournal\\.com/login\\.bml\\?",
+        "^http://.+\\.livejournal\\.com/.+[\\?&]mode=reply"
     ],
     "type": "ignore_patterns"
 }
