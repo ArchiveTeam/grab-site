@@ -5,11 +5,12 @@
         "[\\?&]curid=\\d+",
         "[\\?&]limit=(20|100|250|500)",
         "[\\?&]hide(minor|bots|anons|liu|myself|redirs|links|trans)=",
-        "[\\?&]title=Special:(UserLogin|Translate)",
+        "([\\?&]title=|/)Special:(UserLogin|UserLogout|Translate)",
         "[\\?&]feed(format)?=atom",
         "[\\?&]redlink=1",
         "[\\?&]printable=yes",
-        "[\\?&]undo(after)?=\\d+"
+        "[\\?&]undo(after)?=\\d+",
+        "^http://a\\.wikia-beacon\\.com/__track/"
     ],
     "type": "ignore_patterns"
 }
