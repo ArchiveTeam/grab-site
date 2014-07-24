@@ -50,7 +50,13 @@
         "^https?://www\\.tumblr\\.com/(impixu\\?|share\\?|reblog/)",
         "(\\?|%5Cx26)route=(/page/:page|/archive/:year/:month|/tagged/:tag|/post/:id|/image/:post_id)",
         "%5Cx26route=/archive",
-        "^http://\\d+\\.media\\.tumblr\\.com/avatar_.+_16\\.png$"
+        "^http://\\d+\\.media\\.tumblr\\.com/avatar_.+_16\\.png$",
+        "^http://www\\.livejournal\\.com/tools/memadd\\.bml\\?",
+        "^http://www\\.livejournal\\.com/login\\.bml\\?",
+        "^http://.+\\.livejournal\\.com/.+[\\?&]mode=reply",
+        "^http://.+\\.livejournal\\.com/.+/\\*sup_ru/ru/UTF-8/",
+        "^http://.+\\.livejournal\\.com/.+http://.+\\.livejournal\\.com/",
+        "^http://.+\\.livejournal\\.com/.+/stats\\.g\\.doubleclick\\.net/dc\\.js$"
     ],
     "type": "ignore_patterns"
 }
