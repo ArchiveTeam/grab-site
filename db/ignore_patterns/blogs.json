@@ -37,6 +37,7 @@
         "^http://zakladki\\.yandex\\.ru/newlink\\.xml\\?",
         "^https?://www\\.google\\.com/(reader/link\\?|buzz/post\\?)",
         "^https?://mail\\.google\\.com/mail/",
+        "^http://pixel\\.blog\\.hu/",
         "^https?://pixel\\.quantserve\\.com/",
         "^http://b\\.scorecardresearch\\.com/",
         "'\\%20\\+\\%20liker\\.(avatar|profile)_URL\\%20\\+\\%20'",
