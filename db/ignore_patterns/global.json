@@ -1,0 +1,8 @@
+{
+    "name": "global",
+    "patterns": [
+        "/%5C%22",
+        "^http://static\\.ak\\.fbcdn\\.net/connect\\.php/js/rsrc\\.php"
+    ],
+    "type": "ignore_patterns"
+}
