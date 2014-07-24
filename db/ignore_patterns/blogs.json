@@ -57,7 +57,8 @@
         "^http://.+\\.livejournal\\.com/.+/\\*sup_ru/ru/UTF-8/",
         "^http://.+\\.livejournal\\.com/.+http://.+\\.livejournal\\.com/",
         "^http://.+\\.livejournal\\.com/.+/stats\\.g\\.doubleclick\\.net/dc\\.js$",
-        "^https?://www\\.dreamwidth\\.org/tools/(memadd|tellafriend)\\?"
+        "^https?://www\\.dreamwidth\\.org/tools/(memadd|tellafriend)\\?",
+        "^https?://[^\\.]+\\.dreamwidth\\.org/.+[\\?&]mode=reply"
     ],
     "type": "ignore_patterns"
 }
