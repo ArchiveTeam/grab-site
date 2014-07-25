@@ -15,6 +15,8 @@
         "^https?://twitter\\.com/(share\\?|intent/tweet|home/?\\?status=|\\?status=)",
         "^https?://platform\\d?\\.twitter\\.com/widgets/tweet_button.html\\?",
         "^https?://www\\.newsvine\\.com/_wine/save\\?",
+        "^https?://www\\.netvibes\\.com/subscribe\\.php\\?",
+        "^https?://add\\.my\\.yahoo\\.com/content\\?",
         "^http://www\\.addtoany\\.com/add_to/",
         "^https?://www\\.addthis\\.com/bookmark\\.php\\?",
         "^https?://(www\\.)?pinterest\\.com/pin/create/button/\\?url=",
