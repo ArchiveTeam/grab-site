@@ -2,7 +2,8 @@
     "name": "global",
     "patterns": [
         "/%5C%22",
-        "^http://static\\.ak\\.fbcdn\\.net/connect\\.php/js/rsrc\\.php"
+        "^http://static\\.ak\\.fbcdn\\.net/connect\\.php/js/rsrc\\.php",
+        "^http://([^\\.]+\\.)?stream\\.publicradio\\.org/"
     ],
     "type": "ignore_patterns"
 }
