@@ -3,7 +3,8 @@
     "patterns": [
         "/%5C%22",
         "^http://static\\.ak\\.fbcdn\\.net/connect\\.php/js/rsrc\\.php",
-        "^http://([^\\.]+\\.)?stream\\.publicradio\\.org/"
+        "^http://([^\\.]+\\.)?stream\\.publicradio\\.org/",
+        "^https?://((www|web)\\.)?archive\\.org/"
     ],
     "type": "ignore_patterns"
 }
