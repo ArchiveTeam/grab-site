@@ -64,7 +64,7 @@
         "^http://[^\\.]+\\.livejournal\\.com/.+http://[^\\.]+\\.livejournal\\.com/",
         "^http://[^\\.]+\\.livejournal\\.com/.+/stats\\.g\\.doubleclick\\.net/dc\\.js$",
         "^https?://www\\.dreamwidth\\.org/tools/(memadd|tellafriend)\\?",
-        "^https?://[^\\.]+\\.dreamwidth\\.org/.+[\\?&]mode=reply",
+        "^https?://[^\\.]+\\.dreamwidth\\.org/.+[\\?&]mode=reply"
     ],
     "type": "ignore_patterns"
 }
