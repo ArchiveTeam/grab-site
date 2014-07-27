@@ -7,7 +7,9 @@
         "^http://([^\\.]+\\.)?stream\\.publicradio\\.org/",
         "^https?://((www|web)\\.)?archive\\.org/",
         "^http://b\\.scorecardresearch\\.com/",
-        "^http://i\\.dev\\.cdn\\.turner\\.com/"
+        "^http://i\\.dev\\.cdn\\.turner\\.com/",
+        "^http://video-subtitle\\.tedcdn\\.com/",
+        "^http://download\\.ted\\.com/"
     ],
     "type": "ignore_patterns"
 }
