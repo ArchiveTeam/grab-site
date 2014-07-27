@@ -5,7 +5,8 @@
         "^http://static\\.ak\\.fbcdn\\.net/connect\\.php/js/rsrc\\.php",
         "^http://([^\\.]+\\.)?stream\\.publicradio\\.org/",
         "^https?://((www|web)\\.)?archive\\.org/",
-        "^http://b\\.scorecardresearch\\.com/"
+        "^http://b\\.scorecardresearch\\.com/",
+        "^http://i\\.dev\\.cdn\\.turner\\.com/"
     ],
     "type": "ignore_patterns"
 }
