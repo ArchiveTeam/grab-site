@@ -10,7 +10,10 @@
         "[\\?&]redlink=1",
         "[\\?&]printable=yes",
         "[\\?&]undo(after)?=\\d+",
-        "^http://a\\.wikia-beacon\\.com/__track/"
+        "^http://a\\.wikia-beacon\\.com/__track/",
+        "/User_talk:.+/User_talk:",
+        "/User_blog:.+/User_blog:",
+        "/User:.+/User:"
     ],
     "type": "ignore_patterns"
 }
