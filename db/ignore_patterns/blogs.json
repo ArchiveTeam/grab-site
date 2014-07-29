@@ -21,7 +21,7 @@
         "^https?://www\\.addthis\\.com/bookmark\\.php\\?",
         "^https?://(www\\.)?pinterest\\.com/pin/create/button/\\?url=",
         "^https?://www\\.linkedin\\.com/(cws/share|shareArticle)\\?",
-        "^https?://www\\.stumbleupon\\.com/submit\\?",
+        "^https?://www\\.stumbleupon\\.com/(submit\\?|badge/embed/)",
         "^https://share\\.flipboard\\.com/bookmarklet/popout\\?",
         "^https?://flattr.com/submit/auto\\?",
         "^http://www\\.myspace\\.com/Modules/PostTo/Pages/\\?",
