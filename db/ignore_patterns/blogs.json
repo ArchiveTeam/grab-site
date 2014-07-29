@@ -24,7 +24,7 @@
         "^https?://www\\.stumbleupon\\.com/(submit\\?|badge/embed/)",
         "^https://share\\.flipboard\\.com/bookmarklet/popout\\?",
         "^https?://flattr.com/submit/auto\\?",
-        "^http://www\\.myspace\\.com/Modules/PostTo/Pages/\\?",
+        "^https?://(www\\.)?myspace\\.com/Modules/PostTo/",
         "^https?://www\\.google\\.com/bookmarks/mark\\?",
         "^http://vuible\\.com/pins-settings/",
         "^https?://news\\.ycombinator\\.com/submitlink\\?",
