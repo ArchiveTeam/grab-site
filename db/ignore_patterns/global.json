@@ -22,7 +22,8 @@
         "^http://icecast\\.databoss\\.nl:8000/",
         "^http://mp3\\.live\\.tv-radio\\.com/",
         "^http://av\\.rasset\\.ie/av/live/",
-        "^http://gcnplayer\\.gcnlive\\.com/.+"
+        "^http://gcnplayer\\.gcnlive\\.com/.+",
+        "^http://streaming\\.radionomy\\.com/"
     ],
     "type": "ignore_patterns"
 }
