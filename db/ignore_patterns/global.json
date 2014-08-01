@@ -8,6 +8,7 @@
         "/%27\\+[^/]+\\+%27",
         "/%27%20\\+[^/]+\\+%20%27",
         "^http://static\\.ak\\.fbcdn\\.net/connect\\.php/js/rsrc\\.php",
+        "^https?://www\\.flickr\\.com/change_language\\.gne",
         "^https?://((www|web)\\.)?archive\\.org/",
         "^http://b\\.scorecardresearch\\.com/",
         "^http://i\\.dev\\.cdn\\.turner\\.com/",
