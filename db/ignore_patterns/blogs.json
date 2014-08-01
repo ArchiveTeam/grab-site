@@ -6,7 +6,7 @@
         "\\?showComment(=|%5C)",
         "/wp-login\\.php\\?",
         "^https?://r\\-login\\.wordpress\\.com/remote\\-login\\.php",
-        "^https?://plus\\.google\\.com/share\\?url=",
+        "^https?://plus\\.google\\.com/share\\?",
         "^https?://apis\\.google\\.com/_/\\+1/fastbutton",
         "^https?://(ssl\\.|www\\.)?reddit\\.com/(login\\?dest=|submit\\?|static/button/button)",
         "^https?://digg\\.com/submit\\?",
