@@ -9,7 +9,7 @@
         "/%27%20\\+[^/]+\\+%20%27",
         "^https?://(static\\.ak\\.fbcdn\\.net|connect\\.facebook\\.com)/connect\\.php/js/rsrc\\.php",
         "^https?://www\\.flickr\\.com/change_language\\.gne",
-        "^https?://((www|web)\\.)?archive\\.org/",
+        "^https?://((www|web|wayback)\\.)?archive\\.org/",
         "^http://b\\.scorecardresearch\\.com/",
         "^http://i\\.dev\\.cdn\\.turner\\.com/",
         "^http://video-subtitle\\.tedcdn\\.com/",
