@@ -11,6 +11,7 @@
         "/subscription\\.php\\?",
         "/posting\\.php\\?",
         "/viewtopic\\.php\\?.+&view=(next|previous)",
+        "/viewtopic\\.php\\?.+&hilit=",
         "/feed\\.php\\?",
         "/index\\.php\\?option=com_mailto",
         "&view=login&return=",
