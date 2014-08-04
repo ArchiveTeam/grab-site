@@ -50,6 +50,7 @@
         "^http://www\\.blinklist\\.com/index\\.php\\?Action=Blink/addblink\\.php",
         "^http://sphinn\\.com/index\\.php\\?c=post&m=submit&",
         "^http://posterous\\.com/share\\?",
+        "^http://del\\.icio\\.us\\.com/post\\?",
         "^https?://delicious\\.com/post\\?",
         "^http://iwiw\\.hu/pages/share/share\\.jsp\\?",
         "^http://memori(\\.qip)?\\.ru/link/\\?",
