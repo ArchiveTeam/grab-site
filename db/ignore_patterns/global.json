@@ -27,6 +27,7 @@
         "^http://av\\.rasset\\.ie/av/live/",
         "^http://gcnplayer\\.gcnlive\\.com/.+",
         "^http://streaming\\.radionomy\\.com/",
+        "^http://mp3\\.ffh\\.de/",
         "^https?://plus\\.google\\.com/share\\?",
         "^https?://apis\\.google\\.com/_/\\+1/fastbutton",
         "^https?://(ssl\\.|www\\.)?reddit\\.com/(login\\?dest=|submit\\?|static/button/button)",
