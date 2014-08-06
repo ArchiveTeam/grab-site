@@ -47,6 +47,7 @@
         "^https?://flattr.com/submit/auto\\?",
         "^https?://(www\\.)?myspace\\.com/Modules/PostTo/",
         "^https?://www\\.google\\.com/bookmarks/mark\\?",
+        "^http://myweb2\\.search\\.yahoo\\.com/myresults/bookmarklet\\?",
         "^http://vuible\\.com/pins-settings/",
         "^https?://news\\.ycombinator\\.com/submitlink\\?",
         "^http://reporter\\.es\\.msn\\.com/\\?fn=contribute",
