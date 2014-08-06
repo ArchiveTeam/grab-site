@@ -4,6 +4,7 @@
         "[\\?&]replytocom=",
         "[\\?&]share=",
         "\\?showComment(=|%5C)",
+        "/quote-comment-\\d+/$",
         "/wp-login\\.php\\?",
         "^https?://r\\-login\\.wordpress\\.com/remote\\-login\\.php",
         "'\\%20\\+\\%20liker\\.(avatar|profile)_URL\\%20\\+\\%20'",
