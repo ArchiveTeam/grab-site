@@ -10,7 +10,7 @@
         "/%27%20\\+[^/]+\\+%20%27",
         "/%22%20\\+[^/]+\\+%20%22",
         "^https?://www\\.google\\.com/recaptcha/api",
-        "^https?://(static\\.ak\\.fbcdn\\.net|connect\\.facebook\\.com)/connect\\.php/js/rsrc\\.php",
+        "^https?://(static\\.ak\\.fbcdn\\.net|(connect\\.)?facebook\\.com)/connect\\.php/js/rsrc\\.php",
         "^https?://www\\.flickr\\.com/change_language\\.gne",
         "^https?://((www|web|wayback)\\.)?archive\\.org/",
         "^http://b\\.scorecardresearch\\.com/",
