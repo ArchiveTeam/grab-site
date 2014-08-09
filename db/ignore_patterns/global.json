@@ -19,6 +19,7 @@
         "/img/.+/img/img/",
         "/img/.+/img/.+/img/",
         "/img/img/img/",
+        "/lib/exe/.*lib_exe_lib_exe_",
         "/(%5C)+(%22|%27)",
         "/%5C/%5C/",
         "/%27\\+[^/]+\\+%27",
