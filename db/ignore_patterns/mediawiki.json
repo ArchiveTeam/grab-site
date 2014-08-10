@@ -4,7 +4,7 @@
         "[\\?&]oldid=\\d+",
         "[\\?&]curid=\\d+",
         "[\\?&]limit=(20|100|250|500)",
-        "[\\?&]hide(minor|bots|anons|liu|myself|redirs|links|trans)=",
+        "[\\?&]hide(minor|bots|anons|liu|myself|redirs|links|trans|patrolled)=",
         "([\\?&]title=|/)Special:(UserLogin|UserLogout|Translate)",
         "[\\?&]feed(format)?=atom",
         "[\\?&]redlink=1",
