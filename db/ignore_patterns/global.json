@@ -91,7 +91,9 @@
         "^http://b\\.scorecardresearch\\.com/",
         "^https?://(\\d|secure)\\.gravatar\\.com/avatar/ad516503a11cd5ca435acc9bb6523536",
         "^https?://.+/js-agent\\.newrelic\\.com/nr-411\\.min\\.js$",
-        "^https?://.+/stats\\.g\\.doubleclick\\.net/dc\\.js$"
+        "^https?://.+/stats\\.g\\.doubleclick\\.net/dc\\.js$",
+        "^http://www\\.khaleejtimes\\.com/.*kt_css/.*kt_css/",
+        "^http://www\\.khaleejtimes\\.com/.*kt_img_root/.*kt_img_root/"
     ],
     "type": "ignore_patterns"
 }
