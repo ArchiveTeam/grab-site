@@ -35,7 +35,7 @@
         "^https?://www\\.google\\.com/recaptcha/api",
         "^https?://((s-)?static\\.ak\\.fbcdn\\.net|(connect\\.|www\\.)?facebook\\.com)/connect\\.php/js/.*rsrc\\.php",
         "^https?://www\\.flickr\\.com/change_language\\.gne",
-        "^https?://((www|web|wayback)\\.)?archive\\.org/",
+        "^https?://((www|web|web-beta|wayback)\\.)?archive\\.org/",
         "^http://b\\.scorecardresearch\\.com/",
         "^http://i\\.dev\\.cdn\\.turner\\.com/",
         "^http://video-subtitle\\.tedcdn\\.com/",
