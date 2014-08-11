@@ -94,7 +94,8 @@
         "^https?://.+/stats\\.g\\.doubleclick\\.net/dc\\.js$",
         "^http://www\\.khaleejtimes\\.com/.+/kt_.+/kt_",
         "^http://www\\.khaleejtimes\\.com/.+/images/.+/images/",
-        "^http://www\\.khaleejtimes\\.com/.+/imgactv/.+/imgactv/"
+        "^http://www\\.khaleejtimes\\.com/.+/imgactv/.+/imgactv/",
+        "^http://photobucket\\.com/.+/albums/.+/albums/"
     ],
     "type": "ignore_patterns"
 }
