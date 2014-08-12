@@ -2,6 +2,7 @@
     "name": "global",
     "patterns": [
         "/(.*)/(\\1/){3,}",
+        "%25252525",
         "/App_Themes/.+/App_Themes/",
         "/bxSlider/.+/bxSlider/",
         "/bxSlider/bxSlider/",
