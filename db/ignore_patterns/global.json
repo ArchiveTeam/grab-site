@@ -90,6 +90,7 @@
         "^http://pixel\\.blog\\.hu/",
         "^https?://pixel\\.quantserve\\.com/",
         "^http://b\\.scorecardresearch\\.com/",
+        "^https?://p\\.opt\\.fimserve\\.com/",
         "^https?://(\\d|secure)\\.gravatar\\.com/avatar/ad516503a11cd5ca435acc9bb6523536",
         "^https?://.+/js-agent\\.newrelic\\.com/nr-411\\.min\\.js$",
         "^https?://.+/stats\\.g\\.doubleclick\\.net/dc\\.js$",
