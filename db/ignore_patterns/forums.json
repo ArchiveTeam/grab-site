@@ -6,6 +6,7 @@
         "/login\\.php\\?",
         "/newreply\\.php\\?",
         "/private\\.php\\?",
+        "/privmsg\\.php\\?",
         "/register\\.php\\?",
         "/sendmessage\\.php\\?",
         "/subscription\\.php\\?",
