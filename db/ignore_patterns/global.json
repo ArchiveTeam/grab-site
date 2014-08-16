@@ -52,6 +52,7 @@
         "^https?://(www\\.)?megaupload\\.com/",
         "^https?://(www\\.)?filesonic\\.com/",
         "^https?://(www\\.)?wupload\\.com/",
+        "^https?://prod-preview\\.wired\\.com/",
         "^http://([^\\.]+\\.)?stream\\.publicradio\\.org/",
         "^http://icecast\\.streaming\\.castor\\.nl/",
         "^http://wm1\\.streaming\\.castor\\.nl:8000/",
