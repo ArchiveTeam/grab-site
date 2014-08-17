@@ -92,7 +92,7 @@
         "^http://sphinn\\.com/index\\.php\\?c=post&m=submit&",
         "^http://posterous\\.com/share\\?",
         "^http://del\\.icio\\.us/post\\?",
-        "^https?://delicious\\.com/post\\?",
+        "^https?://delicious\\.com/(save|post)\\?",
         "^http://iwiw\\.hu/pages/share/share\\.jsp\\?",
         "^http://memori(\\.qip)?\\.ru/link/\\?",
         "^http://wow\\.ya\\.ru/posts_add_link\\.xml\\?",
