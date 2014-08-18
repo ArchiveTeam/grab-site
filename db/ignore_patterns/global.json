@@ -60,6 +60,7 @@
         "^http://icecast\\.streaming\\.castor\\.nl/",
         "^http://wm1\\.streaming\\.castor\\.nl:8000/",
         "^http://icecast\\.databoss\\.nl:8000/",
+        "^http://stream\\.rynothebearded\\.com:8000/",
         "^http://mp3\\.live\\.tv-radio\\.com/",
         "^http://av\\.rasset\\.ie/av/live/",
         "^http://gcnplayer\\.gcnlive\\.com/.+",
