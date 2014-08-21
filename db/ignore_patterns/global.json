@@ -52,6 +52,7 @@
         "^http://i\\.dev\\.cdn\\.turner\\.com/",
         "^http://video-subtitle\\.tedcdn\\.com/",
         "^http://download\\.ted\\.com/",
+        "^https?://tmz\\.vo\\.llnwd\\.net/",
         "^https?://(www\\.)?megaupload\\.com/",
         "^https?://(www\\.)?filesonic\\.com/",
         "^https?://(www\\.)?wupload\\.com/",
