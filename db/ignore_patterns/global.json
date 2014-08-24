@@ -69,6 +69,7 @@
         "^http://mp3\\.ffh\\.de/",
         "^http://(www\\.)?theradio\\.cc\\:8000/",
         "^http://audio2\\.video\\.ria\\.ru/",
+        "^http://eu1\\.fastcast4u\\.com:3048/",
         "^https?://plus\\.google\\.com/share\\?",
         "^https?://apis\\.google\\.com/_/\\+1/fastbutton",
         "^https?://(ssl\\.|www\\.)?reddit\\.com/(login\\?dest=|submit\\?|static/button/button)",
