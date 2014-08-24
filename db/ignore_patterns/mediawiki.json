@@ -5,7 +5,7 @@
         "[\\?&]curid=\\d+",
         "[\\?&]limit=(20|100|250|500)",
         "[\\?&]hide(minor|bots|anons|liu|myself|redirs|links|trans|patrolled)=",
-        "([\\?&]title=|/)Special:(UserLogin|UserLogout|Translate|MobileFeedback|MobileOptions)",
+        "([\\?&]title=|/)Special:(UserLogin|UserLogout|Translate|MobileFeedback|MobileOptions|RecentChangesLinked)",
         "[\\?&]feed(format)?=atom",
         "[\\?&]redlink=1",
         "[\\?&]printable=yes",
