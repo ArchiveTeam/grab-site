@@ -67,7 +67,7 @@
         "^http://gcnplayer\\.gcnlive\\.com/.+",
         "^http://streaming\\.radionomy\\.com/",
         "^http://mp3\\.ffh\\.de/",
-        "^http://theradio.cc\\:8000/",
+        "^http://theradio\\.cc\\:8000/",
         "^http://audio2\\.video\\.ria\\.ru/",
         "^https?://plus\\.google\\.com/share\\?",
         "^https?://apis\\.google\\.com/_/\\+1/fastbutton",
