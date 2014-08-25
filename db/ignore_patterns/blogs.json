@@ -19,7 +19,6 @@
         "/jetpack-comment/\\?",
         "\\?like_comment=\\d+",
         "^https?://.+/.+/disqus\\.com/forums/$",
-        "^https?://www\\.tumblr\\.com/(impixu\\?|share(/link/?)?\\?|reblog/)",
         "(\\?|%5Cx26)route=(/page/:page|/archive/:year/:month|/tagged/:tag|/post/:id|/image/:post_id)",
         "%5Cx26route=/archive",
         "^http://\\d+\\.media\\.tumblr\\.com/avatar_.+_16\\.png$",
