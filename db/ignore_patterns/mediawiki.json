@@ -8,7 +8,7 @@
         "([\\?&]title=|/)Special:(UserLogin|UserLogout|Translate|MobileFeedback|MobileOptions|RecentChangesLinked)",
         "([\\?&]title=|/)Special:RecentChanges&from=\\d+",
         "([\\?&]title=|/)Special:ListFiles&dir=prev&offset=\\d+",
-        "([\\?&]title=|/)Special:ListFiles.*&amp;",
+        "([\\?&]title=|/)Special:(ListFiles|PrefixIndex).*&amp;",
         "([\\?&]title=|/)Special:ListFiles.*&user=",
         "[\\?&]action=edit&section=\\d+",
         "[\\?&]feed(format)?=atom",
