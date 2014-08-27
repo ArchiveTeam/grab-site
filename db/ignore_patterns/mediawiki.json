@@ -14,6 +14,7 @@
         "[\\?&]feed(format)?=atom",
         "[\\?&]redlink=1",
         "[\\?&]printable=yes",
+        "[\\?&]mobileaction=",
         "[\\?&]undo(after)?=\\d+",
         "^http://a\\.wikia-beacon\\.com/__track/",
         "/User_talk:.+/User_talk:",
