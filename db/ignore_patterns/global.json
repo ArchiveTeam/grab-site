@@ -70,7 +70,7 @@
         "^http://(www\\.)?theradio\\.cc\\:8000/",
         "^http://audio2\\.video\\.ria\\.ru/",
         "^http://eu1\\.fastcast4u\\.com:3048/",
-        "^http://[^\\./]+\\.radioscoop\\.net:\\d+/",
+        "^http://[^\\./]+\\.radioscoop\\.(com|net):\\d+/",
         "^https?://www\\.tumblr\\.com/(impixu\\?|share(/link/?)?\\?|reblog/)",
         "^https?://plus\\.google\\.com/share\\?",
         "^https?://apis\\.google\\.com/_/\\+1/fastbutton",
