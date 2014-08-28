@@ -48,6 +48,7 @@
         "^https?://((s-)?static\\.ak\\.fbcdn\\.net|(connect\\.|www\\.)?facebook\\.com)/connect\\.php/js/.*rsrc\\.php",
         "^https?://www\\.flickr\\.com/change_language\\.gne",
         "^https?://((www|web|web-beta|wayback)\\.)?archive\\.org/",
+        "^https?://upload\\.wikimedia\\.org/wikipedia/[^/]+/thumb/",
         "^http://b\\.scorecardresearch\\.com/",
         "^http://i\\.dev\\.cdn\\.turner\\.com/",
         "^http://video-subtitle\\.tedcdn\\.com/",
