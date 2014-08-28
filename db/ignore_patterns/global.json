@@ -84,7 +84,7 @@
         "^https?://www\\.newsvine\\.com/_wine/save\\?",
         "^https?://www\\.netvibes\\.com/subscribe\\.php\\?",
         "^https?://add\\.my\\.yahoo\\.com/(rss|content)\\?",
-        "^http://www\\.addtoany\\.com/add_to/",
+        "^http://www\\.addtoany\\.com/(add_to/|share_save\\?)",
         "^https?://www\\.addthis\\.com/bookmark\\.php\\?",
         "^https?://(www\\.)?pinterest\\.com/pin/create/button/\\?url=",
         "^https?://www\\.linkedin\\.com/(cws/share|shareArticle)\\?",
