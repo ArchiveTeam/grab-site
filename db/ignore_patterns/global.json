@@ -73,6 +73,7 @@
         "^http://audio2\\.video\\.ria\\.ru/",
         "^http://eu1\\.fastcast4u\\.com:3048/",
         "^http://[^\\./]+\\.radioscoop\\.(com|net):\\d+/",
+        "^http://[^/]*musicproxy\\.s12\\.de/",
         "^https?://www\\.tumblr\\.com/(impixu\\?|share(/link/?)?\\?|reblog/)",
         "^https?://plus\\.google\\.com/share\\?",
         "^https?://apis\\.google\\.com/_/\\+1/fastbutton",
