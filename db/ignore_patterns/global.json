@@ -106,6 +106,7 @@
         "^http://iwiw\\.hu/pages/share/share\\.jsp\\?",
         "^http://memori(\\.qip)?\\.ru/link/\\?",
         "^http://wow\\.ya\\.ru/posts_add_link\\.xml\\?",
+        "^https?://connect\\.mail\\.ru/share\\?",
         "^http://zakladki\\.yandex\\.ru/newlink\\.xml\\?",
         "^https?://www\\.google\\.com/(reader/link\\?|buzz/post\\?)",
         "^https?://mail\\.google\\.com/mail/",
