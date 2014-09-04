@@ -775,7 +775,7 @@ var Dashboard = function() {
 			}
 		}.bind(this), false);
 	}.bind(this);
-	xhr.open("GET", "http://arshboard.at.ninjawedding.org:4567/logs/recent?cb=" + Date.now() + Math.random());
+	xhr.open("GET", "/logs/recent?cb=" + Date.now() + Math.random());
 	xhr.send("");
 };
 
@@ -788,7 +788,7 @@ Dashboard.prototype.handleData = function(data) {
 };
 
 Dashboard.prototype.connectWebSocket = function() {
-	this.ws = new WebSocket("ws://arshboard.at.ninjawedding.org:4567/stream");
+	this.ws = new WebSocket("ws://" + location.host + "/stream");
 
 	this.ws.onmessage = function(ev) {
 		this.queue.push(ev["data"]);
