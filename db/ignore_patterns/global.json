@@ -121,7 +121,8 @@
         "^http://www\\.khaleejtimes\\.com/.+/kt_.+/kt_",
         "^http://www\\.khaleejtimes\\.com/.+/images/.+/images/",
         "^http://www\\.khaleejtimes\\.com/.+/imgactv/.+/imgactv/",
-        "^http://photobucket\\.com/.+/albums/.+/albums/"
+        "^http://photobucket\\.com/.+/albums/.+/albums/",
+        "^https://static\\.licdn\\.com/sc/p/com\\.linkedin\\.nux:nux-static-content\\+[\\d\\.]+/f//nux-frontend/"
     ],
     "type": "ignore_patterns"
 }
