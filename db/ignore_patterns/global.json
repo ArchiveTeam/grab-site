@@ -49,6 +49,7 @@
         "^https?://((s-)?static\\.ak\\.fbcdn\\.net|(connect\\.|www\\.)?facebook\\.com)/connect\\.php/js/.*rsrc\\.php",
         "^https?://www\\.flickr\\.com/change_language\\.gne",
         "^https?://((www|web|web-beta|wayback)\\.)?archive\\.org/",
+        "^https?://www\\.google\\.com/finance\\?noIL=1&q=ewy&ei=",
         "^https?://upload\\.wikimedia\\.org/wikipedia/[^/]+/thumb/",
         "^http://b\\.scorecardresearch\\.com/",
         "^http://i\\.dev\\.cdn\\.turner\\.com/",
