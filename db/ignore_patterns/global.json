@@ -115,7 +115,7 @@
         "^http://b\\.scorecardresearch\\.com/",
         "^https?://(www|ssl)\\.google-analytics\\.com/__utm\\.gif",
         "^https?://p\\.opt\\.fimserve\\.com/",
-        "^https?://(\\d|secure)\\.gravatar\\.com/avatar/ad516503a11cd5ca435acc9bb6523536",
+        "^https?://(\\d|www|secure)\\.gravatar\\.com/avatar/ad516503a11cd5ca435acc9bb6523536",
         "^https?://.+/js-agent\\.newrelic\\.com/nr-\\d{3}(\\.min)?\\.js$",
         "^https?://.+/stats\\.g\\.doubleclick\\.net/dc\\.js$",
         "^http://www\\.khaleejtimes\\.com/.+/kt_.+/kt_",
