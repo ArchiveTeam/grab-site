@@ -1,0 +1,7 @@
+{
+    "name": "nosortedindex",
+    "patterns": [
+        "\\?C=[NMSD];O=[AD]$"
+    ],
+    "type": "ignore_patterns"
+}
