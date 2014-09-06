@@ -76,6 +76,7 @@
         "^http://[^\\./]+\\.radioscoop\\.(com|net):\\d+/",
         "^http://[^/]*musicproxy\\.s12\\.de/",
         "^http://stream\\.rfi\\.fr/",
+        "^http://[^/]+/anony/mjpg\\.cgi$",
         "^https?://www\\.tumblr\\.com/(impixu\\?|share(/link/?)?\\?|reblog/)",
         "^https?://plus\\.google\\.com/share\\?",
         "^https?://apis\\.google\\.com/_/\\+1/fastbutton",
