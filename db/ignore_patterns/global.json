@@ -103,6 +103,8 @@
         "^http://posterous\\.com/share\\?",
         "^http://del\\.icio\\.us/post\\?",
         "^https?://delicious\\.com/(save|post)\\?",
+        "^https?://(www\\.)?friendfeed\\.com/share\\?",
+        "^https?://(www\\.)?xing\\.com/(app/user\\?op=share|social_plugins/share\\?)",
         "^http://iwiw\\.hu/pages/share/share\\.jsp\\?",
         "^http://memori(\\.qip)?\\.ru/link/\\?",
         "^http://wow\\.ya\\.ru/posts_add_link\\.xml\\?",
