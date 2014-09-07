@@ -129,7 +129,7 @@
         "^http://www\\.khaleejtimes\\.com/.+/imgactv/.+/imgactv/",
         "^http://photobucket\\.com/.+/albums/.+/albums/",
         "^https://static\\.licdn\\.com/sc/p/com\\.linkedin\\.nux:nux-static-content\\+[\\d\\.]+/f//nux-frontend/",
-        "^https?://www\\.flickr\\.com/(explore/|photos/[^/]+/sets/\\d+/)\\d+_[a-f0-9]+(_[a-z])?\\.jpg$"
+        "^https?://www\\.flickr\\.com/(explore/|photos/[^/]+/(sets/\\d+/)?)\\d+_[a-f0-9]+(_[a-z])?\\.jpg$"
     ],
     "type": "ignore_patterns"
 }
