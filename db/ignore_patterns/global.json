@@ -71,7 +71,7 @@
         "^http://streaming\\.radionomy\\.com/",
         "^http://mp3\\.ffh\\.de/",
         "^http://(www\\.)?theradio\\.cc\\:8000/",
-        "^http://audio2\\.video\\.ria\\.ru/",
+        "^http://(audio\\d?|nfw)\\.video\\.ria\\.ru/",
         "^http://eu1\\.fastcast4u\\.com:3048/",
         "^http://[^\\./]+\\.radioscoop\\.(com|net):\\d+/",
         "^http://[^/]*musicproxy\\.s12\\.de/",
