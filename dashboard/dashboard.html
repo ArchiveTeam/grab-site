@@ -662,7 +662,8 @@ JobsRenderer.prototype.handleData = function(data) {
 			'igon';
 
 	// Update note
-	info.jobNote.textContent = isBlank(jobData["note"]) ?
+	info.jobNote.textContent =
+		isBlank(jobData["note"]) ?
 			"" :
 			" (" + jobData["note"] + ")";
 
