@@ -357,10 +357,11 @@ JobsTracker.prototype.handleJobData = function(jobData) {
 
 
 
-var JobRenderInfo = function(logWindow, logSegment, statsElements, lineCountWindow, lineCountSegments) {
+var JobRenderInfo = function(logWindow, logSegment, statsElements, jobNote, lineCountWindow, lineCountSegments) {
 	this.logWindow = logWindow;
 	this.logSegment = logSegment;
 	this.statsElements = statsElements;
+	this.jobNote = jobNote;
 	this.lineCountWindow = lineCountWindow;
 	this.lineCountSegments = lineCountSegments;
 };
@@ -498,6 +499,8 @@ JobsRenderer.prototype._createLogContainer = function(jobData) {
 		ignores: h("span", null, "?")
 	};
 
+	var jobNote = h("span", null, null);
+
 	var logWindow = h('div', logWindowAttrs, logSegment);
 	var startedISOString = new Date(parseFloat(jobData["started_at"]) * 1000).toISOString();
 	var div = h(
@@ -508,7 +511,9 @@ JobsRenderer.prototype._createLogContainer = function(jobData) {
 					h("a", {"className": "job-url", "href": jobData["url"]}, jobData["url"]),
 					" on ",
 					h("span", {"title": startedISOString}, startedISOString.split("T")[0].substr(5)),
-					(this.showNicks ? " by " + jobData["started_by"] : "") + "; ",
+					(this.showNicks ? " by " + jobData["started_by"] : ""),
+					jobNote,
+					"; ",
 					statsElements.mb,
 					h("span", null, " MB in "),
 					statsElements.responses,
@@ -536,7 +541,7 @@ JobsRenderer.prototype._createLogContainer = function(jobData) {
 			logWindow
 		]
 	);
-	this.renderInfo[ident] = new JobRenderInfo(logWindow, logSegment, statsElements, 0, [0]);
+	this.renderInfo[ident] = new JobRenderInfo(logWindow, logSegment, statsElements, jobNote, 0, [0]);
 	this.container.insertBefore(div, beforeElement);
 }
 
@@ -645,6 +650,11 @@ JobsRenderer.prototype.handleData = function(data) {
 		jobData["suppress_ignore_reports"] ?
 			'igoff' :
 			'igon';
+
+	// Update note
+	info.jobNote.textContent = jobData["note"] ?
+			" (" + jobData["note"] + ")" :
+			" ";
 
 	info.lineCountWindow += linesRendered;
 	info.lineCountSegments[info.lineCountSegments.length - 1] += linesRendered;
