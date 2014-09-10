@@ -492,6 +492,7 @@ JobsRenderer.prototype._createLogContainer = function(jobData) {
 		mb: h("span", null, "?"),
 		responses: h("span", null, "?"),
 		responsesPerSecond: h("span", null, "?"),
+		queueLength: h("span", null, "?"),
 		connections: h("span", null, "?"),
 		delay: h("span", null, "?"),
 		ignores: h("span", null, "?")
@@ -513,7 +514,9 @@ JobsRenderer.prototype._createLogContainer = function(jobData) {
 					statsElements.responses,
 					" at ",
 					statsElements.responsesPerSecond,
-					"/s; ",
+					"/s, ",
+					statsElements.queueLength,
+					" in queue; ",
 					statsElements.connections,
 					" con. w/ ",
 					statsElements.delay,
@@ -621,6 +624,16 @@ JobsRenderer.prototype.handleData = function(data) {
 	var duration = Date.now()/1000 - parseFloat(jobData["started_at"]);
 	info.statsElements.responsesPerSecond.textContent =
 		toStringTenths(totalResponses/duration);
+
+	if (jobData["items_queued"] && jobData["items_downloaded"]) {
+		var totalQueued = parseInt(jobData["items_queued"], 10);
+		var totalDownloaded = parseInt(jobData["items_downloaded"], 10);
+		info.statsElements.queueLength.textContent =
+			numberWithCommas((totalQueued - totalDownloaded).toString());
+		info.statsElements.queueLength.title =
+			totalQueued + " queued, " + totalDownloaded + " downloaded";
+	}
+
 	info.statsElements.connections.textContent = jobData["concurrency"];
 	var delayMin = parseInt(jobData["delay_min"]);
 	var delayMax = parseInt(jobData["delay_max"]);
