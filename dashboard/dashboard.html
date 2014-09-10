@@ -507,7 +507,7 @@ JobsRenderer.prototype._createLogContainer = function(jobData) {
 				h("span", {"className": "job-info"}, [
 					h("a", {"className": "job-url", "href": jobData["url"]}, jobData["url"]),
 					" on ",
-					h("span", {"title": startedISOString}, startedISOString.split("T")[0]),
+					h("span", {"title": startedISOString}, startedISOString.split("T")[0].substr(5)),
 					(this.showNicks ? " by " + jobData["started_by"] : "") + "; ",
 					statsElements.mb,
 					h("span", null, " MB in "),
@@ -516,7 +516,7 @@ JobsRenderer.prototype._createLogContainer = function(jobData) {
 					statsElements.responsesPerSecond,
 					"/s, ",
 					statsElements.queueLength,
-					" in queue; ",
+					" in q.; ",
 					statsElements.connections,
 					" con. w/ ",
 					statsElements.delay,
@@ -643,8 +643,8 @@ JobsRenderer.prototype.handleData = function(data) {
 			delayMin + "-" + delayMax;
 	info.statsElements.ignores.textContent =
 		jobData["suppress_ignore_reports"] ?
-			'hiding ignores' :
-			'showing ignores';
+			'igoff' :
+			'igon';
 
 	info.lineCountWindow += linesRendered;
 	info.lineCountSegments[info.lineCountSegments.length - 1] += linesRendered;
