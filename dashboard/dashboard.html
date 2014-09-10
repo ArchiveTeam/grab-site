@@ -391,9 +391,8 @@ var Reusable = {
 
 
 // http://stackoverflow.com/questions/2901102/how-to-print-a-number-with-commas-as-thousands-separators-in-javascript
-var numberWithCommas = function(s) {
-	assert(typeof s == "string", "pass string to numberWithCommas");
-	return s.replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+var numberWithCommas = function(s_or_n) {
+	return ("" + s_or_n).replace(/\B(?=(\d{3})+(?!\d))/g, ",");
 };
 
 var toStringTenths = function(n) {
@@ -416,12 +415,12 @@ var getTotalResponses = function(jobData) {
 
 var getSummaryResponses = function(jobData) {
 	return (
-		"1xx: " + numberWithCommas(String(jobData["r1xx"])) + "\n" +
-		"2xx: " + numberWithCommas(String(jobData["r2xx"])) + "\n" +
-		"3xx: " + numberWithCommas(String(jobData["r3xx"])) + "\n" +
-		"4xx: " + numberWithCommas(String(jobData["r4xx"])) + "\n" +
-		"5xx: " + numberWithCommas(String(jobData["r5xx"])) + "\n" +
-		"Unknown: " + numberWithCommas(String(jobData["runk"])));
+		"1xx: " + numberWithCommas(jobData["r1xx"]) + "\n" +
+		"2xx: " + numberWithCommas(jobData["r2xx"]) + "\n" +
+		"3xx: " + numberWithCommas(jobData["r3xx"]) + "\n" +
+		"4xx: " + numberWithCommas(jobData["r4xx"]) + "\n" +
+		"5xx: " + numberWithCommas(jobData["r5xx"]) + "\n" +
+		"Unknown: " + numberWithCommas(jobData["runk"]));
 };
 
 
@@ -531,7 +530,7 @@ JobsRenderer.prototype._createLogContainer = function(jobData) {
 					statsElements.responsesPerSecond,
 					"/s, ",
 					statsElements.queueLength,
-					" in q.; ",
+					"; ",
 					statsElements.connections,
 					" con. w/ ",
 					statsElements.delay,
@@ -634,7 +633,7 @@ JobsRenderer.prototype.handleData = function(data) {
 			toStringTenths(
 				(parseInt(jobData["bytes_downloaded"]) / (1024 * 1024)).toString()));
 	info.statsElements.responses.textContent =
-		numberWithCommas(totalResponses.toString()) + " resp.";
+		numberWithCommas(totalResponses) + " resp.";
 	info.statsElements.responses.title = getSummaryResponses(jobData);
 	var duration = Date.now()/1000 - parseFloat(jobData["started_at"]);
 	info.statsElements.responsesPerSecond.textContent =
@@ -644,9 +643,10 @@ JobsRenderer.prototype.handleData = function(data) {
 		var totalQueued = parseInt(jobData["items_queued"], 10);
 		var totalDownloaded = parseInt(jobData["items_downloaded"], 10);
 		info.statsElements.queueLength.textContent =
-			numberWithCommas((totalQueued - totalDownloaded).toString());
+			numberWithCommas((totalQueued - totalDownloaded) + " in q.");
 		info.statsElements.queueLength.title =
-			totalQueued + " queued, " + totalDownloaded + " downloaded";
+			numberWithCommas(totalQueued) + " queued\n" +
+			numberWithCommas(totalDownloaded) + " downloaded";
 	}
 
 	info.statsElements.connections.textContent = jobData["concurrency"];
