@@ -18,6 +18,10 @@
         "&view=login&return=",
         "&format=opensearch",
         "/misc\\.php\\?do=whoposted",
+        "/newthread\\.php\\?",
+        "/post_thanks\\.php\\?",
+        "/blog_post\\.php\\?do=newblog",
+        "/forumdisplay\\.php\\?do=markread",
         "/userpoll/vote\\.php\\?",
         "/showthread\\.php.*[\\?&]goto=(next(old|new)est|newpost)",
         "/editpost\\.php\\?"
