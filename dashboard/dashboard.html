@@ -224,6 +224,16 @@ var text = function(s) {
 };
 
 /**
+ * Adaptation of ActiveSupport's #blank?.
+ *
+ * Returns true if the object is undefined, null, or is a string whose
+ * post-trim length is zero.  Otherwise, returns false.
+ */
+var isBlank = function(o) {
+	return !o || o.trim().length == 0;
+}
+
+/**
  * appendChild but accepts strings and arrays of children|strings
  */
 var appendAny = function(e, thing) {
@@ -652,9 +662,9 @@ JobsRenderer.prototype.handleData = function(data) {
 			'igon';
 
 	// Update note
-	info.jobNote.textContent = jobData["note"] ?
-			" (" + jobData["note"] + ")" :
-			"";
+	info.jobNote.textContent = isBlank(jobData["note"]) ?
+			"" :
+			" (" + jobData["note"] + ")";
 
 	info.lineCountWindow += linesRendered;
 	info.lineCountSegments[info.lineCountSegments.length - 1] += linesRendered;
