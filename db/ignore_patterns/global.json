@@ -78,6 +78,8 @@
         "^http://stream\\.rfi\\.fr/",
         "^http://striiming\\d?\\.trio\\.ee/",
         "^http://streamer\\.radiocampus\\.be(:\\d+)?/",
+        "^http://relay\\.broadcastify\\.com/",
+        "^http://audio\\d?\\.radioreference\\.com/",
         "^http://[^/]+/anony/mjpg\\.cgi$",
         "^https?://www\\.tumblr\\.com/(impixu\\?|share(/link/?)?\\?|reblog/)",
         "^https?://plus\\.google\\.com/share\\?",
