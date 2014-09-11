@@ -10,7 +10,7 @@
         "([\\?&]title=|/)Special:ListFiles&dir=prev&offset=\\d+",
         "([\\?&]title=|/)Special:(ListFiles|PrefixIndex).*&amp;",
         "([\\?&]title=|/)Special:ListFiles.*&user=",
-        "[\\?&]action=edit&section=\\d+",
+        "[\\?&]action=edit&section=(\\d+|new)",
         "[\\?&]feed(format)?=atom",
         "[\\?&]redlink=1",
         "[\\?&]printable=yes",
