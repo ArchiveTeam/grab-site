@@ -111,6 +111,7 @@
         "^https?://connect\\.mail\\.ru/share\\?",
         "^http://zakladki\\.yandex\\.ru/newlink\\.xml\\?",
         "^https?://www\\.google\\.com/(reader/link\\?|buzz/post\\?)",
+        "^https?://service\\.weibo\\.com/share/share\\.php\\?",
         "^https?://mail\\.google\\.com/mail/",
         "^http://pixel\\.blog\\.hu/",
         "^https?://pixel\\.quantserve\\.com/",
