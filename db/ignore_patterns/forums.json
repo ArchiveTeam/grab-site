@@ -24,7 +24,8 @@
         "/forumdisplay\\.php\\?do=markread",
         "/userpoll/vote\\.php\\?",
         "/showthread\\.php.*[\\?&]goto=(next(old|new)est|newpost)",
-        "/editpost\\.php\\?"
+        "/editpost\\.php\\?",
+        "/\\?view=getlastpost$"
     ],
     "type": "ignore_patterns"
 }
