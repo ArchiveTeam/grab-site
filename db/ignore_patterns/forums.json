@@ -25,7 +25,8 @@
         "/userpoll/vote\\.php\\?",
         "/showthread\\.php.*[\\?&]goto=(next(old|new)est|newpost)",
         "/editpost\\.php\\?",
-        "/\\?view=getlastpost$"
+        "/\\?view=getlastpost$",
+        "/index\\.php\\?sharelink="
     ],
     "type": "ignore_patterns"
 }
