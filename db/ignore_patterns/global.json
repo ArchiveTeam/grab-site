@@ -73,6 +73,8 @@
         "^http://streamer\\.radiocampus\\.be(:\\d+)?/",
         "^http://relay\\.broadcastify\\.com/",
         "^http://audio\\d?\\.radioreference\\.com/",
+        "^http://[^/]+\\.akadostream\\.ru(:\\d+)?/",
+        "^http://radio\\.silver\\.ru(:\\d+)?/",
         "^http://[^/]+/anony/mjpg\\.cgi$",
         "^https?://www\\.tumblr\\.com/(impixu\\?|share(/link/?)?\\?|reblog/)",
         "^https?://plus\\.google\\.com/share\\?",
