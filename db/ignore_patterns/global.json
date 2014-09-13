@@ -78,6 +78,7 @@
         "^http://audio\\d?\\.radioreference\\.com/",
         "^http://[^/]+\\.akadostream\\.ru(:\\d+)?/",
         "^http://radio\\.silver\\.ru(:\\d+)?/",
+        "^http://icecast\\.szwoelf\\.com:8000/",
         "^http://[^/]+/anony/mjpg\\.cgi$",
         "^https?://www\\.tumblr\\.com/(impixu\\?|share(/link/?)?\\?|reblog/)",
         "^https?://plus\\.google\\.com/share\\?",
