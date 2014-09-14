@@ -83,6 +83,8 @@
         "^http://94\\.25\\.53\\.13[1-4]/.+\\.mp3$",
         "^http://server\\.lradio\\.ru:\\d+/",
         "^http://188\\.93\\.17\\.201:8080/",
+        "^http://81\\.19\\.85\\.195/.+\\.mp3$",
+        "^http://play(\\d+)?\\.radio13\\.ru:8000/",
         "^http://[^/]+/anony/mjpg\\.cgi$",
         "^https?://www\\.tumblr\\.com/(impixu\\?|share(/link/?)?\\?|reblog/)",
         "^https?://plus\\.google\\.com/share\\?",
