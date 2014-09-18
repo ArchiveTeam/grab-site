@@ -811,6 +811,7 @@ var Dashboard = function() {
 		}.bind(this), false);
 	}.bind(this);
 	xhr.open("GET", "http://" + this.host + "/logs/recent?cb=" + Date.now() + Math.random());
+	xhr.setRequestHeader('Accept', 'application/json');
 	xhr.send("");
 };
 
