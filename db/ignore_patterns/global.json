@@ -95,6 +95,7 @@
         "^http://radiosilver\\.corbina\\.net:8000/",
         "^http://89\\.251\\.147\\.100/",
         "^http://bcs\\d?\\.fontanka\\.fm:8000/",
+        "^http://stream2\\.cnmns\\.net/",
         "^http://[^/]+/anony/mjpg\\.cgi$",
         "^https?://www\\.tumblr\\.com/(impixu\\?|share(/link/?)?\\?|reblog/)",
         "^https?://plus\\.google\\.com/share\\?",
