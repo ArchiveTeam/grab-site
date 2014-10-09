@@ -247,8 +247,8 @@ a.ignore {
 			tracking ~<span id="num-crawls">0</span> crawls.
 			See also <a href="pipelines" class="underlined-a">pipeline</a> or <a href="logs/recent" class="underlined-a">job</a> reports.
 			Show: <input id="filter-box" type="text" size="21" autofocus>
-			<input onclick="byId('filter-box').value=''; byId('filter-box').onchange();" type="button" value="  All  " class="button">
-			<input onclick="byId('filter-box').value='`'; byId('filter-box').onchange();" type="button" value="None" class="button">
+			<input onclick="ds.setFilter('');" type="button" value="  All  " class="button">
+			<input onclick="ds.setFilter('`');" type="button" value="None" class="button">
 		</div>
 		<div>
 			<input type="button" onclick="ds.toggleAlign()" class="button" value="Align!">
@@ -266,6 +266,9 @@ a.ignore {
 			</p>
 			<p>
 				To pause scrolling, move your mouse inside a log window.
+			</p>
+			<p>
+				To show just one job, click anywhere on its stats.
 			</p>
 			<p>
 				To clear all finished jobs, reload the page.
@@ -644,24 +647,40 @@ JobsRenderer.prototype._createLogContainer = function(jobData) {
 			h("div", {"className": "job-header"}, [
 				h("span", {"className": "job-info"}, [
 					h("a", {"className": "inline-stat job-url", "href": jobData["url"]}, jobData["url"]),
-					" on ",
-					h("span", {"title": startedISOString}, startedISOString.split("T")[0].substr(5)),
-					h("span", {"className": "inline-stat job-nick"}, (this.showNicks ? " by " + jobData["started_by"] : "")),
-					jobNote,
-					"; ",
-					statsElements.mb,
-					" MB in ",
-					statsElements.responses,
-					" at ",
-					statsElements.responsesPerSecond,
-					"/s, ",
-					statsElements.queueLength,
-					"; ",
-					statsElements.connections,
-					" con. w/ ",
-					statsElements.delay,
-					"; ",
-					statsElements.ignores
+					// Clicking anywhere in this area will set the filter to
+					// this job URL, (usually) hiding everything but this job.
+					h("span", {"onclick": function() {
+						if(window.getSelection().toString()) {
+							// Set the filter on clicks, but not on text selections.
+							return;
+						}
+						if(ds.getFilter() == jobData["url"]) {
+							// If we're already showing just this log window, go back
+							// to showing nothing.
+							ds.setFilter("`");
+						} else {
+							ds.setFilter(jobData["url"]);
+						}
+					}}, [
+						" on ",
+						h("span", {"title": startedISOString}, startedISOString.split("T")[0].substr(5)),
+						h("span", {"className": "inline-stat job-nick"}, (this.showNicks ? " by " + jobData["started_by"] : "")),
+						jobNote,
+						"; ",
+						statsElements.mb,
+						" MB in ",
+						statsElements.responses,
+						" at ",
+						statsElements.responsesPerSecond,
+						"/s, ",
+						statsElements.queueLength,
+						"; ",
+						statsElements.connections,
+						" con. w/ ",
+						statsElements.delay,
+						"; ",
+						statsElements.ignores
+					])
 				]),
 				h("input", {
 					"className": "job-ident",
@@ -1036,6 +1055,15 @@ Dashboard.prototype.toggleHelp = function() {
 	} else {
 		help.classList.add('undisplayed');
 	}
+};
+
+Dashboard.prototype.getFilter = function(value) {
+	return byId('filter-box').value;
+};
+
+Dashboard.prototype.setFilter = function(value) {
+	byId('filter-box').value = value;
+	byId('filter-box').onchange();
 };
 
 var ds = new Dashboard();
