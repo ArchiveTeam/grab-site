@@ -551,7 +551,7 @@ var getSummaryResponses = function(jobData) {
 var JobsRenderer = function(container, filterBox, historyLines, showNicks) {
 	this.container = container;
 	this.filterBox = filterBox;
-	addAnyChangeListener(this.filterBox, this.filterChanged.bind(this));
+	addAnyChangeListener(this.filterBox, this.applyFilter.bind(this));
 	this.historyLines = historyLines;
 	this.showNicks = showNicks;
 	this.linesPerSegment = Math.max(1, Math.round(this.historyLines / 10));
@@ -681,7 +681,7 @@ JobsRenderer.prototype._createLogContainer = function(jobData) {
 	// Set appropriate CSS classes - we might be in aligned mode already
 	this.updateAlign();
 	// Filter hasn't changed, but we might need to filter out the new job
-	this.filterChanged();
+	this.applyFilter();
 }
 
 JobsRenderer.prototype._renderDownloadLine = function(data, logSegment) {
@@ -836,7 +836,7 @@ JobsRenderer.prototype.handleData = function(data) {
 	}
 };
 
-JobsRenderer.prototype.filterChanged = function() {
+JobsRenderer.prototype.applyFilter = function() {
 	var query = this.filterBox.value;
 	var matches = 0;
 	for(var i=0; i < this.jobs.sorted.length; i++) {
