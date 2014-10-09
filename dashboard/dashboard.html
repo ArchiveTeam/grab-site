@@ -116,6 +116,14 @@ html, body {
 	text-align: right;
 }
 
+.job-ignores {
+	font-weight: bold;
+}
+
+.job-igoff {
+	font-weight: normal !important;
+}
+
 .job-ident {
 	font-family: Tahoma, Arial, sans-serif;
 	margin: 0 1px 0 0;
@@ -614,7 +622,7 @@ JobsRenderer.prototype._createLogContainer = function(jobData) {
 		queueLength: h("span", {"className": "inline-stat job-in-queue"}, "? in q."),
 		connections: h("span", null, "?"),
 		delay: h("span", {"className": "inline-stat job-delay"}, "? ms delay"),
-		ignores: h("span", null, "?")
+		ignores: h("span", {"className": "job-ignores"}, "?")
 	};
 
 	var jobNote = h("span", {"className": "job-note"}, null);
@@ -770,6 +778,15 @@ JobsRenderer.prototype.handleData = function(data) {
 		jobData["suppress_ignore_reports"] ?
 			'igoff' :
 			'igon';
+	if(jobData["suppress_ignore_reports"]) {
+		if(!info.statsElements.ignores.classList.contains('job-igoff')) {
+			info.statsElements.ignores.classList.add('job-igoff');
+		}
+	} else {
+		if(info.statsElements.ignores.classList.contains('job-igoff')) {
+			info.statsElements.ignores.classList.remove('job-igoff');
+		}
+	}
 
 	// Update note
 	info.jobNote.textContent =
