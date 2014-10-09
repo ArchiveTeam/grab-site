@@ -12,6 +12,11 @@
 </head>
 <body>
 <style>
+html {
+	/* Always show scrollbar to prevent jumpiness when filtering */
+	overflow-y: scroll;
+}
+
 html, body {
 	background-color: #D0C0AE;
 	font-family: Tahoma, Arial, sans-serif;
@@ -241,6 +246,7 @@ a.ignore {
 			tracking ~<span id="num-crawls">0</span> crawls.
 			See also <a href="pipelines" class="underlined-a">pipeline</a> or <a href="logs/recent" class="underlined-a">job</a> reports.
 			Filter: <input id="filter-box" type="text" size="30" autofocus>
+			<input onclick="byId('filter-box').value=''; byId('filter-box').onchange();" type="button" value="Clear" class="button">
 		</div>
 		<div>
 			<input type="button" onclick="ds.toggleAlign()" class="button" value="Align!">
@@ -405,7 +411,8 @@ var getQueryArgs = function() {
 var isSafari = navigator.userAgent.indexOf("Safari") != -1;
 
 var addAnyChangeListener = function(elem, func) {
-	elem.addEventListener('change', func, false);
+	// DOM0 handler for convenient use by Clear button
+	elem.onchange = func;
 	elem.addEventListener('keydown', func, false);
 	elem.addEventListener('paste', func, false);
 	elem.addEventListener('input', func, false);
@@ -947,7 +954,8 @@ var Dashboard = function() {
 	if(this.dumpTraffic) {
 		this.dumpMax = Number(args["dumpMax"]);
 	}
-	this.jobsRenderer = new JobsRenderer(byId('logs'), byId('filter-box'), historyLines, showNicks);
+	this.jobsRenderer = new JobsRenderer(
+		byId('logs'), byId('filter-box'), historyLines, showNicks);
 
 	var batchTimeWhenHidden = 5000;
 
