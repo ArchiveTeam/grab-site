@@ -59,6 +59,8 @@ html, body {
 .job-url {
 	/* Needed for 'Align!' feature */
 	display: inline-block;
+	/* Needed to avoid extra vertical padding */
+	vertical-align: bottom;
 	font-family: Arial, sans-serif;
 	font-size: 14px;
 	font-weight: bold;
@@ -73,6 +75,20 @@ html, body {
 
 .job-note-aligned {
 	display: none;
+}
+
+.job-nick {
+	/* Needed for 'Align!' feature */
+	display: inline-block;
+	vertical-align: bottom;
+	/* Needed to avoid collapsing of leading space */
+	white-space: pre;
+}
+
+.job-nick-aligned {
+	width: 60px;
+	overflow: hidden;
+	text-overflow: hidden;
 }
 
 .job-ident {
@@ -586,7 +602,7 @@ JobsRenderer.prototype._createLogContainer = function(jobData) {
 					h("a", {"className": "job-url", "href": jobData["url"]}, jobData["url"]),
 					" on ",
 					h("span", {"title": startedISOString}, startedISOString.split("T")[0].substr(5)),
-					(this.showNicks ? " by " + jobData["started_by"] : ""),
+					h("span", {"className": "job-nick"}, (this.showNicks ? " by " + jobData["started_by"] : "")),
 					jobNote,
 					"; ",
 					statsElements.mb,
@@ -927,6 +943,7 @@ Dashboard.prototype.toggleAlign = function() {
 	var adderOrRemover = this.aligned ? classAdder : classRemover;
 	arrayFrom(document.querySelectorAll('.job-url')).map(adderOrRemover('job-url-aligned'));
 	arrayFrom(document.querySelectorAll('.job-note')).map(adderOrRemover('job-note-aligned'));
+	arrayFrom(document.querySelectorAll('.job-nick')).map(adderOrRemover('job-nick-aligned'));
 };
 
 Dashboard.prototype.toggleHelp = function() {
