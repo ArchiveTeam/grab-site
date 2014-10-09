@@ -56,11 +56,16 @@ html, body {
 	overflow: hidden;
 }
 
-.job-url {
+.inline-stat {
 	/* Needed for 'Align!' feature */
 	display: inline-block;
 	/* Needed to avoid extra vertical padding */
 	vertical-align: bottom;
+	/* Needed to avoid collapsing of leading space */
+	white-space: pre;
+}
+
+.job-url {
 	font-family: Arial, sans-serif;
 	font-size: 14px;
 	font-weight: bold;
@@ -68,7 +73,7 @@ html, body {
 }
 
 .job-url-aligned {
-	width: 200px;
+	width: 260px;
 	overflow: hidden;
 	text-overflow: ellipsis;
 }
@@ -77,18 +82,38 @@ html, body {
 	display: none;
 }
 
-.job-nick {
-	/* Needed for 'Align!' feature */
-	display: inline-block;
-	vertical-align: bottom;
-	/* Needed to avoid collapsing of leading space */
-	white-space: pre;
-}
-
 .job-nick-aligned {
 	width: 60px;
 	overflow: hidden;
 	text-overflow: hidden;
+}
+
+.job-mb-aligned {
+	width: 100px;
+	overflow: hidden;
+	text-overflow: hidden;
+	text-align: right;
+}
+
+.job-responses-aligned {
+	width: 92px;
+	overflow: hidden;
+	text-overflow: hidden;
+	text-align: right;
+}
+
+.job-in-queue-aligned {
+	width: 92px;
+	overflow: hidden;
+	text-overflow: hidden;
+	text-align: right;
+}
+
+.job-delay-aligned {
+	width: 130px;
+	overflow: hidden;
+	text-overflow: hidden;
+	text-align: right;
 }
 
 .job-ident {
@@ -583,11 +608,11 @@ JobsRenderer.prototype._createLogContainer = function(jobData) {
 
 	var statsElements = {
 		mb: h("span", null, "?"),
-		responses: h("span", null, "?"),
+		responses: h("span", {"className": "inline-stat job-responses"}, "?"),
 		responsesPerSecond: h("span", null, "?"),
-		queueLength: h("span", null, "? in q."),
+		queueLength: h("span", {"className": "inline-stat job-in-queue"}, "? in q."),
 		connections: h("span", null, "?"),
-		delay: h("span", null, "?"),
+		delay: h("span", {"className": "inline-stat job-delay"}, "? ms delay"),
 		ignores: h("span", null, "?")
 	};
 
@@ -600,14 +625,15 @@ JobsRenderer.prototype._createLogContainer = function(jobData) {
 		{"id": "log-container-" + ident}, [
 			h("div", {"className": "job-header"}, [
 				h("span", {"className": "job-info"}, [
-					h("a", {"className": "job-url", "href": jobData["url"]}, jobData["url"]),
+					h("a", {"className": "inline-stat job-url", "href": jobData["url"]}, jobData["url"]),
 					" on ",
 					h("span", {"title": startedISOString}, startedISOString.split("T")[0].substr(5)),
-					h("span", {"className": "job-nick"}, (this.showNicks ? " by " + jobData["started_by"] : "")),
+					h("span", {"className": "inline-stat job-nick"}, (this.showNicks ? " by " + jobData["started_by"] : "")),
 					jobNote,
 					"; ",
-					statsElements.mb,
-					h("span", null, " MB in "),
+					h("span", {"className": "inline-stat job-mb"}, [
+						statsElements.mb, " MB in "
+					]),
 					statsElements.responses,
 					" at ",
 					statsElements.responsesPerSecond,
@@ -617,7 +643,7 @@ JobsRenderer.prototype._createLogContainer = function(jobData) {
 					statsElements.connections,
 					" con. w/ ",
 					statsElements.delay,
-					" ms delay; ",
+					"; ",
 					statsElements.ignores
 				]),
 				h("input", {
@@ -736,9 +762,9 @@ JobsRenderer.prototype.handleData = function(data) {
 	var delayMin = parseInt(jobData["delay_min"]);
 	var delayMax = parseInt(jobData["delay_max"]);
 	info.statsElements.delay.textContent =
-		delayMin == delayMax ?
+		(delayMin == delayMax ?
 			delayMin :
-			delayMin + "-" + delayMax;
+			delayMin + "-" + delayMax) + " ms delay";
 	info.statsElements.ignores.textContent =
 		jobData["suppress_ignore_reports"] ?
 			'igoff' :
@@ -811,6 +837,10 @@ JobsRenderer.prototype.updateAlign = function() {
 	arrayFrom(document.querySelectorAll('.job-url')).map(adderOrRemover('job-url-aligned'));
 	arrayFrom(document.querySelectorAll('.job-note')).map(adderOrRemover('job-note-aligned'));
 	arrayFrom(document.querySelectorAll('.job-nick')).map(adderOrRemover('job-nick-aligned'));
+	arrayFrom(document.querySelectorAll('.job-mb')).map(adderOrRemover('job-mb-aligned'));
+	arrayFrom(document.querySelectorAll('.job-responses')).map(adderOrRemover('job-responses-aligned'));
+	arrayFrom(document.querySelectorAll('.job-in-queue')).map(adderOrRemover('job-in-queue-aligned'));
+	arrayFrom(document.querySelectorAll('.job-delay')).map(adderOrRemover('job-delay-aligned'));
 };
 
 JobsRenderer.prototype.toggleAlign = function() {
