@@ -57,6 +57,8 @@ html, body {
 }
 
 .job-url {
+	/* Needed for 'Align!' feature */
+	display: inline-block;
 	font-family: Arial, sans-serif;
 	font-size: 14px;
 	font-weight: bold;
@@ -181,6 +183,7 @@ a.ignore {
 			Filter: <input id="filter-box" type="text" size="30" autofocus>
 		</div>
 		<div>
+			<input type="button" onclick="ds.toggleAlign()" class="button" value="Align!">
 			<input type="button" onclick="ds.toggleHelp()" class="button" value="Help!">
 		</div>
 	</div>
@@ -800,6 +803,7 @@ Decayer.prototype.decay = function() {
 
 
 var Dashboard = function() {
+	this.aligned = false;
 	this.messageCount = 0;
 
 	var args = getQueryArgs();
@@ -884,6 +888,22 @@ Dashboard.prototype.connectWebSocket = function() {
 		console.log("Reconnecting in", delay, "ms");
 		setTimeout(this.connectWebSocket.bind(this), delay);
 	}.bind(this);
+};
+
+Dashboard.prototype.toggleAlign = function() {
+	this.aligned = !this.aligned;
+	var jobUrls = document.querySelectorAll('.job-url');
+	for(var i=0; i < jobUrls.length; i++) {
+		if(this.aligned) {
+			jobUrls[i].style.width = "200px";
+			jobUrls[i].style.overflow = "hidden";
+			jobUrls[i].style.textOverflow = "ellipsis";
+		} else {
+			jobUrls[i].style.width = "";
+			jobUrls[i].style.overflow = "visible";
+			jobUrls[i].style.textOverflow = "";
+		};
+	};
 };
 
 Dashboard.prototype.toggleHelp = function() {
