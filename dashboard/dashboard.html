@@ -25,6 +25,10 @@ html, body {
 	border-radius: 3px;
 }
 
+.button {
+	font-size: 18px;
+}
+
 .padded-page {
 	padding: 20px 27px 20px 27px;
 }
@@ -177,7 +181,7 @@ a.ignore {
 			Filter: <input id="filter-box" type="text" size="30" autofocus>
 		</div>
 		<div>
-			<a href="#" onclick="ds.toggleHelp();return false;" class="underlined-a">Help!</a>
+			<input type="button" onclick="ds.toggleHelp()" class="button" value="Help!">
 		</div>
 	</div>
 
