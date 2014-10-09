@@ -65,6 +65,16 @@ html, body {
 	text-decoration: none;
 }
 
+.job-url-aligned {
+	width: 200px;
+	overflow: hidden;
+	text-overflow: ellipsis;
+}
+
+.job-note-aligned {
+	display: none;
+}
+
 .job-ident {
 	margin: 0 1px 0 0;
 	border: 0;
@@ -351,12 +361,34 @@ var addAnyChangeListener = function(elem, func) {
 	elem.addEventListener('input', func, false);
 };
 
+var arrayFrom = function(arrayLike) {
+	return Array.prototype.slice.call(arrayLike);
+};
+
 /**
  * Returns a function that gets the given property on any object passed in
  */
 var prop = function(name) {
 	return function(obj) {
 		return obj[name];
+	};
+};
+
+/**
+ * Returns a function that adds the given class to any element passed in
+ */
+var classAdder = function(name) {
+	return function(elem) {
+		elem.classList.add(name);
+	};
+};
+
+/**
+ * Returns a function that removes the given class to any element passed in
+ */
+var classRemover = function(name) {
+	return function(elem) {
+		elem.classList.remove(name);
 	};
 };
 
@@ -542,7 +574,7 @@ JobsRenderer.prototype._createLogContainer = function(jobData) {
 		ignores: h("span", null, "?")
 	};
 
-	var jobNote = h("span", null, null);
+	var jobNote = h("span", {"className": "job-note"}, null);
 
 	var logWindow = h('div', logWindowAttrs, logSegment);
 	var startedISOString = new Date(parseFloat(jobData["started_at"]) * 1000).toISOString();
@@ -892,18 +924,9 @@ Dashboard.prototype.connectWebSocket = function() {
 
 Dashboard.prototype.toggleAlign = function() {
 	this.aligned = !this.aligned;
-	var jobUrls = document.querySelectorAll('.job-url');
-	for(var i=0; i < jobUrls.length; i++) {
-		if(this.aligned) {
-			jobUrls[i].style.width = "200px";
-			jobUrls[i].style.overflow = "hidden";
-			jobUrls[i].style.textOverflow = "ellipsis";
-		} else {
-			jobUrls[i].style.width = "";
-			jobUrls[i].style.overflow = "visible";
-			jobUrls[i].style.textOverflow = "";
-		};
-	};
+	var adderOrRemover = this.aligned ? classAdder : classRemover;
+	arrayFrom(document.querySelectorAll('.job-url')).map(adderOrRemover('job-url-aligned'));
+	arrayFrom(document.querySelectorAll('.job-note')).map(adderOrRemover('job-note-aligned'));
 };
 
 Dashboard.prototype.toggleHelp = function() {
