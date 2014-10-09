@@ -517,6 +517,7 @@ var JobsRenderer = function(container, filterBox, historyLines, showNicks) {
 	this.renderInfo = {};
 	this.mouseInside = null;
 	this.numCrawls = byId('num-crawls');
+	this.aligned = false;
 };
 
 JobsRenderer.prototype._getNextJobInSorted = function(ident) {
@@ -781,14 +782,37 @@ JobsRenderer.prototype.handleData = function(data) {
 
 JobsRenderer.prototype.filterChanged = function() {
 	var query = this.filterBox.value;
+	var matches = 0;
 	for(var i=0; i < this.jobs.sorted.length; i++) {
 		var job = this.jobs.sorted[i];
 		if(job["url"].indexOf(query) == -1) {
 			this.renderInfo[job["ident"]].logWindow.style.display = "none";
 		} else {
 			this.renderInfo[job["ident"]].logWindow.style.display = "block";
+			matches += 1;
 		}
 	}
+	if(matches < this.jobs.sorted.length) {
+		// You probably want alignment if you're only showing some log windows
+		this.aligned = true;
+		this.updateAlign();
+	} else {
+		// You probably don't want alignment if you're seeing all of the log windows
+		this.aligned = false;
+		this.updateAlign();
+	}
+};
+
+JobsRenderer.prototype.updateAlign = function() {
+	var adderOrRemover = this.aligned ? classAdder : classRemover;
+	arrayFrom(document.querySelectorAll('.job-url')).map(adderOrRemover('job-url-aligned'));
+	arrayFrom(document.querySelectorAll('.job-note')).map(adderOrRemover('job-note-aligned'));
+	arrayFrom(document.querySelectorAll('.job-nick')).map(adderOrRemover('job-nick-aligned'));
+};
+
+JobsRenderer.prototype.toggleAlign = function() {
+	this.aligned = !this.aligned;
+	this.updateAlign();
 };
 
 
@@ -851,7 +875,6 @@ Decayer.prototype.decay = function() {
 
 
 var Dashboard = function() {
-	this.aligned = false;
 	this.messageCount = 0;
 
 	var args = getQueryArgs();
@@ -939,11 +962,7 @@ Dashboard.prototype.connectWebSocket = function() {
 };
 
 Dashboard.prototype.toggleAlign = function() {
-	this.aligned = !this.aligned;
-	var adderOrRemover = this.aligned ? classAdder : classRemover;
-	arrayFrom(document.querySelectorAll('.job-url')).map(adderOrRemover('job-url-aligned'));
-	arrayFrom(document.querySelectorAll('.job-note')).map(adderOrRemover('job-note-aligned'));
-	arrayFrom(document.querySelectorAll('.job-nick')).map(adderOrRemover('job-nick-aligned'));
+	this.jobsRenderer.toggleAlign();
 };
 
 Dashboard.prototype.toggleHelp = function() {
