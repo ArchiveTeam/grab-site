@@ -18,6 +18,13 @@ html, body {
 	font-size: 13px;
 }
 
+#filter-box {
+	background-color: #D0C0AE;
+	border: 1px solid #999;
+	font-size: 18px;
+	border-radius: 3px;
+}
+
 .padded-page {
 	padding: 20px 27px 20px 27px;
 }
@@ -167,6 +174,7 @@ a.ignore {
 			<a href="http://archiveteam.org/index.php?title=ArchiveBot" class="underlined-a">ArchiveBot</a>
 			tracking ~<span id="num-crawls">0</span> crawls.
 			See also <a href="pipelines" class="underlined-a">pipeline</a> or <a href="logs/recent" class="underlined-a">job</a> reports.
+			Filter: <input id="filter-box" type="text" size="30">
 		</div>
 		<div>
 			<a href="#" onclick="ds.toggleHelp();return false;" class="underlined-a">Help!</a>
@@ -329,6 +337,22 @@ var getQueryArgs = function() {
 
 var isSafari = navigator.userAgent.indexOf("Safari") != -1;
 
+var addAnyChangeListener = function(elem, func) {
+	elem.addEventListener('change', func, false);
+	elem.addEventListener('keydown', func, false);
+	elem.addEventListener('paste', func, false);
+	elem.addEventListener('input', func, false);
+};
+
+/**
+ * Returns a function that gets the given property on any object passed in
+ */
+var prop = function(name) {
+	return function(obj) {
+		return obj[name];
+	};
+};
+
 /*** End of utility code ***/
 
 
@@ -426,8 +450,10 @@ var getSummaryResponses = function(jobData) {
 
 
 
-var JobsRenderer = function(container, historyLines, showNicks) {
+var JobsRenderer = function(container, filterBox, historyLines, showNicks) {
 	this.container = container;
+	this.filterBox = filterBox;
+	addAnyChangeListener(this.filterBox, this.filterChanged.bind(this));
 	this.historyLines = historyLines;
 	this.showNicks = showNicks;
 	this.linesPerSegment = Math.max(1, Math.round(this.historyLines / 10));
@@ -698,6 +724,18 @@ JobsRenderer.prototype.handleData = function(data) {
 	}
 };
 
+JobsRenderer.prototype.filterChanged = function() {
+	var query = this.filterBox.value;
+	for(var i=0; i < this.jobs.sorted.length; i++) {
+		var job = this.jobs.sorted[i];
+		if(job["url"].indexOf(query) == -1) {
+			this.renderInfo[job["ident"]].logWindow.style.display = "none";
+		} else {
+			this.renderInfo[job["ident"]].logWindow.style.display = "block";
+		}
+	}
+};
+
 
 
 var BatchingQueue = function(callable, minInterval) {
@@ -779,7 +817,7 @@ var Dashboard = function() {
 	if(this.dumpTraffic) {
 		this.dumpMax = Number(args["dumpMax"]);
 	}
-	this.jobsRenderer = new JobsRenderer(byId('logs'), historyLines, showNicks);
+	this.jobsRenderer = new JobsRenderer(byId('logs'), byId('filter-box'), historyLines, showNicks);
 
 	var batchTimeWhenHidden = 5000;
 
