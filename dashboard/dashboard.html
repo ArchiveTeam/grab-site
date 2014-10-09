@@ -792,12 +792,15 @@ JobsRenderer.prototype.filterChanged = function() {
 			matches += 1;
 		}
 	}
+
 	if(matches < this.jobs.sorted.length) {
-		// You probably want alignment if you're only showing some log windows
+		// If you're not seeing all of the log windows, you're probably seeing very
+		// few of them, so you probably want alignment enabled.
 		this.aligned = true;
 		this.updateAlign();
 	} else {
-		// You probably don't want alignment if you're seeing all of the log windows
+		// You're seeing all of the log windows, so alignment doesn't help as much
+		// as seeing the full info.
 		this.aligned = false;
 		this.updateAlign();
 	}
