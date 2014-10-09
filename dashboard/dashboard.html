@@ -677,6 +677,10 @@ JobsRenderer.prototype._createLogContainer = function(jobData) {
 	);
 	this.renderInfo[ident] = new JobRenderInfo(logWindow, logSegment, statsElements, jobNote, 0, [0]);
 	this.container.insertBefore(div, beforeElement);
+	// Set appropriate CSS classes - we might be in aligned mode already
+	this.updateAlign();
+	// Filter hasn't changed, but we might need to filter out the new job
+	this.filterChanged();
 }
 
 JobsRenderer.prototype._renderDownloadLine = function(data, logSegment) {
