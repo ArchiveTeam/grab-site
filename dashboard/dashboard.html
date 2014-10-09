@@ -95,7 +95,7 @@ html, body {
 }
 
 .job-mb-aligned {
-	width: 100px;
+	width: 70px;
 	overflow: hidden;
 	text-overflow: hidden;
 	text-align: right;
@@ -625,7 +625,7 @@ JobsRenderer.prototype._createLogContainer = function(jobData) {
 	}
 
 	var statsElements = {
-		mb: h("span", null, "?"),
+		mb: h("span", {"className": "inline-stat job-mb"}, "?"),
 		responses: h("span", {"className": "inline-stat job-responses"}, "?"),
 		responsesPerSecond: h("span", null, "?"),
 		queueLength: h("span", {"className": "inline-stat job-in-queue"}, "? in q."),
@@ -649,9 +649,8 @@ JobsRenderer.prototype._createLogContainer = function(jobData) {
 					h("span", {"className": "inline-stat job-nick"}, (this.showNicks ? " by " + jobData["started_by"] : "")),
 					jobNote,
 					"; ",
-					h("span", {"className": "inline-stat job-mb"}, [
-						statsElements.mb, " MB in "
-					]),
+					statsElements.mb,
+					" MB in ",
 					statsElements.responses,
 					" at ",
 					statsElements.responsesPerSecond,
