@@ -780,21 +780,21 @@ JobsRenderer.prototype.handleData = function(data) {
 	}
 
 	info.statsElements.connections.textContent = jobData["concurrency"];
+
 	var delayMin = parseInt(jobData["delay_min"]);
 	var delayMax = parseInt(jobData["delay_max"]);
 	info.statsElements.delay.textContent =
 		(delayMin == delayMax ?
 			delayMin :
 			delayMin + "-" + delayMax) + " ms delay";
-	info.statsElements.ignores.textContent =
-		jobData["suppress_ignore_reports"] ?
-			'igoff' :
-			'igon';
+
 	if(jobData["suppress_ignore_reports"]) {
+		info.statsElements.ignores.textContent = 'igoff';
 		if(!info.statsElements.ignores.classList.contains('job-igoff')) {
 			info.statsElements.ignores.classList.add('job-igoff');
 		}
 	} else {
+		info.statsElements.ignores.textContent = 'igon';
 		if(info.statsElements.ignores.classList.contains('job-igoff')) {
 			info.statsElements.ignores.classList.remove('job-igoff');
 		}
