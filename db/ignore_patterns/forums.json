@@ -26,7 +26,8 @@
         "/showthread\\.php.*[\\?&]goto=(next(old|new)est|newpost)",
         "/editpost\\.php\\?",
         "/\\?view=getlastpost$",
-        "/index\\.php\\?sharelink="
+        "/index\\.php\\?sharelink=",
+        "/ucp\\.php\\?mode=delete_cookies"
     ],
     "type": "ignore_patterns"
 }
