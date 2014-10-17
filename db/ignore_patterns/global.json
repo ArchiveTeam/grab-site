@@ -74,6 +74,7 @@
         "^http://(audio\\d?|nfw)\\.video\\.ria\\.ru/",
         "^http://eu1\\.fastcast4u\\.com:3048/",
         "^http://[^\\./]+\\.radioscoop\\.(com|net):\\d+/",
+        "^http://[^\\./]+\\.streamchan\\.org:\\d+/",
         "^http://[^/]*musicproxy\\.s12\\.de/",
         "^http://stream\\.rfi\\.fr/",
         "^http://striiming\\d?\\.trio\\.ee/",
