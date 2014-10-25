@@ -142,6 +142,7 @@
         "^https?://www\\.odnoklassniki\\.ru/dk\\?st\\.cmd=addShare",
         "^https?://www\\.google\\.com/(reader/link\\?|buzz/post\\?)",
         "^https?://service\\.weibo\\.com/share/share\\.php\\?",
+        "^https?://(www\\.)?technorati\\.com/faves/?\\?add=",
         "^https?://mail\\.google\\.com/mail/",
         "^http://pixel\\.blog\\.hu/",
         "^https?://pixel\\.quantserve\\.com/",
