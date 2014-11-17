@@ -119,6 +119,7 @@
         "^https?://(www\\.)?pinterest\\.com/pin/create/button/\\?url=",
         "^https?://www\\.linkedin\\.com/(cws/share|shareArticle)\\?",
         "^https?://(www\\.)?stumbleupon\\.com/(submit\\?|badge/embed/)",
+        "^https?://csp\\.cyworld\\.com/bi/bi_recommend_pop\\.php\\?",
         "^https://share\\.flipboard\\.com/bookmarklet/popout\\?",
         "^https?://flattr.com/submit/auto\\?",
         "^https?://(www\\.)?myspace\\.com/Modules/PostTo/",
