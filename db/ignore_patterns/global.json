@@ -104,6 +104,7 @@
         "^http://anka\\.org:8080/",
         "^http://radio\\.visionotaku\\.com:8000/",
         "^http://stream\\.r-a-d\\.io/",
+        "^http://r-a-d\\.io/.+\\.mp3$",
         "^http://[^/]+/anony/mjpg\\.cgi$",
         "^https?://(www|draft)\\.blogger\\.com/(navbar\\.g|post-edit\\.g|delete-comment\\.g|comment-iframe\\.g|share-post\\.g|email-post\\.g|blog-this\\.g|delete-backlink\\.g|rearrange|blog_this\\.pyra)\\?",
         "^https?://www\\.tumblr\\.com/(impixu\\?|share(/link/?)?\\?|reblog/)",
