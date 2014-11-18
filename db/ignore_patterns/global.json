@@ -101,6 +101,7 @@
         "^http://bcs\\d?\\.fontanka\\.fm:8000/",
         "^http://stream2\\.cnmns\\.net/",
         "^http://playerservices\\.streamtheworld\\.com/",
+        "^http://anka\\.org:8080/",
         "^http://[^/]+/anony/mjpg\\.cgi$",
         "^https?://(www|draft)\\.blogger\\.com/(navbar\\.g|post-edit\\.g|delete-comment\\.g|comment-iframe\\.g|share-post\\.g|email-post\\.g|blog-this\\.g|delete-backlink\\.g|rearrange|blog_this\\.pyra)\\?",
         "^https?://www\\.tumblr\\.com/(impixu\\?|share(/link/?)?\\?|reblog/)",
