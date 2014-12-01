@@ -2,7 +2,7 @@
     "name": "youtube",
     "patterns": [
         "^https?://accounts\\.google\\.com/ServiceLogin",
-        "\\.?youtube\\.com/(playlists|channels|videos)/\\?(flow|view|sort|live_view)=",
+        "\\.?youtube\\.com/user/[^/]+/(playlists|channels|videos)\\?(flow|view|sort|live_view)=",
     ],
     "type": "ignore_patterns"
 }
