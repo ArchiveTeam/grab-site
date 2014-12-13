@@ -102,6 +102,7 @@
         "^http://bcs\\d?\\.fontanka\\.fm:8000/",
         "^http://stream2\\.cnmns\\.net/",
         "^http://[^/]+\\.streamtheworld\\.com/",
+        "^http://[^/]+\\.gaduradio\\.pl/",
         "^http://anka\\.org:8080/",
         "^http://radio\\.visionotaku\\.com:8000/",
         "^http://stream\\.r-a-d\\.io/",
