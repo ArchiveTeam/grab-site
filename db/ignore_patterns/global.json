@@ -101,7 +101,7 @@
         "^http://89\\.251\\.147\\.100/",
         "^http://bcs\\d?\\.fontanka\\.fm:8000/",
         "^http://stream2\\.cnmns\\.net/",
-        "^http://playerservices\\.streamtheworld\\.com/",
+        "^http://[^/]+\\.streamtheworld\\.com/",
         "^http://anka\\.org:8080/",
         "^http://radio\\.visionotaku\\.com:8000/",
         "^http://stream\\.r-a-d\\.io/",
