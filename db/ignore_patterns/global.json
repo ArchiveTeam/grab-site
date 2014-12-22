@@ -162,7 +162,7 @@
         "^https?://[^/]+\\.corp\\.ne1\\.yahoo\\.com/",
         "^https?://.+/js-agent\\.newrelic\\.com/nr-\\d{3}(\\.min)?\\.js$",
         "^https?://.+/stats\\.g\\.doubleclick\\.net/dc\\.js$",
-        "^https?://.+/js/cheartbeat\\.js$",
+        "^https?://.+/js/chartbeat\\.js$",
         "^http://www\\.khaleejtimes\\.com/.+/kt_.+/kt_",
         "^http://www\\.khaleejtimes\\.com/.+/images/.+/images/",
         "^http://www\\.khaleejtimes\\.com/.+/imgactv/.+/imgactv/",
