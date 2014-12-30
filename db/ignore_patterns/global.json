@@ -160,7 +160,7 @@
         "^https?://(\\d|www|secure)\\.gravatar\\.com/avatar/ad516503a11cd5ca435acc9bb6523536",
         "^https?://imageshack\\.com/lost$",
         "^https?://[^/]+\\.corp\\.ne1\\.yahoo\\.com/",
-        "^https?://.+/js-agent\\.newrelic\\.com/nr-\\d{3}(\\.min)?\\.js$",
+        "^https?://.+/js-agent\\.newrelic\\.com/nr-\\d{3,3}(\\.min)?\\.js$",
         "^https?://.+/stats\\.g\\.doubleclick\\.net/dc\\.js$",
         "^https?://.+/js/chartbeat\\.js$",
         "^http://www\\.khaleejtimes\\.com/.+/kt_.+/kt_",
