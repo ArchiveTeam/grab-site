@@ -9,7 +9,7 @@
         "^https?://r\\-login\\.wordpress\\.com/remote\\-login\\.php",
         "'\\%20\\+\\%20liker\\.(avatar|profile)_URL\\%20\\+\\%20'",
         "\\%22\\%20\\+\\%20$wrapper\\.data\\(",
-        "^http://.+\\.blogspot\\.(com|in|com\\.au|co\\.uk|jp|co\\.nz|ca|de|it|fr|se|sg|es|pt|com\\.br|ar|mx)/(search(\\?|/label/)|\\d{4}/\\d{2}/CSI/$)",
+        "^http://.+\\.blogspot\\.(com|in|com\\.au|co\\.uk|jp|co\\.nz|ca|de|it|fr|se|sg|es|pt|com\\.br|ar|mx)/(search(\\?|/label/)|\\d{4,4}/\\d{2,2}/CSI/$)",
         "livejournal\\.com/ljcounter/?\\?",
         "\\?replyto=[0-9]+",
         "[\\?&]mode=reply",
