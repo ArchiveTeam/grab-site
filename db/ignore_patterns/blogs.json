@@ -3,6 +3,7 @@
     "patterns": [
         "[\\?&]replytocom=",
         "[\\?&]share=",
+        "/page/%d/$",
         "\\?showComment(=|%5C)",
         "/quote-comment-\\d+/$",
         "/wp-login\\.php\\?",
