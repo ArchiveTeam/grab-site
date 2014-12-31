@@ -152,6 +152,7 @@
         "^https?://service\\.weibo\\.com/share/share\\.php\\?",
         "^https?://(www\\.)?technorati\\.com/faves/?\\?add=",
         "^https?://bufferapp\\.com/add\\?",
+        "^https?://b\\.hatena\\.ne\\.jp/add\\?",
         "^https?://mail\\.google\\.com/mail/",
         "^http://pixel\\.blog\\.hu/",
         "^https?://pixel\\.quantserve\\.com/",
