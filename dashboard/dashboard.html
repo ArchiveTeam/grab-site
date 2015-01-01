@@ -248,7 +248,7 @@ a.ignore {
 			See also <a href="pipelines" class="underlined-a">pipeline</a> or <a href="logs/recent" class="underlined-a">job</a> reports.
 			Show: <input id="filter-box" type="text" size="21" autofocus>
 			<input onclick="ds.setFilter('');" type="button" value="  All  " class="button">
-			<input onclick="ds.setFilter('`');" type="button" value="None" class="button">
+			<input onclick="ds.setFilter('^$');" type="button" value="None" class="button">
 		</div>
 		<div>
 			<input type="button" onclick="ds.toggleAlign()" class="button" value="Align!">
@@ -392,6 +392,23 @@ var split = function(s, sep, maxsplit) {
 		head.push(tail); // no longer just the head.
 	}
 	return head;
+};
+
+// Copied from closure-library's goog.string.startsWith
+var startsWith = function(str, prefix) {
+	return str.lastIndexOf(prefix, 0) == 0;
+}
+
+// Copied from closure-library's goog.string.endsWith
+var endsWith = function(str, suffix) {
+	var l = str.length - suffix.length;
+	return l >= 0 && str.indexOf(suffix, l) == l;
+};
+
+// Copied from closure-library's goog.string.regExpEscape
+var regExpEscape = function(s) {
+	return String(s).replace(/([-()\[\]{}+?*.$\^|,:#<!\\])/g, '\\$1').
+		replace(/\x08/g, '\\x08');
 };
 
 /**
@@ -654,12 +671,13 @@ JobsRenderer.prototype._createLogContainer = function(jobData) {
 							// Set the filter on clicks, but not on text selections.
 							return;
 						}
-						if(ds.getFilter() == jobData["url"]) {
+						var filter = ds.getFilter();
+						if(RegExp(filter).test(jobData["url"]) && startsWith(filter, "^") && endsWith(filter, "$")) {
 							// If we're already showing just this log window, go back
 							// to showing nothing.
-							ds.setFilter("`");
+							ds.setFilter("^$");
 						} else {
-							ds.setFilter(jobData["url"]);
+							ds.setFilter("^" + regExpEscape(jobData["url"]) + "$");
 						}
 					}}, [
 						" on ",
@@ -860,7 +878,7 @@ JobsRenderer.prototype.applyFilter = function() {
 	var matches = 0;
 	for(var i=0; i < this.jobs.sorted.length; i++) {
 		var job = this.jobs.sorted[i];
-		if(job["url"].indexOf(query) == -1) {
+		if(!RegExp(query).test(job["url"])) {
 			this.renderInfo[job["ident"]].logWindow.style.display = "none";
 		} else {
 			this.renderInfo[job["ident"]].logWindow.style.display = "block";
