@@ -161,6 +161,10 @@ html, body {
 
 }
 
+.log-window-expanded {
+	height: 384px;
+}
+
 .line-normal {
 	white-space: pre;
 	width: 100%;
@@ -723,7 +727,8 @@ JobsRenderer.prototype._createLogContainer = function(jobData) {
 	this.container.insertBefore(div, beforeElement);
 	// Set appropriate CSS classes - we might be in aligned mode already
 	this.updateAlign();
-	// Filter hasn't changed, but we might need to filter out the new job
+	// Filter hasn't changed, but we might need to filter out the new job, or
+	// add/remove log-window-expanded class
 	this.applyFilter();
 }
 
@@ -882,14 +887,26 @@ JobsRenderer.prototype.handleData = function(data) {
 JobsRenderer.prototype.applyFilter = function() {
 	var query = this.filterBox.value;
 	var matches = 0;
+	var matchedWindows = [];
+	var unmatchedWindows = [];
 	for(var i=0; i < this.jobs.sorted.length; i++) {
 		var job = this.jobs.sorted[i];
+		var w = this.renderInfo[job["ident"]].logWindow;
 		if(!RegExp(query).test(job["url"])) {
-			this.renderInfo[job["ident"]].logWindow.style.display = "none";
+			w.style.display = "none";
+			unmatchedWindows.push(w);
 		} else {
-			this.renderInfo[job["ident"]].logWindow.style.display = "block";
+			w.style.display = "block";
 			matches += 1;
+			matchedWindows.push(w);
 		}
+	}
+
+	// If there's only one visible log window, expand it so that more lines are visible.
+	unmatchedWindows.map(classRemover('log-window-expanded'));
+	matchedWindows.map(classRemover('log-window-expanded'));
+	if(matches == 1) {
+		matchedWindows.map(classAdder('log-window-expanded'));
 	}
 
 	if(matches < this.jobs.sorted.length) {
