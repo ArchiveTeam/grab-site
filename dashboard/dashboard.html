@@ -147,12 +147,19 @@ html, body {
 }
 
 .log-window {
+	transition: all 0.18s ease;
 	background-color: #FFF7E1;
 	overflow-y: scroll;
 	height: 192px;
 	border: 1px solid #999;
 	margin: 0 0 1em 0;
 	border-radius: 3px;
+}
+
+.log-window-hidden {
+	height: 0;
+	border: 0;
+	margin: 0;
 }
 
 .log-window-stopped {
@@ -893,10 +900,10 @@ JobsRenderer.prototype.applyFilter = function() {
 		var job = this.jobs.sorted[i];
 		var w = this.renderInfo[job["ident"]].logWindow;
 		if(!RegExp(query).test(job["url"])) {
-			w.style.display = "none";
+			w.classList.add("log-window-hidden");
 			unmatchedWindows.push(w);
 		} else {
-			w.style.display = "block";
+			w.classList.remove("log-window-hidden");
 			matches += 1;
 			matchedWindows.push(w);
 		}
