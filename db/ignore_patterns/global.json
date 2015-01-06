@@ -30,7 +30,7 @@
         "/clientscript/clientscript/.+/clientscript/",
         "/clientscript/.+/clientscript/clientscript/",
         "/clientscript/clientscript/clientscript/",
-        "/lib/exe/.*lib_exe_lib_exe_",
+        "/lib/exe/.*lib[-_]exe[-_]lib[-_]exe[-_]",
         "/(%5C)+(%22|%27)",
         "/%5C/%5C/",
         "/%27\\+[^/]+\\+%27",
