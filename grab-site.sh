@@ -27,6 +27,7 @@ done
 # Note: we use the default html5lib parser instead of lxml (as ArchiveBot does)
 
 echo "global,$ignore_sets" > "$dir/ignore_sets"
+touch "$dir/ignores"
 
 HOOK_SETTINGS_DIR="$dir" PYTHONPATH="$self" ~/.local/bin/wpull3 \
 	-U "Mozilla/5.0 (Windows NT 6.3; WOW64; rv:35.0) Gecko/20100101 Firefox/35.0" \
