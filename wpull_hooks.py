@@ -75,7 +75,8 @@ def accept_url(url_info, record_info, verdict, reasons):
 
 	pattern = ignore_url_p(url, record_info)
 	if pattern:
-		print("IGNOR %s by %s" % (url, pattern))
+		if not os.path.exists(os.path.join(hook_settings_dir, "igoff")):
+			print("IGNOR %s by %s" % (url, pattern))
 		return False
 
 	# If we get here, none of our ignores apply.	Return the original verdict.
