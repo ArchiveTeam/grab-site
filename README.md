@@ -17,7 +17,8 @@ Usage:
 
 Note: `--ignore-sets=` must have the `=`.
 
-Just as with ArchiveBot, the `global` ignore set is implied and enabled.
+Just as with ArchiveBot, the [global](https://github.com/ArchiveTeam/ArchiveBot/blob/master/db/ignore_patterns/global.json)
+ignore set is implied and enabled.
 
 While the crawl is running, you can edit `DIR/ignores` and `DIR/ignore_sets`; the
 changes will be applied as soon as the next URL is grabbed.
