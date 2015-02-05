@@ -11,11 +11,11 @@ Usage:
 
 ```
 ./grab-site URL
-./grab-site URL --ignore-sets blogs,forums
-./grab-site URL --ignore-sets blogs,forums --no-offsite-links
+./grab-site URL --ignore-sets=blogs,forums
+./grab-site URL --ignore-sets=blogs,forums --no-offsite-links
 ```
 
-Note: `--ignore-sets=` with `=` will **not** work.
+Note: `--ignore-sets=` must have the `=`.
 
 While the crawl is running, you can edit `DIR/ignores` and `DIR/ignore_sets`; the
 changes will be applied as soon as the next URL is grabbed.

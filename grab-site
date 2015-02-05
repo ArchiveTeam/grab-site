@@ -11,13 +11,10 @@ mkdir -p "$dir"
 
 span_hosts_allow="page-requisites,linked-pages"
 
-while [[ $# > 0 ]]; do
-	key="$1"
-
-	case $key in
-		-i|--ignore-sets)
-			ignore_sets="$2"
-			shift
+for arg in "$@"; do
+	case $arg in
+		--ignore-sets=*)
+			ignore_sets="${arg#*=}"
 		;;
 		--no-offsite-links)
 			span_hosts_allow="page-requisites"
