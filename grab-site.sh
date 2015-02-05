@@ -18,7 +18,7 @@ PYTHONPATH="$self" ~/.local/bin/wpull3 \
 	--database "$dir/wpull.db" \
 	--plugin-script "$self/plugin.py" \
 	--plugin-args " --dupes-db $dir/dupes_db" \
-	--save-cookies "$dir/cookies" \
+	--save-cookies "$dir/cookies.txt" \
 	--no-check-certificate \
 	--delete-after \
 	--no-robots \
