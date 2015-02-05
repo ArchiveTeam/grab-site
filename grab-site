@@ -9,13 +9,18 @@ self=$(dirname "$0")
 
 mkdir -p "$dir"
 
-while [[ $# > 1 ]]; do
+span_hosts_allow="page-requisites,linked-pages"
+
+while [[ $# > 0 ]]; do
 	key="$1"
 
 	case $key in
 		-i|--ignore-sets)
 			ignore_sets="$2"
 			shift
+		;;
+		--no-offsite-links)
+			span_hosts_allow="page-requisites"
 		;;
 		*)
 			# unknown option
@@ -56,5 +61,5 @@ HOOK_SETTINGS_DIR="$dir" PYTHONPATH="$self" ~/.local/bin/wpull3 \
 	--strip-session-id \
 	--escaped-fragment \
 	--recursive \
-	--span-hosts-allow page-requisites,linked-pages \
+	--span-hosts-allow "$span_hosts_allow" \
 	"$url"

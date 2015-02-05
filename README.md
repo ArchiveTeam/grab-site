@@ -11,6 +11,7 @@ Usage:
 ```
 ./grab-site URL
 ./grab-site URL --ignore-sets blogs,forums
+./grab-site URL --ignore-sets blogs,forums --no-offsite-links
 ```
 
 Note: `--ignore-sets=` with `=` will **not** work.
