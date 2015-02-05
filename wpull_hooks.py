@@ -4,18 +4,29 @@ import json
 from urllib.request import urlopen
 from ignoracle import Ignoracle, parameterize_record_info
 
+cache = {}
 def getPatternsForIgnoreSet(name):
 	assert name != "", name
+	if name in cache:
+		return cache[name]
 	print("Fetching ArchiveBot/master/db/ignore_patterns/%s.json" % name)
-	return json.loads(urlopen("https://raw.githubusercontent.com/ArchiveTeam/ArchiveBot/master/db/ignore_patterns/%s.json" % name).read().decode("utf-8"))["patterns"]
+	cache[name] = json.loads(urlopen("https://raw.githubusercontent.com/ArchiveTeam/ArchiveBot/master/db/ignore_patterns/%s.json" % name).read().decode("utf-8"))["patterns"]
+	return cache[name]
 
-ignore_sets = set(os.environ.get('IGNORE_SETS', '').strip().split(','))
-ignore_sets.add('global')
+hook_settings_dir = os.environ['HOOK_SETTINGS_DIR']
 
 ignoracle = Ignoracle()
-ignores = set()
-for igset in ignore_sets:
-	ignores.update(getPatternsForIgnoreSet(igset))
+
+def update_ignoracle():
+	with open(os.path.join(hook_settings_dir, "ignore_sets"), "r") as f:
+		ignore_sets = f.read().strip("\r\n\t ,").split(',')
+
+	ignores = set()
+	for igset in ignore_sets:
+		ignores.update(getPatternsForIgnoreSet(igset))
+	ignoracle.set_patterns(ignores)
+
+update_ignoracle()
 
 
 def ignore_url_p(url, record_info):
