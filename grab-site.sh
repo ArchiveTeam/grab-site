@@ -9,9 +9,24 @@ self=$(dirname "$0")
 
 mkdir -p "$dir"
 
+while [[ $# > 1 ]]; do
+	key="$1"
+
+	case $key in
+		-i|--ignore-sets)
+			ignore_sets="$2"
+			shift
+		;;
+		*)
+			# unknown option
+		;;
+	esac
+	shift
+done
+
 # Note: we use the default html5lib parser instead of lxml (as ArchiveBot does)
 
-PYTHONPATH="$self" ~/.local/bin/wpull3 \
+IGNORE_SETS=$ignore_sets PYTHONPATH="$self" ~/.local/bin/wpull3 \
 	-U "Mozilla/5.0 (Windows NT 6.3; WOW64; rv:35.0) Gecko/20100101 Firefox/35.0" \
 	--header="Accept: text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8" \
 	-o "$dir/wpull.log" \

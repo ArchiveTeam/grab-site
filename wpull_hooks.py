@@ -1,13 +1,21 @@
 import re
+import os
 import json
 from urllib.request import urlopen
 from ignoracle import Ignoracle, parameterize_record_info
 
 def getPatternsForIgnoreSet(name):
+	assert name != "", name
+	print("Fetching ArchiveBot/master/db/ignore_patterns/%s.json" % name)
 	return json.loads(urlopen("https://raw.githubusercontent.com/ArchiveTeam/ArchiveBot/master/db/ignore_patterns/%s.json" % name).read().decode("utf-8"))["patterns"]
 
+ignore_sets = set(os.environ.get('IGNORE_SETS', '').strip().split(','))
+ignore_sets.add('global')
+
 ignoracle = Ignoracle()
-ignoracle.set_patterns(getPatternsForIgnoreSet('global'))
+ignores = set()
+for igset in ignore_sets:
+	ignores.update(getPatternsForIgnoreSet(igset))
 
 
 def ignore_url_p(url, record_info):
