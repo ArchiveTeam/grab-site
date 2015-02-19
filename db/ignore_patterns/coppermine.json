@@ -1,0 +1,9 @@
+{
+    "name": "coppermine",
+    "patterns": [
+        "[?&]album=(?:topn|toprated|lastcom|lastup|random)",
+        "ratepic\\.php",
+        "displayimage\\.php\\?.*slideshow=\\d+"
+    ],
+    "type": "ignore_patterns"
+}
