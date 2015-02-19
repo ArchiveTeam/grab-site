@@ -3,6 +3,7 @@
     "patterns": [
         "[?&]album=(?:topn|toprated|lastcom|lastup|random)",
         "ratepic\\.php",
+        "addfav\\.php\\?.*ref=displayimage\\.php",
         "displayimage\\.php\\?.*slideshow=\\d+"
     ],
     "type": "ignore_patterns"
