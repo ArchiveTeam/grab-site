@@ -1,7 +1,7 @@
 {
     "name": "coppermine",
     "patterns": [
-        "[?&]album=(?:topn|toprated|lastcom|lastup|random)",
+        "[?&]album=(?:topn|toprated|lastcom|lastup|lastupby|random)",
         "ratepic\\.php",
         "addfav\\.php\\?.*ref=displayimage\\.php",
         "displayimage\\.php\\?.*slideshow=\\d+"
