@@ -21,6 +21,7 @@
     "index\\.php\\?.+year=203.",
     "kalendar\\.php",
     "main_page=(?:product_reviews_write|login|cookie_usage)",
+    "memberlist\\.php\\?mode=email",
     "memberlist\\.php\\?mode=.+order=",
     "mode=(?:lostpassword|sendpassword)",
     "modules\\.php\\?name=coppermine.*file=displayimage.+&slideshow=\\d+",
@@ -30,15 +31,16 @@
     "photo.php\\?i=-\\d+",
     "portal\\.php\\?month=[\\d]+",
     "postdays=0&postorder=asc",
+    "\\?q=event.+/(?:day|list|month|table|week)/all/all",
     "Recentchangeslinked/",
     "search_id=mini_cal&d=\\d+",
     "SESSION_ID=",
     "showcal\\.php",
+    "site=guestbook.+type=(?:ASC|DESC)",
     "Souprava=.+Souprava=.+",
     ":Userlogin&",
     "viewtopic\\.php\\?.*highlight=",
-    "viewtopic\\.php\\?p=\\d+",
-    "viewtopic\\.php\\?.+start=\\d+"
+    "viewtopic\\.php\\?p=\\d+"
   ],
   "type": "ignore_patterns"
 }
