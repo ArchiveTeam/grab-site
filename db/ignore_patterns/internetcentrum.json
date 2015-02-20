@@ -37,7 +37,8 @@
     "Souprava=.+Souprava=.+",
     ":Userlogin&",
     "viewtopic\\.php\\?.*highlight=",
-    "viewtopic\\.php\\?p=\\d+"
+    "viewtopic\\.php\\?p=\\d+",
+    "viewtopic\\.php\\?.+start=\\d+"
   ],
   "type": "ignore_patterns"
 }
