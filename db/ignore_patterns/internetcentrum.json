@@ -8,7 +8,10 @@
     "calendar_menu/calendar\\.php",
     "calendar_menu/event\\.php",
     "calendar\\.php",
+    "comment\\.php\\?akce=new",
     "&highlight=&",
+    "^http://harizzzma\\.com",
+    "^http://www.nahraj.net/",
     "index.*\\.php\\?option=com_eventcal",
     "index.php\\?site=calendar",
     "index\\.php\\?site=guestbook&type=(?:ASC|DESC)",
@@ -20,6 +23,8 @@
     "index\\.php\\?.+year=198.",
     "index\\.php\\?.+year=203.",
     "kalendar\\.php",
+    "LightNEasy\\.php\\?do=login",
+    "login\\.php",
     "main_page=(?:product_reviews_write|login|cookie_usage)",
     "memberlist\\.php\\?mode=email",
     "memberlist\\.php\\?mode=.+order=",
@@ -29,8 +34,10 @@
     "modules\\.php\\?name=Statistics.+year=(?:198\\d+|2016|202\\d)",
     "orderby=(?:name|note|count|news)",
     "photo.php\\?i=-\\d+",
+    "p=ordersBasket.+sOption=add",
     "portal\\.php\\?month=[\\d]+",
     "postdays=0&postorder=asc",
+    "profile\\.php\\?mode=register",
     "\\?q=event.+/(?:day|list|month|table|week)/all/all",
     "Recentchangeslinked/",
     "search_id=mini_cal&d=\\d+",
@@ -40,7 +47,8 @@
     "Souprava=.+Souprava=.+",
     ":Userlogin&",
     "viewtopic\\.php\\?.*highlight=",
-    "viewtopic\\.php\\?p=\\d+"
+    "viewtopic\\.php\\?p=\\d+",
+    "viewtopic\\.php\\?.+view=print"
   ],
   "type": "ignore_patterns"
 }
