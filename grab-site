@@ -3,8 +3,8 @@
 set -e
 
 url="$1"
-domain="$(echo -n "$url" | awk -F/ '{print $3}')"
-dir="$domain"
+# remove protocol, remove trailing slashes, convert slashes to "-"es
+dir="$(echo -n "$url" | sed -r 's,^(ftp|https?)://,,g' | sed -r 's,/+$,,g' | sed -r 's,/,-,g')"
 self=$(dirname "$0")
 
 mkdir -p "$dir"
