@@ -31,6 +31,7 @@
     "main_page=(?:product_reviews_write|login|cookie_usage)",
     "memberlist\\.php\\?mode=email",
     "memberlist\\.php\\?mode=.+order=",
+    "(?:memberlist|viewprofile|viewtopic)\\.php\\?mode=&sk=.&sd=.",
     "mini.+calendar",
     "mode=(?:lostpassword|sendpassword)",
     "modules\\.php\\?name=coppermine.*file=displayimage.+&slideshow=\\d+",
