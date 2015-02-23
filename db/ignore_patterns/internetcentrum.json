@@ -24,6 +24,7 @@
     "index\\.php\\?.+year=198.",
     "index\\.php\\?.+year=203.",
     "kalendar\\.php",
+    "kalendarrok=\\d{4}",
     "LightNEasy\\.php\\?do=login",
     "limit=.+limit=.+",
     "login\\.php",
