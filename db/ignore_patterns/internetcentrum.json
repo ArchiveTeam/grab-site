@@ -2,6 +2,8 @@
   "name": "internetcentrum",
   "patterns": [
     ".*\..*\..*\.pl",
+    "amp;amp;",
+    "%3Bamp%3Bamp",
     "action=(?:komentar|send)",
     "action=(?:multiple_products_add_product|notify|add_product|buy_now)",
     "&action=submit",
