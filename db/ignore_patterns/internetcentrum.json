@@ -4,6 +4,7 @@
     "action=(?:komentar|send)",
     "action=(?:multiple_products_add_product|notify|add_product|buy_now)",
     "&action=submit",
+    "answer=.+?&anksent=true",
     "[a-z0-9]=(?:off|on)",
     "calendar_menu/calendar\\.php",
     "calendar_menu/event\\.php",
