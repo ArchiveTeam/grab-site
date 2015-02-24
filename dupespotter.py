@@ -29,7 +29,7 @@ def get_body(url):
 		with open(fname, "rb") as f:
 			return f.read()
 	else:
-		subprocess.check_output(["wget", "-U", UA, url, "-O", fname])
+		subprocess.call(["wget", "--content-on-error", "-U", UA, url, "-O", fname])
 		with open(fname + ".info.json", "w") as f:
 			f.write(json.dumps({"url": url}))
 		with open(fname, "rb") as f:
@@ -122,10 +122,6 @@ def process_body(body, url):
 	# Spotted on http://www.communauteanimalcrossing.fr/
 	body = re.sub(br'<param name="flashvars" value="servannee=\d{4}&amp;servmois=\d{1,2}&amp;servjour=\d{1,2}&amp;servheure=\d{1,2}&amp;servminute=\d{1,2}&amp;servseconde=\d{1,2}" />', b"", body)
 
-	# Drupal generates <body class="..."> items based on the URL
-	# Generated class="" also spotted on non-Drupal www.minutouno.com
-	body = re.sub(br'<body class="[^"]+"', b"", body)
-
 	# vbulletin
 	body = re.sub(br'\(\d+ Viewing\)', b"", body)
 	body = re.sub(br'Currently Active Users</a>: \d+ \(\d+ members and \d+ guests\)', b"", body)
@@ -133,9 +129,12 @@ def process_body(body, url):
 	# Spotted on http://vstreamers.com/v/images/css/p/videos
 	body = re.sub(br'[&\?]v=\d+', b"", body)
 
+	# Kill newrelic inline script
+	body = re.sub(br'window\.NREUM\|\|\(NREUM=\{\}\);NREUM\.info=\{.{1,3000}?\}', b"", body)
+
 	if drupal:
 		# Kill entire Drupal settings line
-		body = re.sub(br'jQuery\.extend\(Drupal.settings, ?\{.{1,20000}?\}\);', b"", body)
+		body = re.sub(br'jQuery\.extend\(Drupal.settings, ?\{.{1,40000}?\}\);', b"", body)
 
 		# Drupal generates this class id
 		body = re.sub(br"\bview-dom-id-[0-9a-f]+\b", b"", body)
@@ -145,6 +144,13 @@ def process_body(body, url):
 
 		# nsslabs.com has this
 		body = re.sub(br'<div class="breadcrumb">.{1,4000}?    </div>', b"", body)
+
+		# sbs.com.au has generated /css_ filenames
+		body = re.sub(br'/css_[-_A-Za-z0-9]{10,100}\.css', b"", body)
+
+	# Drupal generates <body class="..."> items based on the URL
+	# Generated class="" also spotted on non-Drupal www.minutouno.com
+	body = re.sub(br'<(body|div) class="[^"]+"( data-src="[^"]{1,2000}")?', b"", body)
 
 	return body
 
@@ -158,7 +164,7 @@ def compare_bodies(body1, body2, url1, url2):
 		tofile=url2):
 		if not "\n" in line:
 			line += "\n"
-		sys.stdout.write(line)
+		sys.stdout.write(line.replace("\ufffd", "\\ufffd"))
 
 
 def compare_unprocessed_bodies(up_body1, up_body2, url1, url2):
