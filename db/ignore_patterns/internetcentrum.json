@@ -11,6 +11,7 @@
     "calendar_scheduler\\.php",
     "comment\\.php\\?akce=new",
     "cPath=.+&sort=.+",
+    "(?:displayimage|thumbnails)\\.php\\?pos=-\\d+",
     "&highlight=&",
     "^http://harizzzma\\.com",
     "^http://www.nahraj.net/",
