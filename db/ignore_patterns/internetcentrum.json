@@ -1,6 +1,7 @@
 {
   "name": "internetcentrum",
   "patterns": [
+    ".*\..*\..*\.pl",
     "action=(?:komentar|send)",
     "action=(?:multiple_products_add_product|notify|add_product|buy_now)",
     "&action=submit",
@@ -29,6 +30,7 @@
     "index\\.php\\?.+year=203.",
     "kalendar\\.php",
     "kalendarrok=\\d{4}",
+    "&lang=(?!czech|english)",
     "LightNEasy\\.php\\?do=login",
     "limit=.+limit=.+",
     "login\\.php",
