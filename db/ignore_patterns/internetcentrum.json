@@ -40,7 +40,7 @@
     "mode=(?:lostpassword|sendpassword)",
     "modules\\.php\\?name=coppermine.*file=displayimage.+&slideshow=\\d+",
     "modules\\.php\\?name=coppermine.*meta=(?:topn|toprated|lastcom|lastup|lastupby|random|lastcomby)",
-    "modules\\.php\\?name=Statistics.+year=(?:198\\d+|2016|202\\d)",
+    "modules\\.php\\?name=Statistics",
     "name=Kalender",
     "option=com_jcalpro.+date=\\d{4}-",
     "option=&Itemid=.+&date=\\d{4}-",
