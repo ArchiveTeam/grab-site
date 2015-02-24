@@ -1,7 +1,7 @@
 {
   "name": "internetcentrum",
   "patterns": [
-    ".*\..*\..*\.pl",
+    ".*\\..*\\..*\\.pl",
     "amp;amp;",
     "%3Bamp%3Bamp",
     "action=(?:komentar|send)",
@@ -63,7 +63,7 @@
     "profile\\.php\\?mode=email",
     "profile\\.php\\?mode=register",
     "\\?q=event.+/(?:day|list|month|table|week)/all/all",
-    "random_num=\d+",
+    "random_num=\\d+",
     "Recentchangeslinked/",
     "report\\.php\\?f=.+",
     "search_id=mini_cal&d=\\d+",
