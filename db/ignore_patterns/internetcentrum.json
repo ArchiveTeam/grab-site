@@ -50,6 +50,7 @@
     "p=ordersBasket.+sOption=add",
     "portal\\.php\\?month=[\\d]+",
     "postdays=0&postorder=asc",
+    "prev_next=(?:prev|next)",
     "{primary_netloc}/calendar/",
     "product_reviews_write\\.php\\?",
     "profile\\.php\\?mode=email",
