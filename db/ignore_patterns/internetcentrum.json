@@ -33,7 +33,7 @@
     "index\\.php\\?.+year=203.",
     "kalendar\\.php",
     "kalendarrok=\\d{4}",
-    "lang=(?!czech|english|)",
+    "lang=(?!czech|english)",
     "language=(?!cs|en)",
     "LightNEasy\\.php\\?do=login",
     "limit=.+limit=.+",
