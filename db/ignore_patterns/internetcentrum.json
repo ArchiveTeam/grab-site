@@ -27,7 +27,6 @@
     "file=posting.+mode=quote",
     "&highlight=&",
     "^http://harizzzma\\.com",
-    "^http://{primary_netloc}/.+/([^/]+)/.+/\\1/",
     "^http://www.nahraj.net/",
     "index.*\\.php\\?option=com_eventcal",
     "index.php\\?site=calendar",
