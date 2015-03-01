@@ -81,6 +81,13 @@ def process_body(body, url):
 		path = path[1:]
 	if len(path) >= 5:
 		body = kill_path(path, body)
+
+	# Drupal websites sometimes embed the current URL excluding the
+	# first and/or second path component
+	shorter_path = '/'.join(path.split('/')[2:])
+	if len(shorter_path) >= 50:
+		body = kill_path(shorter_path, body)
+
 	if len(u.query) >= 3:
 		encoded_query = u.query.encode("utf-8")
 		body = body.replace(('?' + u.query).encode("utf-8"), b"")
@@ -112,11 +119,10 @@ def process_body(body, url):
 	# Spotted on eff.org drupal
 	body = re.sub(br'<link href="[^"]+" rel="alternate" hreflang="[^"]+" />', b"", body)
 
-	# Spotted on http://2045.com/
-	body = re.sub(br'<input type="hidden" name="file_uploadToken" value="\d+"', b"", body)
-
 	# Spotted on http://www.museodelvideojuego.com/ - handles
 	# <input type="hidden" name="form_build_id" value="form-ddmhsyCMnpZsHKCQN-l6R1j9EwMT3lHKDI4xXcyFcBA" />
+	# Spotted on http://2045.com/
+	# <input type="hidden" name="file_uploadToken" value="\d+"
 	body = re.sub(br'<input type="hidden"[^>]{1,1000}?>', b"", body)
 
 	# Spotted on http://www.communauteanimalcrossing.fr/
@@ -150,7 +156,7 @@ def process_body(body, url):
 
 	# Drupal generates <body class="..."> items based on the URL
 	# Generated class="" also spotted on non-Drupal www.minutouno.com
-	body = re.sub(br'<(body|div) class="[^"]+"( data-src="[^"]{1,2000}")?', b"", body)
+	body = re.sub(br'<(body|div)( id="[^"]+")? class="[^"]+"( data-src="[^"]{1,2000}")?', b"", body)
 
 	return body
 
@@ -164,7 +170,7 @@ def compare_bodies(body1, body2, url1, url2):
 		tofile=url2):
 		if not "\n" in line:
 			line += "\n"
-		sys.stdout.write(line.replace("\ufffd", "\\ufffd"))
+		sys.stdout.buffer.write(line.encode("utf-8"))
 
 
 def compare_unprocessed_bodies(up_body1, up_body2, url1, url2):
