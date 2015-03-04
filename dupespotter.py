@@ -111,7 +111,7 @@ def process_body(body, url):
 	# Kill twitter and facebook share buttons, no matter what kind of
 	# URL they stuffed in there.
 	body = re.sub(br'<div class="fb-like" data-href=".*?</div>', b"", body)
-	body = re.sub(br'<a href="https?://twitter.com/share" class="twitter-share-button" data-text=".*?</a>', b"", body)
+	body = re.sub(br'<a href="https?://twitter.com/share[^"]{0,4096}" class="twitter-share-button.*?</a>', b"", body)
 
 	# Drupal puts the current URL here, and the casing doesn't always match
 	body = re.sub(br'<(link rel="(canonical|shortlink|alternate)".{1,1000}?href=|meta property="og:url" content=)"[^"]+" />', b"", body)
