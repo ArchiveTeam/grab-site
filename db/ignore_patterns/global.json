@@ -159,7 +159,7 @@
         "^http://pixel\\.blog\\.hu/",
         "^https?://pixel\\.quantserve\\.com/",
         "^http://b\\.scorecardresearch\\.com/",
-        "^https?://(www|ssl)\\.google-analytics\\.com/__utm\\.gif",
+        "^https?://(www|ssl)\\.google-analytics\\.com/(__utm\\.gif|collect\\?)",
         "^https?://p\\.opt\\.fimserve\\.com/",
         "^https?://(\\d|www|secure)\\.gravatar\\.com/avatar/ad516503a11cd5ca435acc9bb6523536",
         "^https?://imageshack\\.com/lost$",
