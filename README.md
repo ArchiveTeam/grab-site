@@ -2,9 +2,10 @@ grab-site
 ===
 
 grab-site is an easy preconfigured web crawler designed for backing up websites.  Give
-grab-site a URL and it will recursively crawl the site and write [WARC files](http://www.archiveteam.org/index.php?title=The_WARC_Ecosystem)
-It uses [wpull](https://github.com/chfoo/wpull) for crawling and the wpull options are preconfigured
-based on Archive Team's experience with [ArchiveBot](https://github.com/ArchiveTeam/ArchiveBot).
+grab-site a URL and it will recursively crawl the site and write [WARC files](http://www.archiveteam.org/index.php?title=The_WARC_Ecosystem).
+
+grab-site uses [wpull](https://github.com/chfoo/wpull) for crawling.  The wpull options are
+preconfigured based on Archive Team's experience with [ArchiveBot](https://github.com/ArchiveTeam/ArchiveBot).
 
 grab-site includes ArchiveBot's killer feature of being able to add ignore patterns while the
 crawl is already running.  This allows you to skip the crawling of junk URLs that would
