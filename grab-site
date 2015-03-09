@@ -57,6 +57,8 @@ HOOK_SETTINGS_DIR="$dir" PYTHONPATH="$self" ~/.local/bin/wpull3 \
 	--debug-manhole \
 	--strip-session-id \
 	--escaped-fragment \
+	--monitor-disk 50m \
+	--monitor-memory 10k \
 	--recursive \
 	--span-hosts-allow "$span_hosts_allow" \
 	"$url"
