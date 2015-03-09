@@ -4,7 +4,7 @@ set -e
 
 url="$1"
 # remove protocol, remove trailing slashes, convert slashes to "-"es
-dir="$(echo -n "$url" | sed -r 's,^(ftp|https?)://,,g' | sed -r 's,/+$,,g' | sed -r 's,/,-,g')"
+dir="$(echo -n "$url" | sed -r 's,^(ftp|https?)://,,g' | sed -r 's,/+$,,g' | sed -r 's,[/\?&],-,g')"
 self=$(dirname "$0")
 
 mkdir -p "$dir"
