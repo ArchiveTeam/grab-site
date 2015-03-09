@@ -34,8 +34,19 @@ Usage
 
 Note: `--ignore-sets=` must have the `=`.
 
+`forums` and `blogs` are some frequently-used ignore sets.
+See [the full list of available ignore sets](https://github.com/ArchiveTeam/ArchiveBot/tree/master/db/ignore_patterns).
+
 Just as with ArchiveBot, the [global](https://github.com/ArchiveTeam/ArchiveBot/blob/master/db/ignore_patterns/global.json)
 ignore set is implied and enabled.
+
+grab-site always grabs page requisites (e.g. inline images and stylesheets), even if
+they are on other domains.  By default, grab-site also grabs linked pages to a depth
+of 1 on other domains.  To turn off this behavior, use `--no-offsite-links`.
+
+Using `--no-offsite-links` may prevent all kinds of useful images, video, audio, downloads,
+etc from being grabbed, because these are often hosted on a CDN or subdomain, and
+thus would otherwise not be included in the recursive crawl.
 
 Changing ignores during the crawl
 ---
@@ -44,7 +55,6 @@ While the crawl is running, you can edit `DIR/ignores` and `DIR/ignore_sets`; th
 changes will be applied as soon as the next URL is grabbed.
 
 `DIR/ignore_sets` is a comma-separated list of ignore sets to use.
-[See this list of available ignore sets](https://github.com/ArchiveTeam/ArchiveBot/tree/master/db/ignore_patterns).
 
 `DIR/ignores` is a newline-separated list of [Python 3 regular expressions](http://pythex.org/)
 to use in addition to the ignore sets.
