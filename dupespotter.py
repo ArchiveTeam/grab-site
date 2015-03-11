@@ -134,7 +134,8 @@ def process_body(body, url):
 
 	# v= on http://vstreamers.com/v/images/css/p/videos
 	# cb= on megahits.sapo.pt
-	body = re.sub(br'[&\?](v|cb)=\d+', b"", body)
+	# pos= on www.smartcast.com.mx
+	body = re.sub(br'[&\?]((v|cb)=\d+|pos=[A-Za-z0-9=]+)', b"", body)
 
 	# Kill newrelic inline script
 	body = re.sub(br'window\.NREUM\|\|\(NREUM=\{\}\);NREUM\.info=\{.{1,3000}?\}', b"", body)
