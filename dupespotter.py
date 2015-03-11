@@ -105,6 +105,12 @@ def process_body(body, url):
 	# Minimum of 10 to handle UNIX timestamps
 	body = re.sub(br'[A-Fa-f0-9\.]{10,256}', b"", body)
 
+	# Spotted on http://mtnldelhi.in/:
+	# id="tabber_container_0_991">
+	# id="tab_1-1_340">
+	# <a name="tab_1-1_340">
+	body = re.sub(br'\b(id|name|class)="[^"]{0,100}[-_]\d+"', b"", body)
+
 	# Randomized anti-spam mailto: lines
 	body = re.sub(br'<a href="mailto:[^"@]{1,100}@[^"]{2,100}">(&#[0-9a-fA-Fx]{2,4};){3,100}</a>', b"", body)
 
