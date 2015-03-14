@@ -144,7 +144,7 @@ def process_body(body, url):
 	body = re.sub(br'[&\?]((v|cb)=\d+|pos=[A-Za-z0-9=]+)', b"", body)
 
 	# spotted on espn.go.com and others
-	body = re.sub(br'(splinks-|var hash = .)\d+', b"", body)
+	body = re.sub(br'(splinks-|var hash = .|":"?)-?\d+', b"", body)
 
 	# Kill newrelic inline script
 	body = re.sub(br'window\.NREUM\|\|\(NREUM=\{\}\);NREUM\.info=\{.{1,3000}?\}', b"", body)
