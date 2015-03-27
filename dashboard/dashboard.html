@@ -815,10 +815,15 @@ JobsRenderer.prototype._renderStdoutLine = function(data, logSegment, info) {
 			info.statsElements.jobInfo.classList.add('job-info-done');
 		} else if(/^ERROR Fatal exception/.test(line)) {
 			info.statsElements.jobInfo.classList.add('job-info-fatal');
-		} else if(/^ERROR Script requested immediate stop/.test(line)) {
+		} else if(/Script requested immediate stop/.test(line)) {
+			// Note: above message can be in:
+			// ERROR Script requested immediate stop
+			// or after an ERROR Fatal exception:
+			// wpull.hook.HookStop: Script requested immediate stop.
+			info.statsElements.jobInfo.classList.remove('job-info-fatal');
 			info.statsElements.jobInfo.classList.add('job-info-aborted');
 		} else if(/^Received item /.test(line)) {
-			// Clear 'fatal' status if a job starts with the same job ID
+			// Clear other statuses if a job restarts with the same job ID
 			info.statsElements.jobInfo.classList.remove('job-info-done');
 			info.statsElements.jobInfo.classList.remove('job-info-fatal');
 			info.statsElements.jobInfo.classList.remove('job-info-aborted');
