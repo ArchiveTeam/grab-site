@@ -535,6 +535,7 @@ var JobsTracker = function() {
 	this.sorted = [];
 	this.finishedArray = [];
 	this.finishedSet = {};
+	this.fatalExceptionSet = {};
 };
 
 JobsTracker.prototype.countActive = function() {
@@ -559,20 +560,30 @@ JobsTracker.prototype.handleJobData = function(jobData) {
 	return !alreadyKnown;
 };
 
-JobsTracker.prototype.markFinished = function(jobData) {
-	var ident = jobData["ident"];
+JobsTracker.prototype.markFinished = function(ident) {
 	if(!(ident in this.finishedSet)) {
 		this.finishedSet[ident] = true;
 		this.finishedArray.push(ident);
 	}
 };
 
-JobsTracker.prototype.markUnfinished = function(jobData) {
-	var ident = jobData["ident"];
+JobsTracker.prototype.markUnfinished = function(ident) {
 	if(ident in this.finishedSet) {
 		delete this.finishedSet[ident];
 		removeFromArray(this.finishedArray, ident);
 	}
+	// Job was restarted, so unmark fatal exception
+	if(ident in this.fatalExceptionSet) {
+		delete this.fatalExceptionSet[ident];
+	}
+};
+
+JobsTracker.prototype.markFatalException = function(ident) {
+	this.fatalExceptionSet[ident] = true;
+};
+
+JobsTracker.prototype.hasFatalException = function(ident) {
+	return ident in this.fatalExceptionSet;
 };
 
 
@@ -851,6 +862,7 @@ JobsRenderer.prototype._renderStdoutLine = function(data, logSegment, info, iden
 			this.jobs.markFinished(ident);
 		} else if(/^ERROR Fatal exception/.test(line)) {
 			info.statsElements.jobInfo.classList.add('job-info-fatal');
+			this.jobs.markFatalException(ident);
 		} else if(/Script requested immediate stop/.test(line)) {
 			// Note: above message can be in:
 			// ERROR Script requested immediate stop
@@ -957,17 +969,21 @@ JobsRenderer.prototype.handleData = function(data) {
 	}
 
 	if(this.mouseInside != ident) {
-		// We may have to remove more than one segment, if the user
-		// has paused the log window for a while.
-		while(info.lineCountWindow >= this.historyLines + this.linesPerSegment) {
-			var firstLogSegment = info.logWindow.firstChild;
-			assert(firstLogSegment != null, "info.logWindow.firstChild is null; " +
-				JSON.stringify({
-					"lineCountWindow": info.lineCountWindow,
-					"lineCountSegments": info.lineCountSegments}));
-			info.logWindow.removeChild(firstLogSegment);
-			info.lineCountWindow -= info.lineCountSegments[0];
-			info.lineCountSegments.shift();
+		// Don't remove any scrollback information when the job has a fatal exception,
+		// so that the user can find the traceback and report a bug.
+		if(!this.jobs.hasFatalException(ident)) {
+			// We may have to remove more than one segment, if the user
+			// has paused the log window for a while.
+			while(info.lineCountWindow >= this.historyLines + this.linesPerSegment) {
+				var firstLogSegment = info.logWindow.firstChild;
+				assert(firstLogSegment != null, "info.logWindow.firstChild is null; " +
+					JSON.stringify({
+						"lineCountWindow": info.lineCountWindow,
+						"lineCountSegments": info.lineCountSegments}));
+				info.logWindow.removeChild(firstLogSegment);
+				info.lineCountWindow -= info.lineCountSegments[0];
+				info.lineCountSegments.shift();
+			}
 		}
 
 		// Scroll to the bottom
