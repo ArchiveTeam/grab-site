@@ -748,8 +748,8 @@ JobsRenderer.prototype._createLogContainer = function(jobData) {
 			// matches only this job URL, thus hiding everything but this job.
 			h("span", {
 				"onclick": function() {
-					if(window.getSelection().toString()) {
-						// Set the filter on clicks, but not on text selections.
+					if(window.getSelection().toString().length > 1) {
+						// Set the filter on clicks, but not on text selections (unless just one character).
 						return;
 					}
 					var filter = ds.getFilter();
