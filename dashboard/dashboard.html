@@ -611,6 +611,10 @@ var JobsRenderer = function(container, filterBox, historyLines, showNicks) {
 	this.container = container;
 	this.filterBox = filterBox;
 	addAnyChangeListener(this.filterBox, this.applyFilter.bind(this));
+	this.filterBox.onkeypress = function(ev) {
+		// So that j or k in input box does not result in job window switching
+		ev.stopPropagation();
+	}
 	this.historyLines = historyLines;
 	this.showNicks = showNicks;
 	this.linesPerSegment = Math.max(1, Math.round(this.historyLines / 10));
@@ -1116,6 +1120,17 @@ var Dashboard = function() {
 	xhr.open("GET", "http://" + this.host + "/logs/recent?cb=" + Date.now() + Math.random());
 	xhr.setRequestHeader('Accept', 'application/json');
 	xhr.send("");
+
+	document.onkeypress = this.keyPress.bind(this);
+};
+
+Dashboard.prototype.keyPress = function(ev) {
+	console.log(ev);
+	if(ev.which == 106) {
+		console.log('j');
+	} else if(ev.which == 107) {
+		console.log('k');
+	}
 };
 
 Dashboard.prototype.handleData = function(data) {
