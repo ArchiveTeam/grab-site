@@ -934,7 +934,9 @@ JobsRenderer.prototype.handleData = function(data) {
 		}
 
 		// Scroll to the bottom
-		info.logWindow.scrollTop = info.logWindow.scrollHeight;
+		// To avoid serious performance problems in Firefox, we use a big number
+		// instead of info.logWindow.scrollHeight.
+		info.logWindow.scrollTop = 999999;
 	}
 };
 
