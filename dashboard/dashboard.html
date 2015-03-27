@@ -811,7 +811,10 @@ JobsRenderer.prototype._renderStdoutLine = function(data, logSegment, info) {
 		logSegment.appendChild(h("div", Reusable.obj_className_line_stdout, line));
 		renderedLines += 1;
 
-		if(/^Starting MarkItemAsDone for Item/.test(line)) {
+		// Check for 'Finished RsyncUpload for Item'
+		// instead of 'Starting MarkItemAsDone for Item'
+		// because the latter is often missing
+		if(/^Finished RsyncUpload for Item/.test(line)) {
 			info.statsElements.jobInfo.classList.add('job-info-done');
 		} else if(/^ERROR Fatal exception/.test(line)) {
 			info.statsElements.jobInfo.classList.add('job-info-fatal');
