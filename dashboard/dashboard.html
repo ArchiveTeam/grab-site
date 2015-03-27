@@ -700,8 +700,8 @@ JobsRenderer.prototype._createLogContainer = function(jobData) {
 	statsElements.jobInfo = h(
 		"span", {"className": "job-info"}, [
 			h("a", {"className": "inline-stat job-url", "href": jobData["url"]}, jobData["url"]),
-			// Clicking anywhere in this area will set the filter to
-			// this job URL, (usually) hiding everything but this job.
+			// Clicking anywhere in this area will set the filter to a regexp that
+			// matches only this job URL, thus hiding everything but this job.
 			h("span", {
 				"onclick": function() {
 					if(window.getSelection().toString()) {
