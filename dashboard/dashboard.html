@@ -470,6 +470,7 @@ var getQueryArgs = function() {
 };
 
 var isSafari = navigator.userAgent.indexOf("Safari") != -1;
+var isFirefox = navigator.userAgent.indexOf("Firefox") != -1;
 
 var addAnyChangeListener = function(elem, func) {
 	// DOM0 handler for convenient use by Clear button
@@ -1004,16 +1005,27 @@ JobsRenderer.prototype.applyFilter = function() {
 		var w = this.renderInfo[job["ident"]].logWindow;
 		if(!RegExp(query).test(job["url"])) {
 			w.classList.add("log-window-hidden");
-			// Remove this class, else an ugly border will be visible
+			// Firefox exhibits serious performance problems when adding
+			// lines to our 0px-high log windows, so add display: none
+			// (effectively killing the animation)
+			if(isFirefox) {
+				w.style.display = "none";
+			}
+
+			// Remove this class, else an ugly border may be visible
 			w.classList.remove('log-window-stopped');
 			unmatchedWindows.push(w);
 		} else {
+			w.classList.remove("log-window-hidden");
+			if(isFirefox) {
+				w.style.display = "block";
+			}
+
+			matches += 1;
+			matchedWindows.push(w);
 			if(this.firstFilterMatch == null) {
 				this.firstFilterMatch = job["ident"];
 			}
-			w.classList.remove("log-window-hidden");
-			matches += 1;
-			matchedWindows.push(w);
 		}
 	}
 
