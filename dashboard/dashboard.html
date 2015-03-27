@@ -517,6 +517,15 @@ var removeFromArray = function(arr, item) {
 	}
 };
 
+// Based on http://stackoverflow.com/a/18520276
+var findInArray = function(arr, test, ctx) {
+	var result = null;
+	arr.some(function(el, i) {
+		return test.call(ctx, el, i, arr) ? ((result = i), true) : false;
+	});
+	return result;
+};
+
 /*** End of utility code ***/
 
 
@@ -973,6 +982,7 @@ JobsRenderer.prototype.applyFilter = function() {
 	var matches = 0;
 	var matchedWindows = [];
 	var unmatchedWindows = [];
+	this.firstFilterMatch = null;
 	for(var i=0; i < this.jobs.sorted.length; i++) {
 		var job = this.jobs.sorted[i];
 		var w = this.renderInfo[job["ident"]].logWindow;
@@ -982,6 +992,9 @@ JobsRenderer.prototype.applyFilter = function() {
 			w.classList.remove('log-window-stopped');
 			unmatchedWindows.push(w);
 		} else {
+			if(this.firstFilterMatch == null) {
+				this.firstFilterMatch = job["ident"];
+			}
 			w.classList.remove("log-window-hidden");
 			matches += 1;
 			matchedWindows.push(w);
@@ -1006,6 +1019,25 @@ JobsRenderer.prototype.applyFilter = function() {
 		this.aligned = false;
 		this.updateAlign();
 	}
+};
+
+JobsRenderer.prototype.showNextPrev = function(offset) {
+	var idx = findInArray(this.jobs.sorted, function(el, i) {
+		return el["ident"] == this.firstFilterMatch;
+	}.bind(this));
+	if(idx == null) {
+		// If no job windows are shown, set up index to make k show the first job window
+		idx = -1;
+	}
+	idx = idx + offset;
+	// Wrap around
+	if(idx == -1) {
+		idx = this.jobs.sorted.length - 1;
+	} else if(idx == this.jobs.sorted.length) {
+		idx = 0;
+	}
+	var newShownJob = this.jobs.sorted[idx];
+	ds.setFilter("^" + regExpEscape(newShownJob["url"]) + "$");
 };
 
 JobsRenderer.prototype.updateAlign = function() {
@@ -1146,11 +1178,11 @@ var Dashboard = function() {
 };
 
 Dashboard.prototype.keyPress = function(ev) {
-	console.log(ev);
-	if(ev.which == 106) {
-		console.log('j');
-	} else if(ev.which == 107) {
-		console.log('k');
+	//console.log(ev);
+	if(ev.which == 106) { // j
+		this.jobsRenderer.showNextPrev(1);
+	} else if(ev.which == 107) { // k
+		this.jobsRenderer.showNextPrev(-1);
 	}
 };
 
