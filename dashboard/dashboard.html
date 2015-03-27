@@ -273,7 +273,7 @@ a.ignore {
 	<div class="header">
 		<div>
 			<a href="http://archiveteam.org/index.php?title=ArchiveBot" class="underlined-a">ArchiveBot</a>
-			tracking ~<span id="num-crawls">0</span> crawls.
+			tracking <span id="num-crawls">0</span> crawls.
 			See also <a href="pipelines" class="underlined-a">pipeline</a> or <a href="logs/recent" class="underlined-a">job</a> reports.
 			Show: <input id="filter-box" type="text" size="21" autofocus>
 			<input onclick="ds.setFilter('');" type="button" value="  All  " class="button">
@@ -510,6 +510,13 @@ var classRemover = function(name) {
 	};
 };
 
+var removeFromArray = function(arr, item) {
+	var idx = arr.indexOf(item);
+	if(idx != -1) {
+		arr.splice(idx, 1);
+	}
+};
+
 /*** End of utility code ***/
 
 
@@ -540,11 +547,23 @@ JobsTracker.prototype.handleJobData = function(jobData) {
 		this.sorted.push(jobData);
 		this.resort();
 	}
-	if(jobData["finished"] && !(ident in this.finishedSet)) {
+	return !alreadyKnown;
+};
+
+JobsTracker.prototype.markFinished = function(jobData) {
+	var ident = jobData["ident"];
+	if(!(ident in this.finishedSet)) {
 		this.finishedSet[ident] = true;
 		this.finishedArray.push(ident);
 	}
-	return !alreadyKnown;
+};
+
+JobsTracker.prototype.markUnfinished = function(jobData) {
+	var ident = jobData["ident"];
+	if(ident in this.finishedSet) {
+		delete this.finishedSet[ident];
+		removeFromArray(this.finishedArray, ident);
+	}
 };
 
 
@@ -800,7 +819,7 @@ JobsRenderer.prototype._renderIgnoreLine = function(data, logSegment) {
 	return 1;
 };
 
-JobsRenderer.prototype._renderStdoutLine = function(data, logSegment, info) {
+JobsRenderer.prototype._renderStdoutLine = function(data, logSegment, info, ident) {
 	var cleanedMessage = data["message"].replace(/[\r\n]+$/, "");
 	var renderedLines = 0;
 	if(!cleanedMessage) {
@@ -820,6 +839,7 @@ JobsRenderer.prototype._renderStdoutLine = function(data, logSegment, info) {
 		// because the latter is often missing
 		if(/^Finished RsyncUpload for Item/.test(line)) {
 			info.statsElements.jobInfo.classList.add('job-info-done');
+			this.jobs.markFinished(ident);
 		} else if(/^ERROR Fatal exception/.test(line)) {
 			info.statsElements.jobInfo.classList.add('job-info-fatal');
 		} else if(/Script requested immediate stop/.test(line)) {
@@ -834,6 +854,7 @@ JobsRenderer.prototype._renderStdoutLine = function(data, logSegment, info) {
 			info.statsElements.jobInfo.classList.remove('job-info-done');
 			info.statsElements.jobInfo.classList.remove('job-info-fatal');
 			info.statsElements.jobInfo.classList.remove('job-info-aborted');
+			this.jobs.markUnfinished(ident);
 		}
 	}
 	return renderedLines;
@@ -859,7 +880,7 @@ JobsRenderer.prototype.handleData = function(data) {
 	if(type == "download") {
 		var linesRendered = this._renderDownloadLine(data, info.logSegment);
 	} else if(type == "stdout") {
-		var linesRendered = this._renderStdoutLine(data, info.logSegment, info);
+		var linesRendered = this._renderStdoutLine(data, info.logSegment, info, ident);
 	} else if(type == "ignore") {
 		var linesRendered = this._renderIgnoreLine(data, info.logSegment);
 	} else {
