@@ -68,6 +68,18 @@ html, body {
 	overflow: hidden;
 }
 
+.job-info-done {
+	color: #767676;
+}
+
+.job-info-aborted {
+	color: #9B00D7 !important;
+}
+
+.job-info-fatal {
+	color: #DD0000 !important;
+}
+
 .inline-stat {
 	/* Needed for 'Align!' feature */
 	display: inline-block;
@@ -82,6 +94,7 @@ html, body {
 	font-size: 14px;
 	font-weight: bold;
 	text-decoration: none;
+	color: inherit;
 }
 
 .job-url-aligned {
@@ -288,6 +301,13 @@ a.ignore {
 				To show just one job, click anywhere on its stats.
 			</p>
 			<p>
+				Color coding for the job stats line:
+					in progress,
+					<span class="job-info-done">finished normally</span>,
+					<span class="job-info-aborted">finished with abort</span>,
+					<span class="job-info-fatal">finished with fatal exception</span>.
+			</p>
+			<p>
 				To clear all finished jobs, reload the page.
 			</p>
 			<p>
@@ -348,7 +368,9 @@ var appendAny = function(e, thing) {
 	} else if(typeof thing == "string") {
 		e.appendChild(text(thing));
 	} else {
-		// TODO: Check that it's actually a DOM node first
+		if(thing == null) {
+			throw Error("thing is " + JSON.stringify(thing));
+		}
 		e.appendChild(thing);
 	}
 };
@@ -668,55 +690,62 @@ JobsRenderer.prototype._createLogContainer = function(jobData) {
 		queueLength: h("span", {"className": "inline-stat job-in-queue"}, "? in q."),
 		connections: h("span", null, "?"),
 		delay: h("span", {"className": "inline-stat job-delay"}, "? ms delay"),
-		ignores: h("span", {"className": "job-ignores"}, "?")
+		ignores: h("span", {"className": "job-ignores"}, "?"),
+		jobInfo: null /* set later */
 	};
 
+	var startedISOString = new Date(parseFloat(jobData["started_at"]) * 1000).toISOString();
 	var jobNote = h("span", {"className": "job-note"}, null);
 
+	statsElements.jobInfo = h(
+		"span", {"className": "job-info"}, [
+			h("a", {"className": "inline-stat job-url", "href": jobData["url"]}, jobData["url"]),
+			// Clicking anywhere in this area will set the filter to
+			// this job URL, (usually) hiding everything but this job.
+			h("span", {
+				"onclick": function() {
+					if(window.getSelection().toString()) {
+						// Set the filter on clicks, but not on text selections.
+						return;
+					}
+					var filter = ds.getFilter();
+					if(RegExp(filter).test(jobData["url"]) && startsWith(filter, "^") && endsWith(filter, "$")) {
+						// If we're already showing just this log window, go back
+						// to showing nothing.
+						ds.setFilter("^$");
+					} else {
+						ds.setFilter("^" + regExpEscape(jobData["url"]) + "$");
+					}
+				}
+			}, [
+				" on ",
+				h("span", {"title": startedISOString}, startedISOString.split("T")[0].substr(5)),
+				h("span", {"className": "inline-stat job-nick"}, (this.showNicks ? " by " + jobData["started_by"] : "")),
+				jobNote,
+				"; ",
+				statsElements.mb,
+				" MB in ",
+				statsElements.responses,
+				" at ",
+				statsElements.responsesPerSecond,
+				"/s, ",
+				statsElements.queueLength,
+				"; ",
+				statsElements.connections,
+				" con. w/ ",
+				statsElements.delay,
+				"; ",
+				statsElements.ignores
+			])
+		]
+	);
+
 	var logWindow = h('div', logWindowAttrs, logSegment);
-	var startedISOString = new Date(parseFloat(jobData["started_at"]) * 1000).toISOString();
 	var div = h(
 		'div',
 		{"id": "log-container-" + ident}, [
 			h("div", {"className": "job-header"}, [
-				h("span", {"className": "job-info"}, [
-					h("a", {"className": "inline-stat job-url", "href": jobData["url"]}, jobData["url"]),
-					// Clicking anywhere in this area will set the filter to
-					// this job URL, (usually) hiding everything but this job.
-					h("span", {"onclick": function() {
-						if(window.getSelection().toString()) {
-							// Set the filter on clicks, but not on text selections.
-							return;
-						}
-						var filter = ds.getFilter();
-						if(RegExp(filter).test(jobData["url"]) && startsWith(filter, "^") && endsWith(filter, "$")) {
-							// If we're already showing just this log window, go back
-							// to showing nothing.
-							ds.setFilter("^$");
-						} else {
-							ds.setFilter("^" + regExpEscape(jobData["url"]) + "$");
-						}
-					}}, [
-						" on ",
-						h("span", {"title": startedISOString}, startedISOString.split("T")[0].substr(5)),
-						h("span", {"className": "inline-stat job-nick"}, (this.showNicks ? " by " + jobData["started_by"] : "")),
-						jobNote,
-						"; ",
-						statsElements.mb,
-						" MB in ",
-						statsElements.responses,
-						" at ",
-						statsElements.responsesPerSecond,
-						"/s, ",
-						statsElements.queueLength,
-						"; ",
-						statsElements.connections,
-						" con. w/ ",
-						statsElements.delay,
-						"; ",
-						statsElements.ignores
-					])
-				]),
+				statsElements.jobInfo,
 				h("input", {
 					"className": "job-ident",
 					"type": "text",
@@ -767,7 +796,7 @@ JobsRenderer.prototype._renderIgnoreLine = function(data, logSegment) {
 	return 1;
 };
 
-JobsRenderer.prototype._renderStdoutLine = function(data, logSegment) {
+JobsRenderer.prototype._renderStdoutLine = function(data, logSegment, info) {
 	var cleanedMessage = data["message"].replace(/[\r\n]+$/, "");
 	var renderedLines = 0;
 	if(!cleanedMessage) {
@@ -781,6 +810,19 @@ JobsRenderer.prototype._renderStdoutLine = function(data, logSegment) {
 		}
 		logSegment.appendChild(h("div", Reusable.obj_className_line_stdout, line));
 		renderedLines += 1;
+
+		if(/^Starting MarkItemAsDone for Item/.test(line)) {
+			info.statsElements.jobInfo.classList.add('job-info-done');
+		} else if(/^ERROR Fatal exception/.test(line)) {
+			info.statsElements.jobInfo.classList.add('job-info-fatal');
+		} else if(/^ERROR Script requested immediate stop/.test(line)) {
+			info.statsElements.jobInfo.classList.add('job-info-aborted');
+		} else if(/^Received item /.test(line)) {
+			// Clear 'fatal' status if a job starts with the same job ID
+			info.statsElements.jobInfo.classList.remove('job-info-done');
+			info.statsElements.jobInfo.classList.remove('job-info-fatal');
+			info.statsElements.jobInfo.classList.remove('job-info-aborted');
+		}
 	}
 	return renderedLines;
 };
@@ -805,7 +847,7 @@ JobsRenderer.prototype.handleData = function(data) {
 	if(type == "download") {
 		var linesRendered = this._renderDownloadLine(data, info.logSegment);
 	} else if(type == "stdout") {
-		var linesRendered = this._renderStdoutLine(data, info.logSegment);
+		var linesRendered = this._renderStdoutLine(data, info.logSegment, info);
 	} else if(type == "ignore") {
 		var linesRendered = this._renderIgnoreLine(data, info.logSegment);
 	} else {
