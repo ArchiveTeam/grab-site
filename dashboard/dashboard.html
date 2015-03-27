@@ -1026,8 +1026,13 @@ JobsRenderer.prototype.showNextPrev = function(offset) {
 		return el["ident"] == this.firstFilterMatch;
 	}.bind(this));
 	if(idx == null) {
-		// If no job windows are shown, set up index to make k show the first job window
-		idx = -1;
+		// If no job windows are shown, set up index to make j show the first job window,
+		// k the last job window.
+		if(offset == 1) {
+			idx = -1;
+		} else {
+			idx = this.jobs.sorted.length;
+		}
 	}
 	idx = idx + offset;
 	// Wrap around
