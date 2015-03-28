@@ -298,8 +298,18 @@ a.ignore {
 				To pause scrolling, move your mouse inside a log window.
 			</p>
 			<p>
-				To show just one job, click anywhere in the stats line.  Use the <kbd>j</kbd> and <kbd>k</kbd> keys to switch between job windows.
+				To show just one job, click anywhere in the stats line.
 			</p>
+			<p>
+				Keyboard shortcuts:
+			</p>
+			<ul>
+				<li><kbd>j</kbd> - show next job window
+				<li><kbd>k</kbd> - show previous job window
+				<li><kbd>a</kbd> - show all job windows
+				<li><kbd>n</kbd> - hide all job windows
+				<li><kbd>f</kbd> - move focus to filter box
+			</ul>
 			<p>
 				Color coding for the job stats line:
 					in progress,
@@ -1217,6 +1227,14 @@ Dashboard.prototype.keyPress = function(ev) {
 		this.jobsRenderer.showNextPrev(1);
 	} else if(ev.which == 107) { // k
 		this.jobsRenderer.showNextPrev(-1);
+	} else if(ev.which == 97) { // a
+		ds.setFilter('');
+	} else if(ev.which == 110) { // n
+		ds.setFilter('^$');
+	} else if(ev.which == 102) { // f
+		ev.preventDefault();
+		byId('filter-box').focus();
+		byId('filter-box').select();
 	}
 };
 
