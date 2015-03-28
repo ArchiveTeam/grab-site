@@ -278,7 +278,7 @@ a.ignore {
 			Show: <input id="filter-box" type="text" size="21" autofocus>
 			<input onclick="ds.setFilter('');" type="button" value="  All  " class="button">
 			<input onclick="ds.setFilter('^$');" type="button" value="None" class="button">
-			<small><a href="/beta" class="underlined-a">Try 3.0 Beta</a></small>
+			<small id="promo"><a href="/beta" class="underlined-a">Try 3.0 Beta</a></small>
 		</div>
 		<div>
 			<input type="button" onclick="ds.toggleAlign()" class="button" value="Align!">
@@ -1174,8 +1174,12 @@ var Dashboard = function() {
 			125;
 	var showNicks =
 		args["showNicks"] ?
-			Number(args["showNicks"]) :
+			Boolean(Number(args["showNicks"])) :
 			false;
+	var promo =
+		args["promo"] ?
+			Boolean(Number(args["promo"])) :
+			true;
 	this.host = args["host"] ? args["host"] : location.host;
 	this.dumpTraffic = args["dumpMax"] && Number(args["dumpMax"]) > 0;
 	if(this.dumpTraffic) {
@@ -1219,6 +1223,10 @@ var Dashboard = function() {
 	xhr.send("");
 
 	document.onkeypress = this.keyPress.bind(this);
+
+	if(!promo) {
+		byId('promo').style.display = 'none';
+	}
 };
 
 Dashboard.prototype.keyPress = function(ev) {
