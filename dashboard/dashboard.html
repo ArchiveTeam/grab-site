@@ -871,7 +871,7 @@ JobsRenderer.prototype._renderStdoutLine = function(data, logSegment, info, iden
 		if(/^Finished RsyncUpload for Item/.test(line)) {
 			info.statsElements.jobInfo.classList.add('job-info-done');
 			this.jobs.markFinished(ident);
-		} else if(/^ERROR Fatal exception/.test(line)) {
+		} else if(/^(CRITICAL Sorry|ERROR Fatal exception)/.test(line)) {
 			info.statsElements.jobInfo.classList.add('job-info-fatal');
 			this.jobs.markFatalException(ident);
 		} else if(/Script requested immediate stop/.test(line)) {
