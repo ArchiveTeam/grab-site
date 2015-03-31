@@ -177,7 +177,8 @@
         "^https://static\\.licdn\\.com/sc/p/com\\.linkedin\\.nux(:|%3A)nux-static-content(\\+|%2B)[\\d\\.]+/f/",
         "^https?://www\\.flickr\\.com/(explore/|photos/[^/]+/(sets/\\d+/(page\\d+/)?)?)\\d+_[a-f0-9]+(_[a-z])?\\.jpg$",
         "^https?://static\\.licdn\\.com/sc/p/.+/f//",
-        "^http://www\\.warnerbros\\.com/\\d+$"
+        "^http://www\\.warnerbros\\.com/\\d+$",
+        "^https?://tm\\.uol\\.com\\.br/h/.+/h/"
     ],
     "type": "ignore_patterns"
 }
