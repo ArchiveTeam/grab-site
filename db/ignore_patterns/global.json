@@ -111,6 +111,7 @@
         "^http://mp3tslg\\.tdf-cdn\\.com/",
         "^http://[^/]+/anony/mjpg\\.cgi$",
         "^https?://[^/]+\\.rastream\\.com(:\\d+)?/",
+        "^https?://audiots\\.scdn\\.arkena\\.com/",
         "^https?://(www|draft)\\.blogger\\.com/(navbar\\.g|post-edit\\.g|delete-comment\\.g|comment-iframe\\.g|share-post\\.g|email-post\\.g|blog-this\\.g|delete-backlink\\.g|rearrange|blog_this\\.pyra)\\?",
         "^https?://www\\.tumblr\\.com/(impixu\\?|share(/link/?)?\\?|reblog/)",
         "^https?://plus\\.google\\.com/share\\?",
