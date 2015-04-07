@@ -179,7 +179,8 @@
         "^https?://www\\.flickr\\.com/(explore/|photos/[^/]+/(sets/\\d+/(page\\d+/)?)?)\\d+_[a-f0-9]+(_[a-z])?\\.jpg$",
         "^https?://static\\.licdn\\.com/sc/p/.+/f//",
         "^http://www\\.warnerbros\\.com/\\d+$",
-        "^https?://tm\\.uol\\.com\\.br/h/.+/h/"
+        "^https?://tm\\.uol\\.com\\.br/h/.+/h/",
+        "^https?://media\\.opb\\.org/clips/embed/.+\\.js$"
     ],
     "type": "ignore_patterns"
 }
