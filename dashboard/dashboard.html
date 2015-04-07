@@ -11,8 +11,8 @@
 <title>ArchiveBot dashboard 2.0</title>
 <script>
 // Framebust out of archivebot.com
-if(top.location.host == "archivebot.com") {
-	top.location = "http://dashboard.at.ninjawedding.org/" + top.location.search;
+if(self != top) {
+	top.location = "http://dashboard.at.ninjawedding.org/" + location.search;
 }
 </script>
 </head>
