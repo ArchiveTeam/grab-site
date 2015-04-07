@@ -49,7 +49,6 @@ HOOK_SETTINGS_DIR="$dir" PYTHONPATH="$self" ~/.local/bin/wpull3 \
 	--no-parent \
 	--sitemaps \
 	--inet4-only \
-	--no-skip-getaddrinfo \
 	--timeout 20 \
 	--tries 3 \
 	--waitretry 5 \
