@@ -11,11 +11,12 @@
 <title>ArchiveBot dashboard 2.0</title>
 <script>
 (function() {
-	// Framebust out of archivebot.com
+	// Framebust out if necessary
 	if(self != top) {
 		var target = self.location.href;
+		// Ugly archivebot.com-specific hack
 		target = target.replace(
-			"http://dashboard.at.ninjawedding.org:4567/",
+			"http://arshboard.at.ninjawedding.org:4567/",
 			"http://dashboard.at.ninjawedding.org/");
 		top.location = target;
 	}
