@@ -9,6 +9,12 @@
 <link rel="alternate" type="application/atom+xml" title="Atom Feed" href="/feed/archivebot.atom">
 <link rel="icon" type="image/png" href="/assets/favicon.png">
 <title>ArchiveBot dashboard 2.0</title>
+<script>
+// Framebust out of archivebot.com
+if(top.location.host == "archivebot.com") {
+	top.location = "http://dashboard.at.ninjawedding.org/" + top.location.search;
+}
+</script>
 </head>
 <body>
 <style>
