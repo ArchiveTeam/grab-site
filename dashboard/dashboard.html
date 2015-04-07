@@ -10,10 +10,16 @@
 <link rel="icon" type="image/png" href="/assets/favicon.png">
 <title>ArchiveBot dashboard 2.0</title>
 <script>
-// Framebust out of archivebot.com
-if(self != top) {
-	top.location = "http://dashboard.at.ninjawedding.org/" + location.search;
-}
+(function() {
+	// Framebust out of archivebot.com
+	if(self != top) {
+		var target = self.location.href;
+		target = target.replace(
+			"http://dashboard.at.ninjawedding.org:4567/",
+			"http://dashboard.at.ninjawedding.org/");
+		top.location = target;
+	}
+})();
 </script>
 </head>
 <body>
