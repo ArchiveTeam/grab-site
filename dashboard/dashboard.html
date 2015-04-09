@@ -322,6 +322,7 @@ a.ignore {
 				<li><kbd>a</kbd> - show all job windows
 				<li><kbd>n</kbd> - hide all job windows
 				<li><kbd>f</kbd> - move focus to filter box
+				<li><kbd>?</kbd> - show/hide help text
 			</ul>
 			<p>
 				Color coding for the job stats line:
@@ -1256,6 +1257,8 @@ Dashboard.prototype.keyPress = function(ev) {
 		ev.preventDefault();
 		byId('filter-box').focus();
 		byId('filter-box').select();
+	} else if(ev.which == 63) { // ?
+		ds.toggleHelp();
 	}
 };
 
