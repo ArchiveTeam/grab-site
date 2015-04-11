@@ -1,7 +1,7 @@
 {
     "name": "twitter",
     "patterns": [
-        "^https?://(?:www|mobile)\\.twitter\\.com/.+\\?(?:id|lang|locale|screen_name)=",
+        "^https?://((?:www|mobile)\\.)?twitter\\.com/.+\\?(?:id|lang|locale|screen_name)=",
         "^https?://mobile\\.twitter\\.com/i/anonymize\\?data="
     ],
     "type": "ignore_patterns"
