@@ -888,11 +888,14 @@ JobsRenderer.prototype._renderStdoutLine = function(data, logSegment, info, iden
 		} else if(/^CRITICAL (Sorry|Please report)|^ERROR Fatal exception|No space left on device|^Call stack:|^--- Logging error ---|^Fatal Python error:|^(Thread|Current thread) 0x/.test(line)) {
 			info.statsElements.jobInfo.classList.add('job-info-fatal');
 			this.jobs.markFatalException(ident);
-		} else if(/Script requested immediate stop/.test(line)) {
+		} else if(/Script requested immediate stop|^Adjusted target WARC path to.*-aborted$/.test(line)) {
 			// Note: above message can be in:
 			// ERROR Script requested immediate stop
 			// or after an ERROR Fatal exception:
 			// wpull.hook.HookStop: Script requested immediate stop.
+			//
+			// Also check for "Adjusted target WARC path" because
+			// the exception may be entirely missing.
 			info.statsElements.jobInfo.classList.remove('job-info-fatal');
 			info.statsElements.jobInfo.classList.add('job-info-aborted');
 		} else if(/^Received item /.test(line)) {
