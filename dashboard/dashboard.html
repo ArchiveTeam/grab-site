@@ -885,7 +885,7 @@ JobsRenderer.prototype._renderStdoutLine = function(data, logSegment, info, iden
 		if(/^Finished RsyncUpload for Item/.test(line)) {
 			info.statsElements.jobInfo.classList.add('job-info-done');
 			this.jobs.markFinished(ident);
-		} else if(/^CRITICAL (Sorry|Please report)|^ERROR Fatal exception|No space left on device|^Call stack:|^--- Logging error ---/.test(line)) {
+		} else if(/^CRITICAL (Sorry|Please report)|^ERROR Fatal exception|No space left on device|^Call stack:|^--- Logging error ---|^Fatal Python error:|^(Thread|Current thread) 0x/.test(line)) {
 			info.statsElements.jobInfo.classList.add('job-info-fatal');
 			this.jobs.markFatalException(ident);
 		} else if(/Script requested immediate stop/.test(line)) {
