@@ -74,7 +74,11 @@ html, body {
 	align-items: flex-end;
 	justify-content: space-between;
 	flex-flow: row nowrap;
-	cursor: pointer;
+	cursor: default;
+}
+
+.stats-elements:hover {
+	background-color: #D8CBBC;
 }
 
 .job-info {
@@ -822,6 +826,7 @@ JobsRenderer.prototype._createLogContainer = function(jobData) {
 			// Clicking anywhere in this area will set the filter to a regexp that
 			// matches only this job URL, thus hiding everything but this job.
 			h("span", {
+				"className": "stats-elements",
 				"onclick": function() {
 					if(window.getSelection().toString().length > 1) {
 						// Set the filter on clicks, but not on text selections (unless just one character).
