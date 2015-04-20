@@ -1212,6 +1212,8 @@ ContextMenuRenderer.prototype.makeCopyTextFn = function(text) {
 
 ContextMenuRenderer.prototype.makeEntries = function(url) {
 	return [
+		// Unfortunately, this does not open it in a background tab
+		// like the real context menu does.
 		 h('a', {'href': url}, "Open link in new tab")
 		,h('span', {'onclick': this.makeCopyTextFn(url)}, "Copy link address")
 	];
