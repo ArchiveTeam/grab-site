@@ -1181,7 +1181,7 @@ var ContextMenuRenderer = function() {
 /**
  * Returns true if the event target is a URL in a log window
  */
-ContextMenuRenderer.prototype.clickedOnLoggedURL = function(ev) {
+ContextMenuRenderer.prototype.clickedOnLogWindowURL = function(ev) {
 	var target = ev.target;
 	if(!target || target.nodeName != "A") {
 		return false;
@@ -1213,7 +1213,7 @@ ContextMenuRenderer.prototype.makeEntries = function(url) {
 
 ContextMenuRenderer.prototype.onContextMenu = function(ev) {
 	//console.log(ev);
-	if(!this.clickedOnLoggedURL(ev)) {
+	if(!this.clickedOnLogWindowURL(ev)) {
 		this.blur();
 		return;
 	}
