@@ -364,6 +364,7 @@ a.ignore {
 				<li><kbd>a</kbd> - show all job windows
 				<li><kbd>n</kbd> - hide all job windows
 				<li><kbd>f</kbd> - move focus to filter box
+				<li><kbd>v</kbd> - open the job URL of the first-shown job window
 				<li><kbd>?</kbd> - show/hide help text
 			</ul>
 			<p>
@@ -1107,7 +1108,7 @@ JobsRenderer.prototype.applyFilter = function() {
 			matches += 1;
 			matchedWindows.push(w);
 			if(this.firstFilterMatch == null) {
-				this.firstFilterMatch = job["ident"];
+				this.firstFilterMatch = job;
 			}
 		}
 	}
@@ -1133,9 +1134,14 @@ JobsRenderer.prototype.applyFilter = function() {
 };
 
 JobsRenderer.prototype.showNextPrev = function(offset) {
-	var idx = findInArray(this.jobs.sorted, function(el, i) {
-		return el["ident"] == this.firstFilterMatch;
-	}.bind(this));
+	var idx;
+	if(this.firstFilterMatch == null) {
+		idx = null;
+	} else {
+		idx = findInArray(this.jobs.sorted, function(el, i) {
+			return el["ident"] == this.firstFilterMatch["ident"];
+		}.bind(this));
+	}
 	if(idx == null) {
 		// If no job windows are shown, set up index to make j show the first job window,
 		// k the last job window.
@@ -1415,6 +1421,8 @@ Dashboard.prototype.keyPress = function(ev) {
 		ev.preventDefault();
 		byId('filter-box').focus();
 		byId('filter-box').select();
+	} else if(ev.which == 118) { // v
+		window.open(this.jobsRenderer.firstFilterMatch["url"]);
 	} else if(ev.which == 63) { // ?
 		ds.toggleHelp();
 	}
