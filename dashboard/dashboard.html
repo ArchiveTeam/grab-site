@@ -1135,10 +1135,18 @@ JobsRenderer.prototype.toggleAlign = function() {
 
 
 
+/**
+ * This context menu pops up when you right-click on a URL in
+ * a log window, helping you copy an !ig command based on the URL
+ * you right-clicked.
+ */
 var ContextMenuRenderer = function() {
 	this.element = byId('context-menu');
 };
 
+/**
+ * Returns true if the event target is a URL in a log window
+ */
 ContextMenuRenderer.prototype.clickedOnLoggedURL = function(ev) {
 	var target = ev.target;
 	if(!target || target.nodeName != "A") {
@@ -1152,8 +1160,8 @@ ContextMenuRenderer.prototype.clickedOnLoggedURL = function(ev) {
 	return cn == "line-normal" || cn == "line-error" || cn == "line-warning" || cn == "line-redirect";
 };
 
-ContextMenuRenderer.prototype.maybePopup = function(ev) {
-	console.log(ev);
+ContextMenuRenderer.prototype.onContextMenu = function(ev) {
+	//console.log(ev);
 	if(!this.clickedOnLoggedURL(ev)) {
 		this.blur();
 		return;
@@ -1292,7 +1300,7 @@ var Dashboard = function() {
 	xhr.send("");
 
 	document.onkeypress = this.keyPress.bind(this);
-	document.oncontextmenu = this.contextMenuRenderer.maybePopup.bind(this.contextMenuRenderer);
+	document.oncontextmenu = this.contextMenuRenderer.onContextMenu.bind(this.contextMenuRenderer);
 	document.onclick = this.contextMenuRenderer.blur.bind(this.contextMenuRenderer);
 
 	if(!promo) {
