@@ -727,7 +727,7 @@ var getSummaryResponses = function(jobData) {
 
 
 
-var JobsRenderer = function(container, filterBox, historyLines, showNicks) {
+var JobsRenderer = function(container, filterBox, historyLines, showNicks, contextMenuRenderer) {
 	this.container = container;
 	this.filterBox = filterBox;
 	addAnyChangeListener(this.filterBox, this.applyFilter.bind(this));
@@ -737,6 +737,7 @@ var JobsRenderer = function(container, filterBox, historyLines, showNicks) {
 	}
 	this.historyLines = historyLines;
 	this.showNicks = showNicks;
+	this.contextMenuRenderer = contextMenuRenderer;
 	this.linesPerSegment = Math.max(1, Math.round(this.historyLines / 10));
 	this.jobs = new JobsTracker();
 	// ident -> JobRenderInfo
@@ -775,8 +776,18 @@ JobsRenderer.prototype._createLogContainer = function(jobData) {
 			ev.target.classList.add('log-window-stopped');
 		}.bind(this),
 		"onmouseleave": function(ev) {
-			this.mouseInside = null;
-			ev.target.classList.remove('log-window-stopped');
+			var leave = function() {
+				this.mouseInside = null;
+				ev.target.classList.remove('log-window-stopped');
+			}.bind(this);
+			// When our custom context menu pops up, it causes onmouseleave on the
+			// log window, so make our leave callback fire only after the context
+			// menu is closed.
+			if(this.contextMenuRenderer.visible) {
+				this.contextMenuRenderer.callAfterBlur(leave);
+			} else {
+				leave();
+			}
 		}.bind(this)
 	}
 
@@ -1186,6 +1197,8 @@ JobsRenderer.prototype.toggleAlign = function() {
  * you right-clicked.
  */
 var ContextMenuRenderer = function() {
+	this.visible = false;
+	this.callAfterBlurFns = [];
 	this.element = byId('context-menu');
 };
 
@@ -1219,11 +1232,15 @@ ContextMenuRenderer.prototype.getSuggestedCommands = function(ident, url) {
 		,"!d " + ident + " 180000 180000"
 		,"!con " + ident + " 1"
 	]
-}
+};
 
 ContextMenuRenderer.prototype.makeEntries = function(ident, url) {
 	var commands = this.getSuggestedCommands(ident, url).map(function(c) {
-		return h('span', {'onclick': this.makeCopyTextFn(c)}, "Copy " + c.replace(" " + ident + " ", "…"))
+		return h(
+			'span',
+			{'onclick': this.makeCopyTextFn(c)},
+			"Copy " + c.replace(" " + ident + " ", "…")
+		);
 	}.bind(this));
 	return [
 		// Unfortunately, this does not open it in a background tab
@@ -1240,6 +1257,7 @@ ContextMenuRenderer.prototype.onContextMenu = function(ev) {
 		return;
 	}
 	ev.preventDefault();
+	this.visible = true;
 	this.element.style.display = "block";
 	this.element.style.left = ev.clientX + "px";
 	this.element.style.top = ev.clientY + "px";
@@ -1263,7 +1281,15 @@ ContextMenuRenderer.prototype.onContextMenu = function(ev) {
 };
 
 ContextMenuRenderer.prototype.blur = function() {
+	this.visible = false;
 	this.element.style.display = "none";
+	this.callAfterBlurFns.map(function(fn) { fn(); });
+	this.callAfterBlurFns = [];
+};
+
+// TODO: decouple - fire an onblur event instead
+ContextMenuRenderer.prototype.callAfterBlur = function(fn) {
+	this.callAfterBlurFns.push(fn);
 };
 
 
@@ -1360,8 +1386,21 @@ var Dashboard = function() {
 	if(this.dumpTraffic) {
 		this.dumpMax = Number(args["dumpMax"]);
 	}
+
+	this.contextMenuRenderer = new ContextMenuRenderer(document);
+	if(contextMenu) {
+		document.oncontextmenu = this.contextMenuRenderer.onContextMenu.bind(this.contextMenuRenderer);
+		document.onclick = this.contextMenuRenderer.blur.bind(this.contextMenuRenderer);
+		// onkeydown picks up ESC, onkeypress doesn't (tested Chrome 44)
+		document.onkeydown = function(ev) {
+			if(ev.keyCode == 27) { // ESC
+				this.contextMenuRenderer.blur();
+			}
+		}.bind(this);
+	}
+
 	this.jobsRenderer = new JobsRenderer(
-		byId('logs'), byId('filter-box'), historyLines, showNicks);
+		byId('logs'), byId('filter-box'), historyLines, showNicks, this.contextMenuRenderer);
 
 	var batchTimeWhenHidden = 5000;
 
@@ -1398,18 +1437,6 @@ var Dashboard = function() {
 	xhr.send("");
 
 	document.onkeypress = this.keyPress.bind(this);
-
-	if(contextMenu) {
-		this.contextMenuRenderer = new ContextMenuRenderer(document);
-		document.oncontextmenu = this.contextMenuRenderer.onContextMenu.bind(this.contextMenuRenderer);
-		document.onclick = this.contextMenuRenderer.blur.bind(this.contextMenuRenderer);
-		// onkeydown picks up ESC, onkeypress doesn't (tested Chrome 44)
-		document.onkeydown = function(ev) {
-			if(ev.keyCode == 27) { // ESC
-				this.contextMenuRenderer.blur();
-			}
-		}.bind(this);
-	}
 
 	if(!promo) {
 		byId('promo').style.display = 'none';
