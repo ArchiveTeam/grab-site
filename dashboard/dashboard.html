@@ -295,6 +295,7 @@ a.ignore {
 }
 
 .context-menu-entry {
+	display: block;
 	height: 26px;
 	line-height: 26px;
 	padding-left: 26px;
@@ -305,9 +306,6 @@ a.ignore {
 
 .context-menu-entry:hover {
 	background-color: #4281F4;
-}
-
-.context-menu-entry:hover * {
 	color: #fff;
 }
 
@@ -1235,7 +1233,9 @@ ContextMenuRenderer.prototype.onContextMenu = function(ev) {
 	var url = ev.target.href;
 	var entries = this.makeEntries(url);
 	for(var i=0; i < entries.length; i++) {
-		appendAny(this.element, h('div', {'className': 'context-menu-entry'}, entries[i]));
+		var entry = entries[i];
+		entry.classList.add('context-menu-entry');
+		appendAny(this.element, entry);
 	}
 };
 
