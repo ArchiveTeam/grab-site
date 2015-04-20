@@ -284,22 +284,21 @@ a.ignore {
 }
 
 #context-menu {
+	padding: 2px 0 2px 0;
 	background-color: white;
-	border: 1px solid #ccc;
-	box-shadow: 2px 2px 3px #777;
+	border: 1px solid #BABABA;
+	box-shadow: 2px 2px 3px #8E8E8E;
 	position: fixed;
 	left: 0;
 	top: 0;
 	display: none;
-	/* probably remove */
-	width: 600px;
-	height: 200px;
 }
 
 .context-menu-entry {
 	height: 26px;
 	line-height: 26px;
 	padding-left: 26px;
+	padding-right: 26px;
 	font-family: 'Segoe UI', 'Helvetica Neue', sans-serif;
 	font-size: 12px;
 }
@@ -308,8 +307,17 @@ a.ignore {
 	background-color: #4281F4;
 }
 
-.context-menu-entry:hover a {
+.context-menu-entry:hover * {
 	color: #fff;
+}
+
+#clipboard-scratchpad {
+	height: 1px;
+	width: 1px;
+	padding: 0;
+	border: 0;
+	position: absolute;
+	top: 0;
 }
 </style>
 <div id="context-menu"></div>
@@ -1188,11 +1196,22 @@ ContextMenuRenderer.prototype.clickedOnLoggedURL = function(ev) {
 	return cn == "line-normal" || cn == "line-error" || cn == "line-warning" || cn == "line-redirect";
 };
 
+ContextMenuRenderer.prototype.makeCopyTextFn = function(text) {
+	return function() {
+		var clipboardScratchpad = byId('clipboard-scratchpad');
+		clipboardScratchpad.value = text;
+		clipboardScratchpad.focus();
+		clipboardScratchpad.select();
+		document.execCommand('copy');
+	}.bind(this);
+};
+
 ContextMenuRenderer.prototype.makeEntries = function(url) {
 	return [
-		h('a', {'href': url}, "Open link in new tab")
+		 h('a', {'href': url}, "Open link in new tab")
+		,h('span', {'onclick': this.makeCopyTextFn(url)}, "Copy link address")
 	];
-}
+};
 
 ContextMenuRenderer.prototype.onContextMenu = function(ev) {
 	//console.log(ev);
@@ -1206,6 +1225,12 @@ ContextMenuRenderer.prototype.onContextMenu = function(ev) {
 	this.element.style.top = ev.clientY + "px";
 
 	removeChildren(this.element);
+	// We put the clipboard-scratchpad in the fixed-positioned
+	// context menu instead of elsewhere on the page, because
+	// we must focus the input box to automatically copy its text,
+	// and the focus operation scrolls to the element on the page,
+	// and we want to avoid such scrolling.
+	appendAny(this.element, h('input', {'type': 'text', 'id': 'clipboard-scratchpad'}));
 
 	var url = ev.target.href;
 	var entries = this.makeEntries(url);
@@ -1355,6 +1380,12 @@ var Dashboard = function() {
 		this.contextMenuRenderer = new ContextMenuRenderer(document);
 		document.oncontextmenu = this.contextMenuRenderer.onContextMenu.bind(this.contextMenuRenderer);
 		document.onclick = this.contextMenuRenderer.blur.bind(this.contextMenuRenderer);
+		// onkeydown picks up ESC, onkeypress doesn't (tested Chrome 44)
+		document.onkeydown = function(ev) {
+			if(ev.keyCode == 27) { // ESC
+				this.contextMenuRenderer.blur();
+			}
+		}.bind(this);
 	}
 
 	if(!promo) {
