@@ -282,7 +282,21 @@ a.ignore {
 .undisplayed {
 	display: none;
 }
+
+#context-menu {
+	background-color: white;
+	border: 1px solid #ccc;
+	box-shadow: 2px 2px 3px #777;
+	position: fixed;
+	left: 0;
+	top: 0;
+	display: none;
+	/* probably remove */
+	width: 600px;
+	height: 200px;
+}
 </style>
+<div id="context-menu"></div>
 <div class="padded-page">
 	<div class="header">
 		<div>
@@ -1120,6 +1134,41 @@ JobsRenderer.prototype.toggleAlign = function() {
 
 
 
+var ContextMenuRenderer = function() {
+	this.element = byId('context-menu');
+};
+
+ContextMenuRenderer.prototype.clickedOnLoggedURL = function(ev) {
+	var target = ev.target;
+	if(!target || target.nodeName != "A") {
+		return false;
+	}
+	var parent = target.parentNode;
+	if(!parent || parent.nodeName != "DIV") {
+		return false;
+	}
+	var cn = parent.className;
+	return cn == "line-normal" || cn == "line-error" || cn == "line-warning" || cn == "line-redirect";
+};
+
+ContextMenuRenderer.prototype.maybePopup = function(ev) {
+	console.log(ev);
+	if(!this.clickedOnLoggedURL(ev)) {
+		this.blur();
+		return;
+	}
+	this.element.style.display = "block";
+	this.element.style.left = ev.clientX + "px";
+	this.element.style.top = ev.clientY + "px";
+	ev.preventDefault();
+};
+
+ContextMenuRenderer.prototype.blur = function() {
+	this.element.style.display = "none";
+};
+
+
+
 var BatchingQueue = function(callable, minInterval) {
 	this.callable = callable;
 	this._minInterval = minInterval;
@@ -1205,6 +1254,7 @@ var Dashboard = function() {
 	}
 	this.jobsRenderer = new JobsRenderer(
 		byId('logs'), byId('filter-box'), historyLines, showNicks);
+	this.contextMenuRenderer = new ContextMenuRenderer();
 
 	var batchTimeWhenHidden = 5000;
 
@@ -1241,6 +1291,8 @@ var Dashboard = function() {
 	xhr.send("");
 
 	document.onkeypress = this.keyPress.bind(this);
+	document.oncontextmenu = this.contextMenuRenderer.maybePopup.bind(this.contextMenuRenderer);
+	document.onclick = this.contextMenuRenderer.blur.bind(this.contextMenuRenderer);
 
 	if(!promo) {
 		byId('promo').style.display = 'none';
