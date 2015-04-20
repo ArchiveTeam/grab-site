@@ -388,6 +388,9 @@ a.ignore {
 				If your adblocker is enabled for this domain, you will see slower performance, and some URLs will not be displayed.
 			</p>
 			<p>
+				In Chrome 43+, a custom context menu is used when right-clicking URLs in a log window.  This can be disabled by adding <kbd><span class="url-q-or-amp">?</span>contextMenu=0</kbd> to the dashboard URL.
+			</p>
+			<p>
 				To use ArchiveBot, drop by <a href="http://chat.efnet.org:9090/?nick=&channels=%23archivebot&Login=Login">#archivebot</a> on EFNet.  <a href="http://archivebot.readthedocs.org/en/latest/">Issue commands</a> by typing them into the channel.  You will need channel operator (@) or voice (+) status to issue archiving jobs; just ask for help or leave a message with the website you want to archive.
 			</p>
 			<p>
@@ -1441,6 +1444,13 @@ var Dashboard = function() {
 	if(!promo) {
 		byId('promo').style.display = 'none';
 	}
+
+	// Adjust help text based on URL
+	Array.prototype.slice.call(document.querySelectorAll('.url-q-or-amp')).map(function(elem) {
+		if(window.location.search.indexOf("?") != -1) {
+			elem.textContent = "&";
+		}
+	});
 };
 
 Dashboard.prototype.keyPress = function(ev) {
