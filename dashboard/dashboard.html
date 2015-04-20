@@ -1207,13 +1207,30 @@ ContextMenuRenderer.prototype.makeCopyTextFn = function(text) {
 	}.bind(this);
 };
 
-ContextMenuRenderer.prototype.makeEntries = function(url) {
+ContextMenuRenderer.prototype.getSuggestedCommands = function(ident, url) {
+	// TODO:
+	// !d IDENT 180000 180000 (if !d is currently low)
+	// !d IDENT 250 375 (if !d is currently high)
+	// !con IDENT 1 (if > 1)
+	// !con IDENT 3 (if < 3)
+	var domain = url.split('/')[2];
+	return [
+		 "!ig " + ident + " ^https?://" + regExpEscape(domain) + "/"
+		,"!d " + ident + " 180000 180000"
+		,"!con " + ident + " 1"
+	]
+}
+
+ContextMenuRenderer.prototype.makeEntries = function(ident, url) {
+	var commands = this.getSuggestedCommands(ident, url).map(function(c) {
+		return h('span', {'onclick': this.makeCopyTextFn(c)}, "Copy “" + c + "”")
+	}.bind(this));
 	return [
 		// Unfortunately, this does not open it in a background tab
 		// like the real context menu does.
 		 h('a', {'href': url}, "Open link in new tab")
 		,h('span', {'onclick': this.makeCopyTextFn(url)}, "Copy link address")
-	];
+	].concat(commands);
 };
 
 ContextMenuRenderer.prototype.onContextMenu = function(ev) {
@@ -1236,7 +1253,8 @@ ContextMenuRenderer.prototype.onContextMenu = function(ev) {
 	appendAny(this.element, h('input', {'type': 'text', 'id': 'clipboard-scratchpad'}));
 
 	var url = ev.target.href;
-	var entries = this.makeEntries(url);
+	var ident = ev.target.parentNode.parentNode.id.match(/^log-window-(.*)/)[1];
+	var entries = this.makeEntries(ident, url);
 	for(var i=0; i < entries.length; i++) {
 		var entry = entries[i];
 		entry.classList.add('context-menu-entry');
