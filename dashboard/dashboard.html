@@ -295,6 +295,22 @@ a.ignore {
 	width: 600px;
 	height: 200px;
 }
+
+.context-menu-entry {
+	height: 26px;
+	line-height: 26px;
+	padding-left: 26px;
+	font-family: 'Segoe UI', 'Helvetica Neue', sans-serif;
+	font-size: 12px;
+}
+
+.context-menu-entry:hover {
+	background-color: #4281F4;
+}
+
+.context-menu-entry:hover a {
+	color: #fff;
+}
 </style>
 <div id="context-menu"></div>
 <div class="padded-page">
@@ -423,6 +439,8 @@ var h = function(elem, attrs, thing) {
 		for(var attr in attrs) {
 			if(attr == "spellcheck" || attr == "readonly") {
 				e.setAttribute(attr, attrs[attr]);
+			} else if(attr == "class") {
+				throw new Error("Did you mean className?");
 			} else {
 				e[attr] = attrs[attr];
 			}
@@ -439,6 +457,12 @@ var href = function(href, text) {
 	a.href = href;
 	a.textContent = text;
 	return a;
+};
+
+var removeChildren = function(elem) {
+	while(elem.firstChild) {
+		elem.removeChild(elem.firstChild);
+	}
 };
 
 var prettyJson = function(obj) {
@@ -1164,16 +1188,30 @@ ContextMenuRenderer.prototype.clickedOnLoggedURL = function(ev) {
 	return cn == "line-normal" || cn == "line-error" || cn == "line-warning" || cn == "line-redirect";
 };
 
+ContextMenuRenderer.prototype.makeEntries = function(url) {
+	return [
+		h('a', {'href': url}, "Open link in new tab")
+	];
+}
+
 ContextMenuRenderer.prototype.onContextMenu = function(ev) {
 	//console.log(ev);
 	if(!this.clickedOnLoggedURL(ev)) {
 		this.blur();
 		return;
 	}
+	ev.preventDefault();
 	this.element.style.display = "block";
 	this.element.style.left = ev.clientX + "px";
 	this.element.style.top = ev.clientY + "px";
-	ev.preventDefault();
+
+	removeChildren(this.element);
+
+	var url = ev.target.href;
+	var entries = this.makeEntries(url);
+	for(var i=0; i < entries.length; i++) {
+		appendAny(this.element, h('div', {'className': 'context-menu-entry'}, entries[i]));
+	}
 };
 
 ContextMenuRenderer.prototype.blur = function() {
