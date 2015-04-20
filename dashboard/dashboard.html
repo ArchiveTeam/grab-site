@@ -508,6 +508,10 @@ var getQueryArgs = function() {
 	return intoObject(pairs.map(function(e) { return split(e, "=", 1); }));
 };
 
+var getChromeMajorVersion = function() {
+	return Number(navigator.userAgent.match(/Chrome\/(\d+)/)[1]);
+};
+
 var isChrome = navigator.userAgent.indexOf("Chrome/") != -1;
 var isSafari = !isChrome && navigator.userAgent.indexOf("Safari") != -1;
 var isFirefox = navigator.userAgent.indexOf("Firefox") != -1;
@@ -1256,6 +1260,15 @@ var Dashboard = function() {
 		args["promo"] ?
 			Boolean(Number(args["promo"])) :
 			true;
+	var contextMenu =
+		args["contextMenu"] ?
+			Boolean(Number(args["contextMenu"])) :
+			/**
+			 * The context menu is useless without document.execCommand('copy'),
+			 * which is available in Chrome 43+ and IE10+
+			 * (also in Firefox if you paste capability settings into your prefs.js?)
+			 */
+			(isChrome && getChromeMajorVersion() >= 43);
 	this.host = args["host"] ? args["host"] : location.host;
 	this.dumpTraffic = args["dumpMax"] && Number(args["dumpMax"]) > 0;
 	if(this.dumpTraffic) {
@@ -1263,7 +1276,6 @@ var Dashboard = function() {
 	}
 	this.jobsRenderer = new JobsRenderer(
 		byId('logs'), byId('filter-box'), historyLines, showNicks);
-	this.contextMenuRenderer = new ContextMenuRenderer();
 
 	var batchTimeWhenHidden = 5000;
 
@@ -1300,8 +1312,12 @@ var Dashboard = function() {
 	xhr.send("");
 
 	document.onkeypress = this.keyPress.bind(this);
-	document.oncontextmenu = this.contextMenuRenderer.onContextMenu.bind(this.contextMenuRenderer);
-	document.onclick = this.contextMenuRenderer.blur.bind(this.contextMenuRenderer);
+
+	if(contextMenu) {
+		this.contextMenuRenderer = new ContextMenuRenderer(document);
+		document.oncontextmenu = this.contextMenuRenderer.onContextMenu.bind(this.contextMenuRenderer);
+		document.onclick = this.contextMenuRenderer.blur.bind(this.contextMenuRenderer);
+	}
 
 	if(!promo) {
 		byId('promo').style.display = 'none';
