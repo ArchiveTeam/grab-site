@@ -203,6 +203,7 @@ html, body {
 }
 
 .line-normal {
+	display: block;
 	white-space: pre;
 	width: 100%;
 	padding: 0 0 0 5px;
@@ -210,6 +211,7 @@ html, body {
 }
 
 .line-error {
+	display: block;
 	white-space: pre;
 	width: 100%;
 	background-color: #FFB9B9;
@@ -218,6 +220,7 @@ html, body {
 }
 
 .line-warning {
+	display: block;
 	white-space: pre;
 	width: 100%;
 	background-color: #F7DB7D;
@@ -226,6 +229,7 @@ html, body {
 }
 
 .line-redirect {
+	display: block;
 	white-space: pre;
 	width: 100%;
 	background-color: #E7CEEA;
@@ -681,10 +685,6 @@ var JobRenderInfo = function(logWindow, logSegment, statsElements, jobNote, line
 
 
 var Reusable = {
-	obj_className_line_normal: {"className": "line-normal"},
-	obj_className_line_error: {"className": "line-error"},
-	obj_className_line_warning: {"className": "line-warning"},
-	obj_className_line_redirect: {"className": "line-redirect"},
 	obj_className_line_ignore: {"className": "line-ignore"},
 	obj_className_line_stdout: {"className": "line-stdout"},
 	obj_className_bold: {"className": "bold"}
@@ -895,18 +895,17 @@ JobsRenderer.prototype._createLogContainer = function(jobData) {
 
 JobsRenderer.prototype._renderDownloadLine = function(data, logSegment) {
 	if(data["is_warning"]) {
-		var attrs = Reusable.obj_className_line_warning;
+		var attrs = {"className": "line-warning", "href": data["url"]};
 	} else if(data["is_error"]) {
-		var attrs = Reusable.obj_className_line_error;
+		var attrs = {"className": "line-error", "href": data["url"]};
 	} else if(data["response_code"] && data["response_code"] >= 300 && data["response_code"] < 400) {
-		var attrs = Reusable.obj_className_line_redirect;
+		var attrs = {"className": "line-redirect", "href": data["url"]};
 	} else {
-		var attrs = Reusable.obj_className_line_normal;
+		var attrs = {"className": "line-normal", "href": data["url"]};
 	}
-	logSegment.appendChild(h("div", attrs, [
-		data["response_code"] + " " + data["wget_code"] + " ",
-		href(data["url"], data["url"])
-	]));
+	logSegment.appendChild(
+		h("a", attrs, data["response_code"] + " " + data["wget_code"] + " " + data["url"])
+	);
 	return 1;
 };
 
@@ -1194,15 +1193,7 @@ var ContextMenuRenderer = function() {
  * Returns true if the event target is a URL in a log window
  */
 ContextMenuRenderer.prototype.clickedOnLogWindowURL = function(ev) {
-	var target = ev.target;
-	if(!target || target.nodeName != "A") {
-		return false;
-	}
-	var parent = target.parentNode;
-	if(!parent || parent.nodeName != "DIV") {
-		return false;
-	}
-	var cn = parent.className;
+	var cn = ev.target.className;
 	return cn == "line-normal" || cn == "line-error" || cn == "line-warning" || cn == "line-redirect";
 };
 
