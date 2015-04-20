@@ -508,7 +508,8 @@ var getQueryArgs = function() {
 	return intoObject(pairs.map(function(e) { return split(e, "=", 1); }));
 };
 
-var isSafari = navigator.userAgent.indexOf("Safari") != -1;
+var isChrome = navigator.userAgent.indexOf("Chrome/") != -1;
+var isSafari = !isChrome && navigator.userAgent.indexOf("Safari") != -1;
 var isFirefox = navigator.userAgent.indexOf("Firefox") != -1;
 
 var addAnyChangeListener = function(elem, func) {
