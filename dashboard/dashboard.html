@@ -1239,7 +1239,7 @@ ContextMenuRenderer.prototype.makeEntries = function(ident, url) {
 		return h(
 			'span',
 			{'onclick': this.makeCopyTextFn(c)},
-			"Copy " + c.replace(" " + ident + " ", "…")
+			"Copy " + c.replace(" " + ident + " ", " … ")
 		);
 	}.bind(this));
 	return [
