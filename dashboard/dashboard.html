@@ -1223,7 +1223,7 @@ ContextMenuRenderer.prototype.getSuggestedCommands = function(ident, url) {
 
 ContextMenuRenderer.prototype.makeEntries = function(ident, url) {
 	var commands = this.getSuggestedCommands(ident, url).map(function(c) {
-		return h('span', {'onclick': this.makeCopyTextFn(c)}, "Copy “" + c + "”")
+		return h('span', {'onclick': this.makeCopyTextFn(c)}, "Copy " + c.replace(" " + ident + " ", "…"))
 	}.bind(this));
 	return [
 		// Unfortunately, this does not open it in a background tab
