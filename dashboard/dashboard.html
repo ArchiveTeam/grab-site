@@ -956,7 +956,7 @@ JobsRenderer.prototype._moreDomRenderDownloadLine = function(data, logSegment) {
 	}
 	logSegment.appendChild(h("div", attrs, [
 		data["response_code"] + " " + data["wget_code"] + " ",
-		href(data["url"], data["url"])
+		h("a", {"href": data["url"], "className": "log-url"}, data["url"])
 	]));
 	return 1;
 };
@@ -1248,7 +1248,7 @@ var ContextMenuRenderer = function() {
  */
 ContextMenuRenderer.prototype.clickedOnLogWindowURL = function(ev) {
 	var cn = ev.target.className;
-	return cn == "line-normal" || cn == "line-error" || cn == "line-warning" || cn == "line-redirect";
+	return cn == "line-normal" || cn == "line-error" || cn == "line-warning" || cn == "line-redirect" || cn == "log-url";
 };
 
 ContextMenuRenderer.prototype.makeCopyTextFn = function(text) {
@@ -1331,7 +1331,12 @@ ContextMenuRenderer.prototype.onContextMenu = function(ev) {
 	appendAny(this.element, h('input', {'type': 'text', 'id': 'clipboard-scratchpad'}));
 
 	var url = ev.target.href;
-	var ident = ev.target.parentNode.parentNode.id.match(/^log-window-(.*)/)[1];
+	try {
+		var ident = ev.target.parentNode.parentNode.id.match(/^log-window-(.*)/)[1];
+	} catch(e) {
+		// moreDom=1
+		var ident = ev.target.parentNode.parentNode.parentNode.id.match(/^log-window-(.*)/)[1];
+	}
 	var entries = this.makeEntries(ident, url);
 	for(var i=0; i < entries.length; i++) {
 		var entry = entries[i];
