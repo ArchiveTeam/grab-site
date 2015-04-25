@@ -1249,7 +1249,7 @@ ContextMenuRenderer.prototype.getSuggestedCommands = function(ident, url) {
 	var path = '/' + split(withoutQuery, '/', 3)[3];
 	var reSchema = startsWith(schema, 'http') ? 'https?' : 'ftp';
 	return this.getPathVariants(path).map(function(p) {
-		return "!ig " + ident + " ^" + reSchema + "://" + regExpEscape(domain) + p;
+		return "!ig " + ident + " ^" + reSchema + "://" + regExpEscape(domain + p);
 	}).concat([
 		 "!d " + ident + " 180000 180000"
 		,"!con " + ident + " 1"
