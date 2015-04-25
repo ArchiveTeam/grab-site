@@ -1223,6 +1223,15 @@ ContextMenuRenderer.prototype.makeCopyTextFn = function(text) {
 	}.bind(this);
 };
 
+ContextMenuRenderer.prototype.getPathVariants = function(path) {
+	var paths = [path];
+	while(path.lastIndexOf('/') > 0) {
+		path = path.replace(/\/[^\/]*$/, "");
+		paths.push(path + '/');
+	}
+	return paths.concat(['/']);
+};
+
 ContextMenuRenderer.prototype.getSuggestedCommands = function(ident, url) {
 	// TODO:
 	// !d IDENT 180000 180000 (if !d is currently low)
@@ -1231,12 +1240,15 @@ ContextMenuRenderer.prototype.getSuggestedCommands = function(ident, url) {
 	// !con IDENT 3 (if < 3)
 	var schema = url.split(':')[0];
 	var domain = url.split('/')[2];
+	var withoutQuery = url.split('?')[0];
+	var path = '/' + split(withoutQuery, '/', 3)[3];
 	var reSchema = startsWith(schema, 'http') ? 'https?' : 'ftp';
-	return [
-		 "!ig " + ident + " ^" + reSchema + "://" + regExpEscape(domain) + "/"
-		,"!d " + ident + " 180000 180000"
+	return this.getPathVariants(path).map(function(p) {
+		return "!ig " + ident + " ^" + reSchema + "://" + regExpEscape(domain) + p;
+	}).concat([
+		 "!d " + ident + " 180000 180000"
 		,"!con " + ident + " 1"
-	]
+	]);
 };
 
 ContextMenuRenderer.prototype.makeEntries = function(ident, url) {
