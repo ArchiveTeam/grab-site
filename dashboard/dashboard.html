@@ -1229,9 +1229,11 @@ ContextMenuRenderer.prototype.getSuggestedCommands = function(ident, url) {
 	// !d IDENT 250 375 (if !d is currently high)
 	// !con IDENT 1 (if > 1)
 	// !con IDENT 3 (if < 3)
+	var schema = url.split(':')[0];
 	var domain = url.split('/')[2];
+	var reSchema = startsWith(schema, 'http') ? 'https?' : 'ftp';
 	return [
-		 "!ig " + ident + " ^https?://" + regExpEscape(domain) + "/"
+		 "!ig " + ident + " ^" + reSchema + "://" + regExpEscape(domain) + "/"
 		,"!d " + ident + " 180000 180000"
 		,"!con " + ident + " 1"
 	]
