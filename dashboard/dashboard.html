@@ -1225,6 +1225,10 @@ ContextMenuRenderer.prototype.makeCopyTextFn = function(text) {
 
 ContextMenuRenderer.prototype.getPathVariants = function(path) {
 	var paths = [path];
+
+	// Avoid generating a duplicate suggestion
+	path = path.replace(/\/$/, "");
+
 	while(path.lastIndexOf('/') > 0) {
 		path = path.replace(/\/[^\/]*$/, "");
 		paths.push(path + '/');
