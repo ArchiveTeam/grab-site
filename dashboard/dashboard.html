@@ -527,10 +527,16 @@ var endsWith = function(str, suffix) {
 	return l >= 0 && str.indexOf(suffix, l) == l;
 };
 
-// Copied from closure-library's goog.string.regExpEscape
+// Based on closure-library's goog.string.regExpEscape
 var regExpEscape = function(s) {
-	return String(s).replace(/([-()\[\]{}+?*.$\^|,:#<!\\])/g, '\\$1').
+	var escaped = String(s).replace(/([-()\[\]{}+?*.$\^|,:#<!\\])/g, '\\$1').
 		replace(/\x08/g, '\\x08');
+	if(s.indexOf('[') == -1 && s.indexOf(']') == -1) {
+		// If there were no character classes, there can't have been any need
+		// to escape -, to unescape them.
+		escaped = escaped.replace(/\\-/g, "-");
+	}
+	return escaped;
 };
 
 /**
