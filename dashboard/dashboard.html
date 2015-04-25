@@ -704,6 +704,11 @@ var JobRenderInfo = function(logWindow, logSegment, statsElements, jobNote, line
 
 
 var Reusable = {
+	obj_className_line_normal: {"className": "line-normal"},
+	obj_className_line_error: {"className": "line-error"},
+	obj_className_line_warning: {"className": "line-warning"},
+	obj_className_line_redirect: {"className": "line-redirect"},
+	//
 	obj_className_line_ignore: {"className": "line-ignore"},
 	obj_className_line_stdout: {"className": "line-stdout"},
 	obj_className_bold: {"className": "bold"}
@@ -932,6 +937,27 @@ JobsRenderer.prototype._renderDownloadLine = function(data, logSegment) {
 	logSegment.appendChild(
 		h("a", attrs, data["response_code"] + " " + data["wget_code"] + " " + data["url"])
 	);
+	return 1;
+};
+
+/**
+ * Like _renderDownloadLine, but makes it easier to start a text selection from the
+ * left or right of the URL.
+ */
+JobsRenderer.prototype._moreDomRenderDownloadLine = function(data, logSegment) {
+	if(data["is_warning"]) {
+		var attrs = Reusable.obj_className_line_warning;
+	} else if(data["is_error"]) {
+		var attrs = Reusable.obj_className_line_error;
+	} else if(data["response_code"] && data["response_code"] >= 300 && data["response_code"] < 400) {
+		var attrs = Reusable.obj_className_line_redirect;
+	} else {
+		var attrs = Reusable.obj_className_line_normal;
+	}
+	logSegment.appendChild(h("div", attrs, [
+		data["response_code"] + " " + data["wget_code"] + " ",
+		href(data["url"], data["url"])
+	]));
 	return 1;
 };
 
@@ -1422,10 +1448,19 @@ var Dashboard = function() {
 			 * (also in Firefox if you paste capability settings into your prefs.js?)
 			 */
 			(isChrome && getChromeMajorVersion() >= 42);
+	var moreDom =
+		args["moreDom"] ?
+			Boolean(Number(args["moreDom"])) :
+			false;
 	// Append to page title to make it possible to identify the tab in Chrome's task manager
 	if(args["title"]) {
 		document.title += " - " + args["title"];
 	}
+
+	if(moreDom) {
+		JobsRenderer.prototype._renderDownloadLine = JobsRenderer.prototype._moreDomRenderDownloadLine;
+	}
+
 	this.host = args["host"] ? args["host"] : location.host;
 	this.dumpTraffic = args["dumpMax"] && Number(args["dumpMax"]) > 0;
 	if(this.dumpTraffic) {
