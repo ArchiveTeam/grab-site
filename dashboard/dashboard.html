@@ -300,6 +300,7 @@ a.ignore {
 	left: 0;
 	top: 0;
 	display: none;
+	cursor: default;
 }
 
 .context-menu-entry {
@@ -1298,6 +1299,13 @@ ContextMenuRenderer.prototype.onContextMenu = function(ev) {
 		var entry = entries[i];
 		entry.classList.add('context-menu-entry');
 		appendAny(this.element, entry);
+	}
+
+	// If the bottom of the context menu is outside the viewport, move the context
+	// menu up, so that it appears to have opened from its bottom-left corner.
+	// + 1 pixel so that the pointer lands inside the element and turns on cursor: default
+	if(ev.clientY + this.element.offsetHeight > document.documentElement.clientHeight) {
+		this.element.style.top = (ev.clientY - this.element.offsetHeight + 1) + "px";
 	}
 };
 
