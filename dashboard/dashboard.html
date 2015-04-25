@@ -1422,6 +1422,10 @@ var Dashboard = function() {
 			 * (also in Firefox if you paste capability settings into your prefs.js?)
 			 */
 			(isChrome && getChromeMajorVersion() >= 42);
+	// Append to page title to make it possible to identify the tab in Chrome's task manager
+	if(args["title"]) {
+		document.title += " - " + args["title"];
+	}
 	this.host = args["host"] ? args["host"] : location.host;
 	this.dumpTraffic = args["dumpMax"] && Number(args["dumpMax"]) > 0;
 	if(this.dumpTraffic) {
