@@ -1236,11 +1236,12 @@ ContextMenuRenderer.prototype.getPathVariants = function(path) {
 	// Avoid generating a duplicate suggestion
 	path = path.replace(/\/$/, "");
 
-	while(path.lastIndexOf('/') > 0) {
+	while(path && path.lastIndexOf('/') != -1) {
 		path = path.replace(/\/[^\/]*$/, "");
 		paths.push(path + '/');
 	}
-	return paths.concat(['/']);
+
+	return paths;
 };
 
 ContextMenuRenderer.prototype.getSuggestedCommands = function(ident, url) {
