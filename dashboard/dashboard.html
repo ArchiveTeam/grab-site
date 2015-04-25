@@ -1436,6 +1436,13 @@ var Dashboard = function() {
 				this.contextMenuRenderer.blur();
 			}
 		}.bind(this);
+		// In Chrome, the native context menu disappears when you wheel around, so
+		// match that behavior for our own context menu.
+		if(isChrome) {
+			document.onwheel = function(ev) {
+				this.contextMenuRenderer.blur();
+			}.bind(this);
+		}
 	}
 
 	this.jobsRenderer = new JobsRenderer(
