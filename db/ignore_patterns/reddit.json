@@ -9,6 +9,7 @@
         "^https?://www\\.reddit\\.com/r/[^/]+/related/",
         "^https?://www\\.reddit\\.com/r/[^/]+/search/?\\?",
         "^https?://www\\.reddit\\.com/r/[^/]+/wiki/(revisions|discussions)/user/.+",
+        "^https?://www\\.reddit\\.com/user/[^/]+/(comments/)?\\?sort=",
         "^https?://www\\.reddit\\.com/.+/\\.rss$",
         "^https?://pixel\\.redditmedia\\.com/pixel/",
         "\\.reddit\\.com/message/compose/?\\?",
