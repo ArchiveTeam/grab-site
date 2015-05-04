@@ -159,6 +159,7 @@
         "^https?://bufferapp\\.com/add\\?",
         "^https?://b\\.hatena\\.ne\\.jp/add\\?",
         "^https?://api\\.addthis\\.com/",
+        "^https?://bookmark\\.naver\\.com/post\\?",
         "^https?://mail\\.google\\.com/mail/",
         "^http://pixel\\.blog\\.hu/",
         "^https?://pixel\\.quantserve\\.com/",
