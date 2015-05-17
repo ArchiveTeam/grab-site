@@ -46,6 +46,7 @@
         "^https?://172\\.(1[6-9]|2\\d|3[01])\\.\\d+\\.\\d+(:\\d+)?/",
         "^https?://192\\.168\\.\\d+\\.\\d+(:\\d+)?/",
         "^https?://www\\.google\\.com/recaptcha/api",
+        "^https?://geo\\.yahoo\\.com/b\\?",
         "^https?://((s-)?static\\.ak\\.fbcdn\\.net|(connect\\.|www\\.)?facebook\\.com)/connect\\.php/js/.*rsrc\\.php",
         "^https?://www\\.flickr\\.com/change_language\\.gne",
         "^https?://((www|web|web-beta|wayback)\\.)?archive\\.org/",
