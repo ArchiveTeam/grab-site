@@ -33,7 +33,6 @@ html {
 html, body {
 	background-color: #D0C0AE;
 	font-family: Tahoma, Arial, sans-serif;
-	/* Note: font-size adjusted by JavaScript below */
 	font-size: 13px;
 }
 
@@ -1625,10 +1624,6 @@ Dashboard.prototype.setFilter = function(value) {
 
 var ds = new Dashboard();
 
-if(isFirefox) {
-	// 13px looks awful in Firefox with Direct2D enabled, so use 12.5px
-	document.write('<style>html, body { font-size: 12.5px; }</style>');
-}
 </script>
 </body>
 </html>
