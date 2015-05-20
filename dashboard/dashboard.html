@@ -398,7 +398,7 @@ a.ignore {
 				If your adblocker is enabled for this domain, you will see slower performance, and some URLs will not be displayed.
 			</p>
 			<p>
-				In Chrome 42+, a custom context menu is enabled when right-clicking URLs in a log window.  It can be disabled by adding <kbd><span class="url-q-or-amp">?</span>contextMenu=0</kbd> to the dashboard URL.
+				In Chrome 42+ and IE10+, a custom context menu is enabled when right-clicking URLs in a log window.  It can be disabled by adding <kbd><span class="url-q-or-amp">?</span>contextMenu=0</kbd> to the dashboard URL.
 			</p>
 			<p>
 				For easier text selection in the log windows, add <kbd><span class="url-q-or-amp">?</span>moreDom=1</kbd> to the dashboard URL.  (This uses ~25% more memory.)
@@ -574,9 +574,14 @@ var getChromeMajorVersion = function() {
 	return Number(navigator.userAgent.match(/Chrome\/(\d+)/)[1]);
 };
 
+var getTridentMajorVersion = function() {
+	return Number(navigator.userAgent.match(/Trident\/(\d+)/)[1]);
+};
+
 var isChrome = navigator.userAgent.indexOf("Chrome/") != -1;
 var isSafari = !isChrome && navigator.userAgent.indexOf("Safari") != -1;
 var isFirefox = navigator.userAgent.indexOf("Firefox") != -1;
+var isTrident = navigator.userAgent.indexOf("Trident/") != -1;
 
 var addAnyChangeListener = function(elem, func) {
 	// DOM0 handler for convenient use by Clear button
@@ -1455,7 +1460,8 @@ var Dashboard = function() {
 			 * which is available in Chrome 42+ (maybe earlier?) and IE10+
 			 * (also in Firefox if you paste capability settings into your prefs.js?)
 			 */
-			(isChrome && getChromeMajorVersion() >= 42);
+			((isTrident && getTridentMajorVersion() >= 6) ||
+			 (isChrome && getChromeMajorVersion() >= 42));
 	var moreDom =
 		args["moreDom"] ?
 			Boolean(Number(args["moreDom"])) :
