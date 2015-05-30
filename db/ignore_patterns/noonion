@@ -1,0 +1,7 @@
+{
+    "name": "noonion",
+    "patterns": [
+        "^https?://[^/]+\.onion/"
+    ],
+    "type": "ignore_patterns"
+}
