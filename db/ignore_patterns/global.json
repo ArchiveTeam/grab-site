@@ -109,7 +109,7 @@
         "^http://stream\\.r-a-d\\.io/",
         "^http://r-a-d\\.io/.+\\.mp3$",
         "^http://95\\.81\\.155\\.17/",
-        "^https?://icecast\\.rtl2\\.fr/",
+        "^https?://icecast\\.rtl2?\\.fr/",
         "^http://mp3tslg\\.tdf-cdn\\.com/",
         "^http://[^/]+/anony/mjpg\\.cgi$",
         "^https?://[^/]+\\.rastream\\.com(:\\d+)?/",
