@@ -117,7 +117,7 @@
         "^https?://(www|draft)\\.blogger\\.com/(navbar\\.g|post-edit\\.g|delete-comment\\.g|comment-iframe\\.g|share-post\\.g|email-post\\.g|blog-this\\.g|delete-backlink\\.g|rearrange|blog_this\\.pyra)\\?",
         "^https?://www\\.tumblr\\.com/(impixu\\?|share(/link/?)?\\?|reblog/)",
         "^https?://plus\\.google\\.com/share\\?",
-        "^https?://apis\\.google\\.com/_/\\+1/fastbutton",
+        "^https?://(apis|plusone)\\.google\\.com/_/\\+1/",
         "^https?://(ssl\\.|www\\.)?reddit\\.com/(login\\?dest=|submit\\?|static/button/button)",
         "^https?://digg\\.com/submit\\?",
         "^https?://(www\\.)?facebook\\.com/(plugins/like(box)?\\.php|sharer/sharer\\.php|sharer?\\.php|dialog/(feed|share))\\?",
