@@ -1549,6 +1549,10 @@ var Dashboard = function() {
 			elem.textContent = "&";
 		}
 	});
+
+	if(!showNicks) {
+		document.write('<style>.job-nick-aligned { width: 0; }</style>');
+	}
 };
 
 Dashboard.prototype.keyPress = function(ev) {
