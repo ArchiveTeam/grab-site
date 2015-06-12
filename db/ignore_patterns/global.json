@@ -184,7 +184,8 @@
         "^https?://static\\.licdn\\.com/sc/p/.+/f//",
         "^http://www\\.warnerbros\\.com/\\d+$",
         "^https?://tm\\.uol\\.com\\.br/h/.+/h/",
-        "^https?://media\\.opb\\.org/clips/embed/.+\\.js$"
+        "^https?://media\\.opb\\.org/clips/embed/.+\\.js$",
+        "^https?://voat\\.co/"
     ],
     "type": "ignore_patterns"
 }
