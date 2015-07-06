@@ -347,7 +347,6 @@ a.ignore {
 			Show: <input id="filter-box" type="text" size="21">
 			<input onclick="ds.setFilter('');" type="button" value="  All  " class="button">
 			<input onclick="ds.setFilter('^$');" type="button" value="None" class="button">
-			<small id="promo"><a href="/beta" class="underlined-a">Try 3.0 Beta</a></small>
 		</div>
 		<div>
 			<input type="button" onclick="ds.toggleAlign()" class="button" value="Align!">
@@ -411,6 +410,9 @@ a.ignore {
 			</p>
 			<p>
 				On GitHub at <a href="https://github.com/ArchiveTeam/ArchiveBot">ArchiveTeam/ArchiveBot</a>.
+			</p>
+			<p>
+				You can <a href="/beta">try the alternate dashboard (beta) here.</a>
 			</p>
 		</div>
 	</div>
@@ -1452,10 +1454,6 @@ var Dashboard = function() {
 		args["showNicks"] ?
 			Boolean(Number(args["showNicks"])) :
 			false;
-	var promo =
-		args["promo"] ?
-			Boolean(Number(args["promo"])) :
-			true;
 	var contextMenu =
 		args["contextMenu"] ?
 			Boolean(Number(args["contextMenu"])) :
@@ -1543,10 +1541,6 @@ var Dashboard = function() {
 	xhr.send("");
 
 	document.onkeypress = this.keyPress.bind(this);
-
-	if(!promo) {
-		byId('promo').style.display = 'none';
-	}
 
 	// Adjust help text based on URL
 	Array.prototype.slice.call(document.querySelectorAll('.url-q-or-amp')).map(function(elem) {
