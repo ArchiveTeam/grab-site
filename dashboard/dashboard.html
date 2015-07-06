@@ -398,7 +398,7 @@ a.ignore {
 				If your adblocker is enabled for this domain, you will see slower performance, and some URLs will not be displayed.
 			</p>
 			<p>
-				In Chrome 42+ and IE10+, a custom context menu is enabled when right-clicking URLs in a log window.  It can be disabled by adding <kbd><span class="url-q-or-amp">?</span>contextMenu=0</kbd> to the dashboard URL.
+				In Chrome 42+, Firefox 41+, and IE10+, a custom context menu is enabled when right-clicking URLs in the log windows below.  It can be disabled by adding <kbd><span class="url-q-or-amp">?</span>contextMenu=0</kbd> to the dashboard URL.  Firefox users: if you see both the normal and custom context menu, make sure <code>dom.event.contextmenu.enabled</code> is set to <code>true</code> in <code>about:config</code>.
 			</p>
 			<p>
 				For easier text selection in the log windows, add <kbd><span class="url-q-or-amp">?</span>moreDom=1</kbd> to the dashboard URL.  (This uses ~25% more memory.)
@@ -572,6 +572,10 @@ var getQueryArgs = function() {
 
 var getChromeMajorVersion = function() {
 	return Number(navigator.userAgent.match(/Chrome\/(\d+)/)[1]);
+};
+
+var getFirefoxMajorVersion = function() {
+	return Number(navigator.userAgent.match(/Firefox\/(\d+)/)[1]);
 };
 
 var getTridentMajorVersion = function() {
@@ -1461,7 +1465,8 @@ var Dashboard = function() {
 			 * (also in Firefox if you paste capability settings into your prefs.js?)
 			 */
 			((isTrident && getTridentMajorVersion() >= 6) ||
-			 (isChrome && getChromeMajorVersion() >= 42));
+			 (isChrome && getChromeMajorVersion() >= 42) ||
+			 (isFirefox && getFirefoxMajorVersion() >= 41));
 	var moreDom =
 		args["moreDom"] ?
 			Boolean(Number(args["moreDom"])) :
