@@ -1459,8 +1459,7 @@ var Dashboard = function() {
 			Boolean(Number(args["contextMenu"])) :
 			/**
 			 * The context menu is useless without document.execCommand('copy'),
-			 * which is available in Chrome 42+ (maybe earlier?) and IE10+
-			 * (also in Firefox if you paste capability settings into your prefs.js?)
+			 * which is available in IE10+, Chrome 42+, and Firefox 41+
 			 */
 			((isTrident && getTridentMajorVersion() >= 6) ||
 			 (isChrome && getChromeMajorVersion() >= 42) ||
