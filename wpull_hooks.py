@@ -7,15 +7,26 @@ from urllib.request import urlopen
 from autobahn.asyncio.websocket import WebSocketClientFactory, WebSocketClientProtocol
 from ignoracle import Ignoracle, parameterize_record_info
 
-clients = []
 
 class MyClientProtocol(WebSocketClientProtocol):
 	def onConnect(self, response):
 		print("Connected to server: {}".format(response.peer))
-		clients.append(self)
+		self.factory.client = self
 
 	def report(self, url):
 		self.sendMessage(json.dumps({"url": url}).encode('utf8'))
+
+
+wsFactory = WebSocketClientFactory()
+wsFactory.protocol = MyClientProtocol
+
+def connectToServer():
+	loop = asyncio.get_event_loop()
+	port = int(os.environ.get('GRAB_SITE_WS_PORT', 29001))
+	coro = loop.create_connection(wsFactory, '127.0.0.1', port)
+	loop.run_until_complete(coro)
+
+connectToServer()
 
 
 cache = {}
@@ -97,8 +108,7 @@ def accept_url(url_info, record_info, verdict, reasons):
 
 
 def handle_response(url_info, record_info, error_info=None, http_info=None):
-	if clients:
-		clients[0].report(url_info['url'])
+	wsFactory.client.report(url_info['url'])
 
 
 # Regular expressions for server headers go here
@@ -136,12 +146,3 @@ wpull_hook.callbacks.version = 2
 wpull_hook.callbacks.accept_url = accept_url
 wpull_hook.callbacks.handle_response = handle_response
 wpull_hook.callbacks.handle_pre_response = handle_pre_response
-
-
-factory = WebSocketClientFactory()
-factory.protocol = MyClientProtocol
-
-loop = asyncio.get_event_loop()
-port = int(os.environ.get('GRAB_SITE_WS_PORT', 29001))
-coro = loop.create_connection(factory, '127.0.0.1', port)
-loop.run_until_complete(coro)
