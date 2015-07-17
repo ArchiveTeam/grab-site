@@ -63,8 +63,3 @@ to use in addition to the ignore sets.
 
 You can `touch DIR/igoff` to stop `IGNOR` message spew, and `rm DIR/igoff`
 to turn it back on again.
-
-License
----
-
-This repo is almost entirely code from ArchiveBot, please see the ArchiveBot license.
