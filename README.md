@@ -32,6 +32,8 @@ Usage
 ./grab-site URL --ignore-sets=blogs,forums --no-offsite-links
 ```
 
+Note: `URL` must come before the options.
+
 Note: `--ignore-sets=` must have the `=`.
 
 `forums` and `blogs` are some frequently-used ignore sets.
