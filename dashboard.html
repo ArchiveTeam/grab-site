@@ -9,19 +9,6 @@
 <link rel="alternate" type="application/atom+xml" title="Atom Feed" href="/feed/archivebot.atom">
 <link rel="icon" type="image/png" href="/assets/favicon.png">
 <title>ArchiveBot dashboard</title>
-<script>
-(function() {
-	// Framebust out if necessary
-	if(self != top) {
-		var target = self.location.href;
-		// Ugly archivebot.com-specific hack
-		target = target.replace(
-			"http://arshboard.at.ninjawedding.org:4567/",
-			"http://dashboard.at.ninjawedding.org/");
-		top.location = target;
-	}
-})();
-</script>
 </head>
 <body>
 <style>
