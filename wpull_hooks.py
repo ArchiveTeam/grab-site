@@ -142,6 +142,6 @@ factory = WebSocketClientFactory()
 factory.protocol = MyClientProtocol
 
 loop = asyncio.get_event_loop()
-port = int(os.environ.get('GRAB_SITE_WS_PORT', 29000))
+port = int(os.environ.get('GRAB_SITE_WS_PORT', 29001))
 coro = loop.create_connection(factory, '127.0.0.1', port)
 loop.run_until_complete(coro)
