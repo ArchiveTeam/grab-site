@@ -5,10 +5,7 @@
 <meta name="referrer" content="never">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <base target="_blank">
-<link rel="alternate" type="application/rss+xml" title="RSS Feed" href="/feed/archivebot.rss">
-<link rel="alternate" type="application/atom+xml" title="Atom Feed" href="/feed/archivebot.atom">
-<link rel="icon" type="image/png" href="/assets/favicon.png">
-<title>ArchiveBot dashboard</title>
+<title>grab-site dashboard</title>
 </head>
 <body>
 <style>
@@ -328,9 +325,7 @@ a.ignore {
 <div class="padded-page">
 	<div class="header">
 		<div>
-			<a href="http://archiveteam.org/index.php?title=ArchiveBot" class="underlined-a">ArchiveBot</a>
-			tracking <span id="num-crawls">0</span> crawls.
-			See also <a href="pipelines" class="underlined-a">pipeline</a> or <a href="logs/recent" class="underlined-a">job</a> reports.
+			grab-site tracking <span id="num-crawls">0</span> crawls.
 			Show: <input id="filter-box" type="text" size="21">
 			<input onclick="ds.setFilter('');" type="button" value="  All  " class="button">
 			<input onclick="ds.setFilter('^$');" type="button" value="None" class="button">
@@ -343,11 +338,11 @@ a.ignore {
 
 	<div id="critical-info">
 		<noscript>
-			Need JavaScript (ES5+) and WebSocket -&gt; TCP:4567
+			Need JavaScript (ES5+) and WebSocket
 		</noscript>
 		<div id="help" class="undisplayed">
 			<p>
-				This page shows all of the crawls that <a href="http://archiveteam.org/index.php?title=ArchiveBot">ArchiveBot</a> is currently running.
+				This page shows all of the crawls that are being reported to this server by your grab-site processes.
 			</p>
 			<p>
 				To pause scrolling, move your mouse inside a log window.
@@ -390,16 +385,10 @@ a.ignore {
 				For easier text selection in the log windows, add <kbd><span class="url-q-or-amp">?</span>moreDom=1</kbd> to the dashboard URL.  (This uses ~25% more memory.)
 			</p>
 			<p>
-				To use ArchiveBot, drop by <a href="http://chat.efnet.org:9090/?nick=&channels=%23archivebot&Login=Login">#archivebot</a> on EFNet.  <a href="http://archivebot.readthedocs.org/en/latest/">Issue commands</a> by typing them into the channel.  You will need channel operator (@) or voice (+) status to issue archiving jobs; just ask for help or leave a message with the website you want to archive.
-			</p>
-			<p>
 				These <a href="https://github.com/ArchiveTeam/ArchiveBot/tree/master/db/ignore_patterns">ignore sets</a> are available for crawls.  The <a href="https://github.com/ArchiveTeam/ArchiveBot/blob/master/db/ignore_patterns/global.json">global</a> ignore set automatically applies to all crawls.
 			</p>
 			<p>
-				On GitHub at <a href="https://github.com/ArchiveTeam/ArchiveBot">ArchiveTeam/ArchiveBot</a>.
-			</p>
-			<p>
-				You can <a href="/beta">try the alternate dashboard (beta) here.</a>
+				On GitHub at <a href="https://github.com/ludios/grab-site">ludios/grab-site</a>.
 			</p>
 		</div>
 	</div>
