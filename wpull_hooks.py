@@ -2,8 +2,21 @@ import re
 import os
 import json
 import pprint
+import asyncio
 from urllib.request import urlopen
+from autobahn.asyncio.websocket import WebSocketClientFactory, WebSocketClientProtocol
 from ignoracle import Ignoracle, parameterize_record_info
+
+clients = []
+
+class MyClientProtocol(WebSocketClientProtocol):
+	def onConnect(self, response):
+		print("Connected to server: {}".format(response.peer))
+		clients.append(self)
+
+	def report(self, url):
+		self.sendMessage(json.dumps({"url": url}).encode('utf8'))
+
 
 cache = {}
 def getPatternsForIgnoreSet(name):
@@ -83,6 +96,11 @@ def accept_url(url_info, record_info, verdict, reasons):
 	return verdict
 
 
+def handle_response(url_info, record_info, error_info=None, http_info=None):
+	if clients:
+		clients[0].report(url_info['url'])
+
+
 # Regular expressions for server headers go here
 ICY_FIELD_PATTERN = re.compile('Icy-|Ice-|X-Audiocast-')
 ICY_VALUE_PATTERN = re.compile('icecast', re.IGNORECASE)
@@ -116,4 +134,14 @@ assert 2 in wpull_hook.callbacks.AVAILABLE_VERSIONS
 
 wpull_hook.callbacks.version = 2
 wpull_hook.callbacks.accept_url = accept_url
+wpull_hook.callbacks.handle_response = handle_response
 wpull_hook.callbacks.handle_pre_response = handle_pre_response
+
+
+factory = WebSocketClientFactory()
+factory.protocol = MyClientProtocol
+
+loop = asyncio.get_event_loop()
+port = int(os.environ.get('GRAB_SITE_WS_PORT', 29000))
+coro = loop.create_connection(factory, '127.0.0.1', port)
+loop.run_until_complete(coro)
