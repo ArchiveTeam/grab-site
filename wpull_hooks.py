@@ -107,8 +107,20 @@ def accept_url(url_info, record_info, verdict, reasons):
 	return verdict
 
 
-def handle_response(url_info, record_info, error_info=None, http_info=None):
+def handle_result(url_info, record_info, error_info=None, http_info=None):
+	print("url_info", url_info)
+	print("record_info", record_info)
+	print("error_info", error_info)
+	print("http_info", http_info)
 	wsFactory.client.report(url_info['url'])
+
+
+def handle_response(url_info, record_info, http_info):
+	return handle_result(url_info, record_info, http_info=http_info)
+
+
+def handle_error(url_info, record_info, error_info):
+	return handle_result(url_info, record_info, error_info=error_info)
 
 
 # Regular expressions for server headers go here
@@ -145,4 +157,5 @@ assert 2 in wpull_hook.callbacks.AVAILABLE_VERSIONS
 wpull_hook.callbacks.version = 2
 wpull_hook.callbacks.accept_url = accept_url
 wpull_hook.callbacks.handle_response = handle_response
+wpull_hook.callbacks.handle_error = handle_error
 wpull_hook.callbacks.handle_pre_response = handle_pre_response
