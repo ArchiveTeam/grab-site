@@ -41,11 +41,21 @@ pip3 install --user git+https://github.com/ludios/grab-site
 Usage
 ---
 
+First, start the dashboard with:
+
+`~/.local/bin/gs-server`
+
+and point your browser to http://127.0.0.1:29000/
+
+Then, start as many crawls as you want with:
+
 ```
 ~/.local/bin/grab-site URL
 ~/.local/bin/grab-site URL --igsets=blogs,forums
 ~/.local/bin/grab-site URL --igsets=blogs,forums --no-offsite-links
 ```
+
+Do this inside tmux unless they're very short crawls.
 
 Note: `URL` must come before the options.
 
@@ -88,16 +98,10 @@ You can `touch DIR/stop` or press ctrl-c, which will do the same.  You will
 have to wait for the current downloads to finish.
 
 
-Monitoring all of your crawls with the dashboard
+Advanced `gs-server` options
 ---
 
-Start the dashboard with:
-
-`~/.local/bin/gs-server`
-
-and point your browser to http://127.0.0.1:29000/
-
-These environmental variables control what the server listens on:
+These environmental variables control what `gs-server` listens on:
 
 *	`GRAB_SITE_HTTP_INTERFACE` (default 0.0.0.0)
 *	`GRAB_SITE_HTTP_PORT` (default 29000)
