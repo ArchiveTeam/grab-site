@@ -25,6 +25,7 @@ class MyClientProtocol(WebSocketClientProtocol):
 			"type": "download",
 			"start_url": start_url,
 			"started_at": started_at,
+			"bytes_downloaded": stats["bytes_downloaded"],
 			"url": url,
 			"response_code": response_code,
 			"response_message": response_message,
@@ -114,26 +115,26 @@ def updateIgnoracle():
 updateIgnoracle()
 
 
-def shouldIgnoreURL(url, record_info):
+def shouldIgnoreURL(url, recordInfo):
 	"""
 	Returns whether a URL should be ignored.
 	"""
-	parameters = parameterize_record_info(record_info)
+	parameters = parameterize_record_info(recordInfo)
 	return ignoracle.ignores(url, **parameters)
 
 
-def acceptUrl(url_info, record_info, verdict, reasons):
+def acceptUrl(urlInfo, recordInfo, verdict, reasons):
 	if igsetsWatcher.has_changed() or ignoresWatcher.has_changed():
 		updateIgnoracle()
 
-	url = url_info['url']
+	url = urlInfo['url']
 
 	if url.startswith('data:'):
 		# data: URLs aren't something you can grab, so drop them to avoid ignore
 		# checking and ignore logging.
 		return False
 
-	pattern = shouldIgnoreURL(url, record_info)
+	pattern = shouldIgnoreURL(url, recordInfo)
 	if pattern:
 		if not os.path.exists(os.path.join(workingDir, "igoff")):
 			print("IGNOR %s by %s" % (url, pattern))
@@ -143,33 +144,39 @@ def acceptUrl(url_info, record_info, verdict, reasons):
 	return verdict
 
 
-def handleResult(url_info, record_info, error_info={}, http_info={}):
-	#print("url_info", url_info)
-	#print("record_info", record_info)
-	#print("error_info", error_info)
-	#print("http_info", http_info)
+stats = {"bytes_downloaded": 0}
+
+def handleResult(urlInfo, recordInfo, errorInfo={}, httpInfo={}):
+	#print("urlInfo", urlInfo)
+	#print("recordInfo", recordInfo)
+	#print("errorInfo", errorInfo)
+	#print("httpInfo", httpInfo)
+
+	if httpInfo.get("body"):
+		stats["bytes_downloaded"] += httpInfo["body"]["content_size"]
+
 	if wsFactory.client:
 		wsFactory.client.report(
-			url_info['url'],
-			http_info.get("response_code"),
-			http_info.get("response_message")
+			urlInfo['url'],
+			httpInfo.get("response_code"),
+			httpInfo.get("response_message")
 		)
 
 
-def handleResponse(url_info, record_info, http_info):
-	return handleResult(url_info, record_info, http_info=http_info)
+def handleResponse(urlInfo, recordInfo, httpInfo):
+	return handleResult(urlInfo, recordInfo, httpInfo=httpInfo)
 
 
-def handleError(url_info, record_info, error_info):
-	return handleResult(url_info, record_info, error_info=error_info)
+def handleError(urlInfo, recordInfo, errorInfo):
+	return handleResult(urlInfo, recordInfo, errorInfo=errorInfo)
 
 
 # Regular expressions for server headers go here
 ICY_FIELD_PATTERN = re.compile('Icy-|Ice-|X-Audiocast-')
 ICY_VALUE_PATTERN = re.compile('icecast', re.IGNORECASE)
 
-def handlePreResponse(url_info, url_record, response_info):
-	url = url_info['url']
+def handlePreResponse(urlInfo, url_record, response_info):
+	url = urlInfo['url']
 
 	# Check if server version starts with ICY
 	if response_info.get('version', '') == 'ICY':
