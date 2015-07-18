@@ -11,6 +11,7 @@ grab-site includes ArchiveBot's killer feature of being able to add ignore patte
 crawl is already running.  This allows you to skip the crawling of junk URLs that would
 otherwise prevent your crawl from ever finishing.  See below.
 
+
 Installation
 ---
 
@@ -22,6 +23,7 @@ pip3 install --user wpull manhole lmdb autobahn trollius
 git clone https://github.com/ludios/grab-site
 cd grab-site
 ```
+
 
 Usage
 ---
@@ -50,6 +52,7 @@ Using `--no-offsite-links` may prevent all kinds of useful images, video, audio,
 etc from being grabbed, because these are often hosted on a CDN or subdomain, and
 thus would otherwise not be included in the recursive crawl.
 
+
 Changing ignores during the crawl
 ---
 
@@ -63,3 +66,27 @@ to use in addition to the ignore sets.
 
 You can `touch DIR/igoff` to stop `IGNOR` message spew, and `rm DIR/igoff`
 to turn it back on again.
+
+
+Monitoring all of your crawls with the dashboard
+---
+
+Start the dashboard with:
+
+`./server.py`
+
+and point your browser to http://127.0.0.1:29000/
+
+These environmental variables control what the server listens on:
+
+`GRAB_SITE_HTTP_INTERFACE` (default 0.0.0.0)
+`GRAB_SITE_HTTP_PORT` (default 29000)
+`GRAB_SITE_WS_INTERFACE` (default 0.0.0.0)
+`GRAB_SITE_WS_PORT` (default 29001)
+
+`GRAB_SITE_WS_PORT` should be 1 port higher than `GRAB_SITE_HTTP_PORT`, or else you will have to add `?host=IP:PORT` to your dashboard URL.
+
+These environmental variables control which server grab-site connects to:
+
+`GRAB_SITE_WS_HOST` (default 127.0.0.1)
+`GRAB_SITE_WS_PORT` (default 29001)
