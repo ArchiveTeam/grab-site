@@ -196,6 +196,8 @@ def handleResult(urlInfo, recordInfo, errorInfo={}, httpInfo={}):
 		response_code_str = str(httpInfo["response_code"])
 		if len(response_code_str) == 3 and response_code_str[0] in "12345":
 			jobData["r%sxx" % response_code_str[0]] += 1
+		else:
+			jobData["runk"] += 1
 
 	if httpInfo.get("body"):
 		jobData["bytes_downloaded"] += httpInfo["body"]["content_size"]
