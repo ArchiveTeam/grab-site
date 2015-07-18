@@ -221,7 +221,7 @@ def handlePreResponse(urlInfo, url_record, response_info):
 
 
 def stdoutWriteToBoth(message):
-	assert isinstance(message, bytes)
+	assert isinstance(message, bytes), message
 	try:
 		realStdoutWrite(message)
 		if wsFactory.client:
@@ -234,7 +234,7 @@ def stdoutWriteToBoth(message):
 		realStderrWrite((str(e) + "\n").encode("utf-8"))
 
 def stderrWriteToBoth(message):
-	assert isinstance(message, bytes)
+	assert isinstance(message, bytes), message
 	try:
 		realStderrWrite(message)
 		if wsFactory.client:
