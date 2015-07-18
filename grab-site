@@ -15,7 +15,10 @@ span_hosts_allow="page-requisites,linked-pages"
 for arg in "$@"; do
 	case $arg in
 		--ignore-sets=*)
-			ignore_sets="${arg#*=}"
+			igsets="${arg#*=}"
+		;;
+		--igsets=*)
+			igsets="${arg#*=}"
 		;;
 		--no-offsite-links)
 			span_hosts_allow="page-requisites"
@@ -29,13 +32,13 @@ done
 
 echo 
 echo "$id" > "$dir/id"
-echo "global,$ignore_sets" > "$dir/ignore_sets"
+echo "global,$igsets" > "$dir/igsets"
 touch "$dir/ignores"
 
 # Note: we use the default html5lib parser instead of the lxml that ArchiveBot uses
 # html5lib is slower, but is better at parsing and doesn't (rarely) corrupt the heap like lxml
 
-HOOK_SETTINGS_DIR="$dir" PYTHONPATH="$self" ~/.local/bin/wpull3 \
+GRAB_SITE_WORKING_DIR="$dir" PYTHONPATH="$self" ~/.local/bin/wpull3 \
 	-U "Mozilla/5.0 (Windows NT 6.3; WOW64; rv:39.0) Gecko/20100101 Firefox/39.0" \
 	--header="Accept: text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8" \
 	--header="Accept-Language: en-US,en;q=0.5" \

@@ -6,12 +6,51 @@ import aiohttp.web
 from autobahn.asyncio.websocket import WebSocketServerFactory, WebSocketServerProtocol
 
 class MyServerProtocol(WebSocketServerProtocol):
+	def __init__(self):
+		super().__init__()
+
 	def onConnect(self, request):
-		print("Client connecting: {}".format(request.peer))
+		self.peer = request.peer
+		print("{} connected to WebSocket server".format(self.peer))
+		self.factory.clients.add(self)
+
+	def onClose(self, wasClean, code, reason):
+		print("{} disconnected from WebSocket server".format(self.peer))
+		self.factory.clients.remove(self)
+
+	def onMessage(self, payload, isBinary):
+		print(payload)
+		obj = json.loads(payload.decode('utf-8'))
+		type = obj["type"]
+		if type == "hello" and obj.get("mode"):
+			mode = obj['mode']
+			if mode in ('dashboard', 'grabber'):
+				print("{} set mode {}".format(self.peer, mode))
+				self.mode = mode
+		elif type == "download" or type == "stdout":
+			for client in self.factory.clients:
+				if client.mode == "dashboard":
+					client.sendMessage(json.dumps({
+						"job_data": {
+							"ident": obj["ident"]
+						},
+						"url": obj["url"],
+						"response_code": obj["response_code"],
+						"wget_code": obj["response_message"],
+						"type": type
+					}))
 
 	def onMessage(self, payload, isBinary):
 		print(payload)
 		#self.sendMessage(payload, isBinary)
+
+
+class MyServerFactory(WebSocketServerFactory):
+	protocol = MyServerProtocol
+
+	def __init__(self):
+		super().__init__()
+		self.clients = set()
 
 
 dashboardHtml = open(os.path.join(os.path.dirname(__file__), "dashboard.html"), "rb").read()
@@ -41,12 +80,11 @@ def main():
 	httpCoro = httpServer(loop, httpInterface, httpPort)
 	loop.run_until_complete(httpCoro)
 
-	wsFactory = WebSocketServerFactory()
-	wsFactory.protocol = MyServerProtocol
+	wsFactory = MyServerFactory()
 	wsCoro = loop.create_server(wsFactory, wsInterface, wsPort)
 	loop.run_until_complete(wsCoro)
 
-	print("HTTP server started on {}:{}".format(httpInterface, httpPort))
+	print("     HTTP server started on {}:{}".format(httpInterface, httpPort))
 	print("WebSocket server started on {}:{}".format(wsInterface, wsPort))
 
 	loop.run_forever()

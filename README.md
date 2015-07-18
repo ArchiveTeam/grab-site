@@ -28,13 +28,13 @@ Usage
 
 ```
 ./grab-site URL
-./grab-site URL --ignore-sets=blogs,forums
-./grab-site URL --ignore-sets=blogs,forums --no-offsite-links
+./grab-site URL --igsets=blogs,forums
+./grab-site URL --igsets=blogs,forums --no-offsite-links
 ```
 
 Note: `URL` must come before the options.
 
-Note: `--ignore-sets=` must have the `=`.
+Note: `--igsets=` means "ignore sets" and must have the `=`.
 
 `forums` and `blogs` are some frequently-used ignore sets.
 See [the full list of available ignore sets](https://github.com/ArchiveTeam/ArchiveBot/tree/master/db/ignore_patterns).

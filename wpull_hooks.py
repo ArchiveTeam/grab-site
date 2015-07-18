@@ -8,17 +8,33 @@ from autobahn.asyncio.websocket import WebSocketClientFactory, WebSocketClientPr
 from ignoracle import Ignoracle, parameterize_record_info
 
 
+wsClient = None
+
 class MyClientProtocol(WebSocketClientProtocol):
-	def onConnect(self, response):
-		print("Connected to server: {}".format(response.peer))
-		self.factory.client = self
+	def onOpen(self):
+		global wsClient
+		print("{} connected to WebSocket server".format(self.__class__.__name__))
+		wsClient = self
 
-	def report(self, url):
-		self.sendMessage(json.dumps({"url": url}).encode('utf8'))
+	def onClose(self, reason, code):
+		# TODO: exponentially increasing delay (copy Decayer from dashboard)
+		connectToServer()
+
+	def report(self, url, response_code, response_message):
+		self.sendMessage(json.dumps({
+			"ident": grabId,
+			"type": "download",
+			"url": url,
+			"response_code": response_code,
+			"response_message": response_message,
+		}).encode('utf8'))
 
 
-wsFactory = WebSocketClientFactory()
-wsFactory.protocol = MyClientProtocol
+class MyClientFactory(WebSocketClientFactory):
+	protocol = MyClientProtocol
+
+
+wsFactory = MyClientFactory()
 
 def connectToServer():
 	loop = asyncio.get_event_loop()
@@ -29,21 +45,23 @@ def connectToServer():
 connectToServer()
 
 
-cache = {}
+igsetCache = {}
 def getPatternsForIgnoreSet(name):
 	assert name != "", name
-	if name in cache:
-		return cache[name]
+	if name in igsetCache:
+		return igsetCache[name]
 	print("Fetching ArchiveBot/master/db/ignore_patterns/%s.json" % name)
-	cache[name] = json.loads(urlopen("https://raw.githubusercontent.com/ArchiveTeam/ArchiveBot/master/db/ignore_patterns/%s.json" % name).read().decode("utf-8"))["patterns"]
-	return cache[name]
+	igsetCache[name] = json.loads(urlopen(
+		"https://raw.githubusercontent.com/ArchiveTeam/ArchiveBot/" +
+		"master/db/ignore_patterns/%s.json" % name).read().decode("utf-8")
+	)["patterns"]
+	return igsetCache[name]
 
-hook_settings_dir = os.environ['HOOK_SETTINGS_DIR']
-
-ignoracle = Ignoracle()
+workingDir = os.environ['GRAB_SITE_WORKING_DIR']
 
 def mtime(f):
 	return os.stat(f).st_mtime
+
 
 class FileChangedWatcher(object):
 	def __init__(self, fname):
@@ -57,17 +75,20 @@ class FileChangedWatcher(object):
 		return changed
 
 
-ignore_sets_w = FileChangedWatcher(os.path.join(hook_settings_dir, "ignore_sets"))
-ignores_w = FileChangedWatcher(os.path.join(hook_settings_dir, "ignores"))
+grabId = open(os.path.join(workingDir, "id")).read().strip()
+igsetsWatcher = FileChangedWatcher(os.path.join(workingDir, "igsets"))
+ignoresWatcher = FileChangedWatcher(os.path.join(workingDir, "ignores"))
 
-def update_ignoracle():
-	with open(os.path.join(hook_settings_dir, "ignore_sets"), "r") as f:
-		ignore_sets = f.read().strip("\r\n\t ,").split(',')
+ignoracle = Ignoracle()
 
-	with open(os.path.join(hook_settings_dir, "ignores"), "r") as f:
+def updateIgnoracle():
+	with open(os.path.join(workingDir, "igsets"), "r") as f:
+		igsets = f.read().strip("\r\n\t ,").split(',')
+
+	with open(os.path.join(workingDir, "ignores"), "r") as f:
 		ignores = set(ig for ig in f.read().strip("\r\n").split('\n') if ig != "")
 
-	for igset in ignore_sets:
+	for igset in igsets:
 		ignores.update(getPatternsForIgnoreSet(igset))
 
 	print("Using these %d ignores:" % len(ignores))
@@ -75,20 +96,20 @@ def update_ignoracle():
 
 	ignoracle.set_patterns(ignores)
 
-update_ignoracle()
+updateIgnoracle()
 
 
-def ignore_url_p(url, record_info):
-	'''
+def shouldIgnoreURL(url, record_info):
+	"""
 	Returns whether a URL should be ignored.
-	'''
+	"""
 	parameters = parameterize_record_info(record_info)
 	return ignoracle.ignores(url, **parameters)
 
 
-def accept_url(url_info, record_info, verdict, reasons):
-	if ignore_sets_w.has_changed() or ignores_w.has_changed():
-		update_ignoracle()
+def acceptUrl(url_info, record_info, verdict, reasons):
+	if igsetsWatcher.has_changed() or ignoresWatcher.has_changed():
+		updateIgnoracle()
 
 	url = url_info['url']
 
@@ -97,9 +118,9 @@ def accept_url(url_info, record_info, verdict, reasons):
 		# checking and ignore logging.
 		return False
 
-	pattern = ignore_url_p(url, record_info)
+	pattern = shouldIgnoreURL(url, record_info)
 	if pattern:
-		if not os.path.exists(os.path.join(hook_settings_dir, "igoff")):
+		if not os.path.exists(os.path.join(workingDir, "igoff")):
 			print("IGNOR %s by %s" % (url, pattern))
 		return False
 
@@ -107,27 +128,27 @@ def accept_url(url_info, record_info, verdict, reasons):
 	return verdict
 
 
-def handle_result(url_info, record_info, error_info=None, http_info=None):
-	print("url_info", url_info)
-	print("record_info", record_info)
-	print("error_info", error_info)
-	print("http_info", http_info)
-	wsFactory.client.report(url_info['url'])
+def handleResult(url_info, record_info, error_info={}, http_info={}):
+	#print("url_info", url_info)
+	#print("record_info", record_info)
+	#print("error_info", error_info)
+	#print("http_info", http_info)
+	wsClient.report(url_info['url'], http_info.get("response_code"), http_info.get("response_message"))
 
 
-def handle_response(url_info, record_info, http_info):
-	return handle_result(url_info, record_info, http_info=http_info)
+def handleResponse(url_info, record_info, http_info):
+	return handleResult(url_info, record_info, http_info=http_info)
 
 
-def handle_error(url_info, record_info, error_info):
-	return handle_result(url_info, record_info, error_info=error_info)
+def handleError(url_info, record_info, error_info):
+	return handleResult(url_info, record_info, error_info=error_info)
 
 
 # Regular expressions for server headers go here
 ICY_FIELD_PATTERN = re.compile('Icy-|Ice-|X-Audiocast-')
 ICY_VALUE_PATTERN = re.compile('icecast', re.IGNORECASE)
 
-def handle_pre_response(url_info, url_record, response_info):
+def handlePreResponse(url_info, url_record, response_info):
 	url = url_info['url']
 
 	# Check if server version starts with ICY
@@ -155,7 +176,7 @@ def handle_pre_response(url_info, url_record, response_info):
 assert 2 in wpull_hook.callbacks.AVAILABLE_VERSIONS
 
 wpull_hook.callbacks.version = 2
-wpull_hook.callbacks.accept_url = accept_url
-wpull_hook.callbacks.handle_response = handle_response
-wpull_hook.callbacks.handle_error = handle_error
-wpull_hook.callbacks.handle_pre_response = handle_pre_response
+wpull_hook.callbacks.accept_url = acceptUrl
+wpull_hook.callbacks.handle_response = handleResponse
+wpull_hook.callbacks.handle_error = handleError
+wpull_hook.callbacks.handle_pre_response = handlePreResponse

@@ -1483,38 +1483,6 @@ var Dashboard = function() {
 
 	var batchTimeWhenHidden = 5000;
 
-	var xhr = new XMLHttpRequest();
-	xhr.onload = function() {
-		var recentLines = JSON.parse(xhr.responseText);
-		for(var i=0; i < recentLines.length; i++) {
-			this.handleData(recentLines[i]);
-		}
-
-		this.queue = new BatchingQueue(function(queue) {
-			//console.log("Queue has ", queue.length, "items");
-			for(var i=0; i < queue.length; i++) {
-				this.handleData(JSON.parse(queue[i]));
-			}
-		}.bind(this), batchTimeWhenVisible);
-
-		this.decayer = new Decayer(1000, 1.5, 60000);
-		this.connectWebSocket();
-
-		document.addEventListener("visibilitychange", function() {
-			if(document.hidden) {
-				//console.log("Page has become hidden");
-				this.queue.setMinInterval(batchTimeWhenHidden);
-			} else {
-				//console.log("Page has become visible");
-				this.queue.setMinInterval(batchTimeWhenVisible);
-				this.queue.callNow();
-			}
-		}.bind(this), false);
-	}.bind(this);
-	xhr.open("GET", "http://" + this.host + "/logs/recent?cb=" + Date.now() + Math.random());
-	xhr.setRequestHeader('Accept', 'application/json');
-	xhr.send("");
-
 	document.onkeypress = this.keyPress.bind(this);
 
 	// Adjust help text based on URL
@@ -1527,6 +1495,27 @@ var Dashboard = function() {
 	if(!showNicks) {
 		document.write('<style>.job-nick-aligned { width: 0; }</style>');
 	}
+
+	this.queue = new BatchingQueue(function(queue) {
+		//console.log("Queue has ", queue.length, "items");
+		for(var i=0; i < queue.length; i++) {
+			this.handleData(JSON.parse(queue[i]));
+		}
+	}.bind(this), batchTimeWhenVisible);
+
+	this.decayer = new Decayer(1000, 1.5, 60000);
+	this.connectWebSocket();
+
+	document.addEventListener("visibilitychange", function() {
+		if(document.hidden) {
+			//console.log("Page has become hidden");
+			this.queue.setMinInterval(batchTimeWhenHidden);
+		} else {
+			//console.log("Page has become visible");
+			this.queue.setMinInterval(batchTimeWhenVisible);
+			this.queue.callNow();
+		}
+	}.bind(this), false);
 };
 
 Dashboard.prototype.keyPress = function(ev) {
