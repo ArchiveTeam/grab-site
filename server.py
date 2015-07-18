@@ -54,11 +54,11 @@ class MyServerFactory(WebSocketServerFactory):
 		self.clients = set()
 
 
-dashboardHtml = open(os.path.join(os.path.dirname(__file__), "dashboard.html"), "rb").read()
-
 @asyncio.coroutine
 def dashboard(request):
-	return aiohttp.web.Response(body=dashboardHtml)
+	with open(os.path.join(os.path.dirname(__file__), "dashboard.html"), "rb") as f:
+		dashboardHtml = f.read()
+		return aiohttp.web.Response(body=dashboardHtml)
 
 
 @asyncio.coroutine
