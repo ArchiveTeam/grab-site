@@ -2,8 +2,13 @@
 
 """
 Like wpull, except don't install a handler for SIGINT or SIGTERM,
-because we install our own in wpull_hooks.py
+because we install our own in wpull_hooks.py.
+
+Also, enable faulthandler.
 """
+
+import faulthandler
+faulthandler.enable()
 
 from wpull.app import Application
 def noop_setup_signal_handlers(self):
