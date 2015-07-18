@@ -70,7 +70,7 @@ GRAB_SITE_WORKING_DIR="$dir" "$self/patched-wpull" \
 	--debug-manhole \
 	--strip-session-id \
 	--escaped-fragment \
-	--monitor-disk 50m \
+	--monitor-disk 400m \
 	--monitor-memory 10k \
 	--recursive \
 	--level "$level" \
