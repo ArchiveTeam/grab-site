@@ -9,7 +9,7 @@ import asyncio
 import aiohttp.web
 from autobahn.asyncio.websocket import WebSocketServerFactory, WebSocketServerProtocol
 
-class MyServerProtocol(WebSocketServerProtocol):
+class GrabberServerProtocol(WebSocketServerProtocol):
 	def __init__(self):
 		super().__init__()
 		self.mode = "dashboard"
@@ -63,8 +63,8 @@ class MyServerProtocol(WebSocketServerProtocol):
 			})
 
 
-class MyServerFactory(WebSocketServerFactory):
-	protocol = MyServerProtocol
+class GrabberServerFactory(WebSocketServerFactory):
+	protocol = GrabberServerProtocol
 
 	def __init__(self):
 		super().__init__()
@@ -98,7 +98,7 @@ def main():
 	httpCoro = httpServer(loop, httpInterface, httpPort)
 	loop.run_until_complete(httpCoro)
 
-	wsFactory = MyServerFactory()
+	wsFactory = GrabberServerFactory()
 	wsCoro = loop.create_server(wsFactory, wsInterface, wsPort)
 	loop.run_until_complete(wsCoro)
 

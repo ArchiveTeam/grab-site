@@ -17,7 +17,7 @@ def printToReal(s):
 	sys.stdout.buffer.flush()
 
 
-class MyClientProtocol(WebSocketClientProtocol):
+class GrabberClientProtocol(WebSocketClientProtocol):
 	def onOpen(self):
 		self.factory.client = self
 		printToReal("{} connected to WebSocket server".format(self.__class__.__name__))
@@ -37,15 +37,15 @@ class MyClientProtocol(WebSocketClientProtocol):
 		self.sendMessage(json.dumps(obj).encode("utf-8"))
 
 
-class MyClientFactory(WebSocketClientFactory):
-	protocol = MyClientProtocol
+class GrabberClientFactory(WebSocketClientFactory):
+	protocol = GrabberClientProtocol
 
 	def __init__(self):
 		super().__init__()
 		self.client = None
 
 
-wsFactory = MyClientFactory()
+wsFactory = GrabberClientFactory()
 
 @asyncio.coroutine
 def connectToServer():
