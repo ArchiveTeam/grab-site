@@ -27,7 +27,10 @@ class MyClientProtocol(WebSocketClientProtocol):
 	def onOpen(self):
 		self.factory.client = self
 		printToReal("{} connected to WebSocket server".format(self.__class__.__name__))
-		self.sendMessage(json.dumps({"type": "hello", "mode": "grabber"}).encode('utf-8'))
+		self.sendMessage(json.dumps({
+			"type": "hello",
+			"mode": "grabber"
+		}).encode('utf-8'))
 
 	def onClose(self, wasClean, code, reason):
 		self.factory.client = None
@@ -40,8 +43,8 @@ class MyClientProtocol(WebSocketClientProtocol):
 
 	def report(self, url, response_code, response_message):
 		self.sendObject({
-			"job_data": getJobData(),
 			"type": "download",
+			"job_data": getJobData(),
 			"url": url,
 			"response_code": response_code,
 			"response_message": response_message,
