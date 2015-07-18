@@ -26,14 +26,14 @@ for arg in "$@"; do
 		--level=*)
 			level="${arg#*=}"
 		;;
+		--page-requisites-level=*)
+			page_requisites_level="${arg#*=}"
+		;;
 		--concurrency=*)
 			concurrency="${arg#*=}"
 		;;
 		--concurrent=*)
 			concurrency="${arg#*=}"
-		;;
-		--page-requisites-level=*)
-			page_requisites_level="${arg#*=}"
 		;;
 		--no-offsite-links)
 			span_hosts_allow="page-requisites"
