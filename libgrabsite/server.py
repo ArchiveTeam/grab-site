@@ -41,27 +41,28 @@ class GrabberServerProtocol(WebSocketServerProtocol):
 					print("{} is grabbing {}".format(self.peer, obj['url']))
 				elif mode == "dashboard":
 					print("{} is dashboarding with {}".format(self.peer, obj['user_agent']))
-		elif type == "download":
-			self.broadcastToDashboards({
-				"type": type,
-				"job_data": obj["job_data"],
-				"url": obj["url"],
-				"response_code": obj["response_code"],
-				"wget_code": obj["response_message"]
-			})
-		elif type in ("stdout", "stderr"):
-			self.broadcastToDashboards({
-				"type": type,
-				"job_data": obj["job_data"],
-				"message": obj["message"]
-			})
-		elif type == "ignore":
-			self.broadcastToDashboards({
-				"type": type,
-				"job_data": obj["job_data"],
-				"url": obj["url"],
-				"pattern": obj["pattern"],
-			})
+		elif self.mode == "grabber":
+			if type == "download":
+				self.broadcastToDashboards({
+					"type": type,
+					"job_data": obj["job_data"],
+					"url": obj["url"],
+					"response_code": obj["response_code"],
+					"wget_code": obj["response_message"]
+				})
+			elif type in ("stdout", "stderr"):
+				self.broadcastToDashboards({
+					"type": type,
+					"job_data": obj["job_data"],
+					"message": obj["message"]
+				})
+			elif type == "ignore":
+				self.broadcastToDashboards({
+					"type": type,
+					"job_data": obj["job_data"],
+					"url": obj["url"],
+					"pattern": obj["pattern"],
+				})
 
 
 class GrabberServerFactory(WebSocketServerFactory):
