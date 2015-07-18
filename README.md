@@ -32,9 +32,7 @@ On Ubuntu 14.04.1 or newer:
 
 ```
 sudo apt-get install --no-install-recommends git build-essential python3-dev python3-pip
-pip3 install --user wpull manhole lmdb autobahn aiohttp trollius
-git clone https://github.com/ludios/grab-site
-cd grab-site
+pip3 install --user git+https://github.com/ludios/grab-site
 ```
 
 
@@ -42,9 +40,9 @@ Usage
 ---
 
 ```
-./grab-site URL
-./grab-site URL --igsets=blogs,forums
-./grab-site URL --igsets=blogs,forums --no-offsite-links
+~/.local/bin/grab-site URL
+~/.local/bin/grab-site URL --igsets=blogs,forums
+~/.local/bin/grab-site URL --igsets=blogs,forums --no-offsite-links
 ```
 
 Note: `URL` must come before the options.
@@ -86,7 +84,7 @@ Monitoring all of your crawls with the dashboard
 
 Start the dashboard with:
 
-`./server.py`
+`~/.local/bin/gs-server`
 
 and point your browser to http://127.0.0.1:29000/
 
