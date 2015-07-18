@@ -11,7 +11,7 @@ The wpull options are preconfigured based on Archive Team's experience with
 
 grab-site gives you
 
-*	a dashboard that displays all of your crawls, showing which URLs are being
+*	a dashboard with all of your crawls, showing which URLs are being
 	grabbed, how many URLs are left in the queue, and more.
 
 *	the ability to add ignore patterns when the crawl is already running.
