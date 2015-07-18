@@ -1,0 +1,15 @@
+#!/usr/bin/python3
+
+"""
+Like wpull, except don't install a handler for SIGINT or SIGTERM,
+because we install our own in wpull_hooks.py
+"""
+
+from wpull.app import Application
+def noop_setup_signal_handlers(self):
+	pass
+
+Application.setup_signal_handlers = noop_setup_signal_handlers
+
+import wpull.__main__
+wpull.__main__.main()

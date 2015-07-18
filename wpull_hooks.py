@@ -3,6 +3,7 @@ import os
 import sys
 import json
 import pprint
+import signal
 import trollius as asyncio
 from urllib.request import urlopen
 from autobahn.asyncio.websocket import WebSocketClientFactory, WebSocketClientProtocol
@@ -61,6 +62,17 @@ def connectToServer():
 
 loop = asyncio.get_event_loop()
 asyncio.ensure_future(connectToServer())
+
+def graceful_stop_callback():
+	printToReal("\n^C detected, creating 'stop' file, please wait for exit...")
+	with open(os.path.join(workingDir, "stop"), "wb") as f:
+		pass
+
+def forceful_stop_callback():
+	loop.stop()
+
+loop.add_signal_handler(signal.SIGINT, graceful_stop_callback)
+loop.add_signal_handler(signal.SIGTERM, forceful_stop_callback)
 
 
 igsetCache = {}

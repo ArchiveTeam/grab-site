@@ -40,7 +40,7 @@ touch "$dir/ignores"
 # Note: we use the default html5lib parser instead of the lxml that ArchiveBot uses
 # html5lib is slower, but is better at parsing and doesn't (rarely) corrupt the heap like lxml
 
-GRAB_SITE_WORKING_DIR="$dir" PYTHONPATH="$self" ~/.local/bin/wpull3 \
+GRAB_SITE_WORKING_DIR="$dir" PYTHONPATH="$self" "$self/wpull" \
 	-U "Mozilla/5.0 (Windows NT 6.3; WOW64; rv:39.0) Gecko/20100101 Firefox/39.0" \
 	--header="Accept: text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8" \
 	--header="Accept-Language: en-US,en;q=0.5" \
