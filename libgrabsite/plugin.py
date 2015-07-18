@@ -18,7 +18,7 @@ class NoFsyncSQLTable(SQLiteURLTable):
 		connection.execute('PRAGMA synchronous=OFF')
 
 
-class DupSpottingProcessingRule(wpull.processor.rule.ProcessingRule):
+class DupeSpottingProcessingRule(wpull.processor.rule.ProcessingRule):
 	def __init__(self, *args, **kwargs):
 		self.dupes_db = kwargs.pop('dupes_db', None)
 		super().__init__(*args, **kwargs)
@@ -62,5 +62,5 @@ else:
 
 wpull_plugin.factory.class_map['URLTableImplementation'] = NoFsyncSQLTable
 wpull_plugin.factory.class_map['ProcessingRule'] = functools.partial(
-	DupSpottingProcessingRule, dupes_db=dupes_db
+	DupeSpottingProcessingRule, dupes_db=dupes_db
 )
