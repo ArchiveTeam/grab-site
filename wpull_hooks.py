@@ -15,13 +15,6 @@ def printToReal(s):
 	realStdoutWrite((s + "\n").encode("utf-8"))
 	sys.stdout.buffer.flush()
 
-def getJobData():
-	return {
-		"ident": ident,
-		"started_at": started_at,
-		"bytes_downloaded": stats["bytes_downloaded"],
-		"url": start_url
-	}
 
 class MyClientProtocol(WebSocketClientProtocol):
 	def onOpen(self):
@@ -44,7 +37,7 @@ class MyClientProtocol(WebSocketClientProtocol):
 	def report(self, url, response_code, response_message):
 		self.sendObject({
 			"type": "download",
-			"job_data": getJobData(),
+			"job_data": jobData,
 			"url": url,
 			"response_code": response_code,
 			"response_message": response_message,
@@ -108,9 +101,6 @@ class FileChangedWatcher(object):
 		return changed
 
 
-ident = open(os.path.join(workingDir, "id")).read().strip()
-start_url = open(os.path.join(workingDir, "start_url")).read().strip()
-started_at = os.stat(os.path.join(workingDir, "start_url")).st_mtime
 igsetsWatcher = FileChangedWatcher(os.path.join(workingDir, "igsets"))
 ignoresWatcher = FileChangedWatcher(os.path.join(workingDir, "ignores"))
 
@@ -142,7 +132,7 @@ def shouldIgnoreURL(url, recordInfo):
 	return ignoracle.ignores(url, **parameters)
 
 
-def acceptUrl(urlInfo, recordInfo, verdict, reasons):
+def acceptURL(urlInfo, recordInfo, verdict, reasons):
 	if igsetsWatcher.has_changed() or ignoresWatcher.has_changed():
 		updateIgnoracle()
 
@@ -162,7 +152,30 @@ def acceptUrl(urlInfo, recordInfo, verdict, reasons):
 	return verdict
 
 
-stats = {"bytes_downloaded": 0}
+def queuedURL(urlInfo):
+	jobData["items_queued"] += 1
+
+
+def dequeuedURL(url_info, record_info):
+	jobData["items_downloaded"] += 1
+
+
+jobData = {
+	"ident": open(os.path.join(workingDir, "id")).read().strip(),
+	"url": open(os.path.join(workingDir, "start_url")).read().strip(),
+	"started_at": os.stat(os.path.join(workingDir, "start_url")).st_mtime,
+	"bytes_downloaded": 0,
+	"items_queued": 0,
+	"items_downloaded": 0,
+	"delay_min": 0,
+	"delay_max": 0,
+	"r1xx": 0,
+	"r2xx": 0,
+	"r3xx": 0,
+	"r4xx": 0,
+	"r5xx": 0,
+	"runk": 0,
+}
 
 def handleResult(urlInfo, recordInfo, errorInfo={}, httpInfo={}):
 	#print("urlInfo", urlInfo)
@@ -170,8 +183,13 @@ def handleResult(urlInfo, recordInfo, errorInfo={}, httpInfo={}):
 	#print("errorInfo", errorInfo)
 	#print("httpInfo", httpInfo)
 
+	if httpInfo.get("response_code"):
+		response_code = str(httpInfo["response_code"])
+		if len(response_code) == 3 and response_code[0] in "12345":
+			jobData["r%sxx" % response_code[0]] += 1
+
 	if httpInfo.get("body"):
-		stats["bytes_downloaded"] += httpInfo["body"]["content_size"]
+		jobData["bytes_downloaded"] += httpInfo["body"]["content_size"]
 
 	if wsFactory.client:
 		wsFactory.client.report(
@@ -195,7 +213,7 @@ def maybeLogIgnore(url, pattern):
 		if wsFactory.client:
 			wsFactory.client.sendObject({
 				"type": "ignore",
-				"job_data": getJobData(),
+				"job_data": jobData,
 				"url": url,
 				"pattern": pattern
 			})
@@ -235,7 +253,7 @@ def stdoutWriteToBoth(message):
 		if wsFactory.client:
 			wsFactory.client.sendObject({
 				"type": "stdout",
-				"job_data": getJobData(),
+				"job_data": jobData,
 				"message": message.decode("utf-8")
 			})
 	except Exception as e:
@@ -248,7 +266,7 @@ def stderrWriteToBoth(message):
 		if wsFactory.client:
 			wsFactory.client.sendObject({
 				"type": "stderr",
-				"job_data": getJobData(),
+				"job_data": jobData,
 				"message": message.decode("utf-8")
 			})
 	except Exception as e:
@@ -261,7 +279,9 @@ sys.stderr.buffer.write = stderrWriteToBoth
 assert 2 in wpull_hook.callbacks.AVAILABLE_VERSIONS
 
 wpull_hook.callbacks.version = 2
-wpull_hook.callbacks.accept_url = acceptUrl
+wpull_hook.callbacks.accept_url = acceptURL
+wpull_hook.callbacks.queued_url = queuedURL
+wpull_hook.callbacks.dequeued_url = dequeuedURL
 wpull_hook.callbacks.handle_response = handleResponse
 wpull_hook.callbacks.handle_error = handleError
 wpull_hook.callbacks.handle_pre_response = handlePreResponse
