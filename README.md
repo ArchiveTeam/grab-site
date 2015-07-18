@@ -18,6 +18,9 @@ grab-site gives you
 	This allows you to skip the crawling of junk URLs that would
 	otherwise prevent your crawl from ever finishing.  See below.
 
+*	an extensively tested default ignore set ("[global](https://github.com/ArchiveTeam/ArchiveBot/blob/master/db/ignore_patterns/global.json)")
+	as well as additional (optional) ignore sets for blogs, forums, etc.
+
 
 Installation
 ---
