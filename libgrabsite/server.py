@@ -33,7 +33,7 @@ class GrabberServerProtocol(WebSocketServerProtocol):
 		##print(payload)
 		obj = json.loads(payload.decode('utf-8'))
 		type = obj["type"]
-		if type == "hello" and obj.get("mode"):
+		if self.mode is None and type == "hello" and obj.get("mode"):
 			mode = obj['mode']
 			if mode in ('dashboard', 'grabber'):
 				self.mode = mode
