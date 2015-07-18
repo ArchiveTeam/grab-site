@@ -2,6 +2,7 @@
 
 import os
 # Can't use trollius because then onConnect never gets called
+# https://github.com/tavendo/AutobahnPython/issues/426
 import asyncio
 import aiohttp.web
 from autobahn.asyncio.websocket import WebSocketServerFactory, WebSocketServerProtocol
