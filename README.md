@@ -19,7 +19,7 @@ On Ubuntu 14.04.1 or newer:
 
 ```
 sudo apt-get install --no-install-recommends git build-essential python3-dev python3-pip
-pip3 install --user wpull manhole lmdb autobahn trollius
+pip3 install --user wpull manhole lmdb autobahn aiohttp trollius
 git clone https://github.com/ludios/grab-site
 cd grab-site
 ```
