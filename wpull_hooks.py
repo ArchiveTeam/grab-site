@@ -35,15 +35,6 @@ class MyClientProtocol(WebSocketClientProtocol):
 	def sendObject(self, obj):
 		self.sendMessage(json.dumps(obj).encode("utf-8"))
 
-	def report(self, url, response_code, response_message):
-		self.sendObject({
-			"type": "download",
-			"job_data": jobData,
-			"url": url,
-			"response_code": response_code,
-			"response_message": response_message,
-		})
-
 
 class MyClientFactory(WebSocketClientFactory):
 	protocol = MyClientProtocol
@@ -165,6 +156,7 @@ jobData = {
 	"ident": open(os.path.join(workingDir, "id")).read().strip(),
 	"url": open(os.path.join(workingDir, "start_url")).read().strip(),
 	"started_at": os.stat(os.path.join(workingDir, "start_url")).st_mtime,
+	"suppress_ignore_reports": True,
 	"bytes_downloaded": 0,
 	"items_queued": 0,
 	"items_downloaded": 0,
@@ -184,6 +176,8 @@ def handleResult(urlInfo, recordInfo, errorInfo={}, httpInfo={}):
 	#print("errorInfo", errorInfo)
 	#print("httpInfo", httpInfo)
 
+	updateIgoffInJobData()
+
 	if httpInfo.get("response_code"):
 		response_code = str(httpInfo["response_code"])
 		if len(response_code) == 3 and response_code[0] in "12345":
@@ -193,11 +187,13 @@ def handleResult(urlInfo, recordInfo, errorInfo={}, httpInfo={}):
 		jobData["bytes_downloaded"] += httpInfo["body"]["content_size"]
 
 	if wsFactory.client:
-		wsFactory.client.report(
-			urlInfo['url'],
-			httpInfo.get("response_code"),
-			httpInfo.get("response_message")
-		)
+		wsFactory.client.sendObject({
+			"type": "download",
+			"job_data": jobData,
+			"url": urlInfo["url"],
+			"response_code": httpInfo.get("response_code"),
+			"response_message": httpInfo.get("response_message"),
+		})
 
 
 def handleResponse(urlInfo, recordInfo, httpInfo):
@@ -208,8 +204,14 @@ def handleError(urlInfo, recordInfo, errorInfo):
 	return handleResult(urlInfo, recordInfo, errorInfo=errorInfo)
 
 
+def updateIgoffInJobData():
+	igoff = os.path.exists(os.path.join(workingDir, "igoff"))
+	jobData["suppress_ignore_reports"] = igoff
+	return igoff
+
+
 def maybeLogIgnore(url, pattern):
-	if not os.path.exists(os.path.join(workingDir, "igoff")):
+	if not updateIgoffInJobData():
 		printToReal("IGNOR %s by %s" % (url, pattern))
 		if wsFactory.client:
 			wsFactory.client.sendObject({
