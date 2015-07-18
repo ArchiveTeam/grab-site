@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 
 import os
+# Can't use trollius because then onConnect never gets called
 import asyncio
 import aiohttp.web
 from autobahn.asyncio.websocket import WebSocketServerFactory, WebSocketServerProtocol

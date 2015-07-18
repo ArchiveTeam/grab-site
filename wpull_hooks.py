@@ -2,23 +2,21 @@ import re
 import os
 import json
 import pprint
-import asyncio
+import trollius as asyncio
 from urllib.request import urlopen
 from autobahn.asyncio.websocket import WebSocketClientFactory, WebSocketClientProtocol
 from ignoracle import Ignoracle, parameterize_record_info
 
-
-wsClient = None
-
 class MyClientProtocol(WebSocketClientProtocol):
 	def onOpen(self):
-		global wsClient
-		print("{} connected to WebSocket server".format(self.__class__.__name__))
-		wsClient = self
+		self.factory.client = self
+		print("\n{} connected to WebSocket server".format(self.__class__.__name__))
 
-	def onClose(self, reason, code):
+	def onClose(self, wasClean, code, reason):
+		self.factory.client = None
+		print("\n{} disconnected from WebSocket server".format(self.__class__.__name__))
 		# TODO: exponentially increasing delay (copy Decayer from dashboard)
-		connectToServer()
+		asyncio.ensure_future(connectToServer())
 
 	def report(self, url, response_code, response_message):
 		self.sendMessage(json.dumps({
@@ -33,16 +31,28 @@ class MyClientProtocol(WebSocketClientProtocol):
 class MyClientFactory(WebSocketClientFactory):
 	protocol = MyClientProtocol
 
+	def __init__(self):
+		super().__init__()
+		self.client = None
+
 
 wsFactory = MyClientFactory()
 
+@asyncio.coroutine
 def connectToServer():
-	loop = asyncio.get_event_loop()
 	port = int(os.environ.get('GRAB_SITE_WS_PORT', 29001))
-	coro = loop.create_connection(wsFactory, '127.0.0.1', port)
-	loop.run_until_complete(coro)
 
-connectToServer()
+	while True:
+		try:
+			coro = yield from loop.create_connection(wsFactory, '127.0.0.1', port)
+		except OSError:
+			print("\nCould not connect to WebSocket server, retrying in 2 seconds...")
+			yield from asyncio.sleep(2)
+		else:
+			break
+
+loop = asyncio.get_event_loop()
+asyncio.ensure_future(connectToServer())
 
 
 igsetCache = {}
@@ -133,7 +143,12 @@ def handleResult(url_info, record_info, error_info={}, http_info={}):
 	#print("record_info", record_info)
 	#print("error_info", error_info)
 	#print("http_info", http_info)
-	wsClient.report(url_info['url'], http_info.get("response_code"), http_info.get("response_message"))
+	if wsFactory.client:
+		wsFactory.client.report(
+			url_info['url'],
+			http_info.get("response_code"),
+			http_info.get("response_message")
+		)
 
 
 def handleResponse(url_info, record_info, http_info):
