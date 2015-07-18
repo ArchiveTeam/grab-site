@@ -10,6 +10,7 @@ self=$(dirname "$0")
 
 mkdir -p "$dir"
 
+level="inf"
 span_hosts_allow="page-requisites,linked-pages"
 
 for arg in "$@"; do
@@ -19,6 +20,9 @@ for arg in "$@"; do
 		;;
 		--igsets=*)
 			igsets="${arg#*=}"
+		;;
+		--level=*)
+			level="${arg#*=}"
 		;;
 		--no-offsite-links)
 			span_hosts_allow="page-requisites"
@@ -69,6 +73,7 @@ GRAB_SITE_WORKING_DIR="$dir" "$self/patched-wpull" \
 	--monitor-disk 50m \
 	--monitor-memory 10k \
 	--recursive \
+	--level "$level" \
 	--span-hosts-allow "$span_hosts_allow" \
 	--quiet \
 	"$url"
