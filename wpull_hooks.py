@@ -23,6 +23,7 @@ class MyClientProtocol(WebSocketClientProtocol):
 		self.sendMessage(json.dumps({
 			"ident": grabId,
 			"type": "download",
+			"start_url": start_url,
 			"url": url,
 			"response_code": response_code,
 			"response_message": response_message,
@@ -87,6 +88,7 @@ class FileChangedWatcher(object):
 
 
 grabId = open(os.path.join(workingDir, "id")).read().strip()
+start_url = open(os.path.join(workingDir, "start_url")).read().strip()
 igsetsWatcher = FileChangedWatcher(os.path.join(workingDir, "igsets"))
 ignoresWatcher = FileChangedWatcher(os.path.join(workingDir, "ignores"))
 

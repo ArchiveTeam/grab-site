@@ -38,6 +38,7 @@ class MyServerProtocol(WebSocketServerProtocol):
 						"job_data": {
 							"ident": obj["ident"],
 							"started_at": 0,
+							"url": obj["start_url"]
 						},
 						"url": obj["url"],
 						"response_code": obj["response_code"],
