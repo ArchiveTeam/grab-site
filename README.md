@@ -64,8 +64,8 @@ changes will be applied as soon as the next URL is grabbed.
 `DIR/ignores` is a newline-separated list of [Python 3 regular expressions](http://pythex.org/)
 to use in addition to the ignore sets.
 
-You can `touch DIR/igoff` to stop `IGNOR` message spew, and `rm DIR/igoff`
-to turn it back on again.
+You can `rm DIR/igoff` to display all URLs that are being filtered out
+by the ignores, and `touch DIR/igoff` to turn it back off.
 
 
 Monitoring all of your crawls with the dashboard

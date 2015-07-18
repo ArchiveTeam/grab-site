@@ -30,10 +30,11 @@ for arg in "$@"; do
 	shift
 done
 
-echo 
+echo
 echo "$id" > "$dir/id"
 echo "$url" > "$dir/start_url"
 echo "global,$igsets" > "$dir/igsets"
+touch "$dir/igoff"
 touch "$dir/ignores"
 
 # Note: we use the default html5lib parser instead of the lxml that ArchiveBot uses
