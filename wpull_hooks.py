@@ -8,8 +8,8 @@ from urllib.request import urlopen
 from autobahn.asyncio.websocket import WebSocketClientFactory, WebSocketClientProtocol
 from ignoracle import Ignoracle, parameterize_record_info
 
-real_stdout_write = sys.stdout.write
-real_stderr_write = sys.stderr.write
+real_stdout_write = sys.stdout.buffer.write
+real_stderr_write = sys.stderr.buffer.write
 
 def getJobData():
 	return {
@@ -31,14 +31,17 @@ class MyClientProtocol(WebSocketClientProtocol):
 		# TODO: exponentially increasing delay (copy Decayer from dashboard)
 		asyncio.ensure_future(connectToServer())
 
+	def sendObject(self, obj):
+		self.sendMessage(json.dumps(obj).encode("utf-8"))
+
 	def report(self, url, response_code, response_message):
-		self.sendMessage(json.dumps({
+		self.sendObject({
 			"job_data": getJobData(),
 			"type": "download",
 			"url": url,
 			"response_code": response_code,
 			"response_message": response_message,
-		}).encode('utf-8'))
+		})
 
 
 class MyClientFactory(WebSocketClientFactory):
@@ -210,31 +213,33 @@ def handlePreResponse(urlInfo, url_record, response_info):
 
 
 def stdoutWriteToBoth(message):
+	assert isinstance(message, bytes)
 	try:
 		real_stdout_write(message)
 		if wsFactory.client:
-			wsFactory.client.sendMessage({
+			wsFactory.client.sendObject({
 				"type": "stdout",
 				"job_data": getJobData(),
-				"message": message
+				"message": message.decode("utf-8")
 			})
 	except Exception as e:
-		real_stderr_write(str(e) + "\n")
+		real_stderr_write((str(e) + "\n").encode("utf-8"))
 
 def stderrWriteToBoth(message):
+	assert isinstance(message, bytes)
 	try:
 		real_stderr_write(message)
 		if wsFactory.client:
-			wsFactory.client.sendMessage({
+			wsFactory.client.sendObject({
 				"type": "stderr",
 				"job_data": getJobData(),
-				"message": message
+				"message": message.decode("utf-8")
 			})
 	except Exception as e:
-		real_stderr_write(str(e) + "\n")
+		real_stderr_write((str(e) + "\n").encode("utf-8"))
 
-sys.stdout.write = stdoutWriteToBoth
-sys.stderr.write = stderrWriteToBoth
+sys.stdout.buffer.write = stdoutWriteToBoth
+sys.stderr.buffer.write = stderrWriteToBoth
 
 
 assert 2 in wpull_hook.callbacks.AVAILABLE_VERSIONS

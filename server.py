@@ -2,6 +2,7 @@
 
 import os
 import json
+import pprint
 # Can't use trollius because then onConnect never gets called
 # https://github.com/tavendo/AutobahnPython/issues/426
 import asyncio
@@ -25,6 +26,7 @@ class MyServerProtocol(WebSocketServerProtocol):
 	def broadcastToDashboards(self, obj):
 		for client in self.factory.clients:
 			if client.mode == "dashboard":
+				##print("Broadcasting", pprint.pformat(obj))
 				client.sendMessage(json.dumps(obj).encode("utf-8"))
 
 	def onMessage(self, payload, isBinary):
