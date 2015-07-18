@@ -192,7 +192,7 @@ def maybeLogIgnore(url, pattern):
 
 
 # Regular expressions for server headers go here
-ICY_FIELD_PATTERN = re.compile('Icy-|Ice-|X-Audiocast-')
+ICY_FIELD_PATTERN = re.compile('icy-|ice-|x-audiocast-', re.IGNORECASE)
 ICY_VALUE_PATTERN = re.compile('icecast', re.IGNORECASE)
 
 def handlePreResponse(urlInfo, url_record, response_info):
