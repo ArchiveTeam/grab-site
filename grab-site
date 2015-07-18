@@ -85,6 +85,7 @@ GRAB_SITE_WORKING_DIR="$dir" "$self/patched-wpull" \
 	--escaped-fragment \
 	--monitor-disk 400m \
 	--monitor-memory 10k \
+	--max-redirect 8 \
 	--recursive \
 	--level "$level" \
 	--page-requisites-level "$page_requisites_level" \
