@@ -13,6 +13,7 @@ realStderrWrite = sys.stderr.buffer.write
 
 def printToReal(s):
 	realStdoutWrite((s + "\n").encode("utf-8"))
+	sys.stdout.buffer.flush()
 
 def getJobData():
 	return {
@@ -25,12 +26,12 @@ def getJobData():
 class MyClientProtocol(WebSocketClientProtocol):
 	def onOpen(self):
 		self.factory.client = self
-		printToReal("\n{} connected to WebSocket server".format(self.__class__.__name__))
+		printToReal("{} connected to WebSocket server".format(self.__class__.__name__))
 		self.sendMessage(json.dumps({"type": "hello", "mode": "grabber"}).encode('utf-8'))
 
 	def onClose(self, wasClean, code, reason):
 		self.factory.client = None
-		printToReal("\n{} disconnected from WebSocket server".format(self.__class__.__name__))
+		printToReal("{} disconnected from WebSocket server".format(self.__class__.__name__))
 		# TODO: exponentially increasing delay (copy Decayer from dashboard)
 		asyncio.ensure_future(connectToServer())
 
@@ -65,7 +66,7 @@ def connectToServer():
 		try:
 			coro = yield from loop.create_connection(wsFactory, '127.0.0.1', port)
 		except OSError:
-			printToReal("\nCould not connect to WebSocket server, retrying in 2 seconds...")
+			printToReal("Could not connect to WebSocket server, retrying in 2 seconds...")
 			yield from asyncio.sleep(2)
 		else:
 			break
@@ -186,6 +187,10 @@ def handleError(urlInfo, recordInfo, errorInfo):
 	return handleResult(urlInfo, recordInfo, errorInfo=errorInfo)
 
 
+def maybeLogIgnore(url, pattern):
+	pass
+
+
 # Regular expressions for server headers go here
 ICY_FIELD_PATTERN = re.compile('Icy-|Ice-|X-Audiocast-')
 ICY_VALUE_PATTERN = re.compile('icecast', re.IGNORECASE)
@@ -195,23 +200,21 @@ def handlePreResponse(urlInfo, url_record, response_info):
 
 	# Check if server version starts with ICY
 	if response_info.get('version', '') == 'ICY':
-		maybe_log_ignore(url, '[icy version]')
-
+		maybeLogIgnore(url, '[icy version]')
 		return wpull_hook.actions.FINISH
 
 	# Loop through all the server headers for matches
 	for field, value in response_info.get('fields', []):
 		if ICY_FIELD_PATTERN.match(field):
-			maybe_log_ignore(url, '[icy field]')
-
+			maybeLogIgnore(url, '[icy field]')
 			return wpull_hook.actions.FINISH
 
 		if field == 'Server' and ICY_VALUE_PATTERN.match(value):
-			maybe_log_ignore(url, '[icy server]')
-
+			maybeLogIgnore(url, '[icy server]')
 			return wpull_hook.actions.FINISH
 
 	# Nothing matched, allow download
+	printToReal(url + " ...")
 	return wpull_hook.actions.NORMAL
 
 
