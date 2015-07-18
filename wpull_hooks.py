@@ -64,7 +64,6 @@ wsFactory = MyClientFactory()
 @asyncio.coroutine
 def connectToServer():
 	port = int(os.environ.get('GRAB_SITE_WS_PORT', 29001))
-
 	while True:
 		try:
 			coro = yield from loop.create_connection(wsFactory, '127.0.0.1', port)
