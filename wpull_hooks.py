@@ -11,6 +11,7 @@ class MyClientProtocol(WebSocketClientProtocol):
 	def onOpen(self):
 		self.factory.client = self
 		print("\n{} connected to WebSocket server".format(self.__class__.__name__))
+		self.sendMessage(json.dumps({"type": "hello", "mode": "grabber"}).encode('utf-8'))
 
 	def onClose(self, wasClean, code, reason):
 		self.factory.client = None
@@ -25,7 +26,7 @@ class MyClientProtocol(WebSocketClientProtocol):
 			"url": url,
 			"response_code": response_code,
 			"response_message": response_message,
-		}).encode('utf8'))
+		}).encode('utf-8'))
 
 
 class MyClientFactory(WebSocketClientFactory):

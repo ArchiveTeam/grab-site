@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 
 import os
+import json
 # Can't use trollius because then onConnect never gets called
 # https://github.com/tavendo/AutobahnPython/issues/426
 import asyncio
@@ -10,6 +11,7 @@ from autobahn.asyncio.websocket import WebSocketServerFactory, WebSocketServerPr
 class MyServerProtocol(WebSocketServerProtocol):
 	def __init__(self):
 		super().__init__()
+		self.mode = "dashboard"
 
 	def onConnect(self, request):
 		self.peer = request.peer
@@ -34,17 +36,14 @@ class MyServerProtocol(WebSocketServerProtocol):
 				if client.mode == "dashboard":
 					client.sendMessage(json.dumps({
 						"job_data": {
-							"ident": obj["ident"]
+							"ident": obj["ident"],
+							"started_at": 0,
 						},
 						"url": obj["url"],
 						"response_code": obj["response_code"],
 						"wget_code": obj["response_message"],
 						"type": type
-					}))
-
-	def onMessage(self, payload, isBinary):
-		print(payload)
-		#self.sendMessage(payload, isBinary)
+					}).encode("utf-8"))
 
 
 class MyServerFactory(WebSocketServerFactory):
