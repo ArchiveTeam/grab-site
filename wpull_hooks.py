@@ -186,6 +186,8 @@ def handleResult(urlInfo, recordInfo, errorInfo={}, httpInfo={}):
 	if httpInfo.get("body"):
 		jobData["bytes_downloaded"] += httpInfo["body"]["content_size"]
 
+	stop = shouldStop()
+
 	if wsFactory.client:
 		wsFactory.client.sendObject({
 			"type": "download",
@@ -194,6 +196,11 @@ def handleResult(urlInfo, recordInfo, errorInfo={}, httpInfo={}):
 			"response_code": httpInfo.get("response_code"),
 			"response_message": httpInfo.get("response_message"),
 		})
+
+	if stop:
+		return wpull_hook.actions.STOP
+
+	return wpull_hook.actions.NORMAL
 
 
 def handleResponse(urlInfo, recordInfo, httpInfo):
@@ -204,6 +211,12 @@ def handleError(urlInfo, recordInfo, errorInfo):
 	return handleResult(urlInfo, recordInfo, errorInfo=errorInfo)
 
 
+# TODO: check only every 5 seconds max
+def shouldStop():
+	return os.path.exists(os.path.join(workingDir, "stop"))
+
+
+# TODO: check only every 5 seconds max
 def updateIgoffInJobData():
 	igoff = os.path.exists(os.path.join(workingDir, "igoff"))
 	jobData["suppress_ignore_reports"] = igoff
