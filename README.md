@@ -21,7 +21,7 @@ grab-site gives you
 *	an extensively tested default ignore set ("[global](https://github.com/ArchiveTeam/ArchiveBot/blob/master/db/ignore_patterns/global.json)")
 	as well as additional (optional) ignore sets for blogs, forums, etc.
 
-*	duplicate page detection: links are not be followed on pages whose
+*	duplicate page detection: links are not followed on pages whose
 	content duplicates an already-seen page.
 
 
