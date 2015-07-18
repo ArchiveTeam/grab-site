@@ -16,11 +16,11 @@ class MyServerProtocol(WebSocketServerProtocol):
 
 	def onConnect(self, request):
 		self.peer = request.peer
-		print("{} connected to WebSocket server".format(self.peer))
+		print("{} connected".format(self.peer))
 		self.factory.clients.add(self)
 
 	def onClose(self, wasClean, code, reason):
-		print("{} disconnected from WebSocket server".format(self.peer))
+		print("{} disconnected".format(self.peer))
 		self.factory.clients.remove(self)
 
 	def broadcastToDashboards(self, obj):
@@ -37,6 +37,8 @@ class MyServerProtocol(WebSocketServerProtocol):
 			mode = obj['mode']
 			if mode in ('dashboard', 'grabber'):
 				print("{} set mode {}".format(self.peer, mode))
+				if mode == "grabber":
+					print("{} is grabbing {}".format(self.peer, obj['url']))
 				self.mode = mode
 		elif type == "download":
 			self.broadcastToDashboards({

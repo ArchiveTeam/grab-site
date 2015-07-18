@@ -22,7 +22,8 @@ class MyClientProtocol(WebSocketClientProtocol):
 		printToReal("{} connected to WebSocket server".format(self.__class__.__name__))
 		self.sendMessage(json.dumps({
 			"type": "hello",
-			"mode": "grabber"
+			"mode": "grabber",
+			"url": jobData["url"]
 		}).encode('utf-8'))
 
 	def onClose(self, wasClean, code, reason):
