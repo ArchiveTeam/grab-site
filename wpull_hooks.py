@@ -21,11 +21,13 @@ class MyClientProtocol(WebSocketClientProtocol):
 
 	def report(self, url, response_code, response_message):
 		self.sendMessage(json.dumps({
-			"ident": grabId,
+			"job_data": {
+				"ident": ident,
+				"started_at": started_at,
+				"bytes_downloaded": stats["bytes_downloaded"],
+				"url": start_url,
+			},
 			"type": "download",
-			"start_url": start_url,
-			"started_at": started_at,
-			"bytes_downloaded": stats["bytes_downloaded"],
 			"url": url,
 			"response_code": response_code,
 			"response_message": response_message,
@@ -89,7 +91,7 @@ class FileChangedWatcher(object):
 		return changed
 
 
-grabId = open(os.path.join(workingDir, "id")).read().strip()
+ident = open(os.path.join(workingDir, "id")).read().strip()
 start_url = open(os.path.join(workingDir, "start_url")).read().strip()
 started_at = os.stat(os.path.join(workingDir, "start_url")).st_mtime
 igsetsWatcher = FileChangedWatcher(os.path.join(workingDir, "igsets"))

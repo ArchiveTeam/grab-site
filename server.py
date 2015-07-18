@@ -35,12 +35,7 @@ class MyServerProtocol(WebSocketServerProtocol):
 			for client in self.factory.clients:
 				if client.mode == "dashboard":
 					client.sendMessage(json.dumps({
-						"job_data": {
-							"ident": obj["ident"],
-							"started_at": obj["started_at"],
-							"bytes_downloaded": obj["bytes_downloaded"],
-							"url": obj["start_url"]
-						},
+						"job_data": obj["job_data"],
 						"url": obj["url"],
 						"response_code": obj["response_code"],
 						"wget_code": obj["response_message"],
