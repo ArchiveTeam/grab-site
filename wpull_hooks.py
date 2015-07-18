@@ -11,6 +11,9 @@ from ignoracle import Ignoracle, parameterize_record_info
 real_stdout_write = sys.stdout.buffer.write
 real_stderr_write = sys.stderr.buffer.write
 
+def print_to_real(s):
+	real_stdout_write((s + "\n").encode("utf-8"))
+
 def getJobData():
 	return {
 		"ident": ident,
@@ -22,12 +25,12 @@ def getJobData():
 class MyClientProtocol(WebSocketClientProtocol):
 	def onOpen(self):
 		self.factory.client = self
-		print("\n{} connected to WebSocket server".format(self.__class__.__name__))
+		print_to_real("\n{} connected to WebSocket server".format(self.__class__.__name__))
 		self.sendMessage(json.dumps({"type": "hello", "mode": "grabber"}).encode('utf-8'))
 
 	def onClose(self, wasClean, code, reason):
 		self.factory.client = None
-		print("\n{} disconnected from WebSocket server".format(self.__class__.__name__))
+		print_to_real("\n{} disconnected from WebSocket server".format(self.__class__.__name__))
 		# TODO: exponentially increasing delay (copy Decayer from dashboard)
 		asyncio.ensure_future(connectToServer())
 
@@ -62,7 +65,7 @@ def connectToServer():
 		try:
 			coro = yield from loop.create_connection(wsFactory, '127.0.0.1', port)
 		except OSError:
-			print("\nCould not connect to WebSocket server, retrying in 2 seconds...")
+			print_to_real("\nCould not connect to WebSocket server, retrying in 2 seconds...")
 			yield from asyncio.sleep(2)
 		else:
 			break
@@ -76,7 +79,7 @@ def getPatternsForIgnoreSet(name):
 	assert name != "", name
 	if name in igsetCache:
 		return igsetCache[name]
-	print("Fetching ArchiveBot/master/db/ignore_patterns/%s.json" % name)
+	print_to_real("Fetching ArchiveBot/master/db/ignore_patterns/%s.json" % name)
 	igsetCache[name] = json.loads(urlopen(
 		"https://raw.githubusercontent.com/ArchiveTeam/ArchiveBot/" +
 		"master/db/ignore_patterns/%s.json" % name).read().decode("utf-8")
@@ -119,8 +122,8 @@ def updateIgnoracle():
 	for igset in igsets:
 		ignores.update(getPatternsForIgnoreSet(igset))
 
-	print("Using these %d ignores:" % len(ignores))
-	pprint.pprint(ignores)
+	print_to_real("Using these %d ignores:" % len(ignores))
+	print_to_real(pprint.pformat(ignores))
 
 	ignoracle.set_patterns(ignores)
 
@@ -149,7 +152,7 @@ def acceptUrl(urlInfo, recordInfo, verdict, reasons):
 	pattern = shouldIgnoreURL(url, recordInfo)
 	if pattern:
 		if not os.path.exists(os.path.join(workingDir, "igoff")):
-			print("IGNOR %s by %s" % (url, pattern))
+			print_to_real("IGNOR %s by %s" % (url, pattern))
 		return False
 
 	# If we get here, none of our ignores apply.	Return the original verdict.
