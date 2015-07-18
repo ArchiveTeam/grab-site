@@ -8,11 +8,11 @@ from urllib.request import urlopen
 from autobahn.asyncio.websocket import WebSocketClientFactory, WebSocketClientProtocol
 from ignoracle import Ignoracle, parameterize_record_info
 
-real_stdout_write = sys.stdout.buffer.write
-real_stderr_write = sys.stderr.buffer.write
+realStdoutWrite = sys.stdout.buffer.write
+realStderrWrite = sys.stderr.buffer.write
 
-def print_to_real(s):
-	real_stdout_write((s + "\n").encode("utf-8"))
+def printToReal(s):
+	realStdoutWrite((s + "\n").encode("utf-8"))
 
 def getJobData():
 	return {
@@ -25,12 +25,12 @@ def getJobData():
 class MyClientProtocol(WebSocketClientProtocol):
 	def onOpen(self):
 		self.factory.client = self
-		print_to_real("\n{} connected to WebSocket server".format(self.__class__.__name__))
+		printToReal("\n{} connected to WebSocket server".format(self.__class__.__name__))
 		self.sendMessage(json.dumps({"type": "hello", "mode": "grabber"}).encode('utf-8'))
 
 	def onClose(self, wasClean, code, reason):
 		self.factory.client = None
-		print_to_real("\n{} disconnected from WebSocket server".format(self.__class__.__name__))
+		printToReal("\n{} disconnected from WebSocket server".format(self.__class__.__name__))
 		# TODO: exponentially increasing delay (copy Decayer from dashboard)
 		asyncio.ensure_future(connectToServer())
 
@@ -65,7 +65,7 @@ def connectToServer():
 		try:
 			coro = yield from loop.create_connection(wsFactory, '127.0.0.1', port)
 		except OSError:
-			print_to_real("\nCould not connect to WebSocket server, retrying in 2 seconds...")
+			printToReal("\nCould not connect to WebSocket server, retrying in 2 seconds...")
 			yield from asyncio.sleep(2)
 		else:
 			break
@@ -79,7 +79,7 @@ def getPatternsForIgnoreSet(name):
 	assert name != "", name
 	if name in igsetCache:
 		return igsetCache[name]
-	print_to_real("Fetching ArchiveBot/master/db/ignore_patterns/%s.json" % name)
+	printToReal("Fetching ArchiveBot/master/db/ignore_patterns/%s.json" % name)
 	igsetCache[name] = json.loads(urlopen(
 		"https://raw.githubusercontent.com/ArchiveTeam/ArchiveBot/" +
 		"master/db/ignore_patterns/%s.json" % name).read().decode("utf-8")
@@ -122,8 +122,8 @@ def updateIgnoracle():
 	for igset in igsets:
 		ignores.update(getPatternsForIgnoreSet(igset))
 
-	print_to_real("Using these %d ignores:" % len(ignores))
-	print_to_real(pprint.pformat(ignores))
+	printToReal("Using these %d ignores:" % len(ignores))
+	printToReal(pprint.pformat(ignores))
 
 	ignoracle.set_patterns(ignores)
 
@@ -152,7 +152,7 @@ def acceptUrl(urlInfo, recordInfo, verdict, reasons):
 	pattern = shouldIgnoreURL(url, recordInfo)
 	if pattern:
 		if not os.path.exists(os.path.join(workingDir, "igoff")):
-			print_to_real("IGNOR %s by %s" % (url, pattern))
+			printToReal("IGNOR %s by %s" % (url, pattern))
 		return False
 
 	# If we get here, none of our ignores apply.	Return the original verdict.
@@ -218,7 +218,7 @@ def handlePreResponse(urlInfo, url_record, response_info):
 def stdoutWriteToBoth(message):
 	assert isinstance(message, bytes)
 	try:
-		real_stdout_write(message)
+		realStdoutWrite(message)
 		if wsFactory.client:
 			wsFactory.client.sendObject({
 				"type": "stdout",
@@ -226,12 +226,12 @@ def stdoutWriteToBoth(message):
 				"message": message.decode("utf-8")
 			})
 	except Exception as e:
-		real_stderr_write((str(e) + "\n").encode("utf-8"))
+		realStderrWrite((str(e) + "\n").encode("utf-8"))
 
 def stderrWriteToBoth(message):
 	assert isinstance(message, bytes)
 	try:
-		real_stderr_write(message)
+		realStderrWrite(message)
 		if wsFactory.client:
 			wsFactory.client.sendObject({
 				"type": "stderr",
@@ -239,7 +239,7 @@ def stderrWriteToBoth(message):
 				"message": message.decode("utf-8")
 			})
 	except Exception as e:
-		real_stderr_write((str(e) + "\n").encode("utf-8"))
+		realStderrWrite((str(e) + "\n").encode("utf-8"))
 
 sys.stdout.buffer.write = stdoutWriteToBoth
 sys.stderr.buffer.write = stderrWriteToBoth
