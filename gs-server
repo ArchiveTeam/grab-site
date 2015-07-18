@@ -1,0 +1,4 @@
+#!/usr/bin/python3
+
+from libgrabsite import server
+server.main()

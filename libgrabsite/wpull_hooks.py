@@ -7,7 +7,7 @@ import signal
 import trollius as asyncio
 from urllib.request import urlopen
 from autobahn.asyncio.websocket import WebSocketClientFactory, WebSocketClientProtocol
-from ignoracle import Ignoracle, parameterize_record_info
+from libgrabsite.ignoracle import Ignoracle, parameterize_record_info
 
 realStdoutWrite = sys.stdout.buffer.write
 realStderrWrite = sys.stderr.buffer.write
