@@ -325,7 +325,7 @@ a.ignore {
 <div class="padded-page">
 	<div class="header">
 		<div>
-			grab-site server tracking <span id="num-crawls">0</span> crawls.
+			grab-site server tracking <span id="num-crawls">0 crawls</span>.
 			Show: <input id="filter-box" type="text" size="21">
 			<input onclick="ds.setFilter('');" type="button" value="  All  " class="button">
 			<input onclick="ds.setFilter('^$');" type="button" value="None" class="button">
@@ -1010,7 +1010,11 @@ JobsRenderer.prototype._renderStdoutLine = function(data, logSegment, info, iden
 JobsRenderer.prototype.handleData = function(data) {
 	var jobData = data["job_data"];
 	var added = this.jobs.handleJobData(jobData);
-	this.numCrawls.textContent = this.jobs.countActive();
+	var jobsActive = this.jobs.countActive();
+	this.numCrawls.textContent =
+		jobsActive === 1 ?
+			"1 crawl" :
+			jobsActive + " crawls";
 	if(added) {
 		this._createLogContainer(jobData);
 	}
