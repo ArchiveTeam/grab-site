@@ -24,7 +24,7 @@ grab-site gives you
 *	duplicate page detection: links are not followed on pages whose
 	content duplicates an already-seen page.
 
-![dashboard screenshot](/images/dashboard.png)
+![dashboard screenshot](https://raw.githubusercontent.com/ludios/grab-site/master/images/dashboard.png)
 
 
 Installation
