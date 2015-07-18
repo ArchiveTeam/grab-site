@@ -169,7 +169,7 @@ jobData = {
 	"url": open(os.path.join(workingDir, "start_url")).read().strip(),
 	"started_at": os.stat(os.path.join(workingDir, "start_url")).st_mtime,
 	"suppress_ignore_reports": True,
-	"concurrency": 1,
+	"concurrency": int(open(os.path.join(workingDir, "concurrency")).read().strip()),
 	"bytes_downloaded": 0,
 	"items_queued": 0,
 	"items_downloaded": 0,

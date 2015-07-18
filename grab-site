@@ -11,6 +11,8 @@ self=$(dirname "$0")
 mkdir -p "$dir"
 
 level="inf"
+concurrency="2"
+page_requisites_level="5"
 span_hosts_allow="page-requisites,linked-pages"
 
 for arg in "$@"; do
@@ -23,6 +25,15 @@ for arg in "$@"; do
 		;;
 		--level=*)
 			level="${arg#*=}"
+		;;
+		--concurrency=*)
+			concurrency="${arg#*=}"
+		;;
+		--concurrent=*)
+			concurrency="${arg#*=}"
+		;;
+		--page-requisites-level=*)
+			page_requisites_level="${arg#*=}"
 		;;
 		--no-offsite-links)
 			span_hosts_allow="page-requisites"
@@ -37,6 +48,7 @@ done
 echo
 echo "$id" > "$dir/id"
 echo "$url" > "$dir/start_url"
+echo "$concurrency" > "$dir/concurrency"
 echo "global,$igsets" > "$dir/igsets"
 touch "$dir/igoff"
 touch "$dir/ignores"
@@ -64,6 +76,7 @@ GRAB_SITE_WORKING_DIR="$dir" "$self/patched-wpull" \
 	--inet4-only \
 	--timeout 20 \
 	--tries 3 \
+	--concurrent "$concurrency" \
 	--waitretry 5 \
 	--warc-file "$dir/$dir" \
 	--warc-max-size 5368709120 \
@@ -74,6 +87,7 @@ GRAB_SITE_WORKING_DIR="$dir" "$self/patched-wpull" \
 	--monitor-memory 10k \
 	--recursive \
 	--level "$level" \
+	--page-requisites-level "$page_requisites_level" \
 	--span-hosts-allow "$span_hosts_allow" \
 	--quiet \
 	"$url"
