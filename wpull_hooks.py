@@ -24,6 +24,7 @@ class MyClientProtocol(WebSocketClientProtocol):
 			"ident": grabId,
 			"type": "download",
 			"start_url": start_url,
+			"started_at": started_at,
 			"url": url,
 			"response_code": response_code,
 			"response_message": response_message,
@@ -89,6 +90,7 @@ class FileChangedWatcher(object):
 
 grabId = open(os.path.join(workingDir, "id")).read().strip()
 start_url = open(os.path.join(workingDir, "start_url")).read().strip()
+started_at = os.stat(os.path.join(workingDir, "start_url")).st_mtime
 igsetsWatcher = FileChangedWatcher(os.path.join(workingDir, "igsets"))
 ignoresWatcher = FileChangedWatcher(os.path.join(workingDir, "ignores"))
 

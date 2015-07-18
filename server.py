@@ -37,7 +37,7 @@ class MyServerProtocol(WebSocketServerProtocol):
 					client.sendMessage(json.dumps({
 						"job_data": {
 							"ident": obj["ident"],
-							"started_at": 0,
+							"started_at": obj["started_at"],
 							"url": obj["start_url"]
 						},
 						"url": obj["url"],
