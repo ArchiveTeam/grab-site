@@ -56,10 +56,10 @@ thus would otherwise not be included in the recursive crawl.
 Changing ignores during the crawl
 ---
 
-While the crawl is running, you can edit `DIR/ignores` and `DIR/ignore_sets`; the
+While the crawl is running, you can edit `DIR/ignores` and `DIR/igsets`; the
 changes will be applied as soon as the next URL is grabbed.
 
-`DIR/ignore_sets` is a comma-separated list of ignore sets to use.
+`DIR/igsets` is a comma-separated list of ignore sets to use.
 
 `DIR/ignores` is a newline-separated list of [Python 3 regular expressions](http://pythex.org/)
 to use in addition to the ignore sets.
