@@ -154,8 +154,7 @@ def acceptUrl(urlInfo, recordInfo, verdict, reasons):
 
 	pattern = shouldIgnoreURL(url, recordInfo)
 	if pattern:
-		if not os.path.exists(os.path.join(workingDir, "igoff")):
-			printToReal("IGNOR %s by %s" % (url, pattern))
+		maybeLogIgnore(url, pattern)
 		return False
 
 	# If we get here, none of our ignores apply.	Return the original verdict.
@@ -190,7 +189,15 @@ def handleError(urlInfo, recordInfo, errorInfo):
 
 
 def maybeLogIgnore(url, pattern):
-	pass
+	if not os.path.exists(os.path.join(workingDir, "igoff")):
+		printToReal("IGNOR %s by %s" % (url, pattern))
+		if wsFactory.client:
+			wsFactory.client.sendObject({
+				"type": "ignore",
+				"job_data": getJobData(),
+				"url": url,
+				"pattern": pattern
+			})
 
 
 # Regular expressions for server headers go here

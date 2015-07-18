@@ -52,6 +52,13 @@ class MyServerProtocol(WebSocketServerProtocol):
 				"job_data": obj["job_data"],
 				"message": obj["message"]
 			})
+		elif type == "ignore":
+			self.broadcastToDashboards({
+				"type": type,
+				"job_data": obj["job_data"],
+				"url": obj["url"],
+				"pattern": obj["pattern"],
+			})
 
 
 class MyServerFactory(WebSocketServerFactory):
