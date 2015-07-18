@@ -79,14 +79,14 @@ and point your browser to http://127.0.0.1:29000/
 
 These environmental variables control what the server listens on:
 
-`GRAB_SITE_HTTP_INTERFACE` (default 0.0.0.0)
-`GRAB_SITE_HTTP_PORT` (default 29000)
-`GRAB_SITE_WS_INTERFACE` (default 0.0.0.0)
-`GRAB_SITE_WS_PORT` (default 29001)
+*	`GRAB_SITE_HTTP_INTERFACE` (default 0.0.0.0)
+*	`GRAB_SITE_HTTP_PORT` (default 29000)
+*	`GRAB_SITE_WS_INTERFACE` (default 0.0.0.0)
+*	`GRAB_SITE_WS_PORT` (default 29001)
 
 `GRAB_SITE_WS_PORT` should be 1 port higher than `GRAB_SITE_HTTP_PORT`, or else you will have to add `?host=IP:PORT` to your dashboard URL.
 
 These environmental variables control which server grab-site connects to:
 
-`GRAB_SITE_WS_HOST` (default 127.0.0.1)
-`GRAB_SITE_WS_PORT` (default 29001)
+*	`GRAB_SITE_WS_HOST` (default 127.0.0.1)
+*	`GRAB_SITE_WS_PORT` (default 29001)
