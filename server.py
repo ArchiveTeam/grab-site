@@ -22,8 +22,13 @@ class MyServerProtocol(WebSocketServerProtocol):
 		print("{} disconnected from WebSocket server".format(self.peer))
 		self.factory.clients.remove(self)
 
+	def broadcastToDashboards(self, obj):
+		for client in self.factory.clients:
+			if client.mode == "dashboard":
+				client.sendMessage(json.dumps(obj).encode("utf-8"))
+
 	def onMessage(self, payload, isBinary):
-		print(payload)
+		##print(payload)
 		obj = json.loads(payload.decode('utf-8'))
 		type = obj["type"]
 		if type == "hello" and obj.get("mode"):
@@ -31,16 +36,20 @@ class MyServerProtocol(WebSocketServerProtocol):
 			if mode in ('dashboard', 'grabber'):
 				print("{} set mode {}".format(self.peer, mode))
 				self.mode = mode
-		elif type == "download" or type == "stdout":
-			for client in self.factory.clients:
-				if client.mode == "dashboard":
-					client.sendMessage(json.dumps({
-						"job_data": obj["job_data"],
-						"url": obj["url"],
-						"response_code": obj["response_code"],
-						"wget_code": obj["response_message"],
-						"type": type
-					}).encode("utf-8"))
+		elif type == "download":
+			self.broadcastToDashboards({
+				"type": type,
+				"job_data": obj["job_data"],
+				"url": obj["url"],
+				"response_code": obj["response_code"],
+				"wget_code": obj["response_message"]
+			})
+		elif type in ("stdout", "stderr"):
+			self.broadcastToDashboards({
+				"type": type,
+				"job_data": obj["job_data"],
+				"message": obj["message"]
+			})
 
 
 class MyServerFactory(WebSocketServerFactory):

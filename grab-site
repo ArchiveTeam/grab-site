@@ -68,4 +68,5 @@ GRAB_SITE_WORKING_DIR="$dir" PYTHONPATH="$self" ~/.local/bin/wpull3 \
 	--monitor-memory 10k \
 	--recursive \
 	--span-hosts-allow "$span_hosts_allow" \
+	--quiet \
 	"$url"

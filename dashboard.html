@@ -1030,7 +1030,7 @@ JobsRenderer.prototype.handleData = function(data) {
 	var totalResponses = parseInt(getTotalResponses(jobData));
 	if(type == "download") {
 		var linesRendered = this._renderDownloadLine(data, info.logSegment);
-	} else if(type == "stdout") {
+	} else if(type == "stdout" || type == "stderr") {
 		var linesRendered = this._renderStdoutLine(data, info.logSegment, info, ident);
 	} else if(type == "ignore") {
 		var linesRendered = this._renderIgnoreLine(data, info.logSegment);

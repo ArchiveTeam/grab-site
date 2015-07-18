@@ -1,11 +1,23 @@
 import re
 import os
+import sys
 import json
 import pprint
 import trollius as asyncio
 from urllib.request import urlopen
 from autobahn.asyncio.websocket import WebSocketClientFactory, WebSocketClientProtocol
 from ignoracle import Ignoracle, parameterize_record_info
+
+real_stdout_write = sys.stdout.write
+real_stderr_write = sys.stderr.write
+
+def getJobData():
+	return {
+		"ident": ident,
+		"started_at": started_at,
+		"bytes_downloaded": stats["bytes_downloaded"],
+		"url": start_url
+	}
 
 class MyClientProtocol(WebSocketClientProtocol):
 	def onOpen(self):
@@ -21,12 +33,7 @@ class MyClientProtocol(WebSocketClientProtocol):
 
 	def report(self, url, response_code, response_message):
 		self.sendMessage(json.dumps({
-			"job_data": {
-				"ident": ident,
-				"started_at": started_at,
-				"bytes_downloaded": stats["bytes_downloaded"],
-				"url": start_url,
-			},
+			"job_data": getJobData(),
 			"type": "download",
 			"url": url,
 			"response_code": response_code,
@@ -200,6 +207,34 @@ def handlePreResponse(urlInfo, url_record, response_info):
 
 	# Nothing matched, allow download
 	return wpull_hook.actions.NORMAL
+
+
+def stdoutWriteToBoth(message):
+	try:
+		real_stdout_write(message)
+		if wsFactory.client:
+			wsFactory.client.sendMessage({
+				"type": "stdout",
+				"job_data": getJobData(),
+				"message": message
+			})
+	except Exception as e:
+		real_stderr_write(str(e) + "\n")
+
+def stderrWriteToBoth(message):
+	try:
+		real_stderr_write(message)
+		if wsFactory.client:
+			wsFactory.client.sendMessage({
+				"type": "stderr",
+				"job_data": getJobData(),
+				"message": message
+			})
+	except Exception as e:
+		real_stderr_write(str(e) + "\n")
+
+sys.stdout.write = stdoutWriteToBoth
+sys.stderr.write = stderrWriteToBoth
 
 
 assert 2 in wpull_hook.callbacks.AVAILABLE_VERSIONS
