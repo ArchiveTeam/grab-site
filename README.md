@@ -43,7 +43,9 @@ Usage
 
 First, start the dashboard with:
 
-`~/.local/bin/gs-server`
+```
+~/.local/bin/gs-server
+```
 
 and point your browser to http://127.0.0.1:29000/
 
