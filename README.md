@@ -86,7 +86,7 @@ These environmental variables control what the server listens on:
 
 `GRAB_SITE_WS_PORT` should be 1 port higher than `GRAB_SITE_HTTP_PORT`, or else you will have to add `?host=IP:PORT` to your dashboard URL.
 
-These environmental variables control which server grab-site connects to:
+These environmental variables control which server each `grab-site` process connects to:
 
 *	`GRAB_SITE_WS_HOST` (default 127.0.0.1)
 *	`GRAB_SITE_WS_PORT` (default 29001)
