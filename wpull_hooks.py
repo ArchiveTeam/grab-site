@@ -190,23 +190,30 @@ def handleResult(urlInfo, recordInfo, errorInfo={}, httpInfo={}):
 
 	updateIgoffInJobData()
 
+	response_code = 0
 	if httpInfo.get("response_code"):
-		response_code = str(httpInfo["response_code"])
-		if len(response_code) == 3 and response_code[0] in "12345":
-			jobData["r%sxx" % response_code[0]] += 1
+		response_code = httpInfo.get("response_code")
+		response_code_str = str(httpInfo["response_code"])
+		if len(response_code_str) == 3 and response_code_str[0] in "12345":
+			jobData["r%sxx" % response_code_str[0]] += 1
 
 	if httpInfo.get("body"):
 		jobData["bytes_downloaded"] += httpInfo["body"]["content_size"]
 
 	stop = shouldStop()
 
+	response_message = httpInfo.get("response_message")
+	if errorInfo:
+		response_code = 0
+		response_message = errorInfo["error"]
+
 	if wsFactory.client:
 		wsFactory.client.sendObject({
 			"type": "download",
 			"job_data": jobData,
 			"url": urlInfo["url"],
-			"response_code": httpInfo.get("response_code"),
-			"response_message": httpInfo.get("response_message"),
+			"response_code": response_code,
+			"response_message": response_message,
 		})
 
 	if stop:
