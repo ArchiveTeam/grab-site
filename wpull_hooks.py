@@ -64,9 +64,10 @@ wsFactory = MyClientFactory()
 @asyncio.coroutine
 def connectToServer():
 	port = int(os.environ.get('GRAB_SITE_WS_PORT', 29001))
+	server = os.environ.get('GRAB_SITE_SERVER', '127.0.0.1')
 	while True:
 		try:
-			coro = yield from loop.create_connection(wsFactory, '127.0.0.1', port)
+			coro = yield from loop.create_connection(wsFactory, server, port)
 		except OSError:
 			printToReal("Could not connect to WebSocket server, retrying in 2 seconds...")
 			yield from asyncio.sleep(2)
