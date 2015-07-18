@@ -12,7 +12,7 @@ from autobahn.asyncio.websocket import WebSocketServerFactory, WebSocketServerPr
 class GrabberServerProtocol(WebSocketServerProtocol):
 	def __init__(self):
 		super().__init__()
-		self.mode = "dashboard"
+		self.mode = None
 
 	def onConnect(self, request):
 		self.peer = request.peer
@@ -36,10 +36,11 @@ class GrabberServerProtocol(WebSocketServerProtocol):
 		if type == "hello" and obj.get("mode"):
 			mode = obj['mode']
 			if mode in ('dashboard', 'grabber'):
-				print("{} set mode {}".format(self.peer, mode))
+				self.mode = mode
 				if mode == "grabber":
 					print("{} is grabbing {}".format(self.peer, obj['url']))
-				self.mode = mode
+				elif mode == "dashboard":
+					print("{} is dashboarding with {}".format(self.peer, obj['user_agent']))
 		elif type == "download":
 			self.broadcastToDashboards({
 				"type": type,

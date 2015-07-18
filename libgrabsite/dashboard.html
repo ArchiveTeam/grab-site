@@ -1567,6 +1567,11 @@ Dashboard.prototype.connectWebSocket = function() {
 
 	this.ws.onopen = function(ev) {
 		console.log("WebSocket opened:", ev);
+		this.ws.send(JSON.stringify({
+			"type": "hello",
+			"mode": "dashboard",
+			"user_agent": navigator.userAgent
+		}));
 		this.decayer.reset();
 	}.bind(this);
 
