@@ -24,6 +24,8 @@ grab-site gives you
 *	duplicate page detection: links are not followed on pages whose
 	content duplicates an already-seen page.
 
+![dashboard screenshot](/images/dashboard.png)
+
 
 Installation
 ---
