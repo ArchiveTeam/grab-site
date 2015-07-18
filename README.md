@@ -79,6 +79,13 @@ You can `rm DIR/igoff` to display all URLs that are being filtered out
 by the ignores, and `touch DIR/igoff` to turn it back off.
 
 
+Stopping a crawl
+---
+
+You can `touch DIR/stop` or press ctrl-c, which will do the same.  You will
+have to wait for the current downloads to finish.
+
+
 Monitoring all of your crawls with the dashboard
 ---
 
