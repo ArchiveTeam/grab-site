@@ -316,7 +316,9 @@ sys.stderr.buffer.write = stderrWriteToBoth
 
 
 def exitStatus(code):
+	print()
 	print("Finished grab {} {} with exit code {}".format(jobData["ident"], jobData["url"], code))
+	print("Output is in directory:\n{}".format(workingDir))
 	return code
 
 
