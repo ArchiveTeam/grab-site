@@ -63,16 +63,16 @@ def connectToServer():
 loop = asyncio.get_event_loop()
 asyncio.ensure_future(connectToServer())
 
-def graceful_stop_callback():
+def gracefulStopCallback():
 	printToReal("\n^C detected, creating 'stop' file, please wait for exit...")
 	with open(os.path.join(workingDir, "stop"), "wb") as f:
 		pass
 
-def forceful_stop_callback():
+def forcefulStopCallback():
 	loop.stop()
 
-loop.add_signal_handler(signal.SIGINT, graceful_stop_callback)
-loop.add_signal_handler(signal.SIGTERM, forceful_stop_callback)
+loop.add_signal_handler(signal.SIGINT, gracefulStopCallback)
+loop.add_signal_handler(signal.SIGTERM, forcefulStopCallback)
 
 
 igsetCache = {}
@@ -96,12 +96,12 @@ def mtime(f):
 class FileChangedWatcher(object):
 	def __init__(self, fname):
 		self.fname = fname
-		self.last_mtime = mtime(fname)
+		self.lastModificationTime = mtime(fname)
 
-	def has_changed(self):
-		now_mtime = mtime(self.fname)
-		changed = mtime(self.fname) != self.last_mtime
-		self.last_mtime = now_mtime
+	def hasChanged(self):
+		nowModificationTime = mtime(self.fname)
+		changed = mtime(self.fname) != self.lastModificationTime
+		self.lastModificationTime = nowModificationTime
 		return changed
 
 
@@ -137,7 +137,7 @@ def shouldIgnoreURL(url, recordInfo):
 
 
 def acceptURL(urlInfo, recordInfo, verdict, reasons):
-	if igsetsWatcher.has_changed() or ignoresWatcher.has_changed():
+	if igsetsWatcher.hasChanged() or ignoresWatcher.hasChanged():
 		updateIgnoracle()
 
 	url = urlInfo['url']
@@ -160,7 +160,7 @@ def queuedURL(urlInfo):
 	jobData["items_queued"] += 1
 
 
-def dequeuedURL(url_info, record_info):
+def dequeuedURL(urlInfo, recordInfo):
 	jobData["items_downloaded"] += 1
 
 
@@ -261,16 +261,16 @@ def maybeLogIgnore(url, pattern):
 ICY_FIELD_PATTERN = re.compile('icy-|ice-|x-audiocast-', re.IGNORECASE)
 ICY_VALUE_PATTERN = re.compile('icecast', re.IGNORECASE)
 
-def handlePreResponse(urlInfo, url_record, response_info):
+def handlePreResponse(urlInfo, urlRecord, responseInfo):
 	url = urlInfo['url']
 
 	# Check if server version starts with ICY
-	if response_info.get('version', '') == 'ICY':
+	if responseInfo.get('version', '') == 'ICY':
 		maybeLogIgnore(url, '[icy version]')
 		return wpull_hook.actions.FINISH
 
 	# Loop through all the server headers for matches
-	for field, value in response_info.get('fields', []):
+	for field, value in responseInfo.get('fields', []):
 		if ICY_FIELD_PATTERN.match(field):
 			maybeLogIgnore(url, '[icy field]')
 			return wpull_hook.actions.FINISH
@@ -296,6 +296,7 @@ def stdoutWriteToBoth(message):
 			})
 	except Exception as e:
 		realStderrWrite((str(e) + "\n").encode("utf-8"))
+
 
 def stderrWriteToBoth(message):
 	assert isinstance(message, bytes), message
