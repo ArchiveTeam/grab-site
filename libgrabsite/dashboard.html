@@ -979,7 +979,7 @@ JobsRenderer.prototype._renderStdoutLine = function(data, logSegment, info, iden
 		logSegment.appendChild(h("div", Reusable.obj_className_line_stdout, line));
 		renderedLines += 1;
 
-		if(/^Finished grab \S+ \S+ with exit code (0|1)$/.test(line)) {
+		if(/^Finished grab \S+ \S+ with exit code ([0-13-8])$/.test(line)) {
 			info.statsElements.jobInfo.classList.add('job-info-done');
 			this.jobs.markFinished(ident);
 		} else if(/^Finished grab \S+ \S+ with exit code |^CRITICAL (Sorry|Please report)|^ERROR Fatal exception|No space left on device|^Fatal Python error:|^(Thread|Current thread) 0x/.test(line)) {
