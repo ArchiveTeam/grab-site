@@ -117,3 +117,11 @@ These environmental variables control which server each `grab-site` process conn
 
 *	`GRAB_SITE_WS_HOST` (default 127.0.0.1)
 *	`GRAB_SITE_WS_PORT` (default 29001)
+
+
+Help
+---
+
+Bugs, discussion, ideas are welcome in [grab-site/issues](https://github.com/ludios/grab-site/issues).
+
+If a problem happens when running just `~/.local/bin/wpull -r URL` (no grab-site), you may want to report it to [wpull/issues](https://github.com/chfoo/wpull/issues) instead.
