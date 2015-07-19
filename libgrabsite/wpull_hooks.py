@@ -315,6 +315,11 @@ sys.stdout.buffer.write = stdoutWriteToBoth
 sys.stderr.buffer.write = stderrWriteToBoth
 
 
+def exitStatus(code):
+	print("Finished grab {} {} with exit code {}".format(jobData["ident"], jobData["url"], code))
+	return code
+
+
 assert 2 in wpull_hook.callbacks.AVAILABLE_VERSIONS
 
 wpull_hook.callbacks.version = 2
@@ -324,3 +329,4 @@ wpull_hook.callbacks.dequeued_url = dequeuedURL
 wpull_hook.callbacks.handle_response = handleResponse
 wpull_hook.callbacks.handle_error = handleError
 wpull_hook.callbacks.handle_pre_response = handlePreResponse
+wpull_hook.callbacks.exit_status = exitStatus
