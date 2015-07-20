@@ -89,33 +89,33 @@ Do this inside tmux unless they're very short crawls.
 
 Options:
 
+Note: options must always come **after** the `URL`.
+
+*	`--1`: grab just `URL` and its page requisites, without recursing.
+
+*	`--level=N`: recurse `N` levels instead of `inf` levels.
+
 *	`--igsets=blogs,forums`: use ignore sets `blogs` and `forums`.
 
 	Example: `~/.local/bin/grab-site URL --igsets=blogs,forums`
 
+	`forums` and `blogs` are some frequently-used ignore sets.
+	See [the full list of available ignore sets](https://github.com/ArchiveTeam/ArchiveBot/tree/master/db/ignore_patterns).
+
+	The [global](https://github.com/ArchiveTeam/ArchiveBot/blob/master/db/ignore_patterns/global.json)
+	ignore set is implied and always enabled.
+
 *	`--no-offsite-links`: avoid following links to a depth of 1 on other domains.
 
-*	`--1`: grab just `URL` and page requisites without recursing.
+	grab-site always grabs page requisites (e.g. inline images and stylesheets), even if
+	they are on other domains.  By default, grab-site also grabs linked pages to a depth
+	of 1 on other domains.  To turn off this behavior, use `--no-offsite-links`.
 
-*	`--level=N`: recurse `N` levels instead of `inf` levels.
-
-Note: `URL` must always come **before** the options.
+	Using `--no-offsite-links` may prevent all kinds of useful images, video, audio, downloads,
+	etc from being grabbed, because these are often hosted on a CDN or subdomain, and
+	thus would otherwise not be included in the recursive crawl.
 
 Note: `igsets` and `level` options must be followed with a `=` and not a space.
-
-`forums` and `blogs` are some frequently-used ignore sets.
-See [the full list of available ignore sets](https://github.com/ArchiveTeam/ArchiveBot/tree/master/db/ignore_patterns).
-
-Just as with ArchiveBot, the [global](https://github.com/ArchiveTeam/ArchiveBot/blob/master/db/ignore_patterns/global.json)
-ignore set is implied and enabled.
-
-grab-site always grabs page requisites (e.g. inline images and stylesheets), even if
-they are on other domains.  By default, grab-site also grabs linked pages to a depth
-of 1 on other domains.  To turn off this behavior, use `--no-offsite-links`.
-
-Using `--no-offsite-links` may prevent all kinds of useful images, video, audio, downloads,
-etc from being grabbed, because these are often hosted on a CDN or subdomain, and
-thus would otherwise not be included in the recursive crawl.
 
 
 Changing ignores during the crawl
