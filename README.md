@@ -162,9 +162,29 @@ These environmental variables control which server each `grab-site` process conn
 *	`GRAB_SITE_WS_PORT` (default 29001)
 
 
+Viewing the content in your WARC archives
+---
+You can use [ikreymer/webarchiveplayer](https://github.com/ikreymer/webarchiveplayer)
+to view the content inside your WARC archives.  It requires Python 2, so install it with
+`pip` instead of `pip3`:
+
+```
+sudo apt-get install --no-install-recommends git build-essential python-dev python-pip
+pip install --user git+https://github.com/ikreymer/webarchiveplayer
+```
+
+And use it with:
+
+```
+~/.local/bin/webarchiveplayer <path to WARC>
+```
+
+then point your browser to http://127.0.0.1:8090/
+
+
 Help
 ---
-Bugs, discussion, ideas are welcome in [grab-site/issues](https://github.com/ludios/grab-site/issues).
+`grab-site` bugs, discussion, ideas are welcome in [grab-site/issues](https://github.com/ludios/grab-site/issues).
 
 If a problem happens when running just `~/.local/bin/wpull -r URL` (no grab-site),
 you may want to report it to [wpull/issues](https://github.com/chfoo/wpull/issues) instead.
