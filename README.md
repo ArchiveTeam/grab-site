@@ -27,7 +27,7 @@ grab-site gives you
 ![dashboard screenshot](https://raw.githubusercontent.com/ludios/grab-site/master/images/dashboard.png)
 
 
-Installation
+Install on Ubuntu
 ---
 
 On Ubuntu 14.04.1 or newer:
@@ -36,6 +36,20 @@ On Ubuntu 14.04.1 or newer:
 sudo apt-get install --no-install-recommends git build-essential python3-dev python3-pip
 pip3 install --user git+https://github.com/ludios/grab-site
 ```
+
+
+Install on OS X
+---
+
+On OS X 10.10:
+
+1.	If xcode is not already installed, type `gcc` in Terminal; you will be prompted to install the command-line developer tools.  Click 'Install'.
+
+2.	If Python 3 is not already installed, install Python 3.4.3 using the installer from https://www.python.org/downloads/release/python-343/
+
+3.	`pip3 install --user git+https://github.com/ludios/grab-site`
+
+**Important usage note**: Use `~/Library/Python/3.4/bin/` instead of `~/.local/bin/` for all instructions below!
 
 
 Usage

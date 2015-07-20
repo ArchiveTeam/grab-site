@@ -5,7 +5,7 @@ set -e
 url="$1"
 id="$(python3 -c "import os, binascii; print(binascii.hexlify(os.urandom(16)).decode('utf-8'))")"
 # remove protocol, remove trailing slashes, convert slashes to "-"es
-dir="$(echo -n "$url" | sed -r 's,^(ftp|https?)://,,g' | sed -r 's,/+$,,g' | sed -r 's,[/\?&],-,g')-$(date +%F)-${id:0:8}"
+dir="$(echo -nE "$url" | python3 -c "import sys, re; print(re.sub('[/\?&]', '-', sys.stdin.read().strip().split('://', 1)[1].rstrip('/')))")-$(date +%F)-${id:0:8}"
 self=$(dirname "$0")
 
 mkdir -p "$dir"
@@ -45,11 +45,10 @@ for arg in "$@"; do
 	shift
 done
 
-echo
-echo "$id" > "$dir/id"
-echo "$url" > "$dir/start_url"
-echo "$concurrency" > "$dir/concurrency"
-echo "global,$igsets" > "$dir/igsets"
+echo -E "$id" > "$dir/id"
+echo -E "$url" > "$dir/start_url"
+echo -E "$concurrency" > "$dir/concurrency"
+echo -E "global,$igsets" > "$dir/igsets"
 touch "$dir/igoff"
 touch "$dir/ignores"
 

@@ -11,7 +11,11 @@ class DupesOnDisk(object):
 			try:
 				self._env = lmdb.open(
 					filename,
-					writemap=True,
+					# Can't use writemap=True on OS X because it does not fully support sparse files
+					# https://acid.readthedocs.org/en/latest/engines.html
+					# Don't use writemap=True elsewhere because enormous sparse files get copied
+					# and make a non-sparse mess
+					writemap=False,
 					sync=False,
 					metasync=False,
 					# http://lmdb.readthedocs.org/en/release/#lmdb.Environment
