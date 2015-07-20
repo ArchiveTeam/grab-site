@@ -87,7 +87,7 @@ Then, start as many crawls as you want with:
 
 Do this inside tmux unless they're very short crawls.
 
-Options:
+### Options
 
 Note: options must always come **after** the `URL`.
 
