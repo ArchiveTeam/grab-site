@@ -37,7 +37,8 @@ sudo apt-get install --no-install-recommends git build-essential python3-dev pyt
 pip3 install --user git+https://github.com/ludios/grab-site
 ```
 
-To avoid having to type out `~/.local/bin/` below, add this to your `~/.bashrc` or `~/.zshrc`:
+To avoid having to type out `~/.local/bin/` below, add this to your
+`~/.bashrc` or `~/.zshrc`:
 
 ```
 PATH="$PATH:$HOME/.local/bin"
@@ -49,15 +50,19 @@ Install on OS X
 
 On OS X 10.10:
 
-1.	If xcode is not already installed, type `gcc` in Terminal; you will be prompted to install the command-line developer tools.  Click 'Install'.
+1.	If xcode is not already installed, type `gcc` in Terminal; you will be
+	prompted to install the command-line developer tools.  Click 'Install'.
 
-2.	If Python 3 is not already installed, install Python 3.4.3 using the installer from https://www.python.org/downloads/release/python-343/
+2.	If Python 3 is not already installed, install Python 3.4.3 using the
+	installer from https://www.python.org/downloads/release/python-343/
 
 3.	`pip3 install --user git+https://github.com/ludios/grab-site`
 
-**Important usage note**: Use `~/Library/Python/3.4/bin/` instead of `~/.local/bin/` for all instructions below!
+**Important usage note**: Use `~/Library/Python/3.4/bin/` instead of
+`~/.local/bin/` for all instructions below!
 
-To avoid having to type out `~/Library/Python/3.4/bin/` below, add this to your `~/.bash_profile`:
+To avoid having to type out `~/Library/Python/3.4/bin/` below,
+add this to your `~/.bash_profile` (which may not exist yet):
 
 ```
 PATH="$PATH:$HOME/Library/Python/3.4/bin"
@@ -66,7 +71,6 @@ PATH="$PATH:$HOME/Library/Python/3.4/bin"
 
 Usage
 ---
-
 First, start the dashboard with:
 
 ```
@@ -106,6 +110,8 @@ thus would otherwise not be included in the recursive crawl.
 
 Changing ignores during the crawl
 ---
+`grab-site` outputs WARCs and logs to a new subdirectory in the directory from
+which you launched `grab-site`, referred to here as "DIR".  (Use `ls -lrt` to find it.)
 
 While the crawl is running, you can edit `DIR/ignores` and `DIR/igsets`; the
 changes will be applied as soon as the next URL is grabbed.
@@ -121,14 +127,12 @@ by the ignores, and `touch DIR/igoff` to turn it back off.
 
 Stopping a crawl
 ---
-
 You can `touch DIR/stop` or press ctrl-c, which will do the same.  You will
 have to wait for the current downloads to finish.
 
 
 Advanced `gs-server` options
 ---
-
 These environmental variables control what `gs-server` listens on:
 
 *	`GRAB_SITE_HTTP_INTERFACE` (default 0.0.0.0)
@@ -147,7 +151,7 @@ These environmental variables control which server each `grab-site` process conn
 
 Help
 ---
-
 Bugs, discussion, ideas are welcome in [grab-site/issues](https://github.com/ludios/grab-site/issues).
 
-If a problem happens when running just `~/.local/bin/wpull -r URL` (no grab-site), you may want to report it to [wpull/issues](https://github.com/chfoo/wpull/issues) instead.
+If a problem happens when running just `~/.local/bin/wpull -r URL` (no grab-site),
+you may want to report it to [wpull/issues](https://github.com/chfoo/wpull/issues) instead.
