@@ -122,7 +122,7 @@ Note: all options with an argument must be followed with a `=`, not a space.
 
 Changing ignores during the crawl
 ---
-`grab-site` outputs WARCs, logs, and control files to a new subdirectory in the
+grab-site outputs WARCs, logs, and control files to a new subdirectory in the
 directory from which you launched `grab-site`, referred to here as "DIR".
 (Use `ls -lrt` to find it.)
 
@@ -184,7 +184,7 @@ then point your browser to http://127.0.0.1:8090/
 
 Help
 ---
-`grab-site` bugs, discussion, ideas are welcome in [grab-site/issues](https://github.com/ludios/grab-site/issues).
+grab-site bugs, discussion, ideas are welcome in [grab-site/issues](https://github.com/ludios/grab-site/issues).
 
 If a problem happens when running just `~/.local/bin/wpull -r URL` (no grab-site),
 you may want to report it to [wpull/issues](https://github.com/chfoo/wpull/issues) instead.
