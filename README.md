@@ -110,8 +110,9 @@ thus would otherwise not be included in the recursive crawl.
 
 Changing ignores during the crawl
 ---
-`grab-site` outputs WARCs and logs to a new subdirectory in the directory from
-which you launched `grab-site`, referred to here as "DIR".  (Use `ls -lrt` to find it.)
+`grab-site` outputs WARCs, logs, and control files to a new subdirectory in the
+directory from which you launched `grab-site`, referred to here as "DIR".
+(Use `ls -lrt` to find it.)
 
 While the crawl is running, you can edit `DIR/ignores` and `DIR/igsets`; the
 changes will be applied as soon as the next URL is grabbed.
