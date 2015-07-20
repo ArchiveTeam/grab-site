@@ -63,6 +63,10 @@ To avoid having to type out `~/Library/Python/3.4/bin/` below, add this to your 
 PATH="$PATH:$HOME/Library/Python/3.4/bin"
 ```
 
+If you don't already have a `.bash_profile`, you can create one:
+```
+echo "PATH=\"\$PATH:\$HOME/Library/Python/3.4/bin\"" >> ~/.bash_profile 
+```
 
 Usage
 ---
@@ -106,6 +110,8 @@ thus would otherwise not be included in the recursive crawl.
 
 Changing ignores during the crawl
 ---
+
+The results of the crawl will be placed into your current working directory, in a subdirectory henceforth referred to as "DIR".
 
 While the crawl is running, you can edit `DIR/ignores` and `DIR/igsets`; the
 changes will be applied as soon as the next URL is grabbed.
