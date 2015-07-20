@@ -118,7 +118,10 @@ def updateIgnoracle():
 		ignores = set(ig for ig in f.read().strip("\r\n").split('\n') if ig != "")
 
 	for igset in igsets:
-		ignores.update(getPatternsForIgnoreSet(igset))
+		patterns = getPatternsForIgnoreSet(igset)
+		if igset == "global":
+			patterns = filter(lambda p: "archive\\.org" not in p, patterns)
+		ignores.update(patterns)
 
 	printToReal("Using these %d ignores:" % len(ignores))
 	printToReal(pprint.pformat(ignores))
