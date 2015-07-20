@@ -83,15 +83,26 @@ Then, start as many crawls as you want with:
 
 ```
 ~/.local/bin/grab-site URL
-~/.local/bin/grab-site URL --igsets=blogs,forums
-~/.local/bin/grab-site URL --igsets=blogs,forums --no-offsite-links
 ```
 
 Do this inside tmux unless they're very short crawls.
 
-Note: `URL` must come before the options.
+Options:
 
-Note: `--igsets=` means "ignore sets" and must have the `=`.
+*	`--igsets=blogs,forums`: use ignore sets `blogs` and `forums`.
+
+	Example: `~/.local/bin/grab-site URL --igsets=blogs,forums`
+
+	Note: `igsets` must be followed with `=` and not ` `.
+
+*	`--no-offsite-links`: avoid following links to a depth of 1 on other domains.
+
+*	`--1`: grab just `URL` and page requisites without recursing.
+
+*	`--level=N`: recurse `N` levels instead of `inf` levels.
+```
+
+Note: `URL` must always come **before** the options.
 
 `forums` and `blogs` are some frequently-used ignore sets.
 See [the full list of available ignore sets](https://github.com/ArchiveTeam/ArchiveBot/tree/master/db/ignore_patterns).

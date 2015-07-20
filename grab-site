@@ -14,6 +14,7 @@ level="inf"
 concurrency="2"
 page_requisites_level="5"
 span_hosts_allow="page-requisites,linked-pages"
+recursive="--recursive"
 
 for arg in "$@"; do
 	case $arg in
@@ -22,6 +23,9 @@ for arg in "$@"; do
 		;;
 		--igsets=*)
 			igsets="${arg#*=}"
+		;;
+		--1)
+			recursive=""
 		;;
 		--level=*)
 			level="${arg#*=}"
@@ -85,7 +89,7 @@ GRAB_SITE_WORKING_DIR="$dir" "$self/patched-wpull" \
 	--monitor-disk 400m \
 	--monitor-memory 10k \
 	--max-redirect 8 \
-	--recursive \
+	$recursive \
 	--level "$level" \
 	--page-requisites-level "$page_requisites_level" \
 	--span-hosts-allow "$span_hosts_allow" \
