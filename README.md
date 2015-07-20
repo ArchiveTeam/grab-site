@@ -37,6 +37,12 @@ sudo apt-get install --no-install-recommends git build-essential python3-dev pyt
 pip3 install --user git+https://github.com/ludios/grab-site
 ```
 
+To avoid having to type out `~/.local/bin/` below, add this to your `~/.bashrc` or `~/.zshrc`:
+
+```
+PATH="$PATH:$HOME/.local/bin"
+```
+
 
 Install on OS X
 ---
@@ -50,6 +56,12 @@ On OS X 10.10:
 3.	`pip3 install --user git+https://github.com/ludios/grab-site`
 
 **Important usage note**: Use `~/Library/Python/3.4/bin/` instead of `~/.local/bin/` for all instructions below!
+
+To avoid having to type out `~/Library/Python/3.4/bin/` below, add this to your `~/.bash_profile`:
+
+```
+PATH="$PATH:$HOME/Library/Python/3.4/bin"
+```
 
 
 Usage
