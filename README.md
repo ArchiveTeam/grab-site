@@ -95,6 +95,8 @@ Note: options must always come **after** the `URL`.
 
 *	`--level=N`: recurse `N` levels instead of `inf` levels.
 
+*	`--concurrency=N`: use `N` connections (default: 2).
+
 *	`--igsets=blogs,forums`: use ignore sets `blogs` and `forums`.
 
 	Example: `~/.local/bin/grab-site URL --igsets=blogs,forums`
@@ -115,7 +117,7 @@ Note: options must always come **after** the `URL`.
 	etc from being grabbed, because these are often hosted on a CDN or subdomain, and
 	thus would otherwise not be included in the recursive crawl.
 
-Note: `igsets` and `level` options must be followed with a `=` and not a space.
+Note: all options with an argument must be followed with a `=`, not a space.
 
 
 Changing ignores during the crawl
