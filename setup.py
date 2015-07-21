@@ -24,5 +24,5 @@ setup(
 	scripts=["grab-site", "gs-server", "patched-wpull"],
 	packages=["libgrabsite"],
 	package_data={"libgrabsite": ["*.html"]},
-	install_requires=["wpull", "manhole", "lmdb", "autobahn", "aiohttp", "trollius"],
+	install_requires=["wpull", "cchardet", "manhole", "lmdb", "autobahn", "aiohttp", "trollius"],
 )
