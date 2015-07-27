@@ -119,6 +119,8 @@ Options can come before or after the URL.
 
 *	`--page-requisites-level=N`: recurse page requisites `N` levels instead of `5` levels.
 
+*	`--no-sitemaps`: don't queue URLs from `sitemap.xml` at the root of the site.
+
 *	`--help`: print help text.
 
 

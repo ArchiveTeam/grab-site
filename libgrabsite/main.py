@@ -8,28 +8,43 @@ import click
 import libgrabsite
 
 @click.command()
+
 @click.option('--concurrency', default=2, metavar='NUM',
 	help='Use this many connections to fetch in parallel')
+
 @click.option('--concurrent', default=None, metavar='NUM', type=int,
 	help='Alias for --concurrency')
+
 @click.option('--recursive/--1', default=True,
 	help=
 		'--recursive (default: true) to crawl under last /path/ component '
 		'recursively, or --1 to get just START_URL')
+
 @click.option('--offsite-links/--no-offsite-links', default=False,
 	help=
 		'--offsite-links (default: true) to grab all links to a depth of 1 '
 		'on other domains, or --no-offsite-links to disable')
+
 @click.option('--igsets', default="", metavar='LIST',
 	help='Comma-separated list of ignore sets to use in addition to "global"')
+
 @click.option('--ignore-sets', default="", metavar='LIST',
 	help='Alias for --igsets')
+
 @click.option('--level', default="inf", metavar='NUM',
 	help='Recurse this many levels (default: inf)')
+
 @click.option('--page-requisites-level', default="5", metavar='NUM',
 	help='Recursive this many levels for page requisites (default: 5)')
+
+@click.option('--sitemaps/--no-sitemaps', default=True,
+	help=
+		'--sitemaps (default: true) to queue URLs from sitemap.xml '
+		'at the root of the site, or --no-sitemaps to disable')
+
 @click.argument('start_url')
-def main(concurrency, concurrent, recursive, offsite_links, igsets, ignore_sets, level, page_requisites_level, start_url):
+
+def main(concurrency, concurrent, recursive, offsite_links, igsets, ignore_sets, level, page_requisites_level, sitemaps, start_url):
 	span_hosts_allow = "page-requisites,linked-pages"
 	if not offsite_links:
 		span_hosts_allow = "page-requisites"
@@ -82,7 +97,6 @@ def main(concurrency, concurrent, recursive, offsite_links, igsets, ignore_sets,
 		"--no-robots",
 		"--page-requisites",
 		"--no-parent",
-		"--sitemaps",
 		"--inet4-only",
 		"--timeout", "20",
 		"--tries", "3",
@@ -101,6 +115,9 @@ def main(concurrency, concurrent, recursive, offsite_links, igsets, ignore_sets,
 		"--span-hosts-allow", span_hosts_allow,
 		"--quiet",
 	]
+
+	if sitemaps:
+		args += ["--sitemaps"]
 
 	if recursive:
 		args += ["--recursive"]
