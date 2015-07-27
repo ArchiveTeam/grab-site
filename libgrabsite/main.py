@@ -55,7 +55,8 @@ def print_version(ctx, param, value):
 
 @click.argument('start_url')
 
-def main(concurrency, concurrent, recursive, offsite_links, igsets, ignore_sets, level, page_requisites_level, sitemaps, start_url):
+def main(concurrency, concurrent, recursive, offsite_links, igsets,
+ignore_sets, level, page_requisites_level, sitemaps, start_url):
 	span_hosts_allow = "page-requisites,linked-pages"
 	if not offsite_links:
 		span_hosts_allow = "page-requisites"
