@@ -7,6 +7,13 @@ import subprocess
 import click
 import libgrabsite
 
+def print_version(ctx, param, value):
+	if not value or ctx.resilient_parsing:
+		return
+	click.echo(libgrabsite.__version__)
+	ctx.exit()
+
+
 @click.command()
 
 @click.option('--concurrency', default=2, metavar='NUM',
@@ -41,6 +48,9 @@ import libgrabsite
 	help=
 		'--sitemaps (default: true) to queue URLs from sitemap.xml '
 		'at the root of the site, or --no-sitemaps to disable')
+
+@click.option('--version', is_flag=True, callback=print_version,
+	expose_value=False, is_eager=True, help='Print version and exit.')
 
 @click.argument('start_url')
 
