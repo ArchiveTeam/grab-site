@@ -55,7 +55,7 @@ def connectToServer():
 		try:
 			coro = yield from loop.create_connection(wsFactory, host, port)
 		except OSError:
-			printToReal("Could not connect to WebSocket server, retrying in 2 seconds...")
+			printToReal("Could not connect to ws://{}:{}, retrying in 2 seconds...".format(host, port))
 			yield from asyncio.sleep(2)
 		else:
 			break
