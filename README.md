@@ -93,7 +93,7 @@ Options can come before or after the URL.
 
 *	`--1`: grab just `URL` and its page requisites, without recursing.
 
-*	`--concurrency=N`: use `N` connections (default: 2).
+*	`--concurrency=N`: Use N connections to fetch in parallel (default: 2).
 
 *	`--igsets=blogs,forums`: use ignore sets `blogs` and `forums`.
 
