@@ -24,6 +24,9 @@ grab-site gives you
 *	duplicate page detection: links are not followed on pages whose
 	content duplicates an already-seen page.
 
+The URL queue is kept on disk instead of in memory.  If you're really lucky,
+grab-site will manage to crawl a site with ~10M pages.
+
 ![dashboard screenshot](https://raw.githubusercontent.com/ludios/grab-site/master/images/dashboard.png)
 
 
@@ -186,9 +189,29 @@ And use it with:
 then point your browser to http://127.0.0.1:8090/
 
 
+Thanks
+---
+grab-site is made possible only because of [wpull](https://github.com/chfoo/wpull),
+written by [Christopher Foo](https://github.com/chfoo) who spent a year
+making something much better than wget.  ArchiveTeam's most pressing
+issue with wget at the time was that it kept the entire URL queue in memory
+instead of on disk.  wpull has many other advantages over wget, including
+better link extraction and Python hooks.
+
+Thanks to David Yip, whose original ArchiveBot dashboard inspired the newer
+dashboard used in grab-site.
+
+
 Help
 ---
 grab-site bugs, discussion, ideas are welcome in [grab-site/issues](https://github.com/ludios/grab-site/issues).
 
 If a problem happens when running just `~/.local/bin/wpull -r URL` (no grab-site),
 you may want to report it to [wpull/issues](https://github.com/chfoo/wpull/issues) instead.
+
+
+P.S.
+---
+If you like grab-site, please star it on GitHub,
+[heart it on alternativeTo](http://alternativeto.net/software/grab-site/),
+or tweet about it.
