@@ -100,7 +100,8 @@ Options can come before or after the URL.
 
 *	`--igsets=blogs,forums`: use ignore sets `blogs` and `forums`.
 
-	Ignore sets are used to exclude a set of junk URLs using a pre-made list of regular expressions.
+	Ignore sets are used to avoid requesting junk URLs using a pre-made set of
+	regular expressions.
 
 	`forums` and `blogs` are some frequently-used ignore sets.
 	See [the full list of available ignore sets](https://github.com/ArchiveTeam/ArchiveBot/tree/master/db/ignore_patterns).
