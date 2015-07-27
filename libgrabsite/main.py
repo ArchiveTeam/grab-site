@@ -12,7 +12,7 @@ import libgrabsite
 @click.option('--concurrency', default=2, metavar='NUM',
 	help='Use this many connections to fetch in parallel')
 
-@click.option('--concurrent', default=None, metavar='NUM', type=int,
+@click.option('--concurrent', default=-1, metavar='NUM',
 	help='Alias for --concurrency')
 
 @click.option('--recursive/--1', default=True,
@@ -49,10 +49,10 @@ def main(concurrency, concurrent, recursive, offsite_links, igsets, ignore_sets,
 	if not offsite_links:
 		span_hosts_allow = "page-requisites"
 
-	if concurrent is not None:
+	if concurrent != -1:
 		concurrency = concurrent
 
-	if ignore_sets is not None:
+	if ignore_sets != "":
 		igsets = ignore_sets
 
 	id = binascii.hexlify(os.urandom(16)).decode('utf-8')
