@@ -198,8 +198,8 @@ issue with wget at the time was that it kept the entire URL queue in memory
 instead of on disk.  wpull has many other advantages over wget, including
 better link extraction and Python hooks.
 
-Thanks to David Yip, whose original ArchiveBot dashboard inspired the newer
-dashboard used in grab-site.
+Thanks to [David Yip](https://github.com/yipdw), whose original ArchiveBot
+dashboard inspired the newer dashboard used in grab-site.
 
 
 Help
