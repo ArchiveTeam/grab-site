@@ -20,7 +20,6 @@ def printToReal(s):
 class GrabberClientProtocol(WebSocketClientProtocol):
 	def onOpen(self):
 		self.factory.client = self
-		printToReal("{} connected to WebSocket server".format(self.__class__.__name__))
 		self.sendMessage(json.dumps({
 			"type": "hello",
 			"mode": "grabber",
@@ -29,8 +28,9 @@ class GrabberClientProtocol(WebSocketClientProtocol):
 
 	def onClose(self, wasClean, code, reason):
 		self.factory.client = None
-		printToReal("{} disconnected from WebSocket server".format(self.__class__.__name__))
-		# TODO: exponentially increasing delay (copy Decayer from dashboard)
+		printToReal(
+			"Disconnected from ws:// server with (wasClean, code, reason): {!r}"
+				.format((wasClean, code, reason)))
 		asyncio.ensure_future(connectToServer())
 
 	def sendObject(self, obj):
@@ -47,17 +47,45 @@ class GrabberClientFactory(WebSocketClientFactory):
 
 wsFactory = GrabberClientFactory()
 
+class Decayer(object):
+	def __init__(self, initial, multiplier, maximum):
+		"""
+		initial - initial number to return
+		multiplier - multiply number by this value after each call to decay()
+		maximum - cap number at this value
+		"""
+		self.initial = initial
+		self.multiplier = multiplier
+		self.maximum = maximum
+		self.reset()
+
+	def reset(self):
+		# First call to .decay() will multiply, but we want to get the `intitial`
+		# value on the first call to .decay(), so divide.
+		self.current = self.initial / self.multiplier
+		return self.current
+
+	def decay(self):
+		self.current = min(self.current * self.multiplier, self.maximum)
+		return self.current
+
+
 @asyncio.coroutine
 def connectToServer():
 	host = os.environ.get('GRAB_SITE_WS_HOST', '127.0.0.1')
 	port = int(os.environ.get('GRAB_SITE_WS_PORT', 29001))
+	decayer = Decayer(0.25, 1.5, 8)
 	while True:
 		try:
 			coro = yield from loop.create_connection(wsFactory, host, port)
 		except OSError:
-			printToReal("Could not connect to ws://{}:{}, retrying in 2 seconds...".format(host, port))
-			yield from asyncio.sleep(2)
+			delay = decayer.decay()
+			printToReal(
+				"Could not connect to ws://{}:{}, retrying in {:.1f} seconds..."
+					.format(host, port, delay))
+			yield from asyncio.sleep(delay)
 		else:
+			printToReal("Connected to ws://{}:{}".format(host, port))
 			break
 
 loop = asyncio.get_event_loop()
