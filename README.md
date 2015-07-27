@@ -205,6 +205,7 @@ dashboard inspired the newer dashboard used in grab-site.
 Help
 ---
 grab-site bugs, discussion, ideas are welcome in [grab-site/issues](https://github.com/ludios/grab-site/issues).
+If you are affected by an existing issue, please +1 it.
 
 If a problem happens when running just `~/.local/bin/wpull -r URL` (no grab-site),
 you may want to report it to [wpull/issues](https://github.com/chfoo/wpull/issues) instead.
