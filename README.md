@@ -89,17 +89,15 @@ Do this inside tmux unless they're very short crawls.
 
 ### Options
 
-Note: options must always come **after** the `URL`.
+Options can come before or after the URL.
 
 *	`--1`: grab just `URL` and its page requisites, without recursing.
-
-*	`--level=N`: recurse `N` levels instead of `inf` levels.
 
 *	`--concurrency=N`: use `N` connections (default: 2).
 
 *	`--igsets=blogs,forums`: use ignore sets `blogs` and `forums`.
 
-	Example: `~/.local/bin/grab-site URL --igsets=blogs,forums`
+	Ignore sets are used to exclude a set of junk URLs using a pre-made list of regular expressions.
 
 	`forums` and `blogs` are some frequently-used ignore sets.
 	See [the full list of available ignore sets](https://github.com/ArchiveTeam/ArchiveBot/tree/master/db/ignore_patterns).
@@ -117,7 +115,11 @@ Note: options must always come **after** the `URL`.
 	etc from being grabbed, because these are often hosted on a CDN or subdomain, and
 	thus would otherwise not be included in the recursive crawl.
 
-Note: all options with an argument must be followed with a `=`, not a space.
+*	`--level=N`: recurse `N` levels instead of `inf` levels.
+
+*	`--page-requisites-level=N`: recurse page requisites `N` levels instead of `5` levels.
+
+*	`--help`: print help text.
 
 
 Changing ignores during the crawl
