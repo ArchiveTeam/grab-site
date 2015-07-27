@@ -4,6 +4,7 @@ import sys
 import binascii
 import datetime
 import subprocess
+import signal
 import click
 import libgrabsite
 
@@ -69,8 +70,12 @@ def main(concurrency, concurrent, recursive, offsite_links, igsets, ignore_sets,
 
 	ymd = datetime.datetime.utcnow().isoformat()[:10]
 	# remove protocol, remove trailing slashes, convert slashes to "-"es
-	working_dir = re.sub('[/\?&]', '-', start_url.split('://', 1)[1].rstrip('/')) + "-" + ymd + "-" + id[:8]
+	warc_name = re.sub('[/\?&]', '-', start_url.split('://', 1)[1].rstrip('/')) + "-" + ymd + "-" + id[:8]
+	# make absolute because wpull will start in temp/
+	working_dir = os.path.abspath(warc_name)
 	os.makedirs(working_dir)
+	temp_dir = os.path.join(working_dir, "temp")
+	os.makedirs(temp_dir)
 
 	with open("{}/id".format(working_dir), "w") as f:
 		f.write(id)
@@ -112,7 +117,7 @@ def main(concurrency, concurrent, recursive, offsite_links, igsets, ignore_sets,
 		"--tries", "3",
 		"--concurrent", str(concurrency),
 		"--waitretry", "5",
-		"--warc-file", "{}/{}".format(working_dir, working_dir),
+		"--warc-file", "{}/{}".format(working_dir, warc_name),
 		"--warc-max-size", "5368709120",
 		"--debug-manhole",
 		"--strip-session-id",
@@ -136,7 +141,15 @@ def main(concurrency, concurrent, recursive, offsite_links, igsets, ignore_sets,
 
 	env = os.environ.copy()
 	env["GRAB_SITE_WORKING_DIR"] = working_dir
-	p = subprocess.Popen(args, env=env)
+	# We can use --warc-tempdir= to put WARC-related temporary files in a temp
+	# directory, but wpull also creates non-WARC-related "resp_cb" temporary
+	# files in the cwd, so we must start wpull in temp/ anyway.
+	p = subprocess.Popen(args, env=env, cwd=temp_dir)
+
+	# wpull child process handles ctrl-c; we want to ignore so that we don't quit
+	# before wpull on ctrl-c
+	signal.signal(signal.SIGINT, lambda x, y: None)
+
 	sys.exit(p.wait())
 
 
