@@ -8,19 +8,37 @@ import click
 import libgrabsite
 
 @click.command()
-@click.option('--concurrency', default=2, help='TODO')
-@click.option('--concurrent', default=None, help='Alias for --concurrency')
-@click.option('--recursive/--1', default=True, help='TODO')
-@click.option('--offsite-links/--no-offsite-links', default=False, help='TODO')
-@click.option('--igsets', default="", help='TODO')
-@click.option('--ignore-sets', default="", help='Alias for --igsets')
-@click.option('--level', default="inf", help='TODO')
-@click.option('--page-requisites-level', default="5", help='TODO')
+@click.option('--concurrency', default=2, metavar='NUM',
+	help='Use this many connections to fetch in parallel')
+@click.option('--concurrent', default=None, metavar='NUM', type=int,
+	help='Alias for --concurrency')
+@click.option('--recursive/--1', default=True,
+	help=
+		'--recursive (default: true) to crawl under last /path/ component '
+		'recursively, or --1 to get just START_URL')
+@click.option('--offsite-links/--no-offsite-links', default=False,
+	help=
+		'--offsite-links (default: true) to grab all links to a depth of 1 '
+		'on other domains, or --no-offsite-links to disable')
+@click.option('--igsets', default="", metavar='LIST',
+	help='Comma-separated list of ignore sets to use in addition to "global"')
+@click.option('--ignore-sets', default="", metavar='LIST',
+	help='Alias for --igsets')
+@click.option('--level', default="inf", metavar='NUM',
+	help='Recurse this many levels (default: inf)')
+@click.option('--page-requisites-level', default="5", metavar='NUM',
+	help='Recursive this many levels for page requisites (default: 5)')
 @click.argument('start_url')
 def main(concurrency, concurrent, recursive, offsite_links, igsets, ignore_sets, level, page_requisites_level, start_url):
 	span_hosts_allow = "page-requisites,linked-pages"
 	if not offsite_links:
 		span_hosts_allow = "page-requisites"
+
+	if concurrent is not None:
+		concurrency = concurrent
+
+	if ignore_sets is not None:
+		igsets = ignore_sets
 
 	id = binascii.hexlify(os.urandom(16)).decode('utf-8')
 
