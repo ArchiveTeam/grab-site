@@ -70,10 +70,10 @@ ignore_sets, level, page_requisites_level, sitemaps, start_url):
 		igsets = ignore_sets
 
 	id = binascii.hexlify(os.urandom(16)).decode('utf-8')
-
 	ymd = datetime.datetime.utcnow().isoformat()[:10]
-	# remove protocol, remove trailing slashes, convert slashes to "-"es
-	warc_name = re.sub('[/\?&]', '-', start_url.split('://', 1)[1].rstrip('/')) + "-" + ymd + "-" + id[:8]
+	no_proto_no_trailing = start_url.split('://', 1)[1].rstrip('/')
+	warc_name = "{}-{}-{}".format(re.sub('[^-_a-zA-Z0-9%\.,;@+=]', '-', no_proto_no_trailing), ymd, id[:8])
+
 	# make absolute because wpull will start in temp/
 	working_dir = os.path.abspath(warc_name)
 	os.makedirs(working_dir)
