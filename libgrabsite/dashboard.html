@@ -1218,7 +1218,7 @@ JobsRenderer.prototype.toggleAlign = function() {
 
 /**
  * This context menu pops up when you right-click on a URL in
- * a log window, helping you copy an !ig command based on the URL
+ * a log window, helping you copy a regexp based on the URL
  * you right-clicked.
  */
 var ContextMenuRenderer = function() {
@@ -1260,22 +1260,14 @@ ContextMenuRenderer.prototype.getPathVariants = function(path) {
 };
 
 ContextMenuRenderer.prototype.getSuggestedCommands = function(ident, url) {
-	// TODO:
-	// !d IDENT 180000 180000 (if !d is currently low)
-	// !d IDENT 250 375 (if !d is currently high)
-	// !con IDENT 1 (if > 1)
-	// !con IDENT 3 (if < 3)
 	var schema = url.split(':')[0];
 	var domain = url.split('/')[2];
 	var withoutQuery = url.split('?')[0];
 	var path = '/' + split(withoutQuery, '/', 3)[3];
 	var reSchema = startsWith(schema, 'http') ? 'https?' : 'ftp';
 	return this.getPathVariants(path).map(function(p) {
-		return "!ig " + ident + " ^" + reSchema + "://" + regExpEscape(domain + p);
-	}).concat([
-		 "!d " + ident + " 180000 180000"
-		,"!con " + ident + " 1"
-	]);
+		return "^" + reSchema + "://" + regExpEscape(domain + p);
+	});
 };
 
 ContextMenuRenderer.prototype.makeEntries = function(ident, url) {
@@ -1283,7 +1275,7 @@ ContextMenuRenderer.prototype.makeEntries = function(ident, url) {
 		return h(
 			'span',
 			{'onclick': this.makeCopyTextFn(c)},
-			"Copy " + c.replace(" " + ident + " ", " … ")
+			"Copy " + c
 		);
 	}.bind(this));
 	return [
