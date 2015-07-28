@@ -170,6 +170,7 @@ class FileChangedWatcher(object):
 igsets_watcher = FileChangedWatcher(os.path.join(working_dir, "igsets"))
 ignores_watcher = FileChangedWatcher(os.path.join(working_dir, "ignores"))
 delay_watcher = FileChangedWatcher(os.path.join(working_dir, "delay"))
+concurrency_watcher = FileChangedWatcher(os.path.join(working_dir, "concurrency"))
 
 ignoracle = Ignoracle()
 
@@ -235,7 +236,7 @@ job_data = {
 	"url": open(os.path.join(working_dir, "start_url")).read().strip(),
 	"started_at": os.stat(os.path.join(working_dir, "start_url")).st_mtime,
 	"suppress_ignore_reports": True,
-	"concurrency": int(open(os.path.join(working_dir, "concurrency")).read().strip()),
+	"concurrency": 2,
 	"bytes_downloaded": 0,
 	"items_queued": 0,
 	"items_downloaded": 0,
@@ -401,12 +402,28 @@ def update_delay_in_job_data():
 update_delay_in_job_data()
 
 
+def update_concurrency_in_job_data_and_wpull():
+	with open(concurrency_watcher.fname, "r") as f:
+		job_data["concurrency"] = int(f.read().strip())
+	wpull_hook.factory.get('Engine').set_concurrent(job_data["concurrency"])
+
+update_concurrency_in_job_data_and_wpull()
+
+
 def wait_time(_):
 	try:
 		if delay_watcher.has_changed():
 			update_delay_in_job_data()
 	except Exception:
 		traceback.print_exc()
+
+	# While we're at it, update the concurrency level
+	try:
+		if concurrency_watcher.has_changed():
+			update_concurrency_in_job_data_and_wpull()
+	except Exception:
+		traceback.print_exc()
+
 	return random.uniform(job_data["delay_min"], job_data["delay_max"]) / 1000
 
 

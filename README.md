@@ -90,6 +90,10 @@ Then, start as many crawls as you want with:
 
 Do this inside tmux unless they're very short crawls.
 
+grab-site outputs WARCs, logs, and control files to a new subdirectory in the
+directory from which you launched `grab-site`, referred to here as "DIR".
+(Use `ls -lrt` to find it.)
+
 ### Options
 
 Options can come before or after the URL.
@@ -97,6 +101,7 @@ Options can come before or after the URL.
 *	`--1`: grab just `URL` and its page requisites, without recursing.
 
 *	`--concurrency=N`: Use N connections to fetch in parallel (default: 2).
+	Can be changed during the crawl by editing the `DIR/concurrency` file.
 
 *	`--igsets=blogs,forums`: use ignore sets `blogs` and `forums`.
 
@@ -136,10 +141,6 @@ Options can come before or after the URL.
 
 Changing ignores during the crawl
 ---
-grab-site outputs WARCs, logs, and control files to a new subdirectory in the
-directory from which you launched `grab-site`, referred to here as "DIR".
-(Use `ls -lrt` to find it.)
-
 While the crawl is running, you can edit `DIR/ignores` and `DIR/igsets`; the
 changes will be applied as soon as the next URL is grabbed.
 
