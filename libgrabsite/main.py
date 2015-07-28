@@ -1,10 +1,12 @@
+import faulthandler
+faulthandler.enable()
+
 import re
 import os
 import sys
 import binascii
 import datetime
-import subprocess
-import signal
+import pprint
 import click
 import libgrabsite
 
@@ -98,7 +100,6 @@ ignore_sets, level, page_requisites_level, sitemaps, start_url):
 
 	LIBGRABSITE = os.path.dirname(libgrabsite.__file__)
 	args = [
-		"{}/patched-wpull".format(LIBGRABSITE),
 		"-U", "Mozilla/5.0 (Windows NT 6.3; WOW64; rv:39.0) Gecko/20100101 Firefox/39.0",
 		"--header=Accept: text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
 		"--header=Accept-Language: en-US,en;q=0.5",
@@ -140,18 +141,24 @@ ignore_sets, level, page_requisites_level, sitemaps, start_url):
 
 	args += [start_url]
 
-	env = os.environ.copy()
-	env["GRAB_SITE_WORKING_DIR"] = working_dir
+	# Mutate argv, environ, cwd before we turn into wpull
+	sys.argv[1:] = args
+	os.environ["GRAB_SITE_WORKING_DIR"] = working_dir
 	# We can use --warc-tempdir= to put WARC-related temporary files in a temp
 	# directory, but wpull also creates non-WARC-related "resp_cb" temporary
 	# files in the cwd, so we must start wpull in temp/ anyway.
-	p = subprocess.Popen(args, env=env, cwd=temp_dir)
+	os.chdir(temp_dir)
 
-	# wpull child process handles ctrl-c; we want to ignore so that we don't quit
-	# before wpull on ctrl-c
-	signal.signal(signal.SIGINT, lambda x, y: None)
+	from wpull.app import Application
+	def noop_setup_signal_handlers(self):
+		pass
 
-	sys.exit(p.wait())
+	# Don't let wpull install a handler for SIGINT or SIGTERM,
+	# because we install our own in wpull_hooks.py.
+	Application.setup_signal_handlers = noop_setup_signal_handlers
+
+	import wpull.__main__
+	wpull.__main__.main()
 
 
 if __name__ == '__main__':
