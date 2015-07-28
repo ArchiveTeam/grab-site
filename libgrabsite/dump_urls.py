@@ -29,7 +29,10 @@ def main(wpull_db_file, status):
 	conn = sqlite3.connect(wpull_db_file)
 	c = conn.cursor()
 
-	rows = c.execute('SELECT url_strings.url FROM urls JOIN url_strings ON urls.url_str_id=url_strings.id WHERE status=?;', (status,))
+	rows = c.execute(
+		'SELECT url_strings.url FROM urls '
+		'JOIN url_strings ON urls.url_str_id=url_strings.id '
+		'WHERE status=?;', (status,))
 	for row in rows:
 		print(row[0])
 
