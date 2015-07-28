@@ -160,6 +160,12 @@ To dump the queue, run:
 Four other statuses can be used besides `todo`:
 `done`, `error`, `in_progress`, and `skipped`.
 
+You may want to pipe the output to `sort` and `less`:
+
+```
+~/.local/bin/gs-dump-urls DIR/wpull.db todo | sort | less -S
+```
+
 
 Stopping a crawl
 ---
