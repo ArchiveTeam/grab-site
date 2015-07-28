@@ -109,6 +109,8 @@ Options can come before or after the URL.
 	The [global](https://github.com/ArchiveTeam/ArchiveBot/blob/master/db/ignore_patterns/global.json)
 	ignore set is implied and always enabled.
 
+	The ignore sets can be changed during the crawl by editing the `DIR/igsets` file.
+
 *	`--no-offsite-links`: avoid following links to a depth of 1 on other domains.
 
 	grab-site always grabs page requisites (e.g. inline images and stylesheets), even if
@@ -118,6 +120,10 @@ Options can come before or after the URL.
 	Using `--no-offsite-links` may prevent all kinds of useful images, video, audio, downloads,
 	etc from being grabbed, because these are often hosted on a CDN or subdomain, and
 	thus would otherwise not be included in the recursive crawl.
+
+*	`--delay=N`: Wait N milliseconds (default: 0) between requests on each concurrent fetcher.
+	Can be a range like X-Y to use a random delay between X and Y.  Can be changed during
+	the crawl by editing the `DIR/delay` file.
 
 *	`--level=N`: recurse `N` levels instead of `inf` levels.
 
