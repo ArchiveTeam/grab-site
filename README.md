@@ -146,6 +146,21 @@ You can `rm DIR/igoff` to display all URLs that are being filtered out
 by the ignores, and `touch DIR/igoff` to turn it back off.
 
 
+Inspecting the URL queue
+---
+Inspecting the URL queue is usually not necessary, but may be helpful
+for adding ignores before grab-site crawls a large amount of junk URLs.
+
+To dump the queue, use
+
+```
+~/.local/bin/gs-dump-urls DIR/wpull.db todo
+```
+
+Four other statuses can be used besides `todo`:
+`done`, `error`, `in_progress`, and `skipped`.
+
+
 Stopping a crawl
 ---
 You can `touch DIR/stop` or press ctrl-c, which will do the same.  You will
