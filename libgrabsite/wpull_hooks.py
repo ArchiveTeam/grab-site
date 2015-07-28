@@ -2,8 +2,10 @@ import re
 import os
 import sys
 import json
+import time
 import pprint
 import signal
+import functools
 import trollius as asyncio
 from urllib.request import urlopen
 from autobahn.asyncio.websocket import WebSocketClientFactory, WebSocketClientProtocol
@@ -120,18 +122,42 @@ def get_patterns_for_ignore_set(name):
 
 working_dir = os.environ['GRAB_SITE_WORKING_DIR']
 
-def mtime(f):
-	return os.stat(f).st_mtime
+
+CONTROL_FILE_CACHE_SEC = 3
+
+def caching_decorator(f):
+	cache = {}
+	@functools.wraps(f)
+	def wrapper(path):
+		timestamp, val = cache.get(path, (-CONTROL_FILE_CACHE_SEC, None))
+		if timestamp > (time.monotonic() - CONTROL_FILE_CACHE_SEC):
+			#print("returning cached value {} {}".format(path, val))
+			return val
+		val = f(path)
+		cache[path] = (time.monotonic(), val)
+		#print("returning new value {} {}".format(path, val))
+		return val
+	return wrapper
+
+
+@caching_decorator
+def path_exists_with_cache(path):
+	return os.path.exists(path)
+
+
+@caching_decorator
+def mtime_with_cache(path):
+	return os.stat(path).st_mtime
 
 
 class FileChangedWatcher(object):
 	def __init__(self, fname):
 		self.fname = fname
-		self.last_mtime = mtime(fname)
+		self.last_mtime = mtime_with_cache(fname)
 
 	def has_changed(self):
-		now_mtime = mtime(self.fname)
-		changed = mtime(self.fname) != self.last_mtime
+		now_mtime = mtime_with_cache(self.fname)
+		changed = now_mtime != self.last_mtime
 		self.last_mtime = now_mtime
 		return changed
 
@@ -267,14 +293,14 @@ def handle_error(url_info, record_info, error_info):
 	return handle_result(url_info, record_info, error_info=error_info)
 
 
-# TODO: check only every 5 seconds max
+stop_path = os.path.join(working_dir, "stop")
 def should_stop():
-	return os.path.exists(os.path.join(working_dir, "stop"))
+	return path_exists_with_cache(stop_path)
 
 
-# TODO: check only every 5 seconds max
+igoff_path = os.path.join(working_dir, "igoff")
 def update_igoff_in_job_data():
-	igoff = os.path.exists(os.path.join(working_dir, "igoff"))
+	igoff = path_exists_with_cache(igoff_path)
 	job_data["suppress_ignore_reports"] = igoff
 	return igoff
 
