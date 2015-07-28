@@ -966,6 +966,8 @@ JobsRenderer.prototype._renderIgnoreLine = function(data, logSegment) {
 
 JobsRenderer.prototype._renderStdoutLine = function(data, logSegment, info, ident) {
 	var cleanedMessage = data["message"].replace(/[\r\n]+$/, "");
+	// Format DUPE/OF messages a little more nicely
+	cleanedMessage = cleanedMessage.replace(/^DUPE /, "  DUPE ").replace(/\n  OF /, "\n      OF ");
 	var renderedLines = 0;
 	if(!cleanedMessage) {
 		return renderedLines;

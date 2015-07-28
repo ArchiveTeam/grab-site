@@ -37,7 +37,7 @@ class DupeSpottingProcessingRule(wpull.processor.rule.ProcessingRule):
 			if dupe_of is not None:
 				# Don't extract links from pages we've already seen
 				# to avoid loops that descend a directory endlessly
-				print("  DUPE {}\n      OF {}".format(response.request.url, dupe_of))
+				print("DUPE {}\n  OF {}".format(response.request.url, dupe_of))
 				return
 			else:
 				if dupes_db is not None:
