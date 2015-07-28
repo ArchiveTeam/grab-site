@@ -151,7 +151,7 @@ Inspecting the URL queue
 Inspecting the URL queue is usually not necessary, but may be helpful
 for adding ignores before grab-site crawls a large amount of junk URLs.
 
-To dump the queue, use
+To dump the queue, run:
 
 ```
 ~/.local/bin/gs-dump-urls DIR/wpull.db todo
