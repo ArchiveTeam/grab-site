@@ -390,15 +390,21 @@ def exit_status(code):
 	return code
 
 
+def update_delay_in_job_data():
+	with open(delay_watcher.fname, "r") as f:
+		content = f.read().strip()
+		if "-" in content:
+			job_data["delay_min"], job_data["delay_max"] = list(int(s) for s in content.split("-", 1))
+		else:
+			job_data["delay_min"] = job_data["delay_max"] = int(content)
+
+update_delay_in_job_data()
+
+
 def wait_time(_):
 	try:
 		if delay_watcher.has_changed():
-			with open(delay_watcher.fname, "r") as f:
-				content = f.read().strip()
-				if "-" in content:
-					job_data["delay_min"], job_data["delay_max"] = list(int(s) for s in content.split("-", 1))
-				else:
-					job_data["delay_min"] = job_data["delay_max"] = int(content)
+			update_delay_in_job_data()
 	except Exception:
 		traceback.print_exc()
 	return random.uniform(job_data["delay_min"], job_data["delay_max"]) / 1000
