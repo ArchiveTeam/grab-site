@@ -6,7 +6,6 @@ import os
 import sys
 import binascii
 import datetime
-import pprint
 import click
 import libgrabsite
 
