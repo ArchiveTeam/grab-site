@@ -307,7 +307,7 @@ def update_igoff_in_job_data():
 
 def maybe_log_ignore(url, pattern):
 	if not update_igoff_in_job_data():
-		print_to_real("IGNOR %s by %s" % (url, pattern))
+		print_to_real("IGNOR %s\n   by %s" % (url, pattern))
 		if ws_factory.client:
 			ws_factory.client.send_object({
 				"type": "ignore",
