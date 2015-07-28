@@ -5,7 +5,9 @@ import json
 import time
 import pprint
 import signal
+import random
 import functools
+import traceback
 import trollius as asyncio
 from urllib.request import urlopen
 from autobahn.asyncio.websocket import WebSocketClientFactory, WebSocketClientProtocol
@@ -96,13 +98,16 @@ def connect_to_server():
 loop = asyncio.get_event_loop()
 asyncio.ensure_future(connect_to_server())
 
+
 def graceful_stop_callback():
 	print_to_real("\n^C detected, creating 'stop' file, please wait for exit...")
 	with open(os.path.join(working_dir, "stop"), "wb") as f:
 		pass
 
+
 def forceful_stop_callback():
 	loop.stop()
+
 
 loop.add_signal_handler(signal.SIGINT, graceful_stop_callback)
 loop.add_signal_handler(signal.SIGTERM, forceful_stop_callback)
@@ -164,6 +169,7 @@ class FileChangedWatcher(object):
 
 igsets_watcher = FileChangedWatcher(os.path.join(working_dir, "igsets"))
 ignores_watcher = FileChangedWatcher(os.path.join(working_dir, "ignores"))
+delay_watcher = FileChangedWatcher(os.path.join(working_dir, "delay"))
 
 ignoracle = Ignoracle()
 
@@ -242,6 +248,7 @@ job_data = {
 	"r5xx": 0,
 	"runk": 0,
 }
+
 
 def handle_result(url_info, record_info, error_info={}, http_info={}):
 	#print("url_info", url_info)
@@ -383,6 +390,20 @@ def exit_status(code):
 	return code
 
 
+def wait_time(_):
+	try:
+		if delay_watcher.has_changed():
+			with open(delay_watcher.fname, "r") as f:
+				content = f.read().strip()
+				if "-" in content:
+					job_data["delay_min"], job_data["delay_max"] = list(int(s) for s in content.split("-", 1))
+				else:
+					job_data["delay_min"] = job_data["delay_max"] = int(content)
+	except Exception:
+		traceback.print_exc()
+	return random.uniform(job_data["delay_min"], job_data["delay_max"]) / 1000
+
+
 assert 2 in wpull_hook.callbacks.AVAILABLE_VERSIONS
 
 wpull_hook.callbacks.version = 2
@@ -393,3 +414,4 @@ wpull_hook.callbacks.handle_response = handle_response
 wpull_hook.callbacks.handle_error = handle_error
 wpull_hook.callbacks.handle_pre_response = handle_pre_response
 wpull_hook.callbacks.exit_status = exit_status
+wpull_hook.callbacks.wait_time = wait_time

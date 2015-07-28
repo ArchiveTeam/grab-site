@@ -97,6 +97,9 @@ ignore_sets, level, page_requisites_level, sitemaps, start_url):
 	with open("{}/ignores".format(working_dir), "w") as f:
 		pass
 
+	with open("{}/delay".format(working_dir), "w") as f:
+		f.write("0")
+
 	LIBGRABSITE = os.path.dirname(libgrabsite.__file__)
 	args = [
 		"-U", "Mozilla/5.0 (Windows NT 6.3; WOW64; rv:39.0) Gecko/20100101 Firefox/39.0",
