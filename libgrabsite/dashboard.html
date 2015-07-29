@@ -1510,6 +1510,13 @@ var Dashboard = function() {
 
 Dashboard.prototype.keyPress = function(ev) {
 	//console.log(ev);
+
+	// If you press ctrl-f or alt-f in Firefox (tested: 41), it dispatches
+	// the keypress event for 'f'.  We want only the modifier-free
+	// keypresses.
+	if(ev.ctrlKey || ev.altKey || ev.metaKey || ev.shiftKey) {
+		return;
+	}
 	if(ev.which == 106) { // j
 		this.jobsRenderer.showNextPrev(1);
 	} else if(ev.which == 107) { // k
