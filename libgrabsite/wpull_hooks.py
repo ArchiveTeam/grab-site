@@ -84,7 +84,7 @@ def connect_to_server():
 	decayer = Decayer(0.25, 1.5, 8)
 	while True:
 		try:
-			coro = yield from loop.create_connection(ws_factory, host, port)
+			yield from loop.create_connection(ws_factory, host, port)
 		except OSError:
 			delay = decayer.decay()
 			print_to_real(
