@@ -1,13 +1,10 @@
 grab-site
 ===
 
-grab-site is an easy preconfigured web crawler designed for backing up websites.  Give
-grab-site a URL and it will recursively crawl the site and write
+grab-site is an easy preconfigured web crawler designed for backing up websites.
+Give grab-site a URL and it will recursively crawl the site and write
 [WARC files](http://www.archiveteam.org/index.php?title=The_WARC_Ecosystem).
-
-grab-site uses [wpull](https://github.com/chfoo/wpull) for crawling.
-The wpull options are preconfigured based on Archive Team's experience with
-[ArchiveBot](https://github.com/ArchiveTeam/ArchiveBot).
+Internally, grab-site uses [wpull](https://github.com/chfoo/wpull) for crawling.
 
 grab-site gives you
 
@@ -18,7 +15,7 @@ grab-site gives you
 	This allows you to skip the crawling of junk URLs that would
 	otherwise prevent your crawl from ever finishing.  See below.
 
-*	an extensively tested default ignore set ("[global](https://github.com/ludios/grab-site/blob/master/libgrabsite/ignore_sets/global)")
+*	an extensively tested default ignore set ([global](https://github.com/ludios/grab-site/blob/master/libgrabsite/ignore_sets/global))
 	as well as additional (optional) ignore sets for blogs, forums, etc.
 
 *	duplicate page detection: links are not followed on pages whose
@@ -227,8 +224,9 @@ issue with wget at the time was that it kept the entire URL queue in memory
 instead of on disk.  wpull has many other advantages over wget, including
 better link extraction and Python hooks.
 
-Thanks to [David Yip](https://github.com/yipdw), whose original ArchiveBot
-dashboard inspired the newer dashboard used in grab-site.
+Thanks to [David Yip](https://github.com/yipdw), who created ArchiveBot.  The wpull
+hooks in ArchiveBot served as the basis for grab-site.  The original ArchiveBot
+dashboard inspired the newer dashboard now used in both projects.
 
 
 Help
