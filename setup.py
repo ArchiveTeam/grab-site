@@ -23,6 +23,6 @@ setup(
 	],
 	scripts=["grab-site", "gs-server", "gs-dump-urls"],
 	packages=["libgrabsite"],
-	package_data={"libgrabsite": ["*.html", "patched-wpull"]},
+	package_data={"libgrabsite": ["*.html"]},
 	install_requires=["click", "wpull", "cchardet", "manhole", "lmdb", "autobahn", "aiohttp", "trollius"],
 )
