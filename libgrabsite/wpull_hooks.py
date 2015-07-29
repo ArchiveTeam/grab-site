@@ -12,6 +12,7 @@ import trollius as asyncio
 from urllib.request import urlopen
 from autobahn.asyncio.websocket import WebSocketClientFactory, WebSocketClientProtocol
 from libgrabsite.ignoracle import Ignoracle, parameterize_record_info
+import libgrabsite
 
 real_stdout_write = sys.stdout.buffer.write
 real_stderr_write = sys.stderr.buffer.write
@@ -113,17 +114,12 @@ loop.add_signal_handler(signal.SIGINT, graceful_stop_callback)
 loop.add_signal_handler(signal.SIGTERM, forceful_stop_callback)
 
 
-igset_cache = {}
+ignore_sets_path = os.path.join(os.path.dirname(libgrabsite.__file__), "ignore_sets")
+
 def get_patterns_for_ignore_set(name):
 	assert name != "", name
-	if name in igset_cache:
-		return igset_cache[name]
-	print_to_real("Fetching ArchiveBot/master/db/ignore_patterns/%s.json" % name)
-	igset_cache[name] = json.loads(urlopen(
-		"https://raw.githubusercontent.com/ArchiveTeam/ArchiveBot/" +
-		"master/db/ignore_patterns/%s.json" % name).read().decode("utf-8")
-	)["patterns"]
-	return igset_cache[name]
+	with open(os.path.join(ignore_sets_path, name), "r", encoding="utf-8") as f:
+		return f.read().strip("\n").split("\n")
 
 working_dir = os.environ['GRAB_SITE_WORKING_DIR']
 
@@ -183,8 +179,6 @@ def update_ignoracle():
 
 	for igset in igsets:
 		patterns = get_patterns_for_ignore_set(igset)
-		if igset == "global":
-			patterns = filter(lambda p: "archive\\.org" not in p, patterns)
 		ignores.update(patterns)
 
 	print_to_real("Using these %d ignores:" % len(ignores))
@@ -204,8 +198,12 @@ def should_ignore_url(url, record_info):
 
 
 def accept_url(url_info, record_info, verdict, reasons):
-	if igsets_watcher.has_changed() or ignores_watcher.has_changed():
-		update_ignoracle()
+	try:
+		if igsets_watcher.has_changed() or ignores_watcher.has_changed():
+			update_ignoracle()
+	except Exception:
+		raise
+		traceback.print_exc()
 
 	url = url_info['url']
 
