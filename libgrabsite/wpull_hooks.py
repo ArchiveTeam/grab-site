@@ -9,7 +9,6 @@ import random
 import functools
 import traceback
 import trollius as asyncio
-from urllib.request import urlopen
 from autobahn.asyncio.websocket import WebSocketClientFactory, WebSocketClientProtocol
 from libgrabsite.ignoracle import Ignoracle, parameterize_record_info
 import libgrabsite
