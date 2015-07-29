@@ -1,7 +1,0 @@
-{
-    "name": "nogravatar",
-    "patterns": [
-        "^https?://(\\d|secure)\\.gravatar\\.com/avatar/"
-    ],
-    "type": "ignore_patterns"
-}

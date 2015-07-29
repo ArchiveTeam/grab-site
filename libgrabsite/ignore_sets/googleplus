@@ -1,0 +1,4 @@
+^https?://accounts\.google\.com/ServiceLogin
+^https?://accounts\.google\.com/SignUp
+^https?://lh4\.googleusercontent\.com/proxy/[^/]+
+^https?://plus\.google\.com/_/scs/apps-static/
