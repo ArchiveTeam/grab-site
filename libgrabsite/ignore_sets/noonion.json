@@ -1,7 +1,7 @@
 {
     "name": "noonion",
     "patterns": [
-        "^https?://[^/]+\.onion/"
+        "^https?://[^/]+\\.onion/"
     ],
     "type": "ignore_patterns"
 }
