@@ -139,7 +139,7 @@ Options can come before or after the URL.
 Changing ignores during the crawl
 ---
 While the crawl is running, you can edit `DIR/ignores` and `DIR/igsets`; the
-changes will be applied as soon as the next URL is grabbed.
+changes will be applied within a few seconds.
 
 `DIR/igsets` is a comma-separated list of ignore sets to use.
 
