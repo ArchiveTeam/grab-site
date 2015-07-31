@@ -153,7 +153,7 @@ by the ignores, and `touch DIR/igoff` to turn it back off.
 Inspecting the URL queue
 ---
 Inspecting the URL queue is usually not necessary, but may be helpful
-for adding ignores before grab-site crawls a large amount of junk URLs.
+for adding ignores before grab-site crawls a large number of junk URLs.
 
 To dump the queue, run:
 
