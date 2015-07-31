@@ -129,6 +129,7 @@ ignore_sets, level, page_requisites_level, sitemaps, start_url):
 		"--waitretry", "5",
 		"--warc-file", "{}/{}".format(working_dir, warc_name),
 		"--warc-max-size", "5368709120",
+		"--warc-cdx",
 		"--debug-manhole",
 		"--strip-session-id",
 		"--escaped-fragment",
