@@ -237,10 +237,3 @@ If you are affected by an existing issue, please +1 it.
 
 If a problem happens when running just `~/.local/bin/wpull -r URL` (no grab-site),
 you may want to report it to [wpull/issues](https://github.com/chfoo/wpull/issues) instead.
-
-
-P.S.
----
-If you like grab-site, please star it on GitHub,
-[heart it on alternativeTo](http://alternativeto.net/software/grab-site/),
-or tweet about it.
