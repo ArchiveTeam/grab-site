@@ -115,7 +115,6 @@ ignore_sets, level, page_requisites_level, sitemaps, start_url):
 		"--database", "{}/wpull.db".format(working_dir),
 		"--plugin-script", "{}/plugin.py".format(LIBGRABSITE),
 		"--python-script", "{}/wpull_hooks.py".format(LIBGRABSITE),
-		"--plugin-args", " --dupes-db {}/dupes_db".format(working_dir),
 		"--save-cookies", "{}/cookies.txt".format(working_dir),
 		"--no-check-certificate",
 		"--delete-after",

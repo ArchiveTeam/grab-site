@@ -1,4 +1,4 @@
-import argparse
+import os
 import functools
 import hashlib
 
@@ -46,21 +46,9 @@ class DupeSpottingProcessingRule(wpull.processor.rule.ProcessingRule):
 		super().scrape_document(request, response, url_item)
 
 
-arg_parser = argparse.ArgumentParser()
-arg_parser.add_argument(
-	'--dupes-db',
-	metavar='DIR',
-	default=':memory:',
-	help='save dupes db into DIR instead of memory',
-)
-args = arg_parser.parse_args(wpull_plugin.plugin_args.split())
-
-if args.dupes_db == ':memory:':
-	dupes_db = DupesInMemory()
-else:
-	dupes_db = DupesOnDisk(args.dupes_db)
-
 wpull_plugin.factory.class_map['URLTableImplementation'] = NoFsyncSQLTable
 wpull_plugin.factory.class_map['ProcessingRule'] = functools.partial(
-	DupeSpottingProcessingRule, dupes_db=dupes_db
+	DupeSpottingProcessingRule,
+	dupes_db=DupesOnDisk(
+		os.path.join(os.environ["GRAB_SITE_WORKING_DIR"], "dupes_db"))
 )
