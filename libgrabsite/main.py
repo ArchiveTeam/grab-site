@@ -62,7 +62,7 @@ def print_version(ctx, param, value):
 @click.option('--page-requisites-level', default="5", metavar='NUM',
 	help='Recursive this many levels for page requisites (default: 5).')
 
-@click.option('--ua', default="Mozilla/5.0 (Windows NT 6.3; WOW64; rv:39.0) Gecko/20100101 Firefox/39.0",
+@click.option('--ua', default="Mozilla/5.0 (Windows NT 6.3; WOW64; rv:40.0) Gecko/20100101 Firefox/40.0",
 	metavar='STRING', help='Send User-Agent: STRING instead of pretending to be Firefox on Windows.')
 
 @click.option('--sitemaps/--no-sitemaps', default=True,
