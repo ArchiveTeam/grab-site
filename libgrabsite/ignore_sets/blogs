@@ -12,7 +12,6 @@ livejournal\.com/ljcounter/?\?
 \?replyto=[0-9]+
 [\?&]mode=reply
 xiti\.com/hit\.xiti\?
-/stats\.g\.doubleclick\.net/dc\.js$
 /jetpack-comment/\?
 \?like_comment=\d+
 ^https?://.+/.+/disqus\.com/forums/$
@@ -28,7 +27,6 @@ xiti\.com/hit\.xiti\?
 ^http://[^\.]+\.livejournal\.com/.+[\?&]mode=reply
 ^http://[^\.]+\.livejournal\.com/.+/\*sup_ru/ru/UTF-8/
 ^http://[^\.]+\.livejournal\.com/.+http://[^\.]+\.livejournal\.com/
-^http://[^\.]+\.livejournal\.com/.+/stats\.g\.doubleclick\.net/dc\.js$
 
 ^https?://www\.dreamwidth\.org/tools/(memadd|tellafriend)\?
 ^https?://[^\.]+\.dreamwidth\.org/.+[\?&]mode=reply
