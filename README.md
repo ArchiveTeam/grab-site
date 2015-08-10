@@ -128,7 +128,8 @@ Options can come before or after the URL.
 	the crawl by editing the `DIR/delay` file.
 
 *	`--max-content-length=N`: Skip the download of any response that claims a
-	Content-Length larger than N.  (default: -1, don't skip anything)
+	Content-Length larger than N.  (default: -1, don't skip anything).  Can be changed during
+	the crawl by editing the `DIR/max_content_length` file.
 
 *	`--level=N`: recurse `N` levels instead of `inf` levels.
 
