@@ -125,6 +125,22 @@ def get_patterns_for_ignore_set(name):
 working_dir = os.environ['GRAB_SITE_WORKING_DIR']
 
 
+# Don't swallow during startup
+really_swallow_exceptions = False
+
+def swallow_exception(f):
+	@functools.wraps(f)
+	def wrapper(*args, **kwargs):
+		global really_swallow_exceptions
+		try:
+			return f(*args, **kwargs)
+		except Exception:
+			if not really_swallow_exceptions:
+				raise
+			traceback.print_exc()
+	return wrapper
+
+
 CONTROL_FILE_CACHE_SEC = 3
 
 def caching_decorator(f):
@@ -155,7 +171,9 @@ def mtime_with_cache(path):
 class FileChangedWatcher(object):
 	def __init__(self, fname):
 		self.fname = fname
-		self.last_mtime = mtime_with_cache(fname)
+		# Use a bogus mtime so that has_changed() returns True
+		# at least once
+		self.last_mtime = -1
 
 	def has_changed(self):
 		now_mtime = mtime_with_cache(self.fname)
@@ -168,10 +186,15 @@ igsets_watcher = FileChangedWatcher(os.path.join(working_dir, "igsets"))
 ignores_watcher = FileChangedWatcher(os.path.join(working_dir, "ignores"))
 delay_watcher = FileChangedWatcher(os.path.join(working_dir, "delay"))
 concurrency_watcher = FileChangedWatcher(os.path.join(working_dir, "concurrency"))
+max_content_length_watcher = FileChangedWatcher(os.path.join(working_dir, "max_content_length"))
 
 ignoracle = Ignoracle()
 
+@swallow_exception
 def update_ignoracle():
+	if not (igsets_watcher.has_changed() or ignores_watcher.has_changed()):
+		return
+
 	with open(os.path.join(working_dir, "igsets"), "r") as f:
 		igsets = f.read().strip("\r\n\t ,").split(',')
 
@@ -199,12 +222,7 @@ def should_ignore_url(url, record_info):
 
 
 def accept_url(url_info, record_info, verdict, reasons):
-	try:
-		if igsets_watcher.has_changed() or ignores_watcher.has_changed():
-			update_ignoracle()
-	except Exception:
-		raise
-		traceback.print_exc()
+	update_ignoracle()
 
 	url = url_info['url']
 
@@ -234,6 +252,7 @@ job_data = {
 	"ident": open(os.path.join(working_dir, "id")).read().strip(),
 	"url": open(os.path.join(working_dir, "start_url")).read().strip(),
 	"started_at": os.stat(os.path.join(working_dir, "start_url")).st_mtime,
+	"max_content_length": -1,
 	"suppress_ignore_reports": True,
 	"concurrency": 2,
 	"bytes_downloaded": 0,
@@ -256,7 +275,7 @@ def handle_result(url_info, record_info, error_info={}, http_info={}):
 	#print("error_info", error_info)
 	#print("http_info", http_info)
 
-	update_igoff_in_job_data()
+	update_igoff()
 
 	response_code = 0
 	if http_info.get("response_code"):
@@ -306,14 +325,14 @@ def should_stop():
 
 
 igoff_path = os.path.join(working_dir, "igoff")
-def update_igoff_in_job_data():
+def update_igoff():
 	igoff = path_exists_with_cache(igoff_path)
 	job_data["suppress_ignore_reports"] = igoff
 	return igoff
 
 
 def maybe_log_ignore(url, pattern):
-	if not update_igoff_in_job_data():
+	if not update_igoff():
 		print_to_real("IGNOR %s\n   by %s" % (url, pattern))
 		if ws_factory.client:
 			ws_factory.client.send_object({
@@ -324,12 +343,28 @@ def maybe_log_ignore(url, pattern):
 			})
 
 
-# Regular expressions for server headers go here
 ICY_FIELD_PATTERN = re.compile('icy-|ice-|x-audiocast-', re.IGNORECASE)
 ICY_VALUE_PATTERN = re.compile('icecast', re.IGNORECASE)
 
+def get_content_length(response_info):
+	try:
+		return int(list(p for p in response_info["fields"] if p[0] == "Content-Length")[0][1])
+	except (IndexError, ValueError):
+		return -1
+
+
 def handle_pre_response(url_info, url_record, response_info):
 	url = url_info['url']
+
+	update_max_content_length()
+	if job_data["max_content_length"] != -1:
+		##pprint.pprint(response_info)
+		length = get_content_length(response_info)
+		##print((length, job_data["max_content_length"]))
+		if length > job_data["max_content_length"]:
+			maybe_log_ignore(url, '[content-length %d over limit %d]' % (
+				length, job_data["max_content_length"]))
+			return wpull_hook.actions.FINISH
 
 	# Check if server version starts with ICY
 	if response_info.get('version', '') == 'ICY':
@@ -390,7 +425,20 @@ def exit_status(code):
 	return code
 
 
-def update_delay_in_job_data():
+@swallow_exception
+def update_max_content_length():
+	if not max_content_length_watcher.has_changed():
+		return
+	with open(max_content_length_watcher.fname, "r") as f:
+		job_data["max_content_length"] = int(f.read().strip())
+
+update_max_content_length()
+
+
+@swallow_exception
+def update_delay():
+	if not delay_watcher.has_changed():
+		return
 	with open(delay_watcher.fname, "r") as f:
 		content = f.read().strip()
 		if "-" in content:
@@ -398,30 +446,24 @@ def update_delay_in_job_data():
 		else:
 			job_data["delay_min"] = job_data["delay_max"] = int(content)
 
-update_delay_in_job_data()
+update_delay()
 
 
-def update_concurrency_in_job_data_and_wpull():
+@swallow_exception
+def update_concurrency():
+	if not concurrency_watcher.has_changed():
+		return
 	with open(concurrency_watcher.fname, "r") as f:
 		job_data["concurrency"] = int(f.read().strip())
 	wpull_hook.factory.get('Engine').set_concurrent(job_data["concurrency"])
 
-update_concurrency_in_job_data_and_wpull()
+update_concurrency()
 
 
 def wait_time(_):
-	try:
-		if delay_watcher.has_changed():
-			update_delay_in_job_data()
-	except Exception:
-		traceback.print_exc()
-
+	update_delay()
 	# While we're at it, update the concurrency level
-	try:
-		if concurrency_watcher.has_changed():
-			update_concurrency_in_job_data_and_wpull()
-	except Exception:
-		traceback.print_exc()
+	update_concurrency()
 
 	return random.uniform(job_data["delay_min"], job_data["delay_max"]) / 1000
 
@@ -437,3 +479,5 @@ wpull_hook.callbacks.handle_error = handle_error
 wpull_hook.callbacks.handle_pre_response = handle_pre_response
 wpull_hook.callbacks.exit_status = exit_status
 wpull_hook.callbacks.wait_time = wait_time
+
+really_swallow_exceptions = True

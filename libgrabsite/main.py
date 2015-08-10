@@ -46,6 +46,11 @@ def print_version(ctx, param, value):
 @click.option('--ignore-sets', default="", metavar='LIST',
 	help='Alias for --igsets.')
 
+@click.option('--max-content-length', default=-1, metavar='N',
+	help=
+		"Skip the download of any response that claims a Content-Length "
+		"larger than N.  (default: -1, don't skip anything)")
+
 @click.option('--level', default="inf", metavar='NUM',
 	help='Recurse this many levels (default: inf).')
 
@@ -63,7 +68,8 @@ def print_version(ctx, param, value):
 @click.argument('start_url')
 
 def main(concurrency, concurrent, delay, recursive, offsite_links, igsets,
-ignore_sets, level, page_requisites_level, sitemaps, start_url):
+ignore_sets, level, page_requisites_level, max_content_length, sitemaps,
+start_url):
 	span_hosts_allow = "page-requisites,linked-pages"
 	if not offsite_links:
 		span_hosts_allow = "page-requisites"
@@ -93,6 +99,9 @@ ignore_sets, level, page_requisites_level, sitemaps, start_url):
 
 	with open("{}/concurrency".format(working_dir), "w") as f:
 		f.write(str(concurrency))
+
+	with open("{}/max_content_length".format(working_dir), "w") as f:
+		f.write(str(max_content_length))
 
 	with open("{}/igsets".format(working_dir), "w") as f:
 		f.write("global,{}".format(igsets))
