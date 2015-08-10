@@ -131,6 +131,9 @@ Options can come before or after the URL.
 	Content-Length larger than N.  (default: -1, don't skip anything).  Can be changed during
 	the crawl by editing the `DIR/max_content_length` file.
 
+*	`--igon`: Print all URLs being ignored to the terminal and dashboard.  Can be
+	changed during the crawl by `touch`ing or `rm`ing the `DIR/igoff` file.
+
 *	`--level=N`: recurse `N` levels instead of `inf` levels.
 
 *	`--page-requisites-level=N`: recurse page requisites `N` levels instead of `5` levels.

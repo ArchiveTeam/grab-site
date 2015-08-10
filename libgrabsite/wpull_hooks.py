@@ -330,6 +330,8 @@ def update_igoff():
 	job_data["suppress_ignore_reports"] = igoff
 	return igoff
 
+update_igoff()
+
 
 def maybe_log_ignore(url, pattern):
 	if not update_igoff():

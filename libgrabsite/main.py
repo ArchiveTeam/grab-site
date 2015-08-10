@@ -46,6 +46,11 @@ def print_version(ctx, param, value):
 @click.option('--ignore-sets', default="", metavar='LIST',
 	help='Alias for --igsets.')
 
+@click.option('--igon/--igoff', default=False,
+	help=
+		'--igon (default: false) to print all URLs being ignored to the terminal '
+		'and dashboard.')
+
 @click.option('--max-content-length', default=-1, metavar='N',
 	help=
 		"Skip the download of any response that claims a Content-Length "
@@ -68,7 +73,7 @@ def print_version(ctx, param, value):
 @click.argument('start_url')
 
 def main(concurrency, concurrent, delay, recursive, offsite_links, igsets,
-ignore_sets, level, page_requisites_level, max_content_length, sitemaps,
+ignore_sets, igon, level, page_requisites_level, max_content_length, sitemaps,
 start_url):
 	span_hosts_allow = "page-requisites,linked-pages"
 	if not offsite_links:
@@ -106,8 +111,9 @@ start_url):
 	with open("{}/igsets".format(working_dir), "w") as f:
 		f.write("global,{}".format(igsets))
 
-	with open("{}/igoff".format(working_dir), "w") as f:
-		pass
+	if not igon:
+		with open("{}/igoff".format(working_dir), "w") as f:
+			pass
 
 	with open("{}/ignores".format(working_dir), "w") as f:
 		pass
