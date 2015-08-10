@@ -64,6 +64,7 @@
 ^https?://geo\.yahoo\.com/b\?
 ^http://b\.scorecardresearch\.com/
 ^http://pixel\.blog\.hu/
+^https?://pixel\.redditmedia\.com/pixel/
 ^https?://pixel\.quantserve\.com/
 ^https?://(www|ssl)\.google-analytics\.com/(r/)?(__utm\.gif|collect\?)
 ^https?://p\.opt\.fimserve\.com/
