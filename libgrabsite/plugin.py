@@ -7,7 +7,7 @@ from wpull.document.html import HTMLReader
 import wpull.processor.rule
 
 from libgrabsite import dupespotter
-from libgrabsite.dupes import DupesInMemory, DupesOnDisk
+from libgrabsite.dupes import DupesOnDisk
 
 
 
