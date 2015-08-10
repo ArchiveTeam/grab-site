@@ -54,13 +54,16 @@ def print_version(ctx, param, value):
 @click.option('--max-content-length', default=-1, metavar='N',
 	help=
 		"Skip the download of any response that claims a Content-Length "
-		"larger than N.  (default: -1, don't skip anything)")
+		"larger than N (default: -1, don't skip anything).")
 
 @click.option('--level', default="inf", metavar='NUM',
 	help='Recurse this many levels (default: inf).')
 
 @click.option('--page-requisites-level', default="5", metavar='NUM',
 	help='Recursive this many levels for page requisites (default: 5).')
+
+@click.option('--ua', default="Mozilla/5.0 (Windows NT 6.3; WOW64; rv:39.0) Gecko/20100101 Firefox/39.0",
+	metavar='STRING', help='Send User-Agent: STRING instead of pretending to be Firefox on Windows.')
 
 @click.option('--sitemaps/--no-sitemaps', default=True,
 	help=
@@ -74,7 +77,7 @@ def print_version(ctx, param, value):
 
 def main(concurrency, concurrent, delay, recursive, offsite_links, igsets,
 ignore_sets, igon, level, page_requisites_level, max_content_length, sitemaps,
-start_url):
+ua, start_url):
 	span_hosts_allow = "page-requisites,linked-pages"
 	if not offsite_links:
 		span_hosts_allow = "page-requisites"
@@ -123,7 +126,7 @@ start_url):
 
 	LIBGRABSITE = os.path.dirname(libgrabsite.__file__)
 	args = [
-		"-U", "Mozilla/5.0 (Windows NT 6.3; WOW64; rv:39.0) Gecko/20100101 Firefox/39.0",
+		"-U", ua,
 		"--header=Accept: text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
 		"--header=Accept-Language: en-US,en;q=0.5",
 		"-o", "{}/wpull.log".format(working_dir),
