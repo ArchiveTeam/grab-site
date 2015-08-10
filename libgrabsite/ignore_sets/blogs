@@ -1,6 +1,5 @@
 [\?&]replytocom=
 [\?&]share=
-/page/%d/$
 \?showComment(=|%5C)
 /quote-comment-\d+/$
 /wp-login\.php\?
@@ -15,6 +14,9 @@ xiti\.com/hit\.xiti\?
 /jetpack-comment/\?
 \?like_comment=\d+
 ^https?://.+/.+/disqus\.com/forums/$
+
+# Bogus literal "/page/%d/" URLs (not filled with a number)
+/page/%d/$
 
 # Bogus URLs from tumblr.com
 (\?|%5Cx26)route=(/page/:page|/archive/:year/:month|/tagged/:tag|/post/:id|/image/:post_id)
