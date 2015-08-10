@@ -97,7 +97,7 @@ Options can come before or after the URL.
 
 *	`--1`: grab just `URL` and its page requisites, without recursing.
 
-*	`--concurrency=N`: Use N connections to fetch in parallel (default: 2).
+*	`--concurrency=N`: Use `N` connections to fetch in parallel (default: 2).
 	Can be changed during the crawl by editing the `DIR/concurrency` file.
 
 *	`--igsets=blogs,forums`: use ignore sets `blogs` and `forums`.
@@ -123,12 +123,12 @@ Options can come before or after the URL.
 	etc from being grabbed, because these are often hosted on a CDN or subdomain, and
 	thus would otherwise not be included in the recursive crawl.
 
-*	`--delay=N`: Wait N milliseconds (default: 0) between requests on each concurrent fetcher.
+*	`--delay=N`: Wait `N` milliseconds (default: 0) between requests on each concurrent fetcher.
 	Can be a range like X-Y to use a random delay between X and Y.  Can be changed during
 	the crawl by editing the `DIR/delay` file.
 
 *	`--max-content-length=N`: Skip the download of any response that claims a
-	Content-Length larger than N.  (default: -1, don't skip anything).  Can be changed during
+	Content-Length larger than `N`.  (default: -1, don't skip anything).  Can be changed during
 	the crawl by editing the `DIR/max_content_length` file.
 
 *	`--igon`: Print all URLs being ignored to the terminal and dashboard.  Can be
@@ -138,7 +138,7 @@ Options can come before or after the URL.
 
 *	`--page-requisites-level=N`: recurse page requisites `N` levels instead of `5` levels.
 
-*	`--ua=STRING`: Send User-Agent: STRING instead of pretending to be Firefox on Windows.
+*	`--ua=STRING`: Send User-Agent: `STRING` instead of pretending to be Firefox on Windows.
 
 *	`--no-sitemaps`: don't queue URLs from `sitemap.xml` at the root of the site.
 
