@@ -1,3 +1,5 @@
+# This ignore set avoids grabbing the full history of each page, because there
+# are generally far too many ?oldid= pages to crawl completely.
 [\?&]oldid=\d+
 [\?&]curid=\d+
 [\?&]limit=(20|100|250|500)
@@ -10,11 +12,15 @@
 ([\?&]title=|/)Special:Log/
 [\?&]action=edit&section=(\d+|new)
 [\?&]feed(format)?=atom
-[\?&]redlink=1
 [\?&]printable=yes
 [\?&]mobileaction=
 [\?&]undo(after)?=\d+
 ^http://a\.wikia-beacon\.com/__track/
+
+# Links to pages that don't exist
+[\?&]redlink=1
+
+# Loops
 /User_talk:.+/User_talk:
 /User_blog:.+/User_blog:
 /User:.+/User:
