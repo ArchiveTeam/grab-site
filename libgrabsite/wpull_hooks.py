@@ -118,7 +118,9 @@ ignore_sets_path = os.path.join(os.path.dirname(libgrabsite.__file__), "ignore_s
 def get_patterns_for_ignore_set(name):
 	assert name != "", name
 	with open(os.path.join(ignore_sets_path, name), "r", encoding="utf-8") as f:
-		return f.read().strip("\n").split("\n")
+		lines = f.read().strip("\n").split("\n")
+		lines = filter(lambda line: line and not line.startswith("# "), lines)
+		return lines
 
 working_dir = os.environ['GRAB_SITE_WORKING_DIR']
 

@@ -1,3 +1,4 @@
+# URLs that are very likely to be endless loops
 %25252525
 /App_Themes/.+/App_Themes/
 /bxSlider/.+/bxSlider/
@@ -27,6 +28,8 @@
 /clientscript/.+/clientscript/clientscript/
 /clientscript/clientscript/clientscript/
 /lib/exe/.*lib[-_]exe[-_]lib[-_]exe[-_]
+
+# URLs that are very likely incorrectly extracted by wpull
 /(%5C)+(%22|%27)
 /%5C/%5C/
 /%27\+[^/]+\+%27
@@ -37,26 +40,59 @@
 /\\+["']
 /\\/\\/
 /'\+[^/]+\+'
-^https?://localhost(:\d+)?/
-^https?://(127|10)\.\d+\.\d+\.\d+(:\d+)?/
-^https?://172\.(1[6-9]|2\d|3[01])\.\d+\.\d+(:\d+)?/
-^https?://192\.168\.\d+\.\d+(:\d+)?/
+
+# Avoid websites on localhost and LAN IPs, in case the user runs grab-site on
+# a host where non-public information is accessible on local servers.
+^(ftp|https?)://localhost(:\d+)?/
+^(ftp|https?)://(127|10)\.\d+\.\d+\.\d+(:\d+)?/
+^(ftp|https?)://172\.(1[6-9]|2\d|3[01])\.\d+\.\d+(:\d+)?/
+^(ftp|https?)://192\.168\.\d+\.\d+(:\d+)?/
+
 ^https?://www\.google\.com/recaptcha/api
-^https?://geo\.yahoo\.com/b\?
-^https?://((s-)?static\.ak\.fbcdn\.net|(connect\.|www\.)?facebook\.com)/connect\.php/js/.*rsrc\.php
+
+# We don't want to change language
 ^https?://www\.flickr\.com/change_language\.gne
+
+# google.com/finance can be an endless loop
 ^https?://www\.google\.((com|ad|ae|al|am|as|at|az|ba|be|bf|bg|bi|bj|bs|bt|by|ca|cd|cf|cg|ch|ci|cl|cm|cn|cv|cz|de|dj|dk|dm|dz|ee|es|fi|fm|fr|ga|ge|gg|gl|gm|gp|gr|gy|hn|hr|ht|hu|ie|im|iq|is|it|je|jo|ki|kg|kz|la|li|lk|lt|lu|lv|md|me|mg|mk|ml|mn|ms|mu|mv|mw|ne|nl|no|nr|nu|pl|pn|ps|pt|ro|ru|rw|sc|se|sh|si|sk|sn|so|sm|sr|st|td|tg|tk|tl|tm|tn|to|tt|vg|vu|ws|rs|cat)|(com\.(af|ag|ai|ar|au|bd|bh|bn|bo|br|bz|co|cu|cy|do|ec|eg|et|fj|gh|gi|gt|hk|jm|kh|kw|lb|ly|mm|mt|mx|my|na|nf|ng|ni|np|om|pa|pe|pg|ph|pk|pr|py|qa|sa|sb|sg|sl|sv|tj|tr|tw|ua|uy|vc|vn))|(co\.(ao|bw|ck|cr|id|il|in|jp|ke|kr|ls|ma|mz|nz|th|tz|ug|uk|uz|ve|vi|za|zm|zw)))/finance\?noIL=1&q=[^&]+&ei=
+
+# Links to Wikipedia are very common, and the thumbnails are almost always
+# already archived at archive.org.
 ^https?://upload\.wikimedia\.org/wikipedia/[^/]+/thumb/
+
+# Tracking scripts, tracking pixels, analytics
+^https?://geo\.yahoo\.com/b\?
 ^http://b\.scorecardresearch\.com/
+^http://pixel\.blog\.hu/
+^https?://pixel\.quantserve\.com/
+^https?://(www|ssl)\.google-analytics\.com/(r/)?(__utm\.gif|collect\?)
+^https?://p\.opt\.fimserve\.com/
+^https?://.+/js-agent\.newrelic\.com/nr-\d{3,3}(\.min)?\.js$
+^https?://.+/stats\.g\.doubleclick\.net/dc\.js$
+^https?://.+/js/chartbeat\.js$
+
+# The tracking on warnerbros.com inexplicably links to bogus warnerbros.com/\d+ pages
+^https?://www\.warnerbros\.com/\d+$
+
+# Inaccessible and dead sites that are frequently-linked
 ^http://i\.dev\.cdn\.turner\.com/
-^http://video-subtitle\.tedcdn\.com/
-^http://download\.ted\.com/
-^http://msft\.digitalrivercontent\.net/win/.+\.iso
-^https?://tmz\.vo\.llnwd\.net/
+^https?://[^/]+\.corp\.ne1\.yahoo\.com/
+^https?://prod-preview\.wired\.com/
 ^https?://(www\.)?megaupload\.com/
 ^https?://(www\.)?filesonic\.com/
 ^https?://(www\.)?wupload\.com/
-^https?://prod-preview\.wired\.com/
+
+# Links to TED and TED embeds are common enough that we need to ignore their
+# videos to prevent WARC bloat
+^http://video-subtitle\.tedcdn\.com/
+^http://download\.ted\.com/
+
+# Avoid bloating WARCs with TMZ videos
+^https?://tmz\.vo\.llnwd\.net/
+
+# Avoid hitting radio and TV streams, which can hang crawls for a long time.
+# Note that we also detect and abort Icecast/SHOUTcast responses in
+# wpull_hooks.py, so some of these ignores are no longer necessary.
 ^http://([^\./]+\.)?stream\.publicradio\.org/
 ^http://icecast\.streaming\.castor\.nl/
 ^http://wm1\.streaming\.castor\.nl:8000/
@@ -110,6 +146,8 @@
 ^https?://air\.radiorecord\.ru(:\d+)?/
 ^https?://[^/]+\.rastream\.com(:\d+)?/
 ^https?://audiots\.scdn\.arkena\.com/
+
+# Avoid following any kind of 'share' or 'bookmark' link
 ^https?://(www|draft)\.blogger\.com/(navbar\.g|post-edit\.g|delete-comment\.g|comment-iframe\.g|share-post\.g|email-post\.g|blog-this\.g|delete-backlink\.g|rearrange|blog_this\.pyra)\?
 ^https?://www\.tumblr\.com/(impixu\?|share(/link/?)?\?|reblog/)
 ^https?://plus\.google\.com/share\?
@@ -157,26 +195,31 @@
 ^https?://b\.hatena\.ne\.jp/add\?
 ^https?://api\.addthis\.com/
 ^https?://bookmark\.naver\.com/post\?
+
+# mail.google.com requires login but shows up on the web surprisingly often
 ^https?://mail\.google\.com/mail/
-^http://pixel\.blog\.hu/
-^https?://pixel\.quantserve\.com/
-^http://b\.scorecardresearch\.com/
-^https?://(www|ssl)\.google-analytics\.com/(r/)?(__utm\.gif|collect\?)
-^https?://p\.opt\.fimserve\.com/
+
+# This is the default gravatar that you don't want a million copies of
 ^https?://(\d|www|secure)\.gravatar\.com/avatar/ad516503a11cd5ca435acc9bb6523536
+
+# imageshack's 404 page that you would be hitting quite often otherwise
 ^https?://imageshack\.com/lost$
-^https?://[^/]+\.corp\.ne1\.yahoo\.com/
-^https?://.+/js-agent\.newrelic\.com/nr-\d{3,3}(\.min)?\.js$
-^https?://.+/stats\.g\.doubleclick\.net/dc\.js$
-^https?://.+/js/chartbeat\.js$
+
+# A loop on khaleejtimes.com
 ^http://www\.khaleejtimes\.com/.+/kt_.+/kt_
 ^http://www\.khaleejtimes\.com/.+/images/.+/images/
 ^http://www\.khaleejtimes\.com/.+/imgactv/.+/imgactv/
+
+# More loops
 ^http://photobucket\.com/.+/albums/.+/albums/
 ^https?://([^/]+\.)?gdcvault\.com(/.*/|/)(fonts(/.*/|/)fonts/|css(/.*/|/)css/|img(/.*/|/)img/)
 ^https://static\.licdn\.com/sc/p/com\.linkedin\.nux(:|%3A)nux-static-content(\+|%2B)[\d\.]+/f/
-^https?://www\.flickr\.com/(explore/|photos/[^/]+/(sets/\d+/(page\d+/)?)?)\d+_[a-f0-9]+(_[a-z])?\.jpg$
 ^https?://static\.licdn\.com/sc/p/.+/f//
-^http://www\.warnerbros\.com/\d+$
 ^https?://tm\.uol\.com\.br/h/.+/h/
+^https?://((s-)?static\.ak\.fbcdn\.net|(connect\.|www\.)?facebook\.com)/connect\.php/js/.*rsrc\.php
+
+# This specifically catches only *invalid* flickr.com links extracted by wpull
+^https?://www\.flickr\.com/(explore/|photos/[^/]+/(sets/\d+/(page\d+/)?)?)\d+_[a-f0-9]+(_[a-z])?\.jpg$
+
+# Avoid grabbing thousands of these; they page-requisite each other
 ^https?://media\.opb\.org/clips/embed/.+\.js$
