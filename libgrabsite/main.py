@@ -62,8 +62,8 @@ def print_version(ctx, param, value):
 @click.option('--page-requisites-level', default="5", metavar='NUM',
 	help='Recursive this many levels for page requisites (default: 5).')
 
-@click.option('--warc-max-size', default="5368709120", metavar='NUM',
-	help='If a WARC file has grown to this size a new WARC file is created (default: 5368709120).')
+@click.option('--warc-max-size', default=5368709120, metavar='BYTES',
+	help='Try to limit each WARC file to around BYTES bytes before rolling over to a new WARC file (default: 5368709120).')
 
 @click.option('--ua', default="Mozilla/5.0 (Windows NT 6.3; WOW64; rv:40.0) Gecko/20100101 Firefox/40.0",
 	metavar='STRING', help='Send User-Agent: STRING instead of pretending to be Firefox on Windows.')
@@ -148,7 +148,7 @@ ua, start_url):
 		"--concurrent", str(concurrency),
 		"--waitretry", "5",
 		"--warc-file", "{}/{}".format(working_dir, warc_name),
-		"--warc-max-size", warc_max_size,
+		"--warc-max-size", str(warc_max_size),
 		"--warc-cdx",
 		"--debug-manhole",
 		"--strip-session-id",
