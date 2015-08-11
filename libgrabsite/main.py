@@ -62,6 +62,9 @@ def print_version(ctx, param, value):
 @click.option('--page-requisites-level', default="5", metavar='NUM',
 	help='Recursive this many levels for page requisites (default: 5).')
 
+@click.option('--warc-max-size', default=5368709120, metavar='BYTES',
+	help='Try to limit each WARC file to around BYTES bytes before rolling over to a new WARC file (default: 5368709120).')
+
 @click.option('--ua', default="Mozilla/5.0 (Windows NT 6.3; WOW64; rv:40.0) Gecko/20100101 Firefox/40.0",
 	metavar='STRING', help='Send User-Agent: STRING instead of pretending to be Firefox on Windows.')
 
@@ -76,7 +79,7 @@ def print_version(ctx, param, value):
 @click.argument('start_url')
 
 def main(concurrency, concurrent, delay, recursive, offsite_links, igsets,
-ignore_sets, igon, level, page_requisites_level, max_content_length, sitemaps,
+ignore_sets, igon, level, page_requisites_level, max_content_length, sitemaps, warc_max_size,
 ua, start_url):
 	span_hosts_allow = "page-requisites,linked-pages"
 	if not offsite_links:
@@ -145,7 +148,7 @@ ua, start_url):
 		"--concurrent", str(concurrency),
 		"--waitretry", "5",
 		"--warc-file", "{}/{}".format(working_dir, warc_name),
-		"--warc-max-size", "5368709120",
+		"--warc-max-size", str(warc_max_size),
 		"--warc-cdx",
 		"--debug-manhole",
 		"--strip-session-id",

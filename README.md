@@ -138,6 +138,8 @@ Options can come before or after the URL.
 
 *	`--page-requisites-level=N`: recurse page requisites `N` levels instead of `5` levels.
 
+*	`--warc-max-size=N`: Set max WARC size, `N` before creating new WARC file.
+
 *	`--ua=STRING`: Send User-Agent: `STRING` instead of pretending to be Firefox on Windows.
 
 *	`--no-sitemaps`: don't queue URLs from `sitemap.xml` at the root of the site.
