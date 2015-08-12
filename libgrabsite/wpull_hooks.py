@@ -206,7 +206,8 @@ def update_ignoracle():
 		ignores.update(patterns)
 
 	print_to_real("Using these %d ignores:" % len(ignores))
-	print_to_real(pprint.pformat(ignores))
+	for ig in sorted(ignores):
+		print_to_real("\t" + ig)
 
 	ignoracle.set_patterns(ignores)
 
