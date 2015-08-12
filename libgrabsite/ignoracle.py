@@ -3,19 +3,10 @@ import sys
 
 from urllib.parse import urlparse
 
-class D(dict):
-	"""
-	Allows us to run substitutions on regexes that contain repetition ranges
-	without erroring out on those keys.
-	"""
-	def __missing__(self, k):
-		return '{' + k + '}'
+# Increase the compiled regexp cache limit from 512 to 4096 in case
+# someone uses a lot of ignores.
+re._MAXCACHE = 4096
 
-"""
-Workaround for {}s that might appear in ignore patterns; format interprets
-these as positional parameters.
-"""
-pos_placeholders = ['{}'] * 256
 
 class Ignoracle(object):
 	"""
@@ -32,7 +23,6 @@ class Ignoracle(object):
 		Given a list of strings, replaces this Ignoracle's pattern state with
 		that list.
 		"""
-
 		self.patterns = []
 
 		for string in strings:
@@ -46,22 +36,20 @@ class Ignoracle(object):
 		If an ignore pattern matches the given URL, returns that pattern as a string.
 		Otherwise, returns False.
 		"""
-
 		pu = re.escape(kwargs.get('primary_url') or '')
 		ph = re.escape(kwargs.get('primary_netloc') or '')
 
 		for pattern in self.patterns:
+			if '{' in pattern:
+				pattern = pattern.replace('{primary_url}', pu).replace('{primary_netloc}', ph)
 			try:
-				expanded = pattern.replace('{primary_url}', pu)
-				expanded = expanded.replace('{primary_netloc}', ph)
-				match = re.search(expanded, url)
-
-				if match:
+				if re.search(pattern, url):
 					return pattern
 			except re.error as error:
 				print('Pattern %s is invalid (error: %s).  Ignored.' % (pattern, str(error)), file=sys.stderr)
 
 		return False
+
 
 def parameterize_record_info(record_info):
 	"""
@@ -78,7 +66,6 @@ def parameterize_record_info(record_info):
 	location component of primary_url (i.e. for HTTP,
 	[user:password@]host[:port]).  Otherwise, primary_netloc is None.
 	"""
-
 	primary_url = None
 	primary_netloc = None
 
