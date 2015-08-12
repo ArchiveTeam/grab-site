@@ -91,14 +91,11 @@ grab-site outputs WARCs, logs, and control files to a new subdirectory in the
 directory from which you launched `grab-site`, referred to here as "DIR".
 (Use `ls -lrt` to find it.)
 
-### Options
+### Options, ordered by importance
 
 Options can come before or after the URL.
 
 *	`--1`: grab just `URL` and its page requisites, without recursing.
-
-*	`--concurrency=N`: Use `N` connections to fetch in parallel (default: 2).
-	Can be changed during the crawl by editing the `DIR/concurrency` file.
 
 *	`--igsets=blogs,forums`: use ignore sets `blogs` and `forums`.
 
@@ -123,28 +120,31 @@ Options can come before or after the URL.
 	etc from being grabbed, because these are often hosted on a CDN or subdomain, and
 	thus would otherwise not be included in the recursive crawl.
 
-*	`--delay=N`: Wait `N` milliseconds (default: 0) between requests on each concurrent fetcher.
-	Can be a range like X-Y to use a random delay between X and Y.  Can be changed during
-	the crawl by editing the `DIR/delay` file.
+*	`-i` / `--input-file`: Load list of URLs-to-grab from a local file or from a
+	URL; like `wget -i`.  File must be a newline-delimited list of URLs.
+	Combine with `--1` to avoid a recursive crawl on each URL.
+
+*	`--igon`: Print all URLs being ignored to the terminal and dashboard.  Can be
+	changed during the crawl by `touch`ing or `rm`ing the `DIR/igoff` file.
+
+*	`--no-sitemaps`: don't queue URLs from `sitemap.xml` at the root of the site.
 
 *	`--max-content-length=N`: Skip the download of any response that claims a
 	Content-Length larger than `N`.  (default: -1, don't skip anything).  Can be changed during
 	the crawl by editing the `DIR/max_content_length` file.
 
-*	`--igon`: Print all URLs being ignored to the terminal and dashboard.  Can be
-	changed during the crawl by `touch`ing or `rm`ing the `DIR/igoff` file.
+*	`--concurrency=N`: Use `N` connections to fetch in parallel (default: 2).
+	Can be changed during the crawl by editing the `DIR/concurrency` file.
 
-*	`-i` / `--input-file`: Load list of URLs-to-grab from a local file or from a
-	URL; like `wget -i`.  File must be a newline-delimited list of URLs.
-	Combine with `--1` to avoid a recursive crawl on each URL.
+*	`--delay=N`: Wait `N` milliseconds (default: 0) between requests on each concurrent fetcher.
+	Can be a range like X-Y to use a random delay between X and Y.  Can be changed during
+	the crawl by editing the `DIR/delay` file.
 
 *	`--level=N`: recurse `N` levels instead of `inf` levels.
 
 *	`--page-requisites-level=N`: recurse page requisites `N` levels instead of `5` levels.
 
 *	`--ua=STRING`: Send User-Agent: `STRING` instead of pretending to be Firefox on Windows.
-
-*	`--no-sitemaps`: don't queue URLs from `sitemap.xml` at the root of the site.
 
 *	`--help`: print help text.
 
