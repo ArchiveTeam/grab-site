@@ -134,6 +134,10 @@ Options can come before or after the URL.
 *	`--igon`: Print all URLs being ignored to the terminal and dashboard.  Can be
 	changed during the crawl by `touch`ing or `rm`ing the `DIR/igoff` file.
 
+*	`-i` / `--input-file`: Load list of URLs-to-grab from a local file or from a
+	URL; like `wget -i`.  File must be a newline-delimited list of URLs.
+	Combine with `--1` to avoid a recursive crawl on each URL.
+
 *	`--level=N`: recurse `N` levels instead of `inf` levels.
 
 *	`--page-requisites-level=N`: recurse page requisites `N` levels instead of `5` levels.

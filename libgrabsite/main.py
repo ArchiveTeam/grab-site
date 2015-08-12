@@ -4,6 +4,8 @@ faulthandler.enable()
 import re
 import os
 import sys
+import urllib.request
+import shutil
 import binascii
 import datetime
 import click
@@ -51,6 +53,12 @@ def print_version(ctx, param, value):
 		'--igon (default: false) to print all URLs being ignored to the terminal '
 		'and dashboard.')
 
+@click.option('-i', '--input-file', default=None, type=str,
+	help=
+		'Load list of URLs-to-grab from a local file or from a URL; like wget -i. '
+		'File must be a newline-delimited list of URLs. '
+		'Combine with --1 to avoid a recursive crawl on each URL.')
+
 @click.option('--max-content-length', default=-1, metavar='N',
 	help=
 		"Skip the download of any response that claims a Content-Length "
@@ -73,11 +81,18 @@ def print_version(ctx, param, value):
 @click.option('--version', is_flag=True, callback=print_version,
 	expose_value=False, is_eager=True, help='Print version and exit.')
 
-@click.argument('start_url')
+@click.argument('start_url', required=False)
 
 def main(concurrency, concurrent, delay, recursive, offsite_links, igsets,
 ignore_sets, igon, level, page_requisites_level, max_content_length, sitemaps,
-ua, start_url):
+ua, input_file, start_url):
+	if not (input_file or start_url):
+		print("Neither a START_URL or --input-file= was specified; see --help", file=sys.stderr)
+		sys.exit(1)
+	elif input_file and start_url:
+		print("Can't specify both START_URL and --input-file=; see --help", file=sys.stderr)
+		sys.exit(1)
+
 	span_hosts_allow = "page-requisites,linked-pages"
 	if not offsite_links:
 		span_hosts_allow = "page-requisites"
@@ -88,9 +103,18 @@ ua, start_url):
 	if ignore_sets != "":
 		igsets = ignore_sets
 
+	if start_url is not None:
+		claim_start_url = start_url
+	else:
+		input_file_is_remote = bool(re.match("^(ftp|https?)://", input_file))
+		if input_file_is_remote:
+			claim_start_url = input_file
+		else:
+			claim_start_url = 'file://' + os.path.abspath(input_file)
+
 	id = binascii.hexlify(os.urandom(16)).decode('utf-8')
 	ymd = datetime.datetime.utcnow().isoformat()[:10]
-	no_proto_no_trailing = start_url.split('://', 1)[1].rstrip('/')[:100]
+	no_proto_no_trailing = claim_start_url.split('://', 1)[1].rstrip('/')[:100]
 	warc_name = "{}-{}-{}".format(re.sub('[^-_a-zA-Z0-9%\.,;@+=]', '-', no_proto_no_trailing), ymd, id[:8])
 
 	# make absolute because wpull will start in temp/
@@ -99,11 +123,41 @@ ua, start_url):
 	temp_dir = os.path.join(working_dir, "temp")
 	os.makedirs(temp_dir)
 
+	def get_base_wpull_args():
+		return ["-U", ua,
+			"--header=Accept: text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
+			"--header=Accept-Language: en-US,en;q=0.5",
+			"--no-check-certificate",
+			"--no-robots",
+			"--inet4-only",
+			"--timeout", "20",
+			"--tries", "3",
+			"--waitretry", "5",
+			"--max-redirect", "8",
+			"--quiet"
+		]
+
+	if input_file is not None:
+		# wpull -i doesn't support URLs, so download the input file ourselves if necessary
+		DIR_input_file = os.path.join(working_dir, "input_file")
+		if input_file_is_remote:
+			# TODO: use wpull with correct user agent instead of urllib.request
+			# wpull -O fails: https://github.com/chfoo/wpull/issues/275
+			u = urllib.request.urlopen(input_file)
+			with open(DIR_input_file, "wb") as f:
+				while True:
+					s = u.read(1024*1024)
+					if not s:
+						break
+					f.write(s)
+		else:
+			shutil.copyfile(input_file, DIR_input_file)
+
 	with open("{}/id".format(working_dir), "w") as f:
 		f.write(id)
 
 	with open("{}/start_url".format(working_dir), "w") as f:
-		f.write(start_url)
+		f.write(claim_start_url)
 
 	with open("{}/concurrency".format(working_dir), "w") as f:
 		f.write(str(concurrency))
@@ -125,25 +179,16 @@ ua, start_url):
 		f.write(delay)
 
 	LIBGRABSITE = os.path.dirname(libgrabsite.__file__)
-	args = [
-		"-U", ua,
-		"--header=Accept: text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
-		"--header=Accept-Language: en-US,en;q=0.5",
+	args = get_base_wpull_args() + [
 		"-o", "{}/wpull.log".format(working_dir),
 		"--database", "{}/wpull.db".format(working_dir),
 		"--plugin-script", "{}/plugin.py".format(LIBGRABSITE),
 		"--python-script", "{}/wpull_hooks.py".format(LIBGRABSITE),
 		"--save-cookies", "{}/cookies.txt".format(working_dir),
-		"--no-check-certificate",
 		"--delete-after",
-		"--no-robots",
 		"--page-requisites",
 		"--no-parent",
-		"--inet4-only",
-		"--timeout", "20",
-		"--tries", "3",
 		"--concurrent", str(concurrency),
-		"--waitretry", "5",
 		"--warc-file", "{}/{}".format(working_dir, warc_name),
 		"--warc-max-size", "5368709120",
 		"--warc-cdx",
@@ -152,11 +197,9 @@ ua, start_url):
 		"--escaped-fragment",
 		"--monitor-disk", "400m",
 		"--monitor-memory", "10k",
-		"--max-redirect", "8",
 		"--level", level,
 		"--page-requisites-level", page_requisites_level,
 		"--span-hosts-allow", span_hosts_allow,
-		"--quiet",
 	]
 
 	if sitemaps:
@@ -165,7 +208,10 @@ ua, start_url):
 	if recursive:
 		args += ["--recursive"]
 
-	args += [start_url]
+	if start_url is not None:
+		args += [start_url]
+	else:
+		args += ["--input-file", DIR_input_file]
 
 	# Mutate argv, environ, cwd before we turn into wpull
 	sys.argv[1:] = args
