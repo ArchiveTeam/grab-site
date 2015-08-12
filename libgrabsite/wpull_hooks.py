@@ -457,8 +457,14 @@ def update_concurrency():
 	if not concurrency_watcher.has_changed():
 		return
 	with open(concurrency_watcher.fname, "r") as f:
-		job_data["concurrency"] = int(f.read().strip())
-	wpull_hook.factory.get('Engine').set_concurrent(job_data["concurrency"])
+		concurrency = int(f.read().strip())
+		if concurrency < 1:
+			print("Warning: using 1 for concurrency instead of %r because it cannot be < 1" % (concurrency,))
+			concurrency = 1
+		job_data["concurrency"] = concurrency
+	# If we call this with 0, trollius blows up with
+	# ValueError('Set of coroutines/Futures is empty.')
+	wpull_hook.factory.get('Engine').set_concurrent(concurrency)
 
 update_concurrency()
 
