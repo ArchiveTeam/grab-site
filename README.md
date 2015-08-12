@@ -146,6 +146,11 @@ Options can come before or after the URL.
 
 *	`--ua=STRING`: Send User-Agent: `STRING` instead of pretending to be Firefox on Windows.
 
+*	`--wpull-args=ARGS`: String containing additional arguments to pass to wpull;
+	see `~/.local/bin/wpull --help`.  ARGS is split with `shlex.split` and individual
+	arguments can contain spaces if quoted, e.g.
+	`--wpull-args="--youtube-dl \"--youtube-dl-exe=/My Documents/youtube-dl\""`
+
 *	`--help`: print help text.
 
 

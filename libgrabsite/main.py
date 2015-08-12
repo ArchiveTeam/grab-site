@@ -8,6 +8,7 @@ import urllib.request
 import shutil
 import binascii
 import datetime
+import shlex
 import click
 import libgrabsite
 
@@ -73,6 +74,13 @@ def print_version(ctx, param, value):
 @click.option('--ua', default="Mozilla/5.0 (Windows NT 6.3; WOW64; rv:40.0) Gecko/20100101 Firefox/40.0",
 	metavar='STRING', help='Send User-Agent: STRING instead of pretending to be Firefox on Windows.')
 
+@click.option('--wpull-args', default="",
+	metavar='ARGS', help=
+		r'String containing additional arguments to pass to wpull; '
+		r'see ~/.local/bin/wpull --help.  ARGS is split with shlex.split '
+		r'and individual arguments can contain spaces if quoted, e.g. '
+		r'--wpull-args="--youtube-dl \"--youtube-dl-exe=/My Documents/youtube-dl\""')
+
 @click.option('--sitemaps/--no-sitemaps', default=True,
 	help=
 		'--sitemaps (default: true) to queue URLs from sitemap.xml '
@@ -85,7 +93,7 @@ def print_version(ctx, param, value):
 
 def main(concurrency, concurrent, delay, recursive, offsite_links, igsets,
 ignore_sets, igon, level, page_requisites_level, max_content_length, sitemaps,
-ua, input_file, start_url):
+ua, input_file, wpull_args, start_url):
 	if not (input_file or start_url):
 		print("Neither a START_URL or --input-file= was specified; see --help", file=sys.stderr)
 		sys.exit(1)
@@ -207,6 +215,9 @@ ua, input_file, start_url):
 
 	if recursive:
 		args += ["--recursive"]
+
+	if wpull_args:
+		args += shlex.split(wpull_args)
 
 	if start_url is not None:
 		args += [start_url]
