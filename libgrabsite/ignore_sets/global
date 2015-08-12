@@ -68,7 +68,7 @@
 ^https?://pixel\.quantserve\.com/
 ^https?://(www|ssl)\.google-analytics\.com/(r/)?(__utm\.gif|collect\?)
 ^https?://p\.opt\.fimserve\.com/
-^https?://.+/js-agent\.newrelic\.com/nr-\d{3,3}(\.min)?\.js$
+^https?://.+/js-agent\.newrelic\.com/nr-\d{3}(\.min)?\.js$
 ^https?://.+/stats\.g\.doubleclick\.net/dc\.js$
 ^https?://.+/js/chartbeat\.js$
 
