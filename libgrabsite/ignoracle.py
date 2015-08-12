@@ -36,14 +36,15 @@ class Ignoracle(object):
 		If an ignore pattern matches the given URL, returns that pattern as a string.
 		Otherwise, returns False.
 		"""
-		pu = re.escape(kwargs.get('primary_url') or '')
-		ph = re.escape(kwargs.get('primary_netloc') or '')
+		pu = re.escape(kwargs.get('primary_url', ''))
+		ph = re.escape(kwargs.get('primary_netloc', ''))
 
 		for pattern in self.patterns:
-			if '{' in pattern:
-				pattern = pattern.replace('{primary_url}', pu).replace('{primary_netloc}', ph)
+			regexp = pattern
+			if '{' in regexp:
+				regexp = regexp.replace('{primary_url}', pu).replace('{primary_netloc}', ph)
 			try:
-				if re.search(pattern, url):
+				if re.search(regexp, url):
 					return pattern
 			except re.error as error:
 				print('Pattern %s is invalid (error: %s).  Ignored.' % (pattern, str(error)), file=sys.stderr)
