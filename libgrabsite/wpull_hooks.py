@@ -141,7 +141,7 @@ def swallow_exception(f):
 	return wrapper
 
 
-CONTROL_FILE_CACHE_SEC = 3
+CONTROL_FILE_CACHE_SEC = 1.5
 
 def caching_decorator(f):
 	cache = {}
