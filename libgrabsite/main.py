@@ -38,7 +38,7 @@ def print_version(ctx, param, value):
 		'--recursive (default: true) to crawl under last /path/ component '
 		'recursively, or --1 to get just START_URL.')
 
-@click.option('--offsite-links/--no-offsite-links', default=False,
+@click.option('--offsite-links/--no-offsite-links', default=True,
 	help=
 		'--offsite-links (default: true) to grab all links to a depth of 1 '
 		'on other domains, or --no-offsite-links to disable.')
