@@ -224,3 +224,7 @@
 
 # Avoid grabbing thousands of these; they page-requisite each other
 ^https?://media\.opb\.org/clips/embed/.+\.js$
+
+# Per-post and per-comment Atom feeds
+^https?://www\.blogger\.com/feeds/\d+/posts/default/\d+
+^https?://www\.blogger\.com/feeds/\d+/\d+/comments/default/\d+
