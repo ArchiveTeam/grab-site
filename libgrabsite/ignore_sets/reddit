@@ -1,3 +1,7 @@
+# These ignores are designed for archiving subreddits.  Note that not
+# all comments will be downloaded because many comments are collapsed
+# by reddit.
+
 ^https?://www\.reddit\.com/gold\?goldtype=
 ^https?://www\.reddit\.com/r/[^/]+/comments/[a-z0-9]+/[^/]+/[a-z0-9]+
 ^https?://www\.reddit\.com/r/[^/]+/comments/[a-z0-9]+.*\?sort=
