@@ -2,33 +2,9 @@
 [\?&]share=
 \?showComment(=|%5C)
 /quote-comment-\d+/$
-/wp-login\.php\?
-^https?://r\-login\.wordpress\.com/remote\-login\.php
 '\%20\+\%20liker\.(avatar|profile)_URL\%20\+\%20'
 \%22\%20\+\%20$wrapper\.data\(
-^http://.+\.blogspot\.(com|in|com\.au|co\.uk|jp|co\.nz|ca|de|it|fr|se|sg|es|pt|com\.br|ar|mx|kr)/(search(\?|/label/)|\d{4}/\d{2}/CSI/$)
-livejournal\.com/ljcounter/?\?
 \?replyto=[0-9]+
 [\?&]mode=reply
-xiti\.com/hit\.xiti\?
 /jetpack-comment/\?
 \?like_comment=\d+
-^https?://.+/.+/disqus\.com/forums/$
-
-# Bogus literal "/page/%d/" URLs (not filled with a number)
-/page/%d/$
-
-# Bogus URLs from tumblr.com
-(\?|%5Cx26)route=(/page/:page|/archive/:year/:month|/tagged/:tag|/post/:id|/image/:post_id)
-%5Cx26route=/archive
-
-# There are too many avatars on tumblr.com
-^http://\d+\.media\.tumblr\.com/avatar_.+_16\.png$
-
-^http://www\.livejournal\.com/(tools/memadd|update|login)\.bml\?
-^http://[^\.]+\.livejournal\.com/.+[\?&]mode=reply
-^http://[^\.]+\.livejournal\.com/.+/\*sup_ru/ru/UTF-8/
-^http://[^\.]+\.livejournal\.com/.+http://[^\.]+\.livejournal\.com/
-
-^https?://www\.dreamwidth\.org/tools/(memadd|tellafriend)\?
-^https?://[^\.]+\.dreamwidth\.org/.+[\?&]mode=reply
