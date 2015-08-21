@@ -253,10 +253,10 @@
 ^https?://r-login\.wordpress\.com/remote-login\.php
 ^https?://{primary_netloc}/wp-login\.php\?
 
-# Ignore /search.*updated-max= blogspot pagination because all posts are
-# crawled anyway via the _archive.html pages.  Need to ignore on all
-# domains because blogspot also runs on non-blogspot.com domains.
-^https?://{primary_netloc}/search(/label/[^\?]+|)\?updated-max=\d{4}-\d\d-\d\dT\d\d:\d\d:\d\d.*&max-results=\d+
+# Ignore /search.*updated-(min|max)= blogspot pagination because all posts are
+# crawled anyway via the _archive.html pages.  Need to ignore on all domains
+# because blogspot also runs on non-blogspot.com domains.
+^https?://{primary_netloc}/search(/label/[^\?]+|)\?updated-(min|max)=\d{4}-\d\d-\d\dT\d\d:\d\d:\d\d.*&max-results=\d+
 
 # Ignore bogus /CSI/ links on blogspot.com
 ^https?://.+\.blogspot\.(com|in|com\.au|co\.uk|jp|co\.nz|ca|de|it|fr|se|sg|es|pt|com\.br|ar|mx|kr)/\d{4}/\d{2}/CSI/$
