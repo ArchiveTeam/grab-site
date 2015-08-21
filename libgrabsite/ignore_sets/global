@@ -245,15 +245,12 @@
 ^http://\d+\.media\.tumblr\.com/avatar_.+_16\.png$
 
 ^http://www\.livejournal\.com/(tools/memadd|update|login)\.bml\?
-^http://[^\.]+\.livejournal\.com/.+[\?&]mode=reply
 ^http://[^\.]+\.livejournal\.com/.+/\*sup_ru/ru/UTF-8/
 ^http://[^\.]+\.livejournal\.com/.+http://[^\.]+\.livejournal\.com/
 
 ^https?://www\.dreamwidth\.org/tools/(memadd|tellafriend)\?
-^https?://[^\.]+\.dreamwidth\.org/.+[\?&]mode=reply
 
-^https?://r\-login\.wordpress\.com/remote\-login\.php
-
+^https?://r-login\.wordpress\.com/remote-login\.php
 ^https?://{primary_netloc}/wp-login\.php\?
 
 # Ignore /search.*updated-max= blogspot pagination because all posts are
@@ -263,3 +260,14 @@
 
 # Ignore bogus /CSI/ links on blogspot.com
 ^https?://.+\.blogspot\.(com|in|com\.au|co\.uk|jp|co\.nz|ca|de|it|fr|se|sg|es|pt|com\.br|ar|mx|kr)/\d{4}/\d{2}/CSI/$
+
+# Links to ?share=(twitter|facebook|reddit|email|google-plus-1) etc.
+# These typically redirect.
+^https?://{primary_netloc}/.+[\?&]share=[a-z]{4,}
+
+# Per-comment links
+^https?://{primary_netloc}/.+[\?&]mode=reply
+^https?://{primary_netloc}/.+[\?&](replyto(com)?|like_comment)=\d+
+^https?://{primary_netloc}/.+\?showComment(=|%5C)\d+
+^https?://{primary_netloc}/.+/quote-comment-\d+/$
+^https?://{primary_netloc}/.+/jetpack-comment/\?blogid=\d+&postid=\d+

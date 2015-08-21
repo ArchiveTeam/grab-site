@@ -1,8 +1,0 @@
-[\?&]replytocom=
-[\?&]share=
-\?showComment(=|%5C)
-/quote-comment-\d+/$
-\?replyto=[0-9]+
-[\?&]mode=reply
-/jetpack-comment/\?
-\?like_comment=\d+
