@@ -16,7 +16,7 @@ grab-site gives you
 	otherwise prevent your crawl from ever finishing.  See below.
 
 *	an extensively tested default ignore set ([global](https://github.com/ludios/grab-site/blob/master/libgrabsite/ignore_sets/global))
-	as well as additional (optional) ignore sets for blogs, forums, etc.
+	as well as additional (optional) ignore sets for forums, reddit, etc.
 
 *	duplicate page detection: links are not followed on pages whose
 	content duplicates an already-seen page.
@@ -97,12 +97,12 @@ Options can come before or after the URL.
 
 *	`--1`: grab just `URL` and its page requisites, without recursing.
 
-*	`--igsets=blogs,forums`: use ignore sets `blogs` and `forums`.
+*	`--igsets=IGSET1,IGSET2`: use ignore sets `IGSET1` and `IGSET2`.
 
 	Ignore sets are used to avoid requesting junk URLs using a pre-made set of
 	regular expressions.
 
-	`forums` and `blogs` are some frequently-used ignore sets.
+	`forums` is a frequently-used ignore set for archiving forums.
 	See [the full list of available ignore sets](https://github.com/ludios/grab-site/tree/master/libgrabsite/ignore_sets).
 
 	The [global](https://github.com/ludios/grab-site/blob/master/libgrabsite/ignore_sets/global)
