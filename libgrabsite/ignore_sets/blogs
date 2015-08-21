@@ -2,8 +2,6 @@
 [\?&]share=
 \?showComment(=|%5C)
 /quote-comment-\d+/$
-'\%20\+\%20liker\.(avatar|profile)_URL\%20\+\%20'
-\%22\%20\+\%20$wrapper\.data\(
 \?replyto=[0-9]+
 [\?&]mode=reply
 /jetpack-comment/\?
