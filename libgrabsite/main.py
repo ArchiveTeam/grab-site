@@ -89,7 +89,7 @@ def print_version(ctx, param, value):
 @click.option('--version', is_flag=True, callback=print_version,
 	expose_value=False, is_eager=True, help='Print version and exit.')
 
-@click.argument('start_url', required=False)
+@click.argument('start_url', nargs=-1, required=False)
 
 def main(concurrency, concurrent, delay, recursive, offsite_links, igsets,
 ignore_sets, igon, level, page_requisites_level, max_content_length, sitemaps,
@@ -112,7 +112,7 @@ ua, input_file, wpull_args, start_url):
 		igsets = ignore_sets
 
 	if start_url is not None:
-		claim_start_url = start_url
+		claim_start_url = start_url[0]
 	else:
 		input_file_is_remote = bool(re.match("^(ftp|https?)://", input_file))
 		if input_file_is_remote:
@@ -167,6 +167,10 @@ ua, input_file, wpull_args, start_url):
 	with open("{}/start_url".format(working_dir), "w") as f:
 		f.write(claim_start_url)
 
+	with open("{}/all_start_urls".format(working_dir), "w") as f:
+		for u in start_url:
+			f.write(u + "\n")
+
 	with open("{}/concurrency".format(working_dir), "w") as f:
 		f.write(str(concurrency))
 
@@ -220,7 +224,7 @@ ua, input_file, wpull_args, start_url):
 		args += shlex.split(wpull_args)
 
 	if start_url is not None:
-		args += [start_url]
+		args.extend(start_url)
 	else:
 		args += ["--input-file", DIR_input_file]
 
