@@ -1,0 +1,2 @@
+# All 'blogs' ignores have been migrated to 'global';
+# there is no need to specify --igsets=blogs
