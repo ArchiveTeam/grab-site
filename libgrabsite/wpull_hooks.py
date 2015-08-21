@@ -255,6 +255,7 @@ job_data = {
 	"started_at": os.stat(os.path.join(working_dir, "start_url")).st_mtime,
 	"max_content_length": -1,
 	"suppress_ignore_reports": True,
+	"video": True,
 	"concurrency": 2,
 	"bytes_downloaded": 0,
 	"items_queued": 0,
@@ -327,15 +328,21 @@ def should_stop():
 
 igoff_path = os.path.join(working_dir, "igoff")
 def update_igoff():
-	igoff = path_exists_with_cache(igoff_path)
-	job_data["suppress_ignore_reports"] = igoff
-	return igoff
+	job_data["suppress_ignore_reports"] = path_exists_with_cache(igoff_path)
 
 update_igoff()
 
 
+video_path = os.path.join(working_dir, "video")
+def update_video():
+	job_data["video"] = path_exists_with_cache(video_path)
+
+update_video()
+
+
 def maybe_log_ignore(url, pattern):
-	if not update_igoff():
+	update_igoff()
+	if not job_data["suppress_ignore_reports"]:
 		print_to_real("IGNOR %s\n   by %s" % (url, pattern))
 		if ws_factory.client:
 			ws_factory.client.send_object({
@@ -356,6 +363,25 @@ def get_content_length(response_info):
 		return -1
 
 
+def has_content_type_video(response_info):
+	try:
+		t = list(p for p in response_info["fields"] if p[0] == "Content-Type")[0][1]
+		return t.lower().startswith("video/")
+	except (IndexError, ValueError):
+		return False
+
+
+# Excluded vob, mpeg, mpg, avi because they are not found on the general web
+video_exts = set("webm mp4 m4v mkv ts 3gp 3g2 flv mov wmv ogv ogm".split(" "))
+
+def has_video_ext(url):
+	ext = url.rsplit('.')[-1]
+	return ext.lower() in video_exts
+
+
+skipped_videos_path = os.path.join(working_dir, "skipped_videos")
+skipped_videos = open(skipped_videos_path, "w", encoding="utf-8")
+
 def handle_pre_response(url_info, url_record, response_info):
 	url = url_info['url']
 
@@ -367,6 +393,14 @@ def handle_pre_response(url_info, url_record, response_info):
 		if length > job_data["max_content_length"]:
 			maybe_log_ignore(url, '[content-length %d over limit %d]' % (
 				length, job_data["max_content_length"]))
+			return wpull_hook.actions.FINISH
+
+	update_video()
+	if not job_data["video"]:
+		if has_content_type_video(response_info) or has_video_ext(url):
+			skipped_videos.write(url + "\n")
+			skipped_videos.flush()
+			maybe_log_ignore(url, '[video]')
 			return wpull_hook.actions.FINISH
 
 	# Check if server version starts with ICY

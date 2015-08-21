@@ -54,6 +54,12 @@ def print_version(ctx, param, value):
 		'--igon (default: false) to print all URLs being ignored to the terminal '
 		'and dashboard.')
 
+@click.option('--video/--no-video', default=True,
+	help=
+		'--no-video (default: false) to skip the download of videos by both '
+		'mime type and file extension.  Skipped videos are logged to '
+		'DIR/skipped_videos')
+
 @click.option('-i', '--input-file', default=None, type=str,
 	help=
 		'Load list of URLs-to-grab from a local file or from a URL; like wget -i. '
@@ -97,8 +103,8 @@ def print_version(ctx, param, value):
 @click.argument('start_url', nargs=-1, required=False)
 
 def main(concurrency, concurrent, delay, recursive, offsite_links, igsets,
-ignore_sets, igon, level, page_requisites_level, max_content_length, sitemaps,
-warc_max_size, ua, input_file, wpull_args, start_url):
+ignore_sets, igon, video, level, page_requisites_level, max_content_length,
+sitemaps, warc_max_size, ua, input_file, wpull_args, start_url):
 	if not (input_file or start_url):
 		print("Neither a START_URL or --input-file= was specified; see --help", file=sys.stderr)
 		sys.exit(1)
@@ -184,6 +190,10 @@ warc_max_size, ua, input_file, wpull_args, start_url):
 
 	with open("{}/igsets".format(working_dir), "w") as f:
 		f.write("global,{}".format(igsets))
+
+	if video:
+		with open("{}/video".format(working_dir), "w") as f:
+			pass
 
 	if not igon:
 		with open("{}/igoff".format(working_dir), "w") as f:

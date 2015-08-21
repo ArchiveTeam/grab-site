@@ -127,6 +127,10 @@ Options can come before or after the URL.
 *	`--igon`: Print all URLs being ignored to the terminal and dashboard.  Can be
 	changed during the crawl by `touch`ing or `rm`ing the `DIR/igoff` file.
 
+*	`--no-video`: Skip the download of videos by both mime type and file extension.
+	Skipped videos are logged to `DIR/skipped_videos`.  Can be
+	changed during the crawl by `touch`ing or `rm`ing the `DIR/video` file.
+
 *	`--no-sitemaps`: don't queue URLs from `sitemap.xml` at the root of the site.
 
 *	`--max-content-length=N`: Skip the download of any response that claims a
