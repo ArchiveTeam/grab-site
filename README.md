@@ -140,6 +140,11 @@ Options can come before or after the URL.
 	Can be a range like X-Y to use a random delay between X and Y.  Can be changed during
 	the crawl by editing the `DIR/delay` file.
 
+*	`--warc-max-size=BYTES`: Try to limit each WARC file to around `BYTES` bytes
+		before rolling over to a new WARC file (default: 5368709120, which is 5GiB).
+		Note that the resulting WARC files may be drastically larger if there are very
+		large responses.
+
 *	`--level=N`: recurse `N` levels instead of `inf` levels.
 
 *	`--page-requisites-level=N`: recurse page requisites `N` levels instead of `5` levels.
