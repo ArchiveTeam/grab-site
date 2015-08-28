@@ -1,2 +1,2 @@
-^https?://((?:www|mobile)\.)?twitter\.com/.+\?(?:id|lang|locale|screen_name)=
+^https?://((?:www|mobile)\.)?twitter\.com/.+[\?&](?:id|lang|locale|screen_name|nav)=
 ^https?://mobile\.twitter\.com/i/anonymize\?data=
