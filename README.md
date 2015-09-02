@@ -134,8 +134,9 @@ Options can come before or after the URL.
 *	`--no-sitemaps`: don't queue URLs from `sitemap.xml` at the root of the site.
 
 *	`--max-content-length=N`: Skip the download of any response that claims a
-	Content-Length larger than `N`.  (default: -1, don't skip anything).  Can be changed during
-	the crawl by editing the `DIR/max_content_length` file.
+	Content-Length larger than `N`.  (default: -1, don't skip anything).
+	Skipped URLs are logged to `DIR/skipped_max_content_length`.  Can be changed
+	during the crawl by editing the `DIR/max_content_length` file.
 
 *	`--concurrency=N`: Use `N` connections to fetch in parallel (default: 2).
 	Can be changed during the crawl by editing the `DIR/concurrency` file.

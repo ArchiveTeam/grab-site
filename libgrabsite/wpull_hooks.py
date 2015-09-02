@@ -382,6 +382,9 @@ def has_video_ext(url):
 skipped_videos_path = os.path.join(working_dir, "skipped_videos")
 skipped_videos = open(skipped_videos_path, "w", encoding="utf-8")
 
+skipped_max_content_length_path = os.path.join(working_dir, "skipped_max_content_length")
+skipped_max_content_length = open(skipped_max_content_length_path, "w", encoding="utf-8")
+
 def handle_pre_response(url_info, url_record, response_info):
 	url = url_info['url']
 
@@ -391,6 +394,8 @@ def handle_pre_response(url_info, url_record, response_info):
 		length = get_content_length(response_info)
 		##print((length, job_data["max_content_length"]))
 		if length > job_data["max_content_length"]:
+			skipped_max_content_length.write(url + "\n")
+			skipped_max_content_length.flush()
 			maybe_log_ignore(url, '[content-length %d over limit %d]' % (
 				length, job_data["max_content_length"]))
 			return wpull_hook.actions.FINISH
