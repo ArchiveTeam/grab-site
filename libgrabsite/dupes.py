@@ -5,9 +5,11 @@ Duplicate page content database.
 class DupesOnDisk(object):
 	def __init__(self, filename):
 		import lmdb
-		# TODO: lmdb needs a sparse file; fail early instead of using 1TB
-		# of disk on filesystems with no sparse file support
-		for map_size in (1024*1024*1024*1024, 2**31-1):
+		last_error = None
+		# Try 1TB, 2GB, 1GB, 512MB, 256MB, 128MB, then give up.
+		# "Must be <2GB on 32-bit" https://lmdb.readthedocs.org/en/release/
+		# but sometimes needs to be even lower.
+		for map_size in (1024**4, 2**31 - 1, 2**30 - 1, 2**29 - 1, 2**28 - 1, 2**27 - 1):
 			try:
 				self._env = lmdb.open(
 					filename,
@@ -20,10 +22,14 @@ class DupesOnDisk(object):
 					metasync=False,
 					# http://lmdb.readthedocs.org/en/release/#lmdb.Environment
 					map_size=map_size)
-			except OverflowError:
-				pass
+			except (OverflowError, lmdb.MemoryError) as e:
+				last_error = e
 			else:
+				print("Created lmdb db with map_size=%d" % (map_size,))
+				last_error = None
 				break
+		if last_error is not None:
+			raise last_error
 
 	def get_old_url(self, digest):
 		with self._env.begin() as txn:
