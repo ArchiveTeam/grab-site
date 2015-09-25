@@ -82,7 +82,7 @@ def print_version(ctx, param, value):
 		'Try to limit each WARC file to around BYTES bytes before rolling over '
 		'to a new WARC file (default: 5368709120, which is 5GiB).')
 
-@click.option('--ua', default="Mozilla/5.0 (Windows NT 6.3; WOW64; rv:40.0) Gecko/20100101 Firefox/40.0",
+@click.option('--ua', default="Mozilla/5.0 (Windows NT 6.3; WOW64; rv:41.0) Gecko/20100101 Firefox/41.0",
 	metavar='STRING', help='Send User-Agent: STRING instead of pretending to be Firefox on Windows.')
 
 @click.option('--wpull-args', default="",
