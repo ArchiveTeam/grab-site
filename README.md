@@ -29,7 +29,6 @@ grab-site will manage to crawl a site with ~10M pages.
 
 Install on Ubuntu
 ---
-
 On Ubuntu 14.04.1 or newer:
 
 ```
@@ -47,7 +46,6 @@ PATH="$PATH:$HOME/.local/bin"
 
 Install on OS X
 ---
-
 On OS X 10.10:
 
 1.	If xcode is not already installed, type `gcc` in Terminal; you will be
@@ -67,6 +65,17 @@ add this to your `~/.bash_profile` (which may not exist yet):
 ```
 PATH="$PATH:$HOME/Library/Python/3.4/bin"
 ```
+
+
+Upgrade an existing install
+---
+To update to the latest grab-site, simply run `pip3 install` again:
+
+```
+pip3 install --user git+https://github.com/ludios/grab-site
+```
+
+To upgrade all of grab-site's dependencies, add the `--upgrade` option (not advised unless you are having problems).
 
 
 Usage
