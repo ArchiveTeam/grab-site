@@ -97,6 +97,13 @@ def print_version(ctx, param, value):
 		'--sitemaps (default: true) to queue URLs from sitemap.xml '
 		'at the root of the site, or --no-sitemaps to disable.')
 
+@click.option('--dupespotter/--no-dupespotter', default=True,
+	help=
+		'--dupespotter (default: true) to skip the extraction of links '
+		'from pages that look like duplicates of earlier pages, or '
+		'--no-dupespotter to disable.  Disable this for sites that are '
+		'directory listings.')
+
 @click.option('--version', is_flag=True, callback=print_version,
 	expose_value=False, is_eager=True, help='Print version and exit.')
 
@@ -104,7 +111,7 @@ def print_version(ctx, param, value):
 
 def main(concurrency, concurrent, delay, recursive, offsite_links, igsets,
 ignore_sets, igon, video, level, page_requisites_level, max_content_length,
-sitemaps, warc_max_size, ua, input_file, wpull_args, start_url):
+sitemaps, dupespotter, warc_max_size, ua, input_file, wpull_args, start_url):
 	if not (input_file or start_url):
 		print("Neither a START_URL or --input-file= was specified; see --help", file=sys.stderr)
 		sys.exit(1)
@@ -246,6 +253,7 @@ sitemaps, warc_max_size, ua, input_file, wpull_args, start_url):
 	# Mutate argv, environ, cwd before we turn into wpull
 	sys.argv[1:] = args
 	os.environ["GRAB_SITE_WORKING_DIR"] = working_dir
+	os.environ["DUPESPOTTER_ENABLED"] = "1" if dupespotter else "0"
 	# We can use --warc-tempdir= to put WARC-related temporary files in a temp
 	# directory, but wpull also creates non-WARC-related "resp_cb" temporary
 	# files in the cwd, so we must start wpull in temp/ anyway.

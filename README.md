@@ -138,6 +138,11 @@ Options can come before or after the URL.
 	Skipped URLs are logged to `DIR/skipped_max_content_length`.  Can be changed
 	during the crawl by editing the `DIR/max_content_length` file.
 
+*	`--no-dupespotter`: Disable dupespotter, a plugin that skips the extraction
+	of links from pages that look like duplicates of earlier pages.  Disable this
+	for sites that are directory listings, because they frequently trigger false
+	positives.
+
 *	`--concurrency=N`: Use `N` connections to fetch in parallel (default: 2).
 	Can be changed during the crawl by editing the `DIR/concurrency` file.
 

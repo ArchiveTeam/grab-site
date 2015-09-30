@@ -47,8 +47,9 @@ class DupeSpottingProcessingRule(wpull.processor.rule.ProcessingRule):
 
 
 wpull_plugin.factory.class_map['URLTableImplementation'] = NoFsyncSQLTable
-wpull_plugin.factory.class_map['ProcessingRule'] = functools.partial(
-	DupeSpottingProcessingRule,
-	dupes_db=DupesOnDisk(
-		os.path.join(os.environ["GRAB_SITE_WORKING_DIR"], "dupes_db"))
-)
+if int(os.environ["DUPESPOTTER_ENABLED"]):
+	wpull_plugin.factory.class_map['ProcessingRule'] = functools.partial(
+		DupeSpottingProcessingRule,
+		dupes_db=DupesOnDisk(
+			os.path.join(os.environ["GRAB_SITE_WORKING_DIR"], "dupes_db"))
+	)
