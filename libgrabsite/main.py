@@ -129,7 +129,7 @@ sitemaps, dupespotter, warc_max_size, ua, input_file, wpull_args, start_url):
 	if ignore_sets != "":
 		igsets = ignore_sets
 
-	if start_url is not None:
+	if start_url:
 		claim_start_url = start_url[0]
 	else:
 		input_file_is_remote = bool(re.match("^(ftp|https?)://", input_file))
@@ -245,7 +245,7 @@ sitemaps, dupespotter, warc_max_size, ua, input_file, wpull_args, start_url):
 	if wpull_args:
 		args += shlex.split(wpull_args)
 
-	if start_url is not None:
+	if start_url:
 		args.extend(start_url)
 	else:
 		args += ["--input-file", DIR_input_file]
