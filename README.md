@@ -177,6 +177,8 @@ Options can come before or after the URL.
 	arguments can contain spaces if quoted, e.g.
 	`--wpull-args="--youtube-dl \"--youtube-dl-exe=/My Documents/youtube-dl\""`
 
+	Also useful: `--wpull-args=--no-skip-getaddrinfo` to respect `/etc/hosts` entries.
+
 *	`--help`: print help text.
 
 
