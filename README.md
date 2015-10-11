@@ -29,6 +29,7 @@ grab-site will manage to crawl a site with ~10M pages.
 Note: grab-site currently **does not work with Python 3.5**; please use Python 3.4 instead.
 
 
+
 Install on Ubuntu
 ---
 On Ubuntu 14.04.1 or newer:
@@ -44,6 +45,7 @@ To avoid having to type out `~/.local/bin/` below, add this to your
 ```
 PATH="$PATH:$HOME/.local/bin"
 ```
+
 
 
 Install on OS X
@@ -69,6 +71,7 @@ PATH="$PATH:$HOME/Library/Python/3.4/bin"
 ```
 
 
+
 Upgrade an existing install
 ---
 To update to the latest grab-site, simply run `pip3 install` again:
@@ -78,6 +81,7 @@ pip3 install --user git+https://github.com/ludios/grab-site
 ```
 
 To upgrade all of grab-site's dependencies, add the `--upgrade` option (not advised unless you are having problems).
+
 
 
 Usage
@@ -182,6 +186,7 @@ Options can come before or after the URL.
 *	`--help`: print help text.
 
 
+
 Changing ignores during the crawl
 ---
 While the crawl is running, you can edit `DIR/ignores` and `DIR/igsets`; the
@@ -194,6 +199,7 @@ to use in addition to the ignore sets.
 
 You can `rm DIR/igoff` to display all URLs that are being filtered out
 by the ignores, and `touch DIR/igoff` to turn it back off.
+
 
 
 Inspecting the URL queue
@@ -217,10 +223,32 @@ You may want to pipe the output to `sort` and `less`:
 ```
 
 
+
+Grabbing a site that requires a cookie
+---
+1.	Log into the site in Chrome.
+2.	Open the developer tools with F12.
+3.	Switch to the **Network** tab of the developer tools.
+4.	Hit F5 to reload the page.  The developer tools will stay open and capture the HTTP requests.
+5.	Scroll up in the list of network events and click on the first request.
+6.	In the right pane, click the **Headers** tab.
+7.	Scroll down to the **Request Headers** section.
+8.	Copy the **Cookie:** value.
+9.	Start grab-site with:
+
+```
+grab-site --wpull-args="--header=\"Cookie: COOKIE_VALUE\"" URL
+```
+
+Note: do **not** use `document.cookie` in the developer tools **Console** because it does not include `HttpOnly` cookies.
+
+
+
 Stopping a crawl
 ---
 You can `touch DIR/stop` or press ctrl-c, which will do the same.  You will
 have to wait for the current downloads to finish.
+
 
 
 Advanced `gs-server` options
@@ -239,6 +267,7 @@ These environmental variables control which server each `grab-site` process conn
 
 *	`GRAB_SITE_WS_HOST` (default 127.0.0.1)
 *	`GRAB_SITE_WS_PORT` (default 29001)
+
 
 
 Viewing the content in your WARC archives
@@ -261,6 +290,21 @@ And use it with:
 then point your browser to http://127.0.0.1:8090/
 
 
+
+Inspecting WARC files in the terminal
+---
+`zless` is a wrapper over `less` that can be used to view raw WARC content:
+
+```
+zless DIR/FILE.warc.gz
+```
+
+`zless -S` will turn off line wrapping.
+
+Note that grab-site requests uncompressed HTTP responses to avoid double-compression in .warc.gz files and to make zless output more useful.  However, some servers send compressed responses anyway.
+
+
+
 Thanks
 ---
 grab-site is made possible only because of [wpull](https://github.com/chfoo/wpull),
@@ -274,6 +318,7 @@ Thanks to [David Yip](https://github.com/yipdw), who created
 [ArchiveBot](https://github.com/ArchiveTeam/ArchiveBot).  The wpull
 hooks in ArchiveBot served as the basis for grab-site.  The original ArchiveBot
 dashboard inspired the newer dashboard now used in both projects.
+
 
 
 Help
