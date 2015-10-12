@@ -28,6 +28,26 @@ grab-site will manage to crawl a site with ~10M pages.
 
 Note: grab-site currently **does not work with Python 3.5**; please use Python 3.4 instead.
 
+<!-- START doctoc generated TOC please keep comment here to allow auto update -->
+<!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
+**Contents**
+
+- [Install on Ubuntu](#install-on-ubuntu)
+- [Install on OS X](#install-on-os-x)
+- [Upgrade an existing install](#upgrade-an-existing-install)
+- [Usage](#usage)
+  - [Options, ordered by importance](#options-ordered-by-importance)
+- [Changing ignores during the crawl](#changing-ignores-during-the-crawl)
+- [Inspecting the URL queue](#inspecting-the-url-queue)
+- [Grabbing a site that requires a cookie](#grabbing-a-site-that-requires-a-cookie)
+- [Stopping a crawl](#stopping-a-crawl)
+- [Advanced `gs-server` options](#advanced-gs-server-options)
+- [Viewing the content in your WARC archives](#viewing-the-content-in-your-warc-archives)
+- [Inspecting WARC files in the terminal](#inspecting-warc-files-in-the-terminal)
+- [Thanks](#thanks)
+- [Help](#help)
+
+<!-- END doctoc generated TOC please keep comment here to allow auto update -->
 
 
 Install on Ubuntu
