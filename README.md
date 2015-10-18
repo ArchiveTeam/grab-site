@@ -70,7 +70,7 @@ PATH="$PATH:$HOME/.local/bin"
 
 Install on OS X
 ---
-On OS X 10.10:
+On OS X 10.10 or 10.11:
 
 1.	If xcode is not already installed, type `gcc` in Terminal; you will be
 	prompted to install the command-line developer tools.  Click 'Install'.
