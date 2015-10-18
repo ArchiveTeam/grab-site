@@ -75,8 +75,9 @@ On OS X 10.10 or 10.11:
 1.	If xcode is not already installed, type `gcc` in Terminal; you will be
 	prompted to install the command-line developer tools.  Click 'Install'.
 
-2.	If Python 3 is not already installed, install Python 3.4.3 using the
-	installer from https://www.python.org/downloads/release/python-343/
+2.	If Python 3.4.x is not already installed (type `python3.4 -V`),
+	install Python 3.4.3 using the installer from
+	https://www.python.org/downloads/release/python-343/
 
 3.	`pip3 install --user git+https://github.com/ludios/grab-site`
 
