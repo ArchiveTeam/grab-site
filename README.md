@@ -245,26 +245,6 @@ You may want to pipe the output to `sort` and `less`:
 
 
 
-Grabbing a site that requires a cookie
----
-1.	Log into the site in Chrome.
-2.	Open the developer tools with F12.
-3.	Switch to the **Network** tab of the developer tools.
-4.	Hit F5 to reload the page.  The developer tools will stay open and capture the HTTP requests.
-5.	Scroll up in the list of network events and click on the first request.
-6.	In the right pane, click the **Headers** tab.
-7.	Scroll down to the **Request Headers** section.
-8.	Copy the **Cookie:** value.
-9.	Start grab-site with:
-
-```
-grab-site --wpull-args="--header=\"Cookie: COOKIE_VALUE\"" URL
-```
-
-Note: do **not** use `document.cookie` in the developer tools **Console** because it does not include `HttpOnly` cookies.
-
-
-
 Stopping a crawl
 ---
 You can `touch DIR/stop` or press ctrl-c, which will do the same.  You will
