@@ -39,7 +39,6 @@ Note: grab-site currently **does not work with Python 3.5**; please use Python 3
   - [Options, ordered by importance](#options-ordered-by-importance)
 - [Changing ignores during the crawl](#changing-ignores-during-the-crawl)
 - [Inspecting the URL queue](#inspecting-the-url-queue)
-- [Grabbing a site that requires a cookie](#grabbing-a-site-that-requires-a-cookie)
 - [Stopping a crawl](#stopping-a-crawl)
 - [Advanced `gs-server` options](#advanced-gs-server-options)
 - [Viewing the content in your WARC archives](#viewing-the-content-in-your-warc-archives)
