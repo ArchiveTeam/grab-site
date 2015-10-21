@@ -51,11 +51,18 @@ Note: grab-site currently **does not work with Python 3.5**; please use Python 3
 
 Install on Ubuntu
 ---
-On Ubuntu 14.04.1 or newer:
+On Ubuntu 14.04, 14.10, or 15.04:
 
 ```
 sudo apt-get install --no-install-recommends git build-essential python3-dev python3-pip
 pip3 install --user git+https://github.com/ludios/grab-site
+```
+
+On Ubuntu 15.10:
+
+```
+sudo apt-get install --no-install-recommends git build-essential python3.4 python3.4-dev python3-pip
+python3.4 `which pip3` install --user git+https://github.com/ludios/grab-site
 ```
 
 To avoid having to type out `~/.local/bin/` below, add this to your
