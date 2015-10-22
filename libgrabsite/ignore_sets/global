@@ -152,7 +152,7 @@
 
 # Avoid following any kind of 'share' or 'bookmark' link
 ^https?://(www|draft)\.blogger\.com/(navbar\.g|post-edit\.g|delete-comment\.g|comment-iframe\.g|share-post\.g|email-post\.g|blog-this\.g|delete-backlink\.g|rearrange|blog_this\.pyra)\?
-^https?://www\.tumblr\.com/(impixu\?|share(/link/?)?\?|reblog/)
+^https?://(www|px\.srvcs)\.tumblr\.com/(impixu\?|share(/link/?)?\?|reblog/)
 ^https?://plus\.google\.com/share\?
 ^https?://(apis|plusone)\.google\.com/_/\+1/
 ^https?://(ssl\.|www\.)?reddit\.com/(login\?dest=|submit\?|static/button/button)
