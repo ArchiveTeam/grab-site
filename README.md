@@ -102,7 +102,7 @@ PATH="$PATH:$HOME/Library/Python/3.4/bin"
 Upgrade an existing install
 ---
 
-To update to the latest grab-site, simply run `pip3 install` again.
+To update to the latest grab-site, simply run the `pip3 install ...` step again.
 
 On Ubuntu 14.04-15.04 or OS X:
 
