@@ -101,10 +101,19 @@ PATH="$PATH:$HOME/Library/Python/3.4/bin"
 
 Upgrade an existing install
 ---
-To update to the latest grab-site, simply run `pip3 install` again:
+
+To update to the latest grab-site, simply run `pip3 install` again.
+
+On Ubuntu 14.04-15.04 or OS X:
 
 ```
 pip3 install --user git+https://github.com/ludios/grab-site
+```
+
+On Ubuntu 15.10:
+
+```
+python3.4 `which pip3` install --user git+https://github.com/ludios/grab-site
 ```
 
 To upgrade all of grab-site's dependencies, add the `--upgrade` option (not advised unless you are having problems).
