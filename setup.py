@@ -5,7 +5,21 @@ try:
 except ImportError:
 	from distutils.core import setup
 
+import os
 import libgrabsite
+
+install_requires = [
+	"click>=4.1",
+	"wpull>=1.2.2",
+	"manhole>=1.0.0",
+	"lmdb>=0.86",
+	"autobahn>=0.10.4",
+	"aiohttp>=0.16.6",
+	"trollius>=2"
+]
+
+if 'GRAB_SITE_NO_CCHARDET' not in os.environ:
+	install_requires.append("cchardet>=0.3.5")
 
 setup(
 	name="grab-site",
@@ -24,14 +38,5 @@ setup(
 	scripts=["grab-site", "gs-server", "gs-dump-urls"],
 	packages=["libgrabsite"],
 	package_data={"libgrabsite": ["*.html", "ignore_sets/*"]},
-	install_requires=[
-		"click>=4.1",
-		"wpull>=1.2.2",
-		"cchardet>=0.3.5",
-		"manhole>=1.0.0",
-		"lmdb>=0.86",
-		"autobahn>=0.10.4",
-		"aiohttp>=0.16.6",
-		"trollius>=2"
-	],
+	install_requires=install_requires
 )
