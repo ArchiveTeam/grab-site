@@ -22,7 +22,7 @@ class DupesOnDisk(object):
 					metasync=False,
 					# http://lmdb.readthedocs.org/en/release/#lmdb.Environment
 					map_size=map_size)
-			except (OverflowError, lmdb.MemoryError) as e:
+			except (OverflowError, lmdb.MemoryError, lmdb.Error) as e:
 				last_error = e
 			else:
 				print("Created lmdb db with map_size=%d" % (map_size,))
