@@ -229,12 +229,17 @@ sitemaps, dupespotter, warc_max_size, ua, input_file, wpull_args, start_url):
 		"--debug-manhole",
 		"--strip-session-id",
 		"--escaped-fragment",
-		"--monitor-disk", "400m",
-		"--monitor-memory", "10k",
 		"--level", level,
 		"--page-requisites-level", page_requisites_level,
 		"--span-hosts-allow", span_hosts_allow,
 	]
+	# psutil is not available on Windows and therefore wpull's --monitor-*
+	# options are also not available.
+	if os.name != "nt" and sys.platform != "cygwin":
+		args += [
+			"--monitor-disk", "400m",
+			"--monitor-memory", "10k"
+		]
 
 	if sitemaps:
 		args += ["--sitemaps"]
