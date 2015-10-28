@@ -226,7 +226,6 @@ sitemaps, dupespotter, warc_max_size, ua, input_file, wpull_args, start_url):
 		"--warc-file", "{}/{}".format(working_dir, warc_name),
 		"--warc-max-size", str(warc_max_size),
 		"--warc-cdx",
-		"--debug-manhole",
 		"--strip-session-id",
 		"--escaped-fragment",
 		"--level", level,
@@ -238,7 +237,8 @@ sitemaps, dupespotter, warc_max_size, ua, input_file, wpull_args, start_url):
 	if os.name != "nt" and sys.platform != "cygwin":
 		args += [
 			"--monitor-disk", "400m",
-			"--monitor-memory", "10k"
+			"--monitor-memory", "10k",
+			"--debug-manhole"
 		]
 
 	if sitemaps:
