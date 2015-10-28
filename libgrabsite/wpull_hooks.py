@@ -109,8 +109,12 @@ def forceful_stop_callback():
 	loop.stop()
 
 
-loop.add_signal_handler(signal.SIGINT, graceful_stop_callback)
-loop.add_signal_handler(signal.SIGTERM, forceful_stop_callback)
+try:
+	loop.add_signal_handler(signal.SIGINT, graceful_stop_callback)
+	loop.add_signal_handler(signal.SIGTERM, forceful_stop_callback)
+except NotImplementedError:
+	# Not supported on Windows
+	pass
 
 
 ignore_sets_path = os.path.join(os.path.dirname(libgrabsite.__file__), "ignore_sets")
