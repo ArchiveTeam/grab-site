@@ -235,9 +235,17 @@ sitemaps, dupespotter, warc_max_size, ua, input_file, wpull_args, start_url):
 	# psutil is not available on Windows and therefore wpull's --monitor-*
 	# options are also not available.
 	if os.name != "nt" and sys.platform != "cygwin":
+		# psutil may also just be not installed
+		try:
+			import psutil
+		except ImportError:
+			psutil = None
+		if psutil is not None:
+			args += [
+				"--monitor-disk", "400m",
+				"--monitor-memory", "10k",
+			]
 		args += [
-			"--monitor-disk", "400m",
-			"--monitor-memory", "10k",
 			"--debug-manhole"
 		]
 
