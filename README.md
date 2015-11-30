@@ -142,6 +142,10 @@ grab-site outputs WARCs, logs, and control files to a new subdirectory in the
 directory from which you launched `grab-site`, referred to here as "DIR".
 (Use `ls -lrt` to find it.)
 
+warcprox users: [warcprox](https://github.com/internetarchive/warcprox) breaks the
+dashboard's WebSocket; please make your browser skip the proxy for whichever
+host/IP you're using to reach the dashboard.
+
 ### Options, ordered by importance
 
 Options can come before or after the URL.
