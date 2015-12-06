@@ -36,7 +36,7 @@ Note: grab-site currently **does not work with Python 3.5**; please use Python 3
 - [Install on OS X](#install-on-os-x)
 - [Upgrade an existing install](#upgrade-an-existing-install)
 - [Usage](#usage)
-  - [Options, ordered by importance](#options-ordered-by-importance)
+  - [`grab-site` options, ordered by importance](#grab-site-options-ordered-by-importance)
 - [Changing ignores during the crawl](#changing-ignores-during-the-crawl)
 - [Inspecting the URL queue](#inspecting-the-url-queue)
 - [Stopping a crawl](#stopping-a-crawl)
@@ -146,7 +146,7 @@ warcprox users: [warcprox](https://github.com/internetarchive/warcprox) breaks t
 dashboard's WebSocket; please make your browser skip the proxy for whichever
 host/IP you're using to reach the dashboard.
 
-### Options, ordered by importance
+### `grab-site` options, ordered by importance
 
 Options can come before or after the URL.
 
