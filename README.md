@@ -37,6 +37,7 @@ Note: grab-site currently **does not work with Python 3.5**; please use Python 3
 - [Upgrade an existing install](#upgrade-an-existing-install)
 - [Usage](#usage)
   - [`grab-site` options, ordered by importance](#grab-site-options-ordered-by-importance)
+  - [Tips for specific websites](#tips-for-specific-websites)
 - [Changing ignores during the crawl](#changing-ignores-during-the-crawl)
 - [Inspecting the URL queue](#inspecting-the-url-queue)
 - [Stopping a crawl](#stopping-a-crawl)
@@ -224,6 +225,50 @@ Options can come before or after the URL.
 	Also useful: `--wpull-args=--no-skip-getaddrinfo` to respect `/etc/hosts` entries.
 
 *	`--help`: print help text.
+
+### Tips for specific websites
+
+#### Static websites; WordPress blogs
+
+The defaults usually work fine.
+
+### Blogger / blogspot.com blogs
+
+If you want to archive X.blogspot.com from outside the US, start the crawl on http://X.blogspot.com/ncr (ncr = no country redirect) to avoid getting redirected to another TLD.  Note that /ncr sets an `NCR` cookie that expires after a few weeks.
+
+Some blogspot.com blogs use "[Dynamic Views](https://support.google.com/blogger/answer/1229061?hl=en)" themes that require JavaScript and serve absolutely no HTML content.  In rare cases, you can get JavaScript-free pages by appending `?m=1` (e.g. http://happinessbeyondthought.blogspot.com/?m=1).  Otherwise, you can archive parts of these blogs through Google Cache instead (e.g. https://webcache.googleusercontent.com/search?q=cache:http://blog.datomic.com/) or by using http://archive.is/ instead of grab-site.  If neither of these options work, try [using grab-site with phantomjs](https://github.com/ludios/grab-site/issues/55#issuecomment-162118702).
+
+### Tumblr blogs
+
+Use `--igsets=singletumblr` to avoid crawling the homepages of other tumblr blogs.
+
+If you don't care about who liked or reblogged a post, add `\?from_c=` to the crawl's `ignores`.
+
+Some tumblr blogs appear to require JavaScript, but they are actually just hiding the page content with CSS.  You are still likely to get a complete crawl.  (See the links in the page source for http://X.tumblr.com/archive).
+
+### Directory listings ("Index of ...")
+
+Use `--no-dupespotter` to avoid triggering false positives on the duplicate page detector.  Without it, the crawl may miss large parts of the directory tree.
+
+### Very large websites
+
+Use `--no-offsite-links` to stay on the main website and avoid crawling linked pages on other domains.
+
+### Websites that are likely to ban you for crawling fast
+
+Use `--concurrency=1 --delay=500-1500`.
+
+### MediaWiki sites with English language
+
+Use `--igsets=mediawiki`.  Note that this ignore set ignores old page revisions.
+
+### MediaWiki sites with non-English language
+
+You will probably have to add ignores with translated `Special:*` URLs based on [ignore_sets/mediawiki](https://github.com/ludios/grab-site/blob/master/libgrabsite/ignore_sets/mediawiki).
+
+### Forums
+
+Forums require more manual intervention with ignore patterns.  `--igsets=[forums](https://github.com/ludios/grab-site/blob/master/libgrabsite/ignore_sets/forums)` is often useful for non-SMF forums, but you will have to add other ignore patterns, including one to ignore individual-forum-post pages if there are too many posts to crawl.  (Generally, crawling the thread pages is enough.)
 
 
 
