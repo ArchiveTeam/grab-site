@@ -248,7 +248,7 @@ Some tumblr blogs appear to require JavaScript, but they are actually just hidin
 
 #### Subreddits
 
-Use [`--igsets=reddit`](https://github.com/ludios/grab-site/blob/master/libgrabsite/ignore_sets/reddit).
+Use [`--igsets=reddit`](https://github.com/ludios/grab-site/blob/master/libgrabsite/ignore_sets/reddit) and add a `/` at the end of the URL to avoid crawling all subreddits.
 
 When crawling a subreddit, you **must** get the casing of the subreddit right for the recursive crawl to work.  For example,
 
