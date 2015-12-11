@@ -246,6 +246,24 @@ If you don't care about who liked or reblogged a post, add `\?from_c=` to the cr
 
 Some tumblr blogs appear to require JavaScript, but they are actually just hiding the page content with CSS.  You are still likely to get a complete crawl.  (See the links in the page source for http://X.tumblr.com/archive).
 
+#### Subreddits
+
+Use [`--igsets=reddit`](https://github.com/ludios/grab-site/blob/master/libgrabsite/ignore_sets/reddit).
+
+When crawling a subreddit, you **must** get the casing of the subreddit right for the recursive crawl to work.  For example,
+
+```
+grab-site https://www.reddit.com/r/Oculus/ --igsets=reddit
+```
+
+will crawl only a few pages instead of the entire subreddit.  The correct casing is:
+
+```
+grab-site https://www.reddit.com/r/oculus/ --igsets=reddit
+```
+
+You can hover over the "Hot"/"New"/... links at the top of the page to see the correct casing.
+
 #### Directory listings ("Index of ...")
 
 Use `--no-dupespotter` to avoid triggering false positives on the duplicate page detector.  Without it, the crawl may miss large parts of the directory tree.
