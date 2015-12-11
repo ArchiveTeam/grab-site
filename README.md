@@ -290,7 +290,7 @@ Forums require more manual intervention with ignore patterns.  [`--igsets=forums
 
 #### Websites whose domains have just expired but are still up at the webhost
 
-Use a [DNS History](https://www.google.com/search?q=historical+OR+history+dns) service to find the old IP address (the DNS "A" record) for the domain.  Add a line to your `/etc/hosts` to point the domain to the old IP.  Start a crawl with `--wpull-args=--no-skip-getaddrinfo` to make wpull use `/etc/hosts`.
+Use a [DNS history](https://www.google.com/search?q=historical+OR+history+dns) service to find the old IP address (the DNS "A" record) for the domain.  Add a line to your `/etc/hosts` to point the domain to the old IP.  Start a crawl with `--wpull-args=--no-skip-getaddrinfo` to make wpull use `/etc/hosts`.
 
 
 
