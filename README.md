@@ -240,7 +240,7 @@ Some blogspot.com blogs use "[Dynamic Views](https://support.google.com/blogger/
 
 #### Tumblr blogs
 
-Use `--igsets=singletumblr` to avoid crawling the homepages of other tumblr blogs.
+Use `--igsets=`[`singletumblr`](https://github.com/ludios/grab-site/blob/master/libgrabsite/ignore_sets/singletumblr) to avoid crawling the homepages of other tumblr blogs.
 
 If you don't care about who liked or reblogged a post, add `\?from_c=` to the crawl's `ignores`.
 
@@ -260,7 +260,7 @@ Use `--concurrency=1 --delay=500-1500`.
 
 #### MediaWiki sites with English language
 
-Use `--igsets=mediawiki`.  Note that this ignore set ignores old page revisions.
+Use `--igsets=`[`mediawiki`](https://github.com/ludios/grab-site/blob/master/libgrabsite/ignore_sets/mediawiki).  Note that this ignore set ignores old page revisions.
 
 #### MediaWiki sites with non-English language
 
@@ -268,7 +268,7 @@ You will probably have to add ignores with translated `Special:*` URLs based on 
 
 #### Forums
 
-Forums require more manual intervention with ignore patterns.  `--igsets=[forums](https://github.com/ludios/grab-site/blob/master/libgrabsite/ignore_sets/forums)` is often useful for non-SMF forums, but you will have to add other ignore patterns, including one to ignore individual-forum-post pages if there are too many posts to crawl.  (Generally, crawling the thread pages is enough.)
+Forums require more manual intervention with ignore patterns.  `--igsets=`[`forums`](https://github.com/ludios/grab-site/blob/master/libgrabsite/ignore_sets/forums) is often useful for non-SMF forums, but you will have to add other ignore patterns, including one to ignore individual-forum-post pages if there are too many posts to crawl.  (Generally, crawling the thread pages is enough.)
 
 
 
