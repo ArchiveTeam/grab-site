@@ -231,7 +231,9 @@ sitemaps, dupespotter, warc_max_size, ua, input_file, wpull_args, start_url):
 		"--level", level,
 		"--page-requisites-level", page_requisites_level,
 		"--span-hosts-allow", span_hosts_allow,
+		"--load-cookies", "{}/default_cookies.txt".format(LIBGRABSITE)
 	]
+
 	# psutil is not available on Windows and therefore wpull's --monitor-*
 	# options are also not available.
 	if os.name != "nt" and sys.platform != "cygwin":
