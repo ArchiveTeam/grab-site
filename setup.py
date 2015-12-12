@@ -6,6 +6,7 @@ except ImportError:
 	from distutils.core import setup
 
 import os
+import sys
 import libgrabsite
 
 install_requires = [
@@ -14,9 +15,15 @@ install_requires = [
 	"manhole>=1.0.0",
 	"lmdb>=0.86",
 	"autobahn>=0.10.4",
-	"aiohttp>=0.16.6",
 	"trollius>=2"
 ]
+
+# aiohttp 0.18.0 removed support for Python 3.4.0
+# https://github.com/KeepSafe/aiohttp/issues/676
+if sys.version_info[:3] < (3, 4, 1):
+	install_requires.append("aiohttp>=0.16.6,<0.18.0")
+else:
+	install_requires.append("aiohttp>=0.16.6")
 
 if 'GRAB_SITE_NO_CCHARDET' not in os.environ:
 	install_requires.append("cchardet>=0.3.5")
