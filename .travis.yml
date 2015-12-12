@@ -12,6 +12,6 @@ install:
   - travis_retry pip3 install -q .
 
 script:
-  - ~/.local/bin/grab-site --help
-  - ~/.local/bin/gs-dump-urls --help
-  - ~/.local/bin/grab-site --1 https://github.com/ludios/grab-site
+  - grab-site --help
+  - gs-dump-urls --help
+  - grab-site --1 https://github.com/ludios/grab-site
