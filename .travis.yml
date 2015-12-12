@@ -9,7 +9,7 @@ python:
   - 3.4
 
 install:
-  - travis_retry pip3 install -q --user .
+  - travis_retry pip3 install -q .
 
 script:
   - ~/.local/bin/grab-site --help
