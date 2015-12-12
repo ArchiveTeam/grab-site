@@ -236,9 +236,9 @@ The defaults usually work fine.
 
 #### Blogger / blogspot.com blogs
 
-If you want to archive X.blogspot.com from outside the US, start the crawl on http://X.blogspot.com/ncr (ncr = no country redirect) to avoid getting redirected to another TLD.  Note that /ncr sets an `NCR` cookie that expires after a few weeks.
+The defaults work fine except for blogs with a JavaScript-only Dynamic Views theme.
 
-Some blogspot.com blogs use "[Dynamic Views](https://support.google.com/blogger/answer/1229061?hl=en)" themes that require JavaScript and serve absolutely no HTML content.  In rare cases, you can get JavaScript-free pages by appending `?m=1` (e.g. http://happinessbeyondthought.blogspot.com/?m=1).  Otherwise, you can archive parts of these blogs through Google Cache instead (e.g. https://webcache.googleusercontent.com/search?q=cache:http://blog.datomic.com/) or by using http://archive.is/ instead of grab-site.  If neither of these options work, try [using grab-site with phantomjs](https://github.com/ludios/grab-site/issues/55#issuecomment-162118702).
+Some blogspot.com blogs use "[Dynamic Views](https://support.google.com/blogger/answer/1229061?hl=en)" themes that require JavaScript and serve absolutely no HTML content.  In rare cases, you can get JavaScript-free pages by appending `?m=1` ([example](http://happinessbeyondthought.blogspot.com/?m=1)).  Otherwise, you can archive parts of these blogs through Google Cache instead ([example](https://webcache.googleusercontent.com/search?q=cache:http://blog.datomic.com/)) or by using http://archive.is/ instead of grab-site.  If neither of these options work, try [using grab-site with phantomjs](https://github.com/ludios/grab-site/issues/55#issuecomment-162118702).
 
 #### Tumblr blogs
 
