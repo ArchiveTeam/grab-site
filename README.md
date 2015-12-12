@@ -1,6 +1,8 @@
 grab-site
 ===
 
+[![Build status][travis-image]][travis-url]
+
 grab-site is an easy preconfigured web crawler designed for backing up websites.
 Give grab-site a URL and it will recursively crawl the site and write
 [WARC files](http://www.archiveteam.org/index.php?title=The_WARC_Ecosystem).
@@ -415,3 +417,8 @@ If you are affected by an existing issue, please +1 it.
 
 If a problem happens when running just `~/.local/bin/wpull -r URL` (no grab-site),
 you may want to report it to [wpull/issues](https://github.com/chfoo/wpull/issues) instead.
+
+
+
+[travis-image]: https://img.shields.io/travis/ludios/grab-site.svg
+[travis-url]: https://travis-ci.org/ludios/grab-site
