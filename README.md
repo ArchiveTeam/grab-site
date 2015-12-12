@@ -219,6 +219,13 @@ Options can come before or after the URL.
 
 *	`--ua=STRING`: Send User-Agent: `STRING` instead of pretending to be Firefox on Windows.
 
+*	`--id=ID`: Use id `ID` for the crawl instead of a random 128-bit id. This must be unique for every crawl.
+
+*	`--dir=DIR`: Put control files, temporary files, and unfinished WARCs in `DIR`
+	(default: a directory name based on the URL, date, and first 8 characters of the id).
+
+*	`--finished-warc-dir=FINISHED_WARC_DIR`: Move finished `.warc.gz` and `.cdx` files to this directory.
+
 *	`--wpull-args=ARGS`: String containing additional arguments to pass to wpull;
 	see `~/.local/bin/wpull --help`.  `ARGS` is split with `shlex.split` and individual
 	arguments can contain spaces if quoted, e.g.

@@ -104,6 +104,19 @@ def print_version(ctx, param, value):
 		'--no-dupespotter to disable.  Disable this for sites that are '
 		'directory listings.')
 
+@click.option('--id', default=None, type=str, metavar='ID',
+	help=
+		'Use id ID for the crawl instead of a random 128-bit id. '
+		'This must be unique for every crawl.')
+
+@click.option('--dir', default=None, type=str, metavar='DIR', help=
+	'Put control files, temporary files, and unfinished WARCs in DIR '
+	'(default: a directory name based on the URL, date, and first 8 '
+	'characters of the id).')
+
+@click.option('--finished-warc-dir', default=None, type=str, metavar='FINISHED_WARC_DIR',
+	help='Move finished .warc.gz and .cdx files to this directory.')
+
 @click.option('--version', is_flag=True, callback=print_version,
 	expose_value=False, is_eager=True, help='Print version and exit.')
 
@@ -111,7 +124,8 @@ def print_version(ctx, param, value):
 
 def main(concurrency, concurrent, delay, recursive, offsite_links, igsets,
 ignore_sets, igon, video, level, page_requisites_level, max_content_length,
-sitemaps, dupespotter, warc_max_size, ua, input_file, wpull_args, start_url):
+sitemaps, dupespotter, warc_max_size, ua, input_file, wpull_args, start_url,
+id, dir, finished_warc_dir):
 	if not (input_file or start_url):
 		print("Neither a START_URL or --input-file= was specified; see --help", file=sys.stderr)
 		sys.exit(1)
@@ -138,13 +152,17 @@ sitemaps, dupespotter, warc_max_size, ua, input_file, wpull_args, start_url):
 		else:
 			claim_start_url = 'file://' + os.path.abspath(input_file)
 
-	id = binascii.hexlify(os.urandom(16)).decode('utf-8')
+	if not id:
+		id = binascii.hexlify(os.urandom(16)).decode('utf-8')
 	ymd = datetime.datetime.utcnow().isoformat()[:10]
 	no_proto_no_trailing = claim_start_url.split('://', 1)[1].rstrip('/')[:100]
 	warc_name = "{}-{}-{}".format(re.sub('[^-_a-zA-Z0-9%\.,;@+=]', '-', no_proto_no_trailing), ymd, id[:8])
 
 	# make absolute because wpull will start in temp/
-	working_dir = os.path.abspath(warc_name)
+	if not dir:
+		working_dir = os.path.abspath(warc_name)
+	else:
+		working_dir = os.path.abspath(dir)
 	os.makedirs(working_dir)
 	temp_dir = os.path.join(working_dir, "temp")
 	os.makedirs(temp_dir)
@@ -250,6 +268,9 @@ sitemaps, dupespotter, warc_max_size, ua, input_file, wpull_args, start_url):
 		args += [
 			"--debug-manhole"
 		]
+
+	if finished_warc_dir is not None:
+		args += ["--warc-move", finished_warc_dir]
 
 	if sitemaps:
 		args += ["--sitemaps"]
