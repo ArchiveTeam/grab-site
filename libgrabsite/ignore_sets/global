@@ -220,6 +220,7 @@
 ^https?://static\.licdn\.com/sc/p/.+/f//
 ^https?://tm\.uol\.com\.br/h/.+/h/
 ^https?://((s-)?static\.ak\.fbcdn\.net|(connect\.|www\.)?facebook\.com)/connect\.php/js/.*rsrc\.php
+^https?://web\.archive\.org/web/[^/]+/https?\:/[^/]+\.addthis\.com/.+/static/.+/static/
 
 # This specifically catches only *invalid* flickr.com links extracted by wpull
 ^https?://www\.flickr\.com/(explore/|photos/[^/]+/(sets/\d+/(page\d+/)?)?)\d+_[a-f0-9]+(_[a-z])?\.jpg$
