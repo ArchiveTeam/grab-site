@@ -156,7 +156,7 @@ id, dir, finished_warc_dir):
 		id = binascii.hexlify(os.urandom(16)).decode('utf-8')
 	ymd = datetime.datetime.utcnow().isoformat()[:10]
 	no_proto_no_trailing = claim_start_url.split('://', 1)[1].rstrip('/')[:100]
-	warc_name = "{}-{}-{}".format(re.sub('[^-_a-zA-Z0-9%\.,;@+=]', '-', no_proto_no_trailing), ymd, id[:8])
+	warc_name = "{}-{}-{}".format(re.sub('[^-_a-zA-Z0-9%\.,;@+=]', '-', no_proto_no_trailing).lstrip('-'), ymd, id[:8])
 
 	# make absolute because wpull will start in temp/
 	if not dir:
