@@ -56,7 +56,7 @@ Install on Ubuntu
 ---
 On Ubuntu 14.04-15.10:
 
-```
+```bash
 sudo apt-get update
 sudo apt-get install --no-install-recommends git build-essential python3-dev python3-pip
 pip3 install --user git+https://github.com/ludios/grab-site
@@ -65,7 +65,7 @@ pip3 install --user git+https://github.com/ludios/grab-site
 To avoid having to type out `~/.local/bin/` below, add this to your
 `~/.bashrc` or `~/.zshrc`:
 
-```
+```bash
 PATH="$PATH:$HOME/.local/bin"
 ```
 
@@ -90,7 +90,7 @@ On OS X 10.10 or 10.11:
 To avoid having to type out `~/Library/Python/3.4/bin/` below,
 add this to your `~/.bash_profile` (which may not exist yet):
 
-```
+```bash
 PATH="$PATH:$HOME/Library/Python/3.4/bin"
 ```
 
@@ -101,7 +101,7 @@ Upgrade an existing install
 
 To update to the latest grab-site, simply run the `pip3 install ...` step again.
 
-```
+```bash
 pip3 install --user git+https://github.com/ludios/grab-site
 ```
 
@@ -113,7 +113,7 @@ Usage
 ---
 First, start the dashboard with:
 
-```
+```bash
 ~/.local/bin/gs-server
 ```
 
@@ -121,7 +121,7 @@ and point your browser to http://127.0.0.1:29000/
 
 Then, start as many crawls as you want with:
 
-```
+```bash
 ~/.local/bin/grab-site URL
 ```
 
@@ -247,13 +247,13 @@ Use [`--igsets=reddit`](https://github.com/ludios/grab-site/blob/master/libgrabs
 
 When crawling a subreddit, you **must** get the casing of the subreddit right for the recursive crawl to work.  For example,
 
-```
+```bash
 grab-site https://www.reddit.com/r/Oculus/ --igsets=reddit
 ```
 
 will crawl only a few pages instead of the entire subreddit.  The correct casing is:
 
-```
+```bash
 grab-site https://www.reddit.com/r/oculus/ --igsets=reddit
 ```
 
@@ -311,7 +311,7 @@ for adding ignores before grab-site crawls a large number of junk URLs.
 
 To dump the queue, run:
 
-```
+```bash
 ~/.local/bin/gs-dump-urls DIR/wpull.db todo
 ```
 
@@ -320,7 +320,7 @@ Four other statuses can be used besides `todo`:
 
 You may want to pipe the output to `sort` and `less`:
 
-```
+```bash
 ~/.local/bin/gs-dump-urls DIR/wpull.db todo | sort | less -S
 ```
 
@@ -358,14 +358,14 @@ You can use [ikreymer/webarchiveplayer](https://github.com/ikreymer/webarchivepl
 to view the content inside your WARC archives.  It requires Python 2, so install it with
 `pip` instead of `pip3`:
 
-```
+```bash
 sudo apt-get install --no-install-recommends git build-essential python-dev python-pip
 pip install --user git+https://github.com/ikreymer/webarchiveplayer
 ```
 
 And use it with:
 
-```
+```bash
 ~/.local/bin/webarchiveplayer <path to WARC>
 ```
 
@@ -377,7 +377,7 @@ Inspecting WARC files in the terminal
 ---
 `zless` is a wrapper over `less` that can be used to view raw WARC content:
 
-```
+```bash
 zless DIR/FILE.warc.gz
 ```
 
