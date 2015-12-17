@@ -54,18 +54,12 @@ Note: grab-site currently **does not work with Python 3.5**; please use Python 3
 
 Install on Ubuntu
 ---
-On Ubuntu 14.04, 14.10, or 15.04:
+On Ubuntu 14.04-15.10:
 
 ```
+sudo apt-get update
 sudo apt-get install --no-install-recommends git build-essential python3-dev python3-pip
 pip3 install --user git+https://github.com/ludios/grab-site
-```
-
-On Ubuntu 15.10:
-
-```
-sudo apt-get install --no-install-recommends git build-essential python3.4 python3.4-dev python3-pip
-python3.4 `which pip3` install --user git+https://github.com/ludios/grab-site
 ```
 
 To avoid having to type out `~/.local/bin/` below, add this to your
@@ -107,16 +101,8 @@ Upgrade an existing install
 
 To update to the latest grab-site, simply run the `pip3 install ...` step again.
 
-On Ubuntu 14.04-15.04 or OS X:
-
 ```
 pip3 install --user git+https://github.com/ludios/grab-site
-```
-
-On Ubuntu 15.10:
-
-```
-python3.4 `which pip3` install --user git+https://github.com/ludios/grab-site
 ```
 
 To upgrade all of grab-site's dependencies, add the `--upgrade` option (not advised unless you are having problems).
