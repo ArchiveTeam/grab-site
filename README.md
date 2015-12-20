@@ -124,7 +124,7 @@ PATH="$PATH:$HOME/Library/Python/3.4/bin"
 Upgrade an existing install
 ---
 
-To update to the latest grab-site, simply run the `pip3 install ...` step again.
+To update to the latest grab-site, simply run the `pip3 install ...` step again, in most cases:
 
 ```
 pip3 install --user git+https://github.com/ludios/grab-site
