@@ -87,6 +87,13 @@ Install on a Linux distribution lacking Python 3.4.x
 	~/.pyenv/versions/3.4.3/bin/pip3 install --user git+https://github.com/ludios/grab-site
 	```
 
+To avoid having to type out `~/.local/bin/` below, add this to your
+`~/.bashrc` or `~/.zshrc`:
+
+```
+PATH="$PATH:$HOME/.local/bin"
+```
+
 
 
 Install on OS X
