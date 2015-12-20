@@ -71,6 +71,21 @@ PATH="$PATH:$HOME/.local/bin"
 
 
 
+Install on a Linux distribution lacking Python 3.4.x
+---
+1.	Install git.
+
+2.	Install pyenv as described on https://github.com/yyuu/pyenv-installer#github-way-recommended
+
+3.	Install the packages needed to compile Python and its built-in sqlite3 module: https://github.com/yyuu/pyenv/wiki/Common-build-problems
+
+4.	```
+	~/.pyenv/bin/pyenv install 3.4.3
+	~/.pyenv/versions/3.4.3/bin/pip3 install --user git+https://github.com/ludios/grab-site
+	```
+
+
+
 Install on OS X
 ---
 On OS X 10.10 or 10.11:
