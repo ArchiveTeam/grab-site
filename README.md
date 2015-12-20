@@ -35,6 +35,7 @@ Note: grab-site currently **does not work with Python 3.5**; please use Python 3
 **Contents**
 
 - [Install on Ubuntu](#install-on-ubuntu)
+- [Install on a Linux distribution lacking Python 3.4.x](#install-on-a-linux-distribution-lacking-python-34x)
 - [Install on OS X](#install-on-os-x)
 - [Upgrade an existing install](#upgrade-an-existing-install)
 - [Usage](#usage)
