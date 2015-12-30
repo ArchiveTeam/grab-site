@@ -245,9 +245,9 @@
 # There are too many avatars on tumblr.com
 ^http://\d+\.media\.tumblr\.com/avatar_.+_16\.png$
 
-^http://www\.livejournal\.com/(tools/memadd|update|login)\.bml\?
-^http://[^\.]+\.livejournal\.com/.+/\*sup_ru/ru/UTF-8/
-^http://[^\.]+\.livejournal\.com/.+http://[^\.]+\.livejournal\.com/
+^https?://www\.livejournal\.com/(tools/memadd|update|(identity/)?login)\.bml\?
+^https?://[^\.]+\.livejournal\.com/.+/\*sup_ru/ru/UTF-8/
+^https?://[^\.]+\.livejournal\.com/.+http://[^\.]+\.livejournal\.com/
 
 ^https?://www\.dreamwidth\.org/tools/(memadd|tellafriend)\?
 
