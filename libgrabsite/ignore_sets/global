@@ -28,6 +28,8 @@
 /clientscript/.+/clientscript/clientscript/
 /clientscript/clientscript/clientscript/
 /lib/exe/.*lib[-_]exe[-_]lib[-_]exe[-_]
+^https?://{primary_netloc}/.*&amp;amp;amp;
+^https?://{primary_netloc}/.+/plugins/ultimate-social-media-plus/.+/like/like/
 
 # URLs that are very likely incorrectly extracted by wpull
 /(%5C)+(%22|%27)
