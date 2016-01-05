@@ -21,7 +21,8 @@ class GrabberServerProtocol(WebSocketServerProtocol):
 
 	def onClose(self, wasClean, code, reason):
 		print("{} disconnected".format(self.peer))
-		self.factory.clients.remove(self)
+		if self in self.factory.clients:
+			self.factory.clients.remove(self)
 
 	def broadcastToDashboards(self, obj):
 		for client in self.factory.clients:
