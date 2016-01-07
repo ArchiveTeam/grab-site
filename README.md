@@ -314,7 +314,7 @@ Use a [DNS history](https://www.google.com/search?q=historical+OR+history+dns) s
 
 #### twitter.com/user
 
-Use [webrecorder.io](https://webrecorder.io/) instead of grab-site.  Hit the 'Auto Scroll' button at the top.  Wait until it's done and unpress the Auto Scroll button.  Click the 'N MB' icon at the top and download your WARC file.
+Use [webrecorder.io](https://webrecorder.io/) instead of grab-site.  Enter a URL, then hit the 'Auto Scroll' button at the top.  Wait until it's done and unpress the Auto Scroll button.  Click the 'N MB' icon at the top and download your WARC file.
 
 
 
