@@ -312,6 +312,10 @@ Forums require more manual intervention with ignore patterns.  [`--igsets=forums
 
 Use a [DNS history](https://www.google.com/search?q=historical+OR+history+dns) service to find the old IP address (the DNS "A" record) for the domain.  Add a line to your `/etc/hosts` to point the domain to the old IP.  Start a crawl with `--wpull-args=--no-skip-getaddrinfo` to make wpull use `/etc/hosts`.
 
+#### twitter.com/user
+
+Use [webrecorder.io](https://webrecorder.io/) instead of grab-site.  Hit the 'Auto Scroll' button at the top.  Wait until it's done and unpress the Auto Scroll button.  Click the 'N MB' icon at the top and download your WARC file.
+
 
 
 Changing ignores during the crawl
