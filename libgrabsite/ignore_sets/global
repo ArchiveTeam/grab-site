@@ -52,6 +52,9 @@
 
 ^https?://www\.google\.com/recaptcha/(api|mailhide/d\?)
 
+# CAPTCHAs on ASP.NET sites
+^https?://[^/]+/.+/CaptchaImage\.axd
+
 # We don't want to change language
 ^https?://www\.flickr\.com/change_language\.gne
 
