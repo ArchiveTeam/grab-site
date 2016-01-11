@@ -248,7 +248,7 @@ Options can come before or after the URL.
 
 ### Tips for specific websites
 
-#### Static websites; WordPress blogs
+#### Static websites; WordPress blogs; Discourse forums
 
 The defaults usually work fine.
 
@@ -304,7 +304,7 @@ Use [`--igsets=mediawiki`](https://github.com/ludios/grab-site/blob/master/libgr
 
 You will probably have to add ignores with translated `Special:*` URLs based on [ignore_sets/mediawiki](https://github.com/ludios/grab-site/blob/master/libgrabsite/ignore_sets/mediawiki).
 
-#### Forums
+#### Forums that aren't Discourse
 
 Forums require more manual intervention with ignore patterns.  [`--igsets=forums`](https://github.com/ludios/grab-site/blob/master/libgrabsite/ignore_sets/forums) is often useful for non-SMF forums, but you will have to add other ignore patterns, including one to ignore individual-forum-post pages if there are too many posts to crawl.  (Generally, crawling the thread pages is enough.)
 
