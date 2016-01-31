@@ -9,8 +9,8 @@ install:
 
 script:
   - grab-site --help
-  - grab-site --1 https://github.com/ludios/grab-site
+  - grab-site --1 https://www.google.com/
   - gs-dump-urls --help
-  - ls -l github.com*
-  - gs-dump-urls github.com*/wpull.db done
+  - ls -l www.google.com*
+  - gs-dump-urls www.google.com*/wpull.db done
   - python3 -c 'import libgrabsite.server'
