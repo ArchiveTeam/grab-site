@@ -11,7 +11,7 @@ import libgrabsite
 
 install_requires = [
 	"click>=4.1",
-	"wpull>=1.2.2",
+	"wpull>=1.2.3",
 	"manhole>=1.0.0",
 	"lmdb>=0.86",
 	"autobahn>=0.10.4",
@@ -37,7 +37,7 @@ setup(
 	author_email="ivan@ludios.org",
 	classifiers=[
 		"Programming Language :: Python :: 3",
-		"Development Status :: 3 - Alpha",
+		"Development Status :: 4 - Beta",
 		"Intended Audience :: End Users/Desktop",
 		"License :: OSI Approved :: MIT License",
 		"Topic :: Internet :: WWW/HTTP",
