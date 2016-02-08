@@ -47,6 +47,7 @@ Note: grab-site currently **does not work with Python 3.5**; please use Python 3
 - [Advanced `gs-server` options](#advanced-gs-server-options)
 - [Viewing the content in your WARC archives](#viewing-the-content-in-your-warc-archives)
 - [Inspecting WARC files in the terminal](#inspecting-warc-files-in-the-terminal)
+- [Automatically pausing grab-site processes when free disk is low](#automatically-pausing-grab-site-processes-when-free-disk-is-low)
 - [Thanks](#thanks)
 - [Help](#help)
 
@@ -431,7 +432,7 @@ Note that grab-site requests uncompressed HTTP responses to avoid double-compres
 
 
 
-Automatically pausing grab-site processes when free disk space runs low
+Automatically pausing grab-site processes when free disk is low
 ---
 
 If you automatically upload and remove finished .warc.gz files, you can still run into a situation where grab-site processes fill up your disk faster than your uploader process can handle.  To prevent this situation, you can customize and run the script below, which will pause and resume grab-site processes as your free disk space crosses a threshold value.
