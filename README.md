@@ -114,7 +114,7 @@ On OS X 10.10 or 10.11:
 
 	-	Terminal.app: Preferences... -> Profiles -> Advanced -> **check** Set locale environment variables on startup
 
-	-	iTerm2: Preferences... -> Profiles -> Terminal -> **check** Set Locale Variables Automatically
+	-	iTerm2: Preferences... -> Profiles -> Terminal -> Environment -> **check** Set locale variables automatically
 
 4.	`pip3 install --user git+https://github.com/ludios/grab-site`
 
