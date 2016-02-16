@@ -108,7 +108,15 @@ On OS X 10.10 or 10.11:
 	install Python 3.4.3 using the installer from
 	https://www.python.org/downloads/release/python-343/
 
-3.	`pip3 install --user git+https://github.com/ludios/grab-site`
+3.	Run `locale` in your terminal.  If the output includes "UTF-8", everything
+	is fine.  If you do not see "UTF-8", your terminal is misconfigured
+	and grab-site will fail to start.  This can be corrected with:
+
+	-	Terminal.app: Preferences... -> Profiles -> Advanced -> **check** Set locale environment variables on startup
+
+	-	iTerm2: Preferences... -> Profiles -> Terminal -> **check** Set Locale Variables Automatically
+
+4.	`pip3 install --user git+https://github.com/ludios/grab-site`
 
 **Important usage note**: Use `~/Library/Python/3.4/bin/` instead of
 `~/.local/bin/` for all instructions below!
