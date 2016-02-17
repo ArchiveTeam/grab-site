@@ -40,6 +40,7 @@ Note: grab-site currently **does not work with Python 3.5**; please use Python 3
 - [Upgrade an existing install](#upgrade-an-existing-install)
 - [Usage](#usage)
   - [`grab-site` options, ordered by importance](#grab-site-options-ordered-by-importance)
+  - [Warnings](#warnings)
   - [Tips for specific websites](#tips-for-specific-websites)
 - [Changing ignores during the crawl](#changing-ignores-during-the-crawl)
 - [Inspecting the URL queue](#inspecting-the-url-queue)
@@ -254,6 +255,14 @@ Options can come before or after the URL.
 	Also useful: `--wpull-args=--no-skip-getaddrinfo` to respect `/etc/hosts` entries.
 
 *	`--help`: print help text.
+
+### Warnings
+
+If you pay no attention to your crawls, a crawl may head down some infinite bot trap and stay there forever.  The site owner may eventually notice high CPU use or log activity, then IP-ban you.
+
+grab-site does not respect `robots.txt` files, because they frequently [whitelist only approved robots](https://github.com/robots.txt), [hide embarassing news stories](https://web.archive.org/web/20140401024610/http://www.thecrimson.com/robots.txt), or block image or stylesheet resources needed for proper archival.  [See also.](http://www.archiveteam.org/index.php?title=Robots.txt).  Because of this, very rarely you might run into a robot honeypot and receive an abuse@ complaint.
+
+Do not run grab-site from Google Cloud Engine; as happened to me, your entire API project will probably get nuked after a few days of crawling the web, with no recourse.  Good alternatives include OVH (sold under [OVH](https://www.ovh.com/us/dedicated-servers/), [So You Start](http://www.soyoustart.com/us/essential-servers/), and [Kimsufi](http://www.kimsufi.com/us/en/index.xml)) and online.net (with [dedicated](https://www.online.net/en/dedicated-server) or [puny ARM server](https://www.scaleway.com/) offerings).
 
 ### Tips for specific websites
 
