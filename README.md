@@ -443,29 +443,7 @@ Note that grab-site requests uncompressed HTTP responses to avoid double-compres
 Automatically pausing grab-site processes when free disk is low
 ---
 
-If you automatically upload and remove finished .warc.gz files, you can still run into a situation where grab-site processes fill up your disk faster than your uploader process can handle.  To prevent this situation, you can customize and run the script below, which will pause and resume grab-site processes as your free disk space crosses a threshold value.
-
-```bash
-#!/bin/bash
-
-# Default: 80GB
-LOW_DISK_KB=$((80 * 1024 * 1024))
-PARTITION=/
-CHECK_INTERVAL_SEC=60
-
-while true; do
-	left=$(df "$PARTITION" | grep / | sed -r 's/ +/ /g' | cut -f 4 -d ' ')
-	if (( left >= $LOW_DISK_KB )); then
-		echo "Disk OK, resuming all grab-sites"
-		killall -CONT grab-site
-	fi
-	if (( left < $LOW_DISK_KB )); then
-		echo "Disk low, pausing all grab-sites"
-		killall -STOP grab-site
-	fi
-	sleep "$CHECK_INTERVAL_SEC"
-done
-```
+If you automatically upload and remove finished .warc.gz files, you can still run into a situation where grab-site processes fill up your disk faster than your uploader process can handle.  To prevent this situation, you can customize and run [this script](https://gist.github.com/ivan/5776cb8ab1cc215a08ec) ([mirror](https://web.archive.org/web/20160217212306/https://gist.githubusercontent.com/ivan/5776cb8ab1cc215a08ec/raw/e03f675b5250eaeb0557c3a457ce4bab2000f883/pause-resume-grab-site.sh)), which will pause and resume grab-site processes as your free disk space crosses a threshold value.
 
 
 
