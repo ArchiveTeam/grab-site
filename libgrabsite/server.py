@@ -6,7 +6,6 @@ import pprint
 # Can't use trollius because then onConnect never gets called
 # https://github.com/tavendo/AutobahnPython/issues/426
 import asyncio
-import aiohttp.web
 from autobahn.asyncio.websocket import WebSocketServerFactory, WebSocketServerProtocol
 
 class GrabberServerProtocol(WebSocketServerProtocol):
@@ -64,6 +63,11 @@ class GrabberServerProtocol(WebSocketServerProtocol):
 					"url": obj["url"],
 					"pattern": obj["pattern"],
 				})
+				
+	def sendHtml(self, dummy):
+		with open(os.path.join(os.path.dirname(__file__), "dashboard.html"), "r") as f:
+			dashboardHtml = f.read()
+			super().sendHtml(dashboardHtml)
 
 
 class GrabberServerFactory(WebSocketServerFactory):
@@ -74,39 +78,17 @@ class GrabberServerFactory(WebSocketServerFactory):
 		self.clients = set()
 
 
-@asyncio.coroutine
-def dashboard(request):
-	with open(os.path.join(os.path.dirname(__file__), "dashboard.html"), "rb") as f:
-		dashboardHtml = f.read()
-		return aiohttp.web.Response(body=dashboardHtml)
-
-
-@asyncio.coroutine
-def httpServer(loop, interface, port):
-	app = aiohttp.web.Application(loop=loop)
-	app.router.add_route('GET', '/', dashboard)
-
-	srv = yield from loop.create_server(app.make_handler(), interface, port)
-	return srv
-
-
 def main():
 	loop = asyncio.get_event_loop()
 
-	httpPort = int(os.environ.get('GRAB_SITE_HTTP_PORT', 29000))
-	httpInterface = os.environ.get('GRAB_SITE_HTTP_INTERFACE', '0.0.0.0')
-	wsPort = int(os.environ.get('GRAB_SITE_WS_PORT', 29001))
-	wsInterface = os.environ.get('GRAB_SITE_WS_INTERFACE', '0.0.0.0')
+	Port = int(os.environ.get('GRAB_SITE_PORT', 29000))
+	Interface = os.environ.get('GRAB_SITE_INTERFACE', '0.0.0.0')
 
-	httpCoro = httpServer(loop, httpInterface, httpPort)
-	loop.run_until_complete(httpCoro)
+	Factory = GrabberServerFactory()
+	Coro = loop.create_server(Factory, Interface, Port)
+	loop.run_until_complete(Coro)
 
-	wsFactory = GrabberServerFactory()
-	wsCoro = loop.create_server(wsFactory, wsInterface, wsPort)
-	loop.run_until_complete(wsCoro)
-
-	print("     HTTP server started on {}:{}".format(httpInterface, httpPort))
-	print("WebSocket server started on {}:{}".format(wsInterface, wsPort))
+	print("grab-site server started on {}:{}".format(Interface, Port))
 
 	loop.run_forever()
 
