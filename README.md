@@ -179,10 +179,7 @@ Options can come before or after the URL.
 *	`--igsets=IGSET1,IGSET2`: use ignore sets `IGSET1` and `IGSET2`.
 
 	Ignore sets are used to avoid requesting junk URLs using a pre-made set of
-	regular expressions.
-
-	`forums` is a frequently-used ignore set for archiving forums.
-	See [the full list of available ignore sets](https://github.com/ludios/grab-site/tree/master/libgrabsite/ignore_sets).
+	regular expressions.  See [the full list of available ignore sets](https://github.com/ludios/grab-site/tree/master/libgrabsite/ignore_sets).
 
 	The [global](https://github.com/ludios/grab-site/blob/master/libgrabsite/ignore_sets/global)
 	ignore set is implied and always enabled.
