@@ -117,6 +117,13 @@ def print_version(ctx, param, value):
 @click.option('--finished-warc-dir', default=None, type=str, metavar='FINISHED_WARC_DIR',
 	help='Move finished .warc.gz and .cdx files to this directory.')
 
+@click.option('--custom-hooks', default=None, type=str, metavar='PY_SCRIPT',
+	help=
+		'Copy PY_SCRIPT to DIR/custom_hooks.py, then exec DIR/custom_hooks.py '
+		'on startup and every time it changes.  The script gets a `wpull_hook` '
+		'global that can be used to change crawl behavior.  '
+		'See libgrabsite/wpull_hooks.py and extra_docs/custom_hooks_sample.py.')
+
 @click.option('--version', is_flag=True, callback=print_version,
 	expose_value=False, is_eager=True, help='Print version and exit.')
 
@@ -125,7 +132,7 @@ def print_version(ctx, param, value):
 def main(concurrency, concurrent, delay, recursive, offsite_links, igsets,
 ignore_sets, igon, video, level, page_requisites_level, max_content_length,
 sitemaps, dupespotter, warc_max_size, ua, input_file, wpull_args, start_url,
-id, dir, finished_warc_dir):
+id, dir, finished_warc_dir, custom_hooks):
 	if not (input_file or start_url):
 		print("Neither a START_URL or --input-file= was specified; see --help", file=sys.stderr)
 		sys.exit(1)
@@ -166,6 +173,13 @@ id, dir, finished_warc_dir):
 	os.makedirs(working_dir)
 	temp_dir = os.path.join(working_dir, "temp")
 	os.makedirs(temp_dir)
+
+	DIR_custom_hooks = os.path.join(working_dir, "custom_hooks.py")
+	if custom_hooks:
+		shutil.copyfile(custom_hooks, DIR_custom_hooks)
+	else:
+		with open(DIR_custom_hooks, "wb") as _:
+			pass
 
 	def get_base_wpull_args():
 		return ["-U", ua,

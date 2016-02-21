@@ -227,9 +227,9 @@ Options can come before or after the URL.
 	the crawl by editing the `DIR/delay` file.
 
 *	`--warc-max-size=BYTES`: Try to limit each WARC file to around `BYTES` bytes
-		before rolling over to a new WARC file (default: 5368709120, which is 5GiB).
-		Note that the resulting WARC files may be drastically larger if there are very
-		large responses.
+	before rolling over to a new WARC file (default: 5368709120, which is 5GiB).
+	Note that the resulting WARC files may be drastically larger if there are very
+	large responses.
 
 *	`--level=N`: recurse `N` levels instead of `inf` levels.
 
@@ -250,6 +250,12 @@ Options can come before or after the URL.
 	`--wpull-args="--youtube-dl \"--youtube-dl-exe=/My Documents/youtube-dl\""`
 
 	Also useful: `--wpull-args=--no-skip-getaddrinfo` to respect `/etc/hosts` entries.
+
+*	`--custom-hooks=PY_SCRIPT`: Copy `PY_SCRIPT` to `DIR/custom_hooks.py`,
+	then exec `DIR/custom_hooks.py` on startup and every time it changes.
+	The script gets a `wpull_hook` global that can be used to change crawl behavior.
+	See [libgrabsite/wpull_hooks.py](https://github.com/ludios/grab-site/blob/master/libgrabsite/wpull_hooks.py)
+	and [custom_hooks_sample.py](https://github.com/ludios/grab-site/blob/master/extra_docs/custom_hooks_sample.py).
 
 *	`--help`: print help text.
 

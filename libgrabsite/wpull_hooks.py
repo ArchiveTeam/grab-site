@@ -183,6 +183,8 @@ class FileChangedWatcher(object):
 		now_mtime = mtime_with_cache(self.fname)
 		changed = now_mtime != self.last_mtime
 		self.last_mtime = now_mtime
+		if changed:
+			print("Picked up the changes to %s" % self.fname)
 		return changed
 
 
@@ -191,6 +193,7 @@ ignores_watcher = FileChangedWatcher(os.path.join(working_dir, "ignores"))
 delay_watcher = FileChangedWatcher(os.path.join(working_dir, "delay"))
 concurrency_watcher = FileChangedWatcher(os.path.join(working_dir, "concurrency"))
 max_content_length_watcher = FileChangedWatcher(os.path.join(working_dir, "max_content_length"))
+custom_hooks_watcher = FileChangedWatcher(os.path.join(working_dir, "custom_hooks.py"))
 
 ignoracle = Ignoracle()
 
@@ -514,22 +517,38 @@ update_concurrency()
 
 def wait_time(_):
 	update_delay()
-	# While we're at it, update the concurrency level
 	update_concurrency()
+	update_custom_hooks()
 
 	return random.uniform(job_data["delay_min"], job_data["delay_max"]) / 1000
 
 
-assert 2 in wpull_hook.callbacks.AVAILABLE_VERSIONS
+@swallow_exception
+def update_custom_hooks():
+	if not custom_hooks_watcher.has_changed():
+		return
 
-wpull_hook.callbacks.version = 2
-wpull_hook.callbacks.accept_url = accept_url
-wpull_hook.callbacks.queued_url = queued_url
-wpull_hook.callbacks.dequeued_url = dequeued_url
-wpull_hook.callbacks.handle_response = handle_response
-wpull_hook.callbacks.handle_error = handle_error
-wpull_hook.callbacks.handle_pre_response = handle_pre_response
-wpull_hook.callbacks.exit_status = exit_status
-wpull_hook.callbacks.wait_time = wait_time
+	assert 2 in wpull_hook.callbacks.AVAILABLE_VERSIONS
+
+	# Set these every time, because custom_hooks.py may be wrapping them,
+	# and when custom_hooks.py is reloaded, we want it re-wrap the base functions
+	# instead of its already-wrapped functions.
+	wpull_hook.callbacks.version = 2
+	wpull_hook.callbacks.accept_url = accept_url
+	wpull_hook.callbacks.queued_url = queued_url
+	wpull_hook.callbacks.dequeued_url = dequeued_url
+	wpull_hook.callbacks.handle_response = handle_response
+	wpull_hook.callbacks.handle_error = handle_error
+	wpull_hook.callbacks.handle_pre_response = handle_pre_response
+	wpull_hook.callbacks.exit_status = exit_status
+	wpull_hook.callbacks.wait_time = wait_time
+
+	custom_hooks_filename = os.path.join(working_dir, "custom_hooks.py")
+	with open(custom_hooks_filename, 'rb') as in_file:
+		code = compile(in_file.read(), custom_hooks_filename, 'exec')
+		context = {'wpull_hook': wpull_hook}
+		exec(code, context, context)
+
+update_custom_hooks()
 
 really_swallow_exceptions = True
