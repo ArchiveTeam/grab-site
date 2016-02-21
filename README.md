@@ -254,7 +254,7 @@ Options can come before or after the URL.
 *	`--custom-hooks=PY_SCRIPT`: Copy `PY_SCRIPT` to `DIR/custom_hooks.py`,
 	then exec `DIR/custom_hooks.py` on startup and every time it changes.
 	The script gets a `wpull_hook` global that can be used to change crawl behavior.
-	See [libgrabsite/wpull_hooks.py](https://github.com/ludios/grab-site/blob/master/libgrabsite/wpull_hooks.py)
+	See `update_custom_hooks` in [libgrabsite/wpull_hooks.py](https://github.com/ludios/grab-site/blob/master/libgrabsite/wpull_hooks.py)
 	and [custom_hooks_sample.py](https://github.com/ludios/grab-site/blob/master/extra_docs/custom_hooks_sample.py).
 
 *	`--help`: print help text.
