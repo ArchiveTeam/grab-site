@@ -134,14 +134,14 @@ def replace_2arg(args, arg, replacement):
 
 @click.option('--which-wpull-args-partial', is_flag=True,
 	help=
-		'Print a list of wpull arguments that would be used and exit.  Excludes '
-		'grab-site-specific features, and removes DIR/ from paths.  '
+		'Print a partial list of wpull arguments that would be used and exit.  '
+		'Excludes grab-site-specific features, and removes DIR/ from paths.  '
 		'Useful for reporting bugs on wpull without grab-site involvement.')
 
-@click.option('--which-wpull-args-full', is_flag=True,
+@click.option('--which-wpull-command', is_flag=True,
 	help=
-		'Print a complete and untouched list of wpull arguments that would be '
-		'used and exit.  DIR/ is populated with control files before exit.')
+		"Populate DIR/ but don't start wpull; instead print the command that would "
+		"have been used to start wpull with all of the grab-site functionality.")
 
 @click.option('--version', is_flag=True, callback=print_version,
 	expose_value=False, is_eager=True, help='Print version and exit.')
@@ -152,7 +152,7 @@ def main(concurrency, concurrent, delay, recursive, offsite_links, igsets,
 ignore_sets, igon, video, level, page_requisites_level, max_content_length,
 sitemaps, dupespotter, warc_max_size, ua, input_file, wpull_args, start_url,
 id, dir, finished_warc_dir, custom_hooks, which_wpull_args_partial,
-which_wpull_args_full):
+which_wpull_command):
 	if not (input_file or start_url):
 		print("Neither a START_URL or --input-file= was specified; see --help", file=sys.stderr)
 		sys.exit(1)
@@ -341,7 +341,7 @@ which_wpull_args_full):
 	# We don't actually need to write control files for this mode to work, but the
 	# only reason to use this is if you're starting wpull manually with modified
 	# arguments, and wpull_hooks.py requires the control files.
-	if which_wpull_args_full:
+	if which_wpull_command:
 		bin = sys.argv[0].replace("/grab-site", "/wpull") # TODO
 		print("GRAB_SITE_WORKING_DIR={} DUPESPOTTER_ENABLED={} {} {}".format(
 			working_dir, int(dupespotter), bin, " ".join(shlex.quote(a) for a in args)))
