@@ -257,6 +257,14 @@ Options can come before or after the URL.
 	See `update_custom_hooks` in [libgrabsite/wpull_hooks.py](https://github.com/ludios/grab-site/blob/master/libgrabsite/wpull_hooks.py)
 	and [custom_hooks_sample.py](https://github.com/ludios/grab-site/blob/master/extra_docs/custom_hooks_sample.py).
 
+*	`--which-wpull-args-partial`: Print a partial list of wpull arguments that
+	would be used and exit.  Excludes grab-site-specific features, and removes
+	`DIR/` from paths.  Useful for reporting bugs on wpull without grab-site involvement.
+
+*	`--which-wpull-command`: Populate `DIR/` but don't start wpull; instead print
+	the command that would have been used to start wpull with all of the
+	grab-site functionality.
+
 *	`--help`: print help text.
 
 ### Warnings
@@ -480,8 +488,19 @@ Help
 grab-site bugs, discussion, ideas are welcome in [grab-site/issues](https://github.com/ludios/grab-site/issues).
 If you are affected by an existing issue, please +1 it.
 
-If a problem happens when running just `~/.local/bin/wpull -r URL` (no grab-site),
-you may want to report it to [wpull/issues](https://github.com/chfoo/wpull/issues) instead.
+If a problem happens when running wpull without grab-site (use
+`grab-site URL --which-wpull-args-partial` to get wpull arguments), please
+report it to [wpull/issues](https://github.com/chfoo/wpull/issues) instead.
+
+Terminal output in your bug report should be surrounded by triple backquotes, like this:
+
+```
+\`\`\`
+very
+long
+output
+\`\`\`
+```
 
 
 
