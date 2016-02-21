@@ -16,7 +16,7 @@ import libgrabsite
 real_stdout_write = sys.stdout.buffer.write
 real_stderr_write = sys.stderr.buffer.write
 
-def print_to_real(s):
+def print_to_terminal(s):
 	real_stdout_write((s + "\n").encode("utf-8"))
 	sys.stdout.buffer.flush()
 
@@ -32,7 +32,7 @@ class GrabberClientProtocol(WebSocketClientProtocol):
 
 	def on_close(self, was_clean, code, reason):
 		self.factory.client = None
-		print_to_real(
+		print_to_terminal(
 			"Disconnected from ws:// server with (was_clean, code, reason): {!r}"
 				.format((was_clean, code, reason)))
 		asyncio.ensure_future(connect_to_server())
@@ -87,12 +87,12 @@ def connect_to_server():
 			yield from loop.create_connection(ws_factory, host, port)
 		except OSError:
 			delay = decayer.decay()
-			print_to_real(
+			print_to_terminal(
 				"Could not connect to ws://{}:{}, retrying in {:.1f} seconds..."
 					.format(host, port, delay))
 			yield from asyncio.sleep(delay)
 		else:
-			print_to_real("Connected to ws://{}:{}".format(host, port))
+			print_to_terminal("Connected to ws://{}:{}".format(host, port))
 			break
 
 loop = asyncio.get_event_loop()
@@ -100,7 +100,7 @@ asyncio.ensure_future(connect_to_server())
 
 
 def graceful_stop_callback():
-	print_to_real("\n^C detected, creating 'stop' file, please wait for exit...")
+	print_to_terminal("\n^C detected, creating 'stop' file, please wait for exit...")
 	with open(os.path.join(working_dir, "stop"), "wb") as f:
 		pass
 
@@ -212,9 +212,9 @@ def update_ignoracle():
 		patterns = get_patterns_for_ignore_set(igset)
 		ignores.update(patterns)
 
-	print_to_real("Using these %d ignores:" % len(ignores))
+	print_to_terminal("Using these %d ignores:" % len(ignores))
 	for ig in sorted(ignores):
-		print_to_real("\t" + ig)
+		print_to_terminal("\t" + ig)
 
 	ignoracle.set_patterns(ignores)
 
@@ -350,7 +350,7 @@ update_video()
 def maybe_log_ignore(url, pattern):
 	update_igoff()
 	if not job_data["suppress_ignore_reports"]:
-		print_to_real("IGNOR %s\n   by %s" % (url, pattern))
+		print_to_terminal("IGNOR %s\n   by %s" % (url, pattern))
 		if ws_factory.client:
 			ws_factory.client.send_object({
 				"type": "ignore",
@@ -431,7 +431,7 @@ def handle_pre_response(url_info, url_record, response_info):
 			return wpull_hook.actions.FINISH
 
 	# Nothing matched, allow download
-	print_to_real(url + " ...")
+	print_to_terminal(url + " ...")
 	return wpull_hook.actions.NORMAL
 
 
@@ -546,7 +546,11 @@ def update_custom_hooks():
 	custom_hooks_filename = os.path.join(working_dir, "custom_hooks.py")
 	with open(custom_hooks_filename, 'rb') as in_file:
 		code = compile(in_file.read(), custom_hooks_filename, 'exec')
-		context = {'wpull_hook': wpull_hook}
+		context = {
+			'wpull_hook': wpull_hook,
+			'maybe_log_ignore': maybe_log_ignore,
+			'print_to_terminal': print_to_terminal
+		}
 		exec(code, context, context)
 
 update_custom_hooks()
