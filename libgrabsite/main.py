@@ -18,6 +18,14 @@ def print_version(ctx, param, value):
 	click.echo(libgrabsite.__version__)
 	ctx.exit()
 
+def replace_2arg(args, arg, replacement):
+	idx = args.index(arg)
+	if idx == -1:
+		return
+	args.pop(idx)
+	args.pop(idx)
+	for r in reversed(replacement):
+		args.insert(idx, r)
 
 @click.command()
 
@@ -124,6 +132,17 @@ def print_version(ctx, param, value):
 		'global that can be used to change crawl behavior.  '
 		'See libgrabsite/wpull_hooks.py and extra_docs/custom_hooks_sample.py.')
 
+@click.option('--which-wpull-args-partial', is_flag=True,
+	help=
+		'Print a list of wpull arguments that would be used and exit.  Excludes '
+		'grab-site-specific features, and removes DIR/ from paths.  '
+		'Useful for reporting bugs on wpull without grab-site involvement.')
+
+@click.option('--which-wpull-args-full', is_flag=True,
+	help=
+		'Print a complete and untouched list of wpull arguments that would be '
+		'used and exit.  DIR/ is populated with control files before exit.')
+
 @click.option('--version', is_flag=True, callback=print_version,
 	expose_value=False, is_eager=True, help='Print version and exit.')
 
@@ -132,7 +151,8 @@ def print_version(ctx, param, value):
 def main(concurrency, concurrent, delay, recursive, offsite_links, igsets,
 ignore_sets, igon, video, level, page_requisites_level, max_content_length,
 sitemaps, dupespotter, warc_max_size, ua, input_file, wpull_args, start_url,
-id, dir, finished_warc_dir, custom_hooks):
+id, dir, finished_warc_dir, custom_hooks, which_wpull_args_partial,
+which_wpull_args_full):
 	if not (input_file or start_url):
 		print("Neither a START_URL or --input-file= was specified; see --help", file=sys.stderr)
 		sys.exit(1)
@@ -165,22 +185,6 @@ id, dir, finished_warc_dir, custom_hooks):
 	no_proto_no_trailing = claim_start_url.split('://', 1)[1].rstrip('/')[:100]
 	warc_name = "{}-{}-{}".format(re.sub('[^-_a-zA-Z0-9%\.,;@+=]', '-', no_proto_no_trailing).lstrip('-'), ymd, id[:8])
 
-	# make absolute because wpull will start in temp/
-	if not dir:
-		working_dir = os.path.abspath(warc_name)
-	else:
-		working_dir = os.path.abspath(dir)
-	os.makedirs(working_dir)
-	temp_dir = os.path.join(working_dir, "temp")
-	os.makedirs(temp_dir)
-
-	DIR_custom_hooks = os.path.join(working_dir, "custom_hooks.py")
-	if custom_hooks:
-		shutil.copyfile(custom_hooks, DIR_custom_hooks)
-	else:
-		with open(DIR_custom_hooks, "wb") as _:
-			pass
-
 	def get_base_wpull_args():
 		return ["-U", ua,
 			"--header=Accept: text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
@@ -195,58 +199,15 @@ id, dir, finished_warc_dir, custom_hooks):
 			"--quiet"
 		]
 
-	if input_file is not None:
-		# wpull -i doesn't support URLs, so download the input file ourselves if necessary
-		DIR_input_file = os.path.join(working_dir, "input_file")
-		if input_file_is_remote:
-			# TODO: use wpull with correct user agent instead of urllib.request
-			# wpull -O fails: https://github.com/chfoo/wpull/issues/275
-			u = urllib.request.urlopen(input_file)
-			with open(DIR_input_file, "wb") as f:
-				while True:
-					s = u.read(1024*1024)
-					if not s:
-						break
-					f.write(s)
-		else:
-			shutil.copyfile(input_file, DIR_input_file)
-
-	with open("{}/id".format(working_dir), "w") as f:
-		f.write(id)
-
-	with open("{}/start_url".format(working_dir), "w") as f:
-		f.write(claim_start_url)
-
-	with open("{}/all_start_urls".format(working_dir), "w") as f:
-		for u in start_url:
-			f.write(u + "\n")
-
-	with open("{}/concurrency".format(working_dir), "w") as f:
-		f.write(str(concurrency))
-
-	with open("{}/max_content_length".format(working_dir), "w") as f:
-		f.write(str(max_content_length))
-
-	with open("{}/igsets".format(working_dir), "w") as f:
-		f.write("global,{}".format(igsets))
-
-	if video:
-		with open("{}/video".format(working_dir), "w") as f:
-			pass
-
-	if not igon:
-		with open("{}/igoff".format(working_dir), "w") as f:
-			pass
-
-	with open("{}/ignores".format(working_dir), "w") as f:
-		pass
-
-	with open("{}/delay".format(working_dir), "w") as f:
-		f.write(delay)
+	# make absolute because wpull will start in temp/
+	if not dir:
+		working_dir = os.path.abspath(warc_name)
+	else:
+		working_dir = os.path.abspath(dir)
 
 	LIBGRABSITE = os.path.dirname(libgrabsite.__file__)
 	args = get_base_wpull_args() + [
-		"-o", "{}/wpull.log".format(working_dir),
+		"--output-file", "{}/wpull.log".format(working_dir),
 		"--database", "{}/wpull.db".format(working_dir),
 		"--plugin-script", "{}/plugin.py".format(LIBGRABSITE),
 		"--python-script", "{}/wpull_hooks.py".format(LIBGRABSITE),
@@ -295,10 +256,96 @@ id, dir, finished_warc_dir, custom_hooks):
 	if wpull_args:
 		args += shlex.split(wpull_args)
 
+	DIR_input_file = os.path.join(working_dir, "input_file")
 	if start_url:
 		args.extend(start_url)
 	else:
 		args += ["--input-file", DIR_input_file]
+
+	if which_wpull_args_partial:
+		replace_2arg(args, "--output-file", ["--output-file", "wpull.log"])
+		replace_2arg(args, "--database", ["--database", "wpull.db"])
+		replace_2arg(args, "--plugin-script", [])
+		replace_2arg(args, "--python-script", [])
+		replace_2arg(args, "--save-cookies", ["--save-cookies", "cookies.txt"])
+		replace_2arg(args, "--load-cookies", [])
+		replace_2arg(args, "--warc-file", ["--warc-file", warc_name])
+		try:
+			args.remove("--quiet")
+		except ValueError:
+			pass
+		print(" ".join(shlex.quote(a) for a in args))
+		return
+
+	# Create DIR and DIR files only after which_wpull_args_* checks
+
+	os.makedirs(working_dir)
+	temp_dir = os.path.join(working_dir, "temp")
+	os.makedirs(temp_dir)
+
+	DIR_custom_hooks = os.path.join(working_dir, "custom_hooks.py")
+	if custom_hooks:
+		shutil.copyfile(custom_hooks, DIR_custom_hooks)
+	else:
+		with open(DIR_custom_hooks, "wb") as _:
+			pass
+
+	if input_file is not None:
+		# wpull -i doesn't support URLs, so download the input file ourselves if necessary
+		if input_file_is_remote:
+			# TODO: use wpull with correct user agent instead of urllib.request
+			# wpull -O fails: https://github.com/chfoo/wpull/issues/275
+			u = urllib.request.urlopen(input_file)
+			with open(DIR_input_file, "wb") as f:
+				while True:
+					s = u.read(1024*1024)
+					if not s:
+						break
+					f.write(s)
+		else:
+			shutil.copyfile(input_file, DIR_input_file)
+
+	with open("{}/id".format(working_dir), "w") as f:
+		f.write(id)
+
+	with open("{}/start_url".format(working_dir), "w") as f:
+		f.write(claim_start_url)
+
+	with open("{}/all_start_urls".format(working_dir), "w") as f:
+		for u in start_url:
+			f.write(u + "\n")
+
+	with open("{}/concurrency".format(working_dir), "w") as f:
+		f.write(str(concurrency))
+
+	with open("{}/max_content_length".format(working_dir), "w") as f:
+		f.write(str(max_content_length))
+
+	with open("{}/igsets".format(working_dir), "w") as f:
+		f.write("global,{}".format(igsets))
+
+	if video:
+		with open("{}/video".format(working_dir), "w") as f:
+			pass
+
+	if not igon:
+		with open("{}/igoff".format(working_dir), "w") as f:
+			pass
+
+	with open("{}/ignores".format(working_dir), "w") as f:
+		pass
+
+	with open("{}/delay".format(working_dir), "w") as f:
+		f.write(delay)
+
+	# We don't actually need to write control files for this mode to work, but the
+	# only reason to use this is if you're starting wpull manually with modified
+	# arguments, and wpull_hooks.py requires the control files.
+	if which_wpull_args_full:
+		bin = sys.argv[0].replace("/grab-site", "/wpull") # TODO
+		print("GRAB_SITE_WORKING_DIR={} DUPESPOTTER_ENABLED={} {} {}".format(
+			working_dir, int(dupespotter), bin, " ".join(shlex.quote(a) for a in args)))
+		return
 
 	# Mutate argv, environ, cwd before we turn into wpull
 	sys.argv[1:] = args
