@@ -494,13 +494,13 @@ report it to [wpull/issues](https://github.com/chfoo/wpull/issues) instead.
 
 Terminal output in your bug report should be surrounded by triple backquotes, like this:
 
-````
+<pre>
 ```
 very
 long
 output
 ```
-````
+</pre>
 
 
 
