@@ -76,10 +76,10 @@ class GrabberServerProtocol(WebSocketServerProtocol):
 	def send404(self):
 		with open(os.path.join(os.path.dirname(__file__), "404.html"), "r") as f:
 			responseHtml = f.read()
-		response = "HTTP/1.1 404 Not Found\x0d\x0a"
-		response += "Content-Type: text/html; charset=UTF-8\x0d\x0a"
-		response += "Content-Length: {}\x0d\x0a".format(len(responseHtml))
-		response += "\x0d\x0a"
+		response = "HTTP/1.1 404 Not Found\r\n"
+		response += "Content-Type: text/html; charset=UTF-8\r\n"
+		response += "Content-Length: {}\r\n".format(len(responseHtml))
+		response += "\r\n"
 		response += responseHtml
 		self.sendData(response.encode("utf_8"))
 
