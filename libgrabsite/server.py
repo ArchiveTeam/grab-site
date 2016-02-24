@@ -67,17 +67,16 @@ class GrabberServerProtocol(WebSocketServerProtocol):
 	def sendServerStatus(self, redirectUrl=None, redirectAfter=0):
 		requestPath = self.http_request_uri.split("?")[0]
 		if requestPath == "/":
-			with open(os.path.join(os.path.dirname(__file__), "dashboard.html"), "r", encoding="utf-8") as f:
-				dashboardHtml = f.read()
-				self.sendHtml(dashboardHtml)
+			self.sendPage("dashboard.html", 200, "OK", "text/html; charset=UTF-8")
 		else:
-			self.send404()
-	
-	def send404(self):
-		with open(os.path.join(os.path.dirname(__file__), "404.html"), "rb") as f:
+			self.sendPage("404.html", 404, "Not Found", "text/html; charset=UTF-8")
+
+	# Based on AutoBahn's WebSocketServerProtocol.sendHtml
+	def sendPage(self, fname, code, status, contentType):
+		with open(os.path.join(os.path.dirname(__file__), fname), "rb") as f:
 			responseBody = f.read()
-		response = "HTTP/1.1 404 Not Found\r\n"
-		response += "Content-Type: text/html; charset=UTF-8\r\n"
+		response = "HTTP/1.1 {} {}\r\n".format(code, status)
+		response += "Content-Type: {}\r\n".format(contentType)
 		response += "Content-Length: {}\r\n".format(len(responseBody))
 		response += "\r\n"
 		self.sendData(response.encode("utf-8"))
