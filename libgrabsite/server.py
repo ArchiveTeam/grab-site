@@ -6,7 +6,6 @@ import pprint
 # Can't use trollius because then onConnect never gets called
 # https://github.com/tavendo/AutobahnPython/issues/426
 import asyncio
-import aiohttp.web
 from autobahn.asyncio.websocket import WebSocketServerFactory, WebSocketServerProtocol
 
 class GrabberServerProtocol(WebSocketServerProtocol):
@@ -21,8 +20,7 @@ class GrabberServerProtocol(WebSocketServerProtocol):
 
 	def onClose(self, wasClean, code, reason):
 		print("{} disconnected".format(self.peer))
-		if self in self.factory.clients:
-			self.factory.clients.remove(self)
+		self.factory.clients.discard(self)
 
 	def broadcastToDashboards(self, obj):
 		for client in self.factory.clients:
@@ -65,6 +63,25 @@ class GrabberServerProtocol(WebSocketServerProtocol):
 					"pattern": obj["pattern"],
 				})
 
+	# Called when we get an HTTP request instead of a WebSocket request
+	def sendServerStatus(self, redirectUrl=None, redirectAfter=0):
+		requestPath = self.http_request_uri.split("?")[0]
+		if requestPath == "/":
+			with open(os.path.join(os.path.dirname(__file__), "dashboard.html"), "r") as f:
+				dashboardHtml = f.read()
+				self.sendHtml(dashboardHtml)
+		else:
+			self.send404()
+	
+	def send404(self):
+		with open(os.path.join(os.path.dirname(__file__), "404.html"), "r") as f:
+			responseHtml = f.read()
+		response = "HTTP/1.1 404 Not Found\x0d\x0a"
+		response += "Content-Type: text/html; charset=UTF-8\x0d\x0a"
+		response += "Content-Length: {}\x0d\x0a".format(len(responseHtml))
+		response += "\x0d\x0a"
+		response += responseHtml
+		self.sendData(response.encode("utf_8"))
 
 class GrabberServerFactory(WebSocketServerFactory):
 	protocol = GrabberServerProtocol
@@ -74,39 +91,17 @@ class GrabberServerFactory(WebSocketServerFactory):
 		self.clients = set()
 
 
-@asyncio.coroutine
-def dashboard(request):
-	with open(os.path.join(os.path.dirname(__file__), "dashboard.html"), "rb") as f:
-		dashboardHtml = f.read()
-		return aiohttp.web.Response(body=dashboardHtml)
-
-
-@asyncio.coroutine
-def httpServer(loop, interface, port):
-	app = aiohttp.web.Application(loop=loop)
-	app.router.add_route('GET', '/', dashboard)
-
-	srv = yield from loop.create_server(app.make_handler(), interface, port)
-	return srv
-
-
 def main():
 	loop = asyncio.get_event_loop()
 
-	httpPort = int(os.environ.get('GRAB_SITE_HTTP_PORT', 29000))
-	httpInterface = os.environ.get('GRAB_SITE_HTTP_INTERFACE', '0.0.0.0')
-	wsPort = int(os.environ.get('GRAB_SITE_WS_PORT', 29001))
-	wsInterface = os.environ.get('GRAB_SITE_WS_INTERFACE', '0.0.0.0')
+	port = int(os.environ.get('GRAB_SITE_PORT', 29000))
+	interface = os.environ.get('GRAB_SITE_INTERFACE', '0.0.0.0')
 
-	httpCoro = httpServer(loop, httpInterface, httpPort)
-	loop.run_until_complete(httpCoro)
+	factory = GrabberServerFactory()
+	coro = loop.create_server(factory, interface, port)
+	loop.run_until_complete(coro)
 
-	wsFactory = GrabberServerFactory()
-	wsCoro = loop.create_server(wsFactory, wsInterface, wsPort)
-	loop.run_until_complete(wsCoro)
-
-	print("     HTTP server started on {}:{}".format(httpInterface, httpPort))
-	print("WebSocket server started on {}:{}".format(wsInterface, wsPort))
+	print("grab-site server started on {}:{}".format(interface, port))
 
 	loop.run_forever()
 

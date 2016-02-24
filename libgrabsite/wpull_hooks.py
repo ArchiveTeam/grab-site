@@ -79,8 +79,8 @@ class Decayer(object):
 
 @asyncio.coroutine
 def connect_to_server():
-	host = os.environ.get('GRAB_SITE_WS_HOST', '127.0.0.1')
-	port = int(os.environ.get('GRAB_SITE_WS_PORT', 29001))
+	host = os.environ.get('GRAB_SITE_HOST', '127.0.0.1')
+	port = int(os.environ.get('GRAB_SITE_PORT', 29000))
 	decayer = Decayer(0.25, 1.5, 8)
 	while True:
 		try:
