@@ -20,8 +20,7 @@ class GrabberServerProtocol(WebSocketServerProtocol):
 
 	def onClose(self, wasClean, code, reason):
 		print("{} disconnected".format(self.peer))
-		if self in self.factory.clients:
-			self.factory.clients.remove(self)
+		self.factory.clients.discard(self)
 
 	def broadcastToDashboards(self, obj):
 		for client in self.factory.clients:
@@ -63,12 +62,26 @@ class GrabberServerProtocol(WebSocketServerProtocol):
 					"url": obj["url"],
 					"pattern": obj["pattern"],
 				})
-				
-	def sendHtml(self, dummy):
-		with open(os.path.join(os.path.dirname(__file__), "dashboard.html"), "r") as f:
-			dashboardHtml = f.read()
-			super().sendHtml(dashboardHtml)
 
+	# Called when we get an HTTP request insttead of a WebSocket request
+	def sendServerStatus(self, redirectUrl=None, redirectAfter=0):
+		requestPath = self.http_request_uri.split("?")[0]
+		if requestPath == "/":
+			with open(os.path.join(os.path.dirname(__file__), "dashboard.html"), "r") as f:
+				dashboardHtml = f.read()
+				self.sendHtml(dashboardHtml)
+		else:
+			send404()
+	
+	def send404(self):
+		with open(os.path.join(os.path.dirname(__file__), "404.html"), "r") as f:
+			responseHtml = f.read()
+		response = "HTTP/1.1 404 Not Found\x0d\x0a"
+		response += "Content-Type: text/html; charset=UTF-8\x0d\x0a"
+		response += "Content-Length: {}".format(len(responseHtml))
+		response += "\x0d\x0a"
+		response += responseHtml
+		self.sendData(response.encode("utf_8"))
 
 class GrabberServerFactory(WebSocketServerFactory):
 	protocol = GrabberServerProtocol
@@ -81,14 +94,14 @@ class GrabberServerFactory(WebSocketServerFactory):
 def main():
 	loop = asyncio.get_event_loop()
 
-	Port = int(os.environ.get('GRAB_SITE_PORT', 29000))
-	Interface = os.environ.get('GRAB_SITE_INTERFACE', '0.0.0.0')
+	port = int(os.environ.get('GRAB_SITE_PORT', 29000))
+	interface = os.environ.get('GRAB_SITE_INTERFACE', '0.0.0.0')
 
-	Factory = GrabberServerFactory()
-	Coro = loop.create_server(Factory, Interface, Port)
-	loop.run_until_complete(Coro)
+	factory = GrabberServerFactory()
+	coro = loop.create_server(factory, interface, port)
+	loop.run_until_complete(coro)
 
-	print("grab-site server started on {}:{}".format(Interface, Port))
+	print("grab-site server started on {}:{}".format(interface, port))
 
 	loop.run_forever()
 
