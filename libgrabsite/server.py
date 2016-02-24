@@ -63,7 +63,7 @@ class GrabberServerProtocol(WebSocketServerProtocol):
 					"pattern": obj["pattern"],
 				})
 
-	# Called when we get an HTTP request insttead of a WebSocket request
+	# Called when we get an HTTP request instead of a WebSocket request
 	def sendServerStatus(self, redirectUrl=None, redirectAfter=0):
 		requestPath = self.http_request_uri.split("?")[0]
 		if requestPath == "/":
@@ -71,14 +71,14 @@ class GrabberServerProtocol(WebSocketServerProtocol):
 				dashboardHtml = f.read()
 				self.sendHtml(dashboardHtml)
 		else:
-			send404()
+			self.send404()
 	
 	def send404(self):
 		with open(os.path.join(os.path.dirname(__file__), "404.html"), "r") as f:
 			responseHtml = f.read()
 		response = "HTTP/1.1 404 Not Found\x0d\x0a"
 		response += "Content-Type: text/html; charset=UTF-8\x0d\x0a"
-		response += "Content-Length: {}".format(len(responseHtml))
+		response += "Content-Length: {}\x0d\x0a".format(len(responseHtml))
 		response += "\x0d\x0a"
 		response += responseHtml
 		self.sendData(response.encode("utf_8"))
