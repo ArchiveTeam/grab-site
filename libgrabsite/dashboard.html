@@ -1438,10 +1438,10 @@ var Dashboard = function() {
 		JobsRenderer.prototype._renderDownloadLine = JobsRenderer.prototype._moreDomRenderDownloadLine;
 	}
 
-	// If no ?host=, connect to this server not some other server
 	if(args["host"]) {
 		this.host = args["host"];
 	} else {
+		// If no ?host=, connect to this grab-site server instead of some other server.
 		this.host = location.host;
 	}
 	this.dumpTraffic = args["dumpMax"] && Number(args["dumpMax"]) > 0;
