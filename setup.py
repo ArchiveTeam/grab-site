@@ -10,16 +10,16 @@ import sys
 import libgrabsite
 
 install_requires = [
-	"click>=4.1",
+	"click>=6.3",
 	"wpull>=1.2.3",
 	"manhole>=1.0.0",
-	"lmdb>=0.86",
-	"autobahn>=0.10.4",
-	"trollius>=2"
+	"lmdb>=0.89",
+	"autobahn>=0.12.1",
+	"trollius>=2.1"
 ]
 
 if 'GRAB_SITE_NO_CCHARDET' not in os.environ:
-	install_requires.append("cchardet>=0.3.5")
+	install_requires.append("cchardet>=1.0.0")
 
 setup(
 	name="grab-site",
