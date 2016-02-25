@@ -78,6 +78,7 @@ class GrabberServerProtocol(WebSocketServerProtocol):
 		response = "HTTP/1.1 {} {}\r\n".format(code, status)
 		response += "Content-Type: {}\r\n".format(contentType)
 		response += "Content-Length: {}\r\n".format(len(responseBody))
+		response += "X-Frame-Options: DENY\r\n"
 		response += "\r\n"
 		self.sendData(response.encode("utf-8"))
 		self.sendData(responseBody)
