@@ -410,18 +410,13 @@ Advanced `gs-server` options
 ---
 These environmental variables control what `gs-server` listens on:
 
-*	`GRAB_SITE_HTTP_INTERFACE` (default 0.0.0.0)
-*	`GRAB_SITE_HTTP_PORT` (default 29000)
-*	`GRAB_SITE_WS_INTERFACE` (default 0.0.0.0)
-*	`GRAB_SITE_WS_PORT` (default 29001)
-
-`GRAB_SITE_WS_PORT` should be 1 port higher than `GRAB_SITE_HTTP_PORT`,
-or else you will have to add `?host=WS_HOST:WS_PORT` to your dashboard URL.
+*	`GRAB_SITE_INTERFACE` (default 0.0.0.0)
+*	`GRAB_SITE_PORT` (default 29000,29001; will be just 29000 after ~May 2016)
 
 These environmental variables control which server each `grab-site` process connects to:
 
-*	`GRAB_SITE_WS_HOST` (default 127.0.0.1)
-*	`GRAB_SITE_WS_PORT` (default 29001)
+*	`GRAB_SITE_HOST` (default 127.0.0.1)
+*	`GRAB_SITE_PORT` (default 29000)
 
 
 
