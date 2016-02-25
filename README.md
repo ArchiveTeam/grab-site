@@ -142,6 +142,9 @@ pip3 install --user git+https://github.com/ludios/grab-site
 
 To upgrade all of grab-site's dependencies, add the `--upgrade` option (not advised unless you are having problems).
 
+After upgrading, stop `gs-server` with `kill` or ctrl-c, then start it again.
+Existing `grab-site` crawls will automatically reconnect to the new server.
+
 
 
 Usage
