@@ -169,6 +169,9 @@ grab-site outputs WARCs, logs, and control files to a new subdirectory in the
 directory from which you launched `grab-site`, referred to here as "DIR".
 (Use `ls -lrt` to find it.)
 
+You can pass multiple `URL` arguments to include them in the same crawl,
+whether they are on the same domain or different domains entirely.
+
 warcprox users: [warcprox](https://github.com/internetarchive/warcprox) breaks the
 dashboard's WebSocket; please make your browser skip the proxy for whichever
 host/IP you're using to reach the dashboard.
