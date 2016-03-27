@@ -34,8 +34,9 @@ Note: grab-site currently **does not work with Python 3.5**; please use Python 3
 <!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
 **Contents**
 
-- [Install on Ubuntu](#install-on-ubuntu)
-- [Install on a Linux distribution lacking Python 3.4.x](#install-on-a-linux-distribution-lacking-python-34x)
+- [Install on Ubuntu 14.04 - 15.10](#install-on-ubuntu-1404-1510)
+- [Install on Ubuntu 16.04](#install-on-ubuntu-1604)
+- [Install on a non-Ubuntu distribution lacking Python 3.4.x](#install-on-a-non-ubuntu-distribution-lacking-python-34x)
 - [Install on OS X](#install-on-os-x)
 - [Upgrade an existing install](#upgrade-an-existing-install)
 - [Usage](#usage)
@@ -55,10 +56,8 @@ Note: grab-site currently **does not work with Python 3.5**; please use Python 3
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
 
 
-Install on Ubuntu
+Install on Ubuntu 14.04 - 15.10
 ---
-On Ubuntu 14.04-15.10:
-
 ```
 sudo apt-get update
 sudo apt-get install --no-install-recommends git build-essential python3-dev python3-pip
@@ -74,7 +73,34 @@ PATH="$PATH:$HOME/.local/bin"
 
 
 
-Install on a Linux distribution lacking Python 3.4.x
+Install on Ubuntu 16.04
+---
+This is more involved because Ubuntu 16.04 (xenial) includes python3.5 but not python3.4, yet grab-site/wpull does not yet work on python3.5.  We have to install python3.4 from a PPA.
+
+```
+sudo apt-get update
+sudo apt-get install --no-install-recommends git build-essential software-properties-common
+sudo apt-add-repository ppa:fkrull/deadsnakes
+sudo apt-get update
+sudo apt-get install --no-install-recommends python3.4 python3.4-dev python3.4-venv
+pyvenv-3.4 ~/gs-venv
+. ~/gs-venv/bin/activate
+pip3 install git+https://github.com/ludios/grab-site
+```
+
+Note that `grab-site` is installed to `~/gs-venv/bin` instead of `~/.local/bin`.
+
+In the future, when you need to run `grab-site`, first run
+
+```
+. ~/gs-venv/bin/activate
+```
+
+again to activate the `~/gs-venv` virtualenv.
+
+
+
+Install on a non-Ubuntu distribution lacking Python 3.4.x
 ---
 1.	Install git.
 
