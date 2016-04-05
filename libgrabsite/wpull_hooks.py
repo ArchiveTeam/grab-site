@@ -229,6 +229,21 @@ def should_ignore_url(url, record_info):
 	return ignoracle.ignores(url, **parameters)
 
 
+def get_parent_url(url):
+	try:
+		scheme, _, host, path = url.split('/', 3)
+	except ValueError:
+		return None
+	if scheme not in ('http:', 'https:', 'ftp:'):
+		return None
+	if _ != '':
+		return None
+	if path == '':
+		return None
+	parent_path = '/'.join(path.split('/')[:-1])
+	return scheme + '//' + host + '/' + parent_path
+
+
 def accept_url(url_info, record_info, verdict, reasons):
 	update_ignoracle()
 
@@ -238,6 +253,12 @@ def accept_url(url_info, record_info, verdict, reasons):
 		# data: URLs aren't something you can grab, so drop them to avoid ignore
 		# checking and ignore logging.
 		return False
+
+	# Queue the parent URL to find a potential directory listing
+	# TODO: only do this if it's a prefix of one of the start URLs
+	parent_url = get_parent_url(url)
+	if parent_url:
+		wpull_hook.factory.get('URLTable').add_many([{"url": parent_url}], inline=0, referrer=url)
 
 	pattern = should_ignore_url(url, record_info)
 	if pattern:
