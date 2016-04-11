@@ -277,9 +277,15 @@ def dequeued_url(url_info, record_info):
 	job_data["items_downloaded"] += 1
 
 
+def get_content(fname):
+	with open(fname) as f:
+		return f.read()
+
+
+all_start_urls = get_content(os.path.join(working_dir, "all_start_urls")).strip().split("\n")
 job_data = {
-	"ident": open(os.path.join(working_dir, "id")).read().strip(),
-	"url": open(os.path.join(working_dir, "start_url")).read().strip(),
+	"ident": get_content(os.path.join(working_dir, "id")).strip(),
+	"url": get_content(os.path.join(working_dir, "start_url")).strip(),
 	"started_at": os.stat(os.path.join(working_dir, "start_url")).st_mtime,
 	"max_content_length": -1,
 	"suppress_ignore_reports": True,
@@ -509,12 +515,11 @@ update_max_content_length()
 def update_delay():
 	if not delay_watcher.has_changed():
 		return
-	with open(delay_watcher.fname, "r") as f:
-		content = f.read().strip()
-		if "-" in content:
-			job_data["delay_min"], job_data["delay_max"] = list(int(s) for s in content.split("-", 1))
-		else:
-			job_data["delay_min"] = job_data["delay_max"] = int(content)
+	content = get_content(delay_watcher.fname).strip()
+	if "-" in content:
+		job_data["delay_min"], job_data["delay_max"] = list(int(s) for s in content.split("-", 1))
+	else:
+		job_data["delay_min"] = job_data["delay_max"] = int(content)
 
 update_delay()
 
@@ -523,12 +528,11 @@ update_delay()
 def update_concurrency():
 	if not concurrency_watcher.has_changed():
 		return
-	with open(concurrency_watcher.fname, "r") as f:
-		concurrency = int(f.read().strip())
-		if concurrency < 1:
-			print("Warning: using 1 for concurrency instead of %r because it cannot be < 1" % (concurrency,))
-			concurrency = 1
-		job_data["concurrency"] = concurrency
+	concurrency = int(get_content(concurrency_watcher.fname).strip())
+	if concurrency < 1:
+		print("Warning: using 1 for concurrency instead of %r because it cannot be < 1" % (concurrency,))
+		concurrency = 1
+	job_data["concurrency"] = concurrency
 	# If we call this with 0, trollius blows up with
 	# ValueError('Set of coroutines/Futures is empty.')
 	wpull_hook.factory.get('Engine').set_concurrent(concurrency)
