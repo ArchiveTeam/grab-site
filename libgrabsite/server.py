@@ -39,7 +39,7 @@ class GrabberServerProtocol(WebSocketServerProtocol):
 				if mode == "grabber":
 					print("{} is grabbing {}".format(self.peer, obj['url']))
 				elif mode == "dashboard":
-					print("{} is dashboarding with {}".format(self.peer, obj['user_agent']))
+					print("{} is dashboarding with {}".format(self.peer, obj.get('user_agent', '(no User-Agent)')))
 		elif self.mode == "grabber":
 			if type == "download":
 				self.broadcastToDashboards({
