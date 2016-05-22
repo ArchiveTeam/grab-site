@@ -129,6 +129,13 @@ html, body {
 	text-align: right;
 }
 
+.job-responses-per-second-aligned {
+	width: 27px;
+	overflow: hidden;
+	text-overflow: hidden;
+	text-align: right;
+}
+
 .job-in-queue-aligned {
 	width: 92px;
 	overflow: hidden;
@@ -832,7 +839,7 @@ JobsRenderer.prototype._createLogContainer = function(jobData) {
 	var statsElements = {
 		mb: h("span", {"className": "inline-stat job-mb"}, "?"),
 		responses: h("span", {"className": "inline-stat job-responses"}, "?"),
-		responsesPerSecond: h("span", null, "?"),
+		responsesPerSecond: h("span", {"className": "inline-stat job-responses-per-second"}, "?"),
 		queueLength: h("span", {"className": "inline-stat job-in-queue"}, "? in q."),
 		connections: h("span", null, "?"),
 		delay: h("span", {"className": "inline-stat job-delay"}, "? ms delay"),
@@ -1204,6 +1211,7 @@ JobsRenderer.prototype.updateAlign = function() {
 	arrayFrom(document.querySelectorAll('.job-nick')).map(adderOrRemover('job-nick-aligned'));
 	arrayFrom(document.querySelectorAll('.job-mb')).map(adderOrRemover('job-mb-aligned'));
 	arrayFrom(document.querySelectorAll('.job-responses')).map(adderOrRemover('job-responses-aligned'));
+	arrayFrom(document.querySelectorAll('.job-responses-per-second')).map(adderOrRemover('job-responses-per-second-aligned'));
 	arrayFrom(document.querySelectorAll('.job-in-queue')).map(adderOrRemover('job-in-queue-aligned'));
 	arrayFrom(document.querySelectorAll('.job-delay')).map(adderOrRemover('job-delay-aligned'));
 };
