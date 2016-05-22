@@ -97,8 +97,7 @@ class GrabberServerFactory(WebSocketServerFactory):
 def main():
 	loop = asyncio.get_event_loop()
 
-	# Listening on 29001 as well for compatibility -- will be removed soon.
-	ports = list(int(p) for p in os.environ.get('GRAB_SITE_PORT', "29000,29001").split(','))
+	ports = list(int(p) for p in os.environ.get('GRAB_SITE_PORT', "29000").split(','))
 	interface = os.environ.get('GRAB_SITE_INTERFACE', '0.0.0.0')
 
 	factory = GrabberServerFactory()
@@ -106,8 +105,6 @@ def main():
 		coro = loop.create_server(factory, interface, port)
 		loop.run_until_complete(coro)
 		print("grab-site server listening on {}:{}".format(interface, port))
-	if 'GRAB_SITE_PORT' not in os.environ and 29001 in ports:
-		print("Note: use port 29000; default listener on port 29001 will go away around May 2016")
 
 	loop.run_forever()
 

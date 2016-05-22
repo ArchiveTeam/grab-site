@@ -443,7 +443,7 @@ Advanced `gs-server` options
 These environmental variables control what `gs-server` listens on:
 
 *	`GRAB_SITE_INTERFACE` (default `0.0.0.0`)
-*	`GRAB_SITE_PORT` (default `29000,29001`; will be just `29000` after ~May 2016)
+*	`GRAB_SITE_PORT` (default `29000`)
 
 These environmental variables control which server each `grab-site` process connects to:
 
