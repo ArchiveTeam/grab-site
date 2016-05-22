@@ -37,6 +37,6 @@ setup(
 	],
 	scripts=["grab-site", "gs-server", "gs-dump-urls"],
 	packages=["libgrabsite"],
-	package_data={"libgrabsite": ["*.html", "*.txt", "ignore_sets/*"]},
+	package_data={"libgrabsite": ["*.html", "*.ico", "*.txt", "ignore_sets/*"]},
 	install_requires=install_requires
 )
