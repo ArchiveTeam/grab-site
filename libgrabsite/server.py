@@ -68,6 +68,8 @@ class GrabberServerProtocol(WebSocketServerProtocol):
 		requestPath = self.http_request_uri.split("?")[0]
 		if requestPath == "/":
 			self.sendPage("dashboard.html", 200, "OK", "text/html; charset=UTF-8")
+		elif requestPath == "/favicon.ico":
+			self.sendPage("favicon.ico", 200, "OK", "image/x-icon")
 		else:
 			self.sendPage("404.html", 404, "Not Found", "text/html; charset=UTF-8")
 
