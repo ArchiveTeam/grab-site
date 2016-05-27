@@ -25,7 +25,7 @@ setup(
 	name="grab-site",
 	version=libgrabsite.__version__,
 	description="The archivist's web crawler: WARC output, dashboard for all crawls, dynamic ignore patterns",
-	url="https://github.com/ludios/grab-site",
+	url="https://ludios.org/grab-site/",
 	author="Ivan Kozik",
 	author_email="ivan@ludios.org",
 	classifiers=[
