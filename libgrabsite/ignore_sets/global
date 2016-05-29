@@ -45,6 +45,7 @@
 /'\+[^/]+\+'
 # Frequently seen on *.libsyn.com
 ^https?://{primary_netloc}/.+/%20https?:/
+^https?://{primary_netloc}/.+/%3Ca%20href=
 
 # Avoid websites on localhost and LAN IPs, in case the user runs grab-site on
 # a host where non-public information is accessible on local servers.
