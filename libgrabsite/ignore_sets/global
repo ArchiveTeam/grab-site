@@ -263,6 +263,7 @@
 
 ^https?://r-login\.wordpress\.com/remote-login\.php
 ^https?://{primary_netloc}/(wp-admin/|wp-login\.php\?)
+^https?://[^/]+\.facebook\.com/login\.php
 
 # Ignore /search.*updated-(min|max)= blogspot pagination because all posts are
 # crawled anyway via the _archive.html pages.  Need to ignore on all domains
