@@ -190,6 +190,11 @@ Then, start as many crawls as you want with:
 ```
 
 Do this inside tmux unless they're very short crawls.
+Note that [tmux 2.1 is broken and will lock up frequently](https://github.com/tmux/tmux/issues/298).
+Ubuntu 16.04 users probably need to remove tmux 2.1 and install tmux-next from
+[ppa:pi-rho/dev](https://launchpad.net/~pi-rho/+archive/ubuntu/dev).  If you
+are unable to upgrade tmux, detaching immediately after starting the crawl may
+be enough to avoid the problem.
 
 grab-site outputs WARCs, logs, and control files to a new subdirectory in the
 directory from which you launched `grab-site`, referred to here as "DIR".
