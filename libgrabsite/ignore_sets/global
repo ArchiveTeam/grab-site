@@ -43,8 +43,6 @@
 /\\+["']
 /\\/\\/
 /'\+[^/]+\+'
-# Frequently seen on *.libsyn.com
-^https?://{primary_netloc}/.+/%20https?:/
 ^https?://{primary_netloc}/.+/%3Ca%20href=
 
 # Avoid websites on localhost and LAN IPs, in case the user runs grab-site on
@@ -231,6 +229,7 @@
 ^https?://tm\.uol\.com\.br/h/.+/h/
 ^https?://((s-)?static\.ak\.fbcdn\.net|(connect\.|www\.)?facebook\.com)/connect\.php/js/.*rsrc\.php
 ^https?://web\.archive\.org/web/[^/]+/https?\:/[^/]+\.addthis\.com/.+/static/.+/static/
+^https?://[^/]+\.libsyn\.com/.+/%2[02]https?:/
 
 # This specifically catches only *invalid* flickr.com links extracted by wpull
 ^https?://www\.flickr\.com/(explore/|photos/[^/]+/(sets/\d+/(page\d+/)?)?)\d+_[a-f0-9]+(_[a-z])?\.jpg$
