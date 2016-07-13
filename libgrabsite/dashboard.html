@@ -1522,7 +1522,15 @@ Dashboard.prototype.keyPress = function(ev) {
 	// If you press ctrl-f or alt-f in Firefox (tested: 41), it dispatches
 	// the keypress event for 'f'.  We want only the modifier-free
 	// keypresses.
-	if(ev.ctrlKey || ev.altKey || ev.metaKey || ev.shiftKey) {
+	if(ev.ctrlKey || ev.altKey || ev.metaKey) {
+		return;
+	}
+	// Check shiftKey only after handling '?', because you need shift for '?'
+	if(ev.which == 63) { // ?
+		ds.toggleHelp();
+		return;
+	}
+	if(ev.shiftKey) {
 		return;
 	}
 	if(ev.which == 106) { // j
@@ -1539,8 +1547,6 @@ Dashboard.prototype.keyPress = function(ev) {
 		byId('filter-box').select();
 	} else if(ev.which == 118) { // v
 		window.open(this.jobsRenderer.firstFilterMatch["url"]);
-	} else if(ev.which == 63) { // ?
-		ds.toggleHelp();
 	}
 };
 
