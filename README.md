@@ -75,7 +75,7 @@ PATH="$PATH:$HOME/.local/bin"
 
 Install on Ubuntu 16.04
 ---
-This is more involved because Ubuntu 16.04 (xenial) includes python3.5 but not python3.4, yet grab-site/wpull does not yet work on python3.5.  We have to install python3.4 from a PPA.
+This is more involved because Ubuntu 16.04 (xenial) includes python3.5 but not python3.4, yet grab-site does not yet work on python3.5.  We have to install python3.4 from a PPA.
 
 ```
 sudo apt-get update
