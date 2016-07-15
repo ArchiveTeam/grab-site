@@ -15,7 +15,8 @@ install_requires = [
 	"manhole>=1.0.0",
 	"lmdb>=0.89",
 	"autobahn>=0.12.1",
-	"trollius>=2.1"
+	"trollius>=2.1",
+	"html5lib==0.9999999"
 ]
 
 if 'GRAB_SITE_NO_CCHARDET' not in os.environ:
