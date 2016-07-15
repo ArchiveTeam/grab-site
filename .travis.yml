@@ -5,7 +5,7 @@ python:
   - 3.4
 
 install:
-  - travis_retry pip3 install --upgrade pip
+  - travis_retry pip3 install --upgrade pip setuptools
   - travis_retry pip3 install .
 
 script:
