@@ -69,8 +69,8 @@
 
 # Tracking scripts, tracking pixels, analytics
 ^https?://geo\.yahoo\.com/b\?
-^http://b\.scorecardresearch\.com/
-^http://pixel\.blog\.hu/
+^https?://b\.scorecardresearch\.com/
+^https?://pixel\.blog\.hu/
 ^https?://pixel\.redditmedia\.com/pixel/
 ^https?://pixel\.quantserve\.com/
 ^https?://(www|ssl)\.google-analytics\.com/(r/)?(__utm\.gif|collect\?)
@@ -85,7 +85,7 @@
 ^https?://www\.warnerbros\.com/\d+$
 
 # Inaccessible and dead sites that are frequently-linked
-^http://i\.dev\.cdn\.turner\.com/
+^https?://i\.dev\.cdn\.turner\.com/
 ^https?://[^/]+\.corp\.ne1\.yahoo\.com/
 ^https?://prod-preview\.wired\.com/
 ^https?://(www\.)?megaupload\.com/
@@ -94,8 +94,8 @@
 
 # Links to TED and TED embeds are common enough that we need to ignore their
 # videos to prevent WARC bloat
-^http://video-subtitle\.tedcdn\.com/
-^http://download\.ted\.com/
+^https?://video-subtitle\.tedcdn\.com/
+^https?://download\.ted\.com/
 
 # Avoid bloating WARCs with TMZ videos
 ^https?://tmz\.vo\.llnwd\.net/
@@ -103,56 +103,56 @@
 # Avoid hitting radio and TV streams, which can hang crawls for a long time.
 # Note that we also detect and abort Icecast/SHOUTcast responses in
 # wpull_hooks.py, so some of these ignores are no longer necessary.
-^http://([^\./]+\.)?stream\.publicradio\.org/
-^http://icecast\.streaming\.castor\.nl/
-^http://wm1\.streaming\.castor\.nl:8000/
-^http://icecast\.databoss\.nl:8000/
-^http://stream\.rynothebearded\.com:8000/
-^http://mp3\.live\.tv-radio\.com/
-^http://av\.rasset\.ie/av/live/
-^http://gcnplayer\.gcnlive\.com/.+
-^http://streaming\.radionomy\.com/
-^http://mp3\.ffh\.de/
-^http://(www\.)?theradio\.cc\:8000/
-^http://(audio\d?|nfw)\.video\.ria\.ru/
-^http://eu1\.fastcast4u\.com:3048/
-^http://[^\./]+\.radioscoop\.(com|net):\d+/
-^http://[^\./]+\.streamchan\.org:\d+/
-^http://[^/]*musicproxy\.s12\.de/
-^http://stream\.rfi\.fr/
-^http://striiming\d?\.trio\.ee/
-^http://streamer\.radiocampus\.be(:\d+)?/
-^http://relay\.broadcastify\.com/
-^http://audio\d?\.radioreference\.com/
-^http://[^/]+\.akadostream\.ru(:\d+)?/
-^http://radio\.silver\.ru(:\d+)?/
-^http://icecast\.szwoelf\.com:8000/
-^http://altair\.micronick\.com:8080/\?action=stream
-^http://94\.25\.53\.13[1-4]/.+\.mp3$
-^http://server\.lradio\.ru:\d+/
-^http://188\.93\.17\.201:8080/
-^http://81\.19\.85\.19[56]/.+\.mp3$
-^http://81\.19\.85\.203/.+\.mp3$
-^http://play(\d+)?\.radio13\.ru:8000/
-^http://stream(\d+)?\.media\.rambler\.ru/
-^http://pub(\d+)?\.di\.fm/
-^http://vostok\.fmtuner\.ru/
-^http://109\.120\.141\.181:8000/
-^http://195\.88\.63\.114:8000/
-^http://radiosilver\.corbina\.net:8000/
-^http://89\.251\.147\.100/
-^http://bcs\d?\.fontanka\.fm:8000/
-^http://stream2\.cnmns\.net/
-^http://[^/]+\.streamtheworld\.com/
-^http://[^/]+\.gaduradio\.pl/
-^http://anka\.org:8080/
-^http://radio\.visionotaku\.com:8000/
-^http://stream\.r-a-d\.io/
-^http://r-a-d\.io/.+\.mp3$
-^http://95\.81\.155\.17/
+^https?://([^\./]+\.)?stream\.publicradio\.org/
+^https?://icecast\.streaming\.castor\.nl/
+^https?://wm1\.streaming\.castor\.nl:8000/
+^https?://icecast\.databoss\.nl:8000/
+^https?://stream\.rynothebearded\.com:8000/
+^https?://mp3\.live\.tv-radio\.com/
+^https?://av\.rasset\.ie/av/live/
+^https?://gcnplayer\.gcnlive\.com/.+
+^https?://streaming\.radionomy\.com/
+^https?://mp3\.ffh\.de/
+^https?://(www\.)?theradio\.cc\:8000/
+^https?://(audio\d?|nfw)\.video\.ria\.ru/
+^https?://eu1\.fastcast4u\.com:3048/
+^https?://[^\./]+\.radioscoop\.(com|net):\d+/
+^https?://[^\./]+\.streamchan\.org:\d+/
+^https?://[^/]*musicproxy\.s12\.de/
+^https?://stream\.rfi\.fr/
+^https?://striiming\d?\.trio\.ee/
+^https?://streamer\.radiocampus\.be(:\d+)?/
+^https?://relay\.broadcastify\.com/
+^https?://audio\d?\.radioreference\.com/
+^https?://[^/]+\.akadostream\.ru(:\d+)?/
+^https?://radio\.silver\.ru(:\d+)?/
+^https?://icecast\.szwoelf\.com:8000/
+^https?://altair\.micronick\.com:8080/\?action=stream
+^https?://94\.25\.53\.13[1-4]/.+\.mp3$
+^https?://server\.lradio\.ru:\d+/
+^https?://188\.93\.17\.201:8080/
+^https?://81\.19\.85\.19[56]/.+\.mp3$
+^https?://81\.19\.85\.203/.+\.mp3$
+^https?://play(\d+)?\.radio13\.ru:8000/
+^https?://stream(\d+)?\.media\.rambler\.ru/
+^https?://pub(\d+)?\.di\.fm/
+^https?://vostok\.fmtuner\.ru/
+^https?://109\.120\.141\.181:8000/
+^https?://195\.88\.63\.114:8000/
+^https?://radiosilver\.corbina\.net:8000/
+^https?://89\.251\.147\.100/
+^https?://bcs\d?\.fontanka\.fm:8000/
+^https?://stream2\.cnmns\.net/
+^https?://[^/]+\.streamtheworld\.com/
+^https?://[^/]+\.gaduradio\.pl/
+^https?://anka\.org:8080/
+^https?://radio\.visionotaku\.com:8000/
+^https?://stream\.r-a-d\.io/
+^https?://r-a-d\.io/.+\.mp3$
+^https?://95\.81\.155\.17/
 ^https?://icecast\.rtl2?\.fr/
-^http://mp3tslg\.tdf-cdn\.com/
-^http://[^/]+/anony/mjpg\.cgi$
+^https?://mp3tslg\.tdf-cdn\.com/
+^https?://[^/]+/anony/mjpg\.cgi$
 ^https?://air\.radiorecord\.ru(:\d+)?/
 ^https?://[^/]+\.rastream\.com(:\d+)?/
 ^https?://audiots\.scdn\.arkena\.com/
@@ -170,32 +170,32 @@
 ^https?://www\.newsvine\.com/_wine/save\?
 ^https?://www\.netvibes\.com/subscribe\.php\?
 ^https?://add\.my\.yahoo\.com/(rss|content)\?
-^http://www\.addtoany\.com/(add_to/|share_save\?)
+^https?://www\.addtoany\.com/(add_to/|share_save\?)
 ^https?://www\.addthis\.com/bookmark\.php\?
 ^https?://(www\.)?pinterest\.com/pin/create/
 ^https?://www\.linkedin\.com/(cws/share|shareArticle)\?
 ^https?://(www\.)?stumbleupon\.com/(submit\?|badge/embed/)
 ^https?://csp\.cyworld\.com/bi/bi_recommend_pop\.php\?
-^https://share\.flipboard\.com/bookmarklet/popout\?
+^https?://share\.flipboard\.com/bookmarklet/popout\?
 ^https?://flattr.com/submit/auto\?
 ^https?://(www\.)?myspace\.com/Modules/PostTo/
 ^https?://www\.google\.com/bookmarks/mark\?
-^http://myweb2\.search\.yahoo\.com/myresults/bookmarklet\?
-^http://vuible\.com/pins-settings/
+^https?://myweb2\.search\.yahoo\.com/myresults/bookmarklet\?
+^https?://vuible\.com/pins-settings/
 ^https?://news\.ycombinator\.com/submitlink\?
-^http://reporter\.es\.msn\.com/\?fn=contribute
-^http://www\.blinklist\.com/index\.php\?Action=Blink/addblink\.php
-^http://sphinn\.com/index\.php\?c=post&m=submit&
-^http://posterous\.com/share\?
-^http://del\.icio\.us/post\?
+^https?://reporter\.es\.msn\.com/\?fn=contribute
+^https?://www\.blinklist\.com/index\.php\?Action=Blink/addblink\.php
+^https?://sphinn\.com/index\.php\?c=post&m=submit&
+^https?://posterous\.com/share\?
+^https?://del\.icio\.us/post\?
 ^https?://delicious\.com/(save|post)\?
 ^https?://(www\.)?friendfeed\.com/share\?
 ^https?://(www\.)?xing\.com/(app/user\?op=share|social_plugins/share\?)
-^http://iwiw\.hu/pages/share/share\.jsp\?
-^http://memori(\.qip)?\.ru/link/\?
-^http://wow\.ya\.ru/posts_(add|share)_link\.xml\?
+^https?://iwiw\.hu/pages/share/share\.jsp\?
+^https?://memori(\.qip)?\.ru/link/\?
+^https?://wow\.ya\.ru/posts_(add|share)_link\.xml\?
 ^https?://connect\.mail\.ru/share\?
-^http://zakladki\.yandex\.ru/newlink\.xml\?
+^https?://zakladki\.yandex\.ru/newlink\.xml\?
 ^https?://vkontakte\.ru/share\.php\?
 ^https?://www\.odnoklassniki\.ru/dk\?st\.cmd=addShare
 ^https?://www\.google\.com/(reader/link\?|buzz/post\?)
@@ -217,14 +217,14 @@
 ^https?://imageshack\.com/lost$
 
 # A loop on khaleejtimes.com
-^http://www\.khaleejtimes\.com/.+/kt_.+/kt_
-^http://www\.khaleejtimes\.com/.+/images/.+/images/
-^http://www\.khaleejtimes\.com/.+/imgactv/.+/imgactv/
+^https?://www\.khaleejtimes\.com/.+/kt_.+/kt_
+^https?://www\.khaleejtimes\.com/.+/images/.+/images/
+^https?://www\.khaleejtimes\.com/.+/imgactv/.+/imgactv/
 
 # More loops
-^http://photobucket\.com/.+/albums/.+/albums/
+^https?://photobucket\.com/.+/albums/.+/albums/
 ^https?://([^/]+\.)?gdcvault\.com(/.*/|/)(fonts(/.*/|/)fonts/|css(/.*/|/)css/|img(/.*/|/)img/)
-^https://static\.licdn\.com/sc/p/com\.linkedin\.nux(:|%3A)nux-static-content(\+|%2B)[\d\.]+/f/
+^https?://static\.licdn\.com/sc/p/com\.linkedin\.nux(:|%3A)nux-static-content(\+|%2B)[\d\.]+/f/
 ^https?://static\.licdn\.com/sc/p/.+/f//
 ^https?://tm\.uol\.com\.br/h/.+/h/
 ^https?://((s-)?static\.ak\.fbcdn\.net|(connect\.|www\.)?facebook\.com)/connect\.php/js/.*rsrc\.php
