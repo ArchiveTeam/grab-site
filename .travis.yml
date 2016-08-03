@@ -15,7 +15,7 @@ script:
   - gs-dump-urls --help
   - ls -l www.google.com*
   - gs-dump-urls www.google.com*/wpull.db done
-  - grab-site --1 --id my-id --no-dupespotter --no-video --concurrent 3 https://www.google.com/ https://www.google.com/intl/en/about/
+  - grab-site --1 --id my-id --no-dupespotter --no-video --concurrent 3 https://www.google.com/ https://www.google.com/intl/en/ads/
   - grab-site --1 -i https://gist.githubusercontent.com/ivan/1d437237746cf067e134/raw/47d2253c0caf4a6b964dc657840ddce22eb9eac7/grab-site%2520test%2520urls.txt
   - curl https://gist.githubusercontent.com/ivan/1d437237746cf067e134/raw/47d2253c0caf4a6b964dc657840ddce22eb9eac7/grab-site%2520test%2520urls.txt > local-url-list
   - grab-site --1 -i local-url-list
