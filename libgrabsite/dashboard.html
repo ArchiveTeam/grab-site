@@ -105,6 +105,11 @@ html, body {
 	text-overflow: ellipsis;
 }
 
+.job-start-date {
+	width: 37px;
+	text-align: right;
+}
+
 .job-note-aligned {
 	display: none;
 }
@@ -148,6 +153,10 @@ html, body {
 	overflow: hidden;
 	text-overflow: hidden;
 	text-align: right;
+}
+
+.job-num-connections {
+	width: 7px;
 }
 
 .job-ignores {
@@ -841,7 +850,7 @@ JobsRenderer.prototype._createLogContainer = function(jobData) {
 		responses: h("span", {"className": "inline-stat job-responses"}, "?"),
 		responsesPerSecond: h("span", {"className": "inline-stat job-responses-per-second"}, "?"),
 		queueLength: h("span", {"className": "inline-stat job-in-queue"}, "? in q."),
-		connections: h("span", null, "?"),
+		connections: h("span", {"className": "inline-stat job-num-connections"}, "?"),
 		delay: h("span", {"className": "inline-stat job-delay"}, "? ms delay"),
 		ignores: h("span", {"className": "job-ignores"}, "?"),
 		jobInfo: null /* set later */
@@ -869,7 +878,7 @@ JobsRenderer.prototype._createLogContainer = function(jobData) {
 				}
 			}, [
 				" on ",
-				h("span", {"title": startedISOString}, startedISOString.split("T")[0].substr(5)),
+				h("span", {"title": startedISOString, "className": "inline-stat job-start-date"}, startedISOString.split("T")[0].substr(5)),
 				h("span", {"className": "inline-stat job-nick"}, (this.showNicks ? " by " + jobData["started_by"] : "")),
 				jobNote,
 				"; ",
@@ -900,7 +909,7 @@ JobsRenderer.prototype._createLogContainer = function(jobData) {
 					"className": "job-ident",
 					"type": "text",
 					"value": ident,
-					"size": "28",
+					"size": "37",
 					"spellcheck": "false",
 					"readonly": "",
 					"onclick": function() { this.select(); }
