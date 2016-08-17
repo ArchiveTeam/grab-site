@@ -175,6 +175,7 @@
 ^https?://api\.addthis\.com/
 ^https?://bookmark\.naver\.com/post\?
 ^https?://(www\.)?instapaper\.com/hello2\?
+^https?://getpocket\.com/save/?\?
 
 # mail.google.com requires login but shows up on the web surprisingly often
 ^https?://mail\.google\.com/mail/
