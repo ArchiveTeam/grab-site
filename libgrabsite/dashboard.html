@@ -18,6 +18,13 @@ html, body {
 	background-color: #D0C0AE;
 	font-family: Roboto, Tahoma, Arial, sans-serif;
 	font-size: 13px;
+	/**
+	 * Opt out of Chrome's Scroll Anchoring, which causes this page to
+	 * incorrectly scroll up as new lines appear in log windows.
+	 * https://bugs.chromium.org/p/chromium/issues/detail?id=650017
+	 * https://github.com/WICG/interventions/blob/0063fe5d3d0e086d4f963c8bd612d12b57db0784/scroll-anchoring/explainer.md#exclusion--opt-out-api
+	 */
+	overflow-anchor: none;
 }
 
 #filter-box {
