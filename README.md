@@ -138,8 +138,8 @@ Install on a non-Ubuntu distribution lacking Python 3.4.x
 4.	Run:
 
 	```
-	~/.pyenv/bin/pyenv install 3.4.3
-	~/.pyenv/versions/3.4.3/bin/pip3 install --user git+https://github.com/ludios/grab-site
+	~/.pyenv/bin/pyenv install 3.4.5
+	~/.pyenv/versions/3.4.5/bin/pip3 install --user git+https://github.com/ludios/grab-site
 	```
 
 To avoid having to type out `~/.local/bin/` below, add this to your
@@ -159,8 +159,8 @@ On OS X 10.10 or 10.11:
 	prompted to install the command-line developer tools.  Click 'Install'.
 
 2.	If Python 3.4.x is not already installed (type `python3.4 -V`),
-	install Python 3.4.3 using the installer from
-	https://www.python.org/downloads/release/python-343/
+	install Python 3.4.5 using the installer from
+	https://www.python.org/downloads/release/python-345/
 
 3.	Run `locale` in your terminal.  If the output includes "UTF-8", everything
 	is fine.  If you do not see "UTF-8", your terminal is misconfigured
