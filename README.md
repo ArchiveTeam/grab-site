@@ -30,12 +30,11 @@ grab-site will manage to crawl a site with ~10M pages.
 
 Note: grab-site currently **does not work with Python 3.5**; please use Python 3.4 instead.
 
-<!-- START doctoc generated TOC please keep comment here to allow auto update -->
-<!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
 **Contents**
 
 - [Install on Ubuntu 14.04 - 15.10](#install-on-ubuntu-1404---1510)
 - [Install on Ubuntu 16.04](#install-on-ubuntu-1604)
+- [Install on Ubuntu 16.10](#install-on-ubuntu-1610)
 - [Install on a non-Ubuntu distribution lacking Python 3.4.x](#install-on-a-non-ubuntu-distribution-lacking-python-34x)
 - [Install on OS X](#install-on-os-x)
 - [Upgrade an existing install](#upgrade-an-existing-install)
@@ -75,12 +74,40 @@ PATH="$PATH:$HOME/.local/bin"
 
 Install on Ubuntu 16.04
 ---
-This is more involved because Ubuntu 16.04 (xenial) includes python3.5 but not python3.4, yet grab-site does not work on python3.5.  We have to install python3.4 from a PPA.
+This is more involved because Ubuntu 16.04 (xenial) includes python3.5 instead of python3.4, and grab-site does not work with python3.5.  We have to install python3.4 from a PPA.
 
 ```
 sudo apt-get update
 sudo apt-get install --no-install-recommends git build-essential software-properties-common
 sudo apt-add-repository ppa:fkrull/deadsnakes
+sudo apt-get update
+sudo apt-get install --no-install-recommends python3.4 python3.4-dev python3.4-venv
+pyvenv-3.4 ~/gs-venv
+. ~/gs-venv/bin/activate
+pip3 install git+https://github.com/ludios/grab-site
+```
+
+Note that `grab-site` is installed to `~/gs-venv/bin` instead of `~/.local/bin`.
+
+In the future, when you need to run `grab-site`, first run
+
+```
+. ~/gs-venv/bin/activate
+```
+
+again to activate the `~/gs-venv` virtualenv.
+
+
+
+Install on Ubuntu 16.10
+---
+Similar to the Ubuntu 16.04 instructions, except we have to explicitly get the 16.04 (xenial) packages from `ppa:fkrull/deadsnakes` because it doesn't have a release for 16.10 (yakkety).
+
+```
+sudo apt-get update
+sudo apt-get install --no-install-recommends git build-essential software-properties-common
+sudo apt-add-repository ppa:fkrull/deadsnakes
+sudo sed -i s/yakkety/xenial/g /etc/apt/sources.list.d/fkrull-ubuntu-deadsnakes-yakkety.list
 sudo apt-get update
 sudo apt-get install --no-install-recommends python3.4 python3.4-dev python3.4-venv
 pyvenv-3.4 ~/gs-venv
