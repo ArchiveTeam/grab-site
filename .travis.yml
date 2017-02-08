@@ -12,6 +12,7 @@ script:
   - grab-site --help
   - grab-site --version
   - grab-site --1 https://www.google.com/
+  - grab-site --1 --permanent-error-status-codes=404 https://www.google.com/
   - gs-dump-urls --help
   - ls -l www.google.com*
   - gs-dump-urls www.google.com*/wpull.db done

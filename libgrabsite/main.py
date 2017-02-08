@@ -125,6 +125,12 @@ def replace_2arg(args, arg, replacement):
 @click.option('--finished-warc-dir', default=None, type=str, metavar='FINISHED_WARC_DIR',
 	help='Move finished .warc.gz and .cdx files to this directory.')
 
+@click.option('--permanent-error-status-codes', default='401,403,404,405,410', type=str,
+	metavar='PERMANENT_ERROR_STATUS_CODES',
+	help=
+		'A comma-separated list of HTTP status codes to treat as a permanent '
+		'error and therefore *not* retry (default: 401,403,404,405,410)')
+
 @click.option('--custom-hooks', default=None, type=str, metavar='PY_SCRIPT',
 	help=
 		'Copy PY_SCRIPT to DIR/custom_hooks.py, then exec DIR/custom_hooks.py '
@@ -151,8 +157,8 @@ def replace_2arg(args, arg, replacement):
 def main(concurrency, concurrent, delay, recursive, offsite_links, igsets,
 ignore_sets, igon, video, level, page_requisites_level, max_content_length,
 sitemaps, dupespotter, warc_max_size, ua, input_file, wpull_args, start_url,
-id, dir, finished_warc_dir, custom_hooks, which_wpull_args_partial,
-which_wpull_command):
+id, dir, finished_warc_dir, permanent_error_status_codes, custom_hooks,
+which_wpull_args_partial, which_wpull_command):
 	if not (input_file or start_url):
 		print("Neither a START_URL or --input-file= was specified; see --help", file=sys.stderr)
 		sys.exit(1)
@@ -366,6 +372,12 @@ which_wpull_command):
 	# Don't let wpull install a handler for SIGINT or SIGTERM,
 	# because we install our own in wpull_hooks.py.
 	Application.setup_signal_handlers = noop_setup_signal_handlers
+
+	# Modify NO_DOCUMENT_STATUS_CODES
+	# https://github.com/chfoo/wpull/issues/143
+	from wpull.processor.web import WebProcessor
+	WebProcessor.NO_DOCUMENT_STATUS_CODES = \
+		tuple(int(code) for code in permanent_error_status_codes.split(","))
 
 	import wpull.__main__
 	wpull.__main__.main()
