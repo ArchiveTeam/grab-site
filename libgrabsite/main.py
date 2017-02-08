@@ -126,7 +126,7 @@ def replace_2arg(args, arg, replacement):
 	help='Move finished .warc.gz and .cdx files to this directory.')
 
 @click.option('--permanent-error-status-codes', default='401,403,404,405,410', type=str,
-	metavar='PERMANENT_ERROR_STATUS_CODES',
+	metavar='STATUS_CODES',
 	help=
 		'A comma-separated list of HTTP status codes to treat as a permanent '
 		'error and therefore *not* retry (default: 401,403,404,405,410)')
