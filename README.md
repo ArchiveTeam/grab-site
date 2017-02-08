@@ -308,6 +308,12 @@ Options can come before or after the URL.
 
 *	`--finished-warc-dir=FINISHED_WARC_DIR`: Move finished `.warc.gz` and `.cdx` files to this directory.
 
+*	`--permanent-error-status-codes=STATUS_CODES`: A comma-separated list of
+	HTTP status codes to treat as a permanent error and therefore **not** retry
+	(default: `401,403,404,405,410`).  Other error responses tried another 2
+	times for a total of 3 tries (customizable with `--wpull-args=--tries=N`).
+	Note that, unlike wget, wpull puts retries at the end of the queue.
+
 *	`--wpull-args=ARGS`: String containing additional arguments to pass to wpull;
 	see `~/.local/bin/wpull --help`.  `ARGS` is split with `shlex.split` and individual
 	arguments can contain spaces if quoted, e.g.
