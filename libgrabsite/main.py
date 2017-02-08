@@ -90,7 +90,7 @@ def replace_2arg(args, arg, replacement):
 		'Try to limit each WARC file to around BYTES bytes before rolling over '
 		'to a new WARC file (default: 5368709120, which is 5GiB).')
 
-@click.option('--ua', default="Mozilla/5.0 (Windows NT 6.3; WOW64; rv:49.0) Gecko/20100101 Firefox/49.0",
+@click.option('--ua', default="Mozilla/5.0 (Windows NT 6.3; WOW64; rv:51.0) Gecko/20100101 Firefox/51.0",
 	metavar='STRING', help='Send User-Agent: STRING instead of pretending to be Firefox on Windows.')
 
 @click.option('--wpull-args', default="",
