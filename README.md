@@ -159,8 +159,8 @@ On OS X 10.10 or 10.11:
 	prompted to install the command-line developer tools.  Click 'Install'.
 
 2.	If Python 3.4.x is not already installed (type `python3.4 -V`),
-	install Python 3.4.5 using the installer from
-	https://www.python.org/downloads/release/python-345/
+	install Python 3.4.4 using the installer at the bottom of
+	https://www.python.org/downloads/release/python-344/
 
 3.	Run `locale` in your terminal.  If the output includes "UTF-8", everything
 	is fine.  If you do not see "UTF-8", your terminal is misconfigured
