@@ -213,7 +213,7 @@ and point your browser to http://127.0.0.1:29000/
 Then, start as many crawls as you want with:
 
 ```
-~/.local/bin/grab-site URL
+~/.local/bin/grab-site 'URL'
 ```
 
 Do this inside tmux unless they're very short crawls.
