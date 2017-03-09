@@ -551,10 +551,11 @@ dashboard inspired the newer dashboard now used in both projects.
 Help
 ---
 grab-site bugs and questions are welcome in [grab-site/issues](https://github.com/ludios/grab-site/issues).
-If you are affected by an existing issue, please +1 it.
+Please report security bugs as regular bugs.
 
 If a problem happens when running wpull without grab-site (use
-`grab-site URL --which-wpull-args-partial` to get wpull arguments), please
+`grab-site URL --which-wpull-args-partial` to get wpull arguments), and it's
+reproducible with the latest version of wpull (not 1.2.3), please
 report it to [wpull/issues](https://github.com/chfoo/wpull/issues) instead.
 
 Terminal output in your bug report should be surrounded by triple backquotes, like this:
