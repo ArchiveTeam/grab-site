@@ -45,13 +45,6 @@
 /'\+[^/]+\+'
 ^https?://{primary_netloc}/.+/%3Ca%20href=
 
-# Avoid websites on localhost and LAN IPs, in case the user runs grab-site on
-# a host where non-public information is accessible on local servers.
-^(ftp|https?)://localhost(:\d+)?/
-^(ftp|https?)://(127|10)\.\d+\.\d+\.\d+(:\d+)?/
-^(ftp|https?)://172\.(1[6-9]|2\d|3[01])\.\d+\.\d+(:\d+)?/
-^(ftp|https?)://192\.168\.\d+\.\d+(:\d+)?/
-
 ^https?://www\.google\.com/recaptcha/(api|mailhide/d\?)
 
 # CAPTCHAs on ASP.NET sites
