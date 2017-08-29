@@ -115,6 +115,7 @@
 ^https?://r-a-d\.io/.+\.mp3$
 ^https?://mp3tslg\.tdf-cdn\.com/
 ^https?://[^/]+/anony/mjpg\.cgi$
+^https?://[^/]+/mjpg/video\.mjpg
 ^https?://air\.radiorecord\.ru(:\d+)?/
 ^https?://[^/]+\.rastream\.com(:\d+)?/
 ^https?://audiots\.scdn\.arkena\.com/
