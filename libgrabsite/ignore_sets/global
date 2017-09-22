@@ -44,6 +44,7 @@
 /\\/\\/
 /'\+[^/]+\+'
 ^https?://{primary_netloc}/.+/%3Ca%20href=
+^https?://www\.youtube\.com/.*\[\[.+\]\]
 
 ^https?://www\.google\.com/recaptcha/(api|mailhide/d\?)
 
