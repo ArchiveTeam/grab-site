@@ -28,7 +28,7 @@ grab-site will manage to crawl a site with ~10M pages.
 
 ![dashboard screenshot](https://raw.githubusercontent.com/ludios/grab-site/master/images/dashboard.png)
 
-Note: grab-site currently **does not work with Python 3.5**; please use Python 3.4 instead.
+Note: grab-site currently **does not work with Python 3.5 or newer**; please use Python 3.4 instead.
 
 **Contents**
 
