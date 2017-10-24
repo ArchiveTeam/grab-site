@@ -33,7 +33,7 @@ Note: grab-site currently **does not work with Python 3.5**; please use Python 3
 **Contents**
 
 - [Install on Ubuntu 14.04 - 15.10](#install-on-ubuntu-1404---1510)
-- [Install on Ubuntu 16.04 - 17.04](#install-on-ubuntu-1604---1704)
+- [Install on Ubuntu 16.04 - 17.10](#install-on-ubuntu-1604---1710)
 - [Install on a non-Ubuntu distribution lacking Python 3.4.x](#install-on-a-non-ubuntu-distribution-lacking-python-34x)
 - [Install on OS X](#install-on-os-x)
 - [Upgrade an existing install](#upgrade-an-existing-install)
@@ -71,15 +71,15 @@ PATH="$PATH:$HOME/.local/bin"
 
 
 
-Install on Ubuntu 16.04 - 17.04
+Install on Ubuntu 16.04 - 17.10
 ---
-This is more involved because Ubuntu 16.04 and up include python3.5 instead of python3.4, and grab-site does not work with python3.5.  We have to install python3.4 from a PPA.
+This is more involved because Ubuntu 16.04 and later do not include python3.4, which grab-site requires.  We have to install python3.4 from a PPA.
 
 ```
 sudo apt-get update
 sudo apt-get install --no-install-recommends git build-essential software-properties-common
 sudo apt-add-repository ppa:fkrull/deadsnakes
-sudo sed -i -r 's/ (yakkety|zesty) / xenial /g' /etc/apt/sources.list.d/fkrull-ubuntu-deadsnakes-*.list
+sudo sed -i -r 's/ (yakkety|zesty|artful) / xenial /g' /etc/apt/sources.list.d/fkrull-ubuntu-deadsnakes-*.list
 sudo apt-get update
 sudo apt-get install --no-install-recommends python3.4 python3.4-dev python3.4-venv
 pyvenv-3.4 ~/gs-venv
