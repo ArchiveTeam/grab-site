@@ -35,7 +35,7 @@ Note: grab-site currently **does not work with Python 3.5 or newer**; please use
 - [Install on Ubuntu 16.04 - 17.10](#install-on-ubuntu-1604---1710)
 - [Install on Ubuntu 14.04](#install-on-ubuntu-1404)
 - [Install on a non-Ubuntu distribution lacking Python 3.4.x](#install-on-a-non-ubuntu-distribution-lacking-python-34x)
-- [Install on OS X](#install-on-os-x)
+- [Install on macOS](#install-on-macos)
 - [Install on Windows 10 (experimental)](#install-on-windows-10-experimental)
 - [Upgrade an existing install](#upgrade-an-existing-install)
 - [Usage](#usage)
@@ -117,9 +117,9 @@ PATH="$PATH:$HOME/.local/bin"
 
 
 
-Install on OS X
+Install on macOS
 ---
-On OS X 10.10 or 10.11:
+On OS X 10.10 - macOS 10.13:
 
 1.	If xcode is not already installed, type `gcc` in Terminal; you will be
 	prompted to install the command-line developer tools.  Click 'Install'.
@@ -128,20 +128,25 @@ On OS X 10.10 or 10.11:
 	install Python 3.4.4 using the installer at the bottom of
 	https://www.python.org/downloads/release/python-344/
 
-3.	Run `locale` in your terminal.  If the output includes "UTF-8", everything
-	is fine.  If you do not see "UTF-8", your terminal is misconfigured
-	and grab-site will fail to start.  This can be corrected with:
+3.	Run `locale` in your terminal.  If the output does not include "UTF-8",
+	your terminal is misconfigured and grab-site will fail to start.
+	This can be corrected with:
 
 	-	Terminal.app: Preferences... -> Profiles -> Advanced -> **check** Set locale environment variables on startup
 
 	-	iTerm2: Preferences... -> Profiles -> Terminal -> Environment -> **check** Set locale variables automatically
 
-4.	`pip3 install --user git+https://github.com/ludios/grab-site`
+4.	Run:
+
+	```
+	pyvenv-3.4 ~/gs-venv
+	~/gs-venv/bin/pip3 install git+https://github.com/ludios/grab-site
+	```
 
 5. Add this to your `~/.bash_profile` (which may not exist yet):
 
 ```
-PATH="$PATH:$HOME/Library/Python/3.4/bin"
+PATH="$PATH:$HOME/gs-venv/bin"
 ```
 
 
