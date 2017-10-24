@@ -32,8 +32,8 @@ Note: grab-site currently **does not work with Python 3.5 or newer**; please use
 
 **Contents**
 
-- [Install on Ubuntu 14.04](#install-on-ubuntu-1404)
 - [Install on Ubuntu 16.04 - 17.10](#install-on-ubuntu-1604---1710)
+- [Install on Ubuntu 14.04](#install-on-ubuntu-1404)
 - [Install on a non-Ubuntu distribution lacking Python 3.4.x](#install-on-a-non-ubuntu-distribution-lacking-python-34x)
 - [Install on OS X](#install-on-os-x)
 - [Install on Windows 10 (experimental)](#install-on-windows-10-experimental)
