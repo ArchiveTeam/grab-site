@@ -56,7 +56,7 @@ Note: grab-site currently **does not work with Python 3.5 or newer**; please use
 
 Install on Ubuntu 16.04 - 17.10
 ---
-This is somewhat involved because Ubuntu 16.04 and later do not include python3.4, which grab-site requires.  We install python3.4 from a PPA, which has a xenial package that also works on newer Ubuntu releases.
+This is somewhat involved because Ubuntu 16.04 and later do not include python3.4, which grab-site requires.  We install python3.4 from a PPA which has a xenial package that also works on newer Ubuntu releases.
 
 ```
 sudo apt-get update
@@ -66,20 +66,14 @@ sudo sed -i -r 's/ (yakkety|zesty|artful) / xenial /g' /etc/apt/sources.list.d/f
 sudo apt-get update
 sudo apt-get install --no-install-recommends python3.4 python3.4-dev python3.4-venv
 pyvenv-3.4 ~/gs-venv
-. ~/gs-venv/bin/activate
-pip3 install git+https://github.com/ludios/grab-site
+~/gs-venv/bin/pip3 install git+https://github.com/ludios/grab-site
 ```
 
-Note that `grab-site` and related executables are installed to `~/gs-venv/bin`.
-
-In the future, when you need to run `grab-site`, first run
+Add this to your `~/.bashrc` or `~/.zshrc`:
 
 ```
-. ~/gs-venv/bin/activate
+PATH="$PATH:$HOME/gs-venv/bin"
 ```
-
-again to activate the `~/gs-venv` virtualenv.  You can add this to your `~/.bashrc` or
-`~/.zshrc` if you have a user dedicated to running grab-site.
 
 
 
@@ -89,20 +83,14 @@ Install on Ubuntu 14.04
 sudo apt-get update
 sudo apt-get install --no-install-recommends git build-essential python3-dev python3.4-venv
 pyvenv-3.4 ~/gs-venv
-. ~/gs-venv/bin/activate
-pip3 install git+https://github.com/ludios/grab-site
+~/gs-venv/bin/pip3 install git+https://github.com/ludios/grab-site
 ```
 
-Note that `grab-site` and related executables are installed to `~/gs-venv/bin`.
-
-In the future, when you need to run `grab-site`, first run
+Add this to your `~/.bashrc` or `~/.zshrc`:
 
 ```
-. ~/gs-venv/bin/activate
+PATH="$PATH:$HOME/gs-venv/bin"
 ```
-
-again to activate the `~/gs-venv` virtualenv.  You can add this to your `~/.bashrc` or
-`~/.zshrc` if you have a user dedicated to running grab-site.
 
 
 
@@ -183,13 +171,11 @@ On Windows 10 Fall Creators Update (1703) or newer:
 Upgrade an existing install
 ---
 
-To update to the latest grab-site, simply run the `pip3 install ...` step again, in most cases:
+To update grab-site, simply run the `pip3 install ...` command used to install it originally
+(note: it will have either `~/gs-venv/bin/pip3` or `--user`, not both).
 
-```
-pip3 install --user git+https://github.com/ludios/grab-site
-```
-
-To upgrade all of grab-site's dependencies, add the `--upgrade` option (not advised unless you are having problems).
+To upgrade all of grab-site's dependencies, add the `--upgrade` option (not advised unless
+you are having problems).
 
 After upgrading, stop `gs-server` with `kill` or ctrl-c, then start it again.
 Existing `grab-site` crawls will automatically reconnect to the new server.
