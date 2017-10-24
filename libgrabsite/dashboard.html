@@ -1419,26 +1419,11 @@ var Dashboard = function() {
 
 	var args = getQueryArgs();
 
-	var historyLines =
-		args["historyLines"] ?
-			Number(args["historyLines"]) :
-			navigator.userAgent.match(/Mobi/) ? 250 : 1000;
-	var batchTimeWhenVisible =
-		args["batchTimeWhenVisible"] ?
-			Number(args["batchTimeWhenVisible"]) :
-			125;
-	var showNicks =
-		args["showNicks"] ?
-			Boolean(Number(args["showNicks"])) :
-			false;
-	var contextMenu =
-		args["contextMenu"] ?
-			Boolean(Number(args["contextMenu"])) :
-			true;
-	var moreDom =
-		args["moreDom"] ?
-			Boolean(Number(args["moreDom"])) :
-			false;
+	var historyLines         = args["historyLines"]         ? Number(args["historyLines"])         : navigator.userAgent.match(/Mobi/) ? 250 : 1000;
+	var batchTimeWhenVisible = args["batchTimeWhenVisible"] ? Number(args["batchTimeWhenVisible"]) : 125;
+	var showNicks            = args["showNicks"]            ? Boolean(Number(args["showNicks"]))   : false;
+	var contextMenu          = args["contextMenu"]          ? Boolean(Number(args["contextMenu"])) : true;
+	var moreDom              = args["moreDom"]              ? Boolean(Number(args["moreDom"]))     : false;
 	// Append to page title to make it possible to identify the tab in Chrome's task manager
 	if(args["title"]) {
 		document.title += " - " + args["title"];
