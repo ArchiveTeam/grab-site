@@ -52,29 +52,11 @@ Note: grab-site currently **does not work with Python 3.5 or newer**; please use
 - [Thanks](#thanks)
 - [Help](#help)
 
-<!-- END doctoc generated TOC please keep comment here to allow auto update -->
-
-
-Install on Ubuntu 14.04
----
-```
-sudo apt-get update
-sudo apt-get install --no-install-recommends git build-essential python3-dev python3-pip
-pip3 install --user git+https://github.com/ludios/grab-site
-```
-
-To avoid having to type out `~/.local/bin/` below, add this to your
-`~/.bashrc` or `~/.zshrc`:
-
-```
-PATH="$PATH:$HOME/.local/bin"
-```
-
 
 
 Install on Ubuntu 16.04 - 17.10
 ---
-This is more involved because Ubuntu 16.04 and later do not include python3.4, which grab-site requires.  We have to install python3.4 from a PPA.
+This is somewhat involved because Ubuntu 16.04 and later do not include python3.4, which grab-site requires.  We install python3.4 from a PPA, which has a xenial package that also works on newer Ubuntu releases.
 
 ```
 sudo apt-get update
@@ -88,7 +70,7 @@ pyvenv-3.4 ~/gs-venv
 pip3 install git+https://github.com/ludios/grab-site
 ```
 
-Note that `grab-site` is installed to `~/gs-venv/bin` instead of `~/.local/bin`.
+Note that `grab-site` and related executables are installed to `~/gs-venv/bin`.
 
 In the future, when you need to run `grab-site`, first run
 
@@ -96,7 +78,31 @@ In the future, when you need to run `grab-site`, first run
 . ~/gs-venv/bin/activate
 ```
 
-again to activate the `~/gs-venv` virtualenv.
+again to activate the `~/gs-venv` virtualenv.  You can add this to your `~/.bashrc` or
+`~/.zshrc` if you have a user dedicated to running grab-site.
+
+
+
+Install on Ubuntu 14.04
+---
+```
+sudo apt-get update
+sudo apt-get install --no-install-recommends git build-essential python3-dev python3.4-venv
+pyvenv-3.4 ~/gs-venv
+. ~/gs-venv/bin/activate
+pip3 install git+https://github.com/ludios/grab-site
+```
+
+Note that `grab-site` and related executables are installed to `~/gs-venv/bin`.
+
+In the future, when you need to run `grab-site`, first run
+
+```
+. ~/gs-venv/bin/activate
+```
+
+again to activate the `~/gs-venv` virtualenv.  You can add this to your `~/.bashrc` or
+`~/.zshrc` if you have a user dedicated to running grab-site.
 
 
 
@@ -115,8 +121,7 @@ Install on a non-Ubuntu distribution lacking Python 3.4.x
 	~/.pyenv/versions/3.4.5/bin/pip3 install --user git+https://github.com/ludios/grab-site
 	```
 
-To avoid having to type out `~/.local/bin/` below, add this to your
-`~/.bashrc` or `~/.zshrc`:
+5. Add this to your `~/.bashrc` or `~/.zshrc`:
 
 ```
 PATH="$PATH:$HOME/.local/bin"
@@ -145,11 +150,7 @@ On OS X 10.10 or 10.11:
 
 4.	`pip3 install --user git+https://github.com/ludios/grab-site`
 
-**Important usage note**: Use `~/Library/Python/3.4/bin/` instead of
-`~/.local/bin/` for all instructions below!
-
-To avoid having to type out `~/Library/Python/3.4/bin/` below,
-add this to your `~/.bash_profile` (which may not exist yet):
+5. Add this to your `~/.bash_profile` (which may not exist yet):
 
 ```
 PATH="$PATH:$HOME/Library/Python/3.4/bin"
@@ -200,7 +201,7 @@ Usage
 First, start the dashboard with:
 
 ```
-~/.local/bin/gs-server
+gs-server
 ```
 
 and point your browser to http://127.0.0.1:29000/
@@ -208,7 +209,7 @@ and point your browser to http://127.0.0.1:29000/
 Then, start as many crawls as you want with:
 
 ```
-~/.local/bin/grab-site 'URL'
+grab-site 'URL'
 ```
 
 Do this inside tmux unless they're very short crawls.
@@ -310,7 +311,7 @@ Options can come before or after the URL.
 	Note that, unlike wget, wpull puts retries at the end of the queue.
 
 *	`--wpull-args=ARGS`: String containing additional arguments to pass to wpull;
-	see `~/.local/bin/wpull --help`.  `ARGS` is split with `shlex.split` and individual
+	see `wpull --help`.  `ARGS` is split with `shlex.split` and individual
 	arguments can contain spaces if quoted, e.g.
 	`--wpull-args="--youtube-dl \"--youtube-dl-exe=/My Documents/youtube-dl\""`
 
@@ -450,7 +451,7 @@ for adding ignores before grab-site crawls a large number of junk URLs.
 To dump the queue, run:
 
 ```
-~/.local/bin/gs-dump-urls DIR/wpull.db todo
+gs-dump-urls DIR/wpull.db todo
 ```
 
 Four other statuses can be used besides `todo`:
@@ -459,7 +460,7 @@ Four other statuses can be used besides `todo`:
 You may want to pipe the output to `sort` and `less`:
 
 ```
-~/.local/bin/gs-dump-urls DIR/wpull.db todo | sort | less -S
+gs-dump-urls DIR/wpull.db todo | sort | less -S
 ```
 
 
