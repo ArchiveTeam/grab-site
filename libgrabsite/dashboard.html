@@ -394,7 +394,7 @@ a.ignore {
 				If your adblocker is enabled for this domain, you will see slower performance, and some URLs will not be displayed.
 			</p>
 			<p>
-				In Chrome 42+, Firefox 41+, and IE10+, a custom context menu is enabled when right-clicking URLs in the log windows below.  It can be disabled by adding <kbd><span class="url-q-or-amp">?</span>contextMenu=0</kbd> to the dashboard URL.  Firefox users: if you see both the normal and custom context menu, make sure <code>dom.event.contextmenu.enabled</code> is set to <code>true</code> in <code>about:config</code>.
+				A custom context menu is shown when right-clicking URLs in the log windows below.  It can be disabled by adding <kbd><span class="url-q-or-amp">?</span>contextMenu=0</kbd> to the dashboard URL.  Firefox users: if you see both the normal and custom context menu, make sure <code>dom.event.contextmenu.enabled</code> is set to <code>true</code> in <code>about:config</code>.
 			</p>
 			<p>
 				For easier text selection in the log windows, add <kbd><span class="url-q-or-amp">?</span>moreDom=1</kbd> to the dashboard URL.  (This uses ~25% more memory.)
@@ -1434,13 +1434,7 @@ var Dashboard = function() {
 	var contextMenu =
 		args["contextMenu"] ?
 			Boolean(Number(args["contextMenu"])) :
-			/**
-			 * The context menu is useless without document.execCommand('copy'),
-			 * which is available in IE10+, Chrome 42+, and Firefox 41+
-			 */
-			((isTrident && getTridentMajorVersion() >= 6) ||
-			 (isChrome && getChromeMajorVersion() >= 42) ||
-			 (isFirefox && getFirefoxMajorVersion() >= 41));
+			true;
 	var moreDom =
 		args["moreDom"] ?
 			Boolean(Number(args["moreDom"])) :
