@@ -36,6 +36,7 @@ Note: grab-site currently **does not work with Python 3.5**; please use Python 3
 - [Install on Ubuntu 16.04 - 17.10](#install-on-ubuntu-1604---1710)
 - [Install on a non-Ubuntu distribution lacking Python 3.4.x](#install-on-a-non-ubuntu-distribution-lacking-python-34x)
 - [Install on OS X](#install-on-os-x)
+- [Install on Windows 10 (experimental)](#install-on-windows-10-experimental)
 - [Upgrade an existing install](#upgrade-an-existing-install)
 - [Usage](#usage)
   - [`grab-site` options, ordered by importance](#grab-site-options-ordered-by-importance)
@@ -153,6 +154,28 @@ add this to your `~/.bash_profile` (which may not exist yet):
 ```
 PATH="$PATH:$HOME/Library/Python/3.4/bin"
 ```
+
+
+
+Install on Windows 10 (experimental)
+---
+On Windows 10 Fall Creators Update (1703) or newer:
+
+1. Start menu -> search "feature" -> Turn Windows features on or off
+
+2. Scroll down, check "Windows Subsystem for Linux" and click OK.
+
+3. Wait for install and click "Restart now"
+
+4. Start menu -> Store
+
+5. Search for "Ubuntu" in the store and install Ubuntu (publisher: Canonical Group Limited).
+
+6. Start menu -> Ubuntu
+
+7. Wait for install and create a user when prompted.
+
+8. Follow the [Install on Ubuntu 16.04 - 17.10](#install-on-ubuntu-1604---1710) steps.
 
 
 
