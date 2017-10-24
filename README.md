@@ -69,7 +69,7 @@ pyvenv-3.4 ~/gs-venv
 ~/gs-venv/bin/pip3 install git+https://github.com/ludios/grab-site
 ```
 
-Add this to your `~/.bashrc` or `~/.zshrc`:
+Add this to your `~/.bashrc` or `~/.zshrc` and start a new shell:
 
 ```
 PATH="$PATH:$HOME/gs-venv/bin"
@@ -86,7 +86,7 @@ pyvenv-3.4 ~/gs-venv
 ~/gs-venv/bin/pip3 install git+https://github.com/ludios/grab-site
 ```
 
-Add this to your `~/.bashrc` or `~/.zshrc`:
+Add this to your `~/.bashrc` or `~/.zshrc` and start a new shell:
 
 ```
 PATH="$PATH:$HOME/gs-venv/bin"
@@ -105,14 +105,15 @@ Install on a non-Ubuntu distribution lacking Python 3.4.x
 4.	Run:
 
 	```
-	~/.pyenv/bin/pyenv install 3.4.5
-	~/.pyenv/versions/3.4.5/bin/pip3 install --user git+https://github.com/ludios/grab-site
+	~/.pyenv/bin/pyenv install 3.4.7
+	~/.pyenv/versions/3.4.7/bin/pyvenv-3.4 ~/gs-venv
+	~/gs-venv/bin/pip3 install git+https://github.com/ludios/grab-site
 	```
 
-5. Add this to your `~/.bashrc` or `~/.zshrc`:
+5. Add this to your `~/.bashrc` or `~/.zshrc` and start a new shell:
 
 ```
-PATH="$PATH:$HOME/.local/bin"
+PATH="$PATH:$HOME/gs-venv/bin"
 ```
 
 
@@ -143,7 +144,7 @@ On OS X 10.10 - macOS 10.13:
 	~/gs-venv/bin/pip3 install git+https://github.com/ludios/grab-site
 	```
 
-5. Add this to your `~/.bash_profile` (which may not exist yet):
+5. Add this to your `~/.bash_profile` (which may not exist yet) and start a new shell:
 
 ```
 PATH="$PATH:$HOME/gs-venv/bin"
@@ -176,10 +177,10 @@ On Windows 10 Fall Creators Update (1703) or newer:
 Upgrade an existing install
 ---
 
-To update grab-site, simply run the `pip3 install ...` command used to install it originally
-(note: it will have either `~/gs-venv/bin/pip3` or `--user`, not both).
+To update grab-site, simply run the `~/gs-venv/bin/pip3 install ...` command used to install
+it originally (see above).
 
-To upgrade all of grab-site's dependencies, add the `--upgrade` option (not advised unless
+To upgrade all of grab-site's dependencies, add the `--upgrade` argument (not advised unless
 you are having problems).
 
 After upgrading, stop `gs-server` with `kill` or ctrl-c, then start it again.
