@@ -1,3 +1,6 @@
+^https?://accounts\.google\.com/AccountChooser
+^https?://www\.google\.com/accounts/AccountChooser
+^https?://accounts\.google\.com/a/UniversalLogin
 ^https?://accounts\.google\.com/ServiceLogin
 ^https?://accounts\.google\.com/SignUp
 ^https?://lh4\.googleusercontent\.com/proxy/[^/]+
