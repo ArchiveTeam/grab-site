@@ -1,2 +1,1 @@
-^https?://accounts\.google\.com/ServiceLogin
 \.?youtube\.com/user/[^/]+/(playlists|channels|videos)\?(flow|view|sort|live_view)=
