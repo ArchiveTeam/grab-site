@@ -48,6 +48,8 @@
 ^https?://www\.youtube\.com/.*\{\{.+\}\}
 
 ^https?://www\.google\.com/recaptcha/(api|mailhide/d\?)
+^https?://www\.google\.com/accounts/AccountChooser
+^https?://accounts\.google\.com/(SignUp|ServiceLogin|AccountChooser|a/UniversalLogin)
 
 # CAPTCHAs on ASP.NET sites
 ^https?://[^/]+/.+/CaptchaImage\.axd
