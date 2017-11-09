@@ -70,6 +70,7 @@
 ^https?://pixel\.blog\.hu/
 ^https?://pixel\.redditmedia\.com/pixel/
 ^https?://pixel\.quantserve\.com/
+^https?://pixel\.wp\.com/
 ^https?://(www|ssl)\.google-analytics\.com/(r/)?(__utm\.gif|collect\?)
 ^https?://p\.opt\.fimserve\.com/
 ^https?://.+/js-agent\.newrelic\.com/nr-\d{3}(\.min)?\.js$
