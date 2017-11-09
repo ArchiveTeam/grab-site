@@ -27,6 +27,20 @@ def replace_2arg(args, arg, replacement):
 	for r in reversed(replacement):
 		args.insert(idx, r)
 
+def patch_dns_inet_is_multicast():
+	"""
+	Patch dnspython's dns.inet.is_multicast to not raise ValueError:
+	https://github.com/ludios/grab-site/issues/111
+	"""
+	import dns.inet
+	is_multicast_dnspython = dns.inet.is_multicast
+	def is_multicast(text):
+		try:
+			return is_multicast_dnspython(text)
+		except Exception:
+			return False
+	dns.inet.is_multicast = is_multicast
+
 @click.command()
 
 @click.option('--concurrency', default=2, metavar='NUM',
@@ -355,6 +369,8 @@ which_wpull_args_partial, which_wpull_command):
 		print("GRAB_SITE_WORKING_DIR={} DUPESPOTTER_ENABLED={} {} {}".format(
 			working_dir, int(dupespotter), bin, " ".join(shlex.quote(a) for a in args)))
 		return
+
+	patch_dns_inet_is_multicast()
 
 	# Mutate argv, environ, cwd before we turn into wpull
 	sys.argv[1:] = args
