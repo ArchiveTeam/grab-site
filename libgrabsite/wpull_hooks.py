@@ -515,7 +515,7 @@ def update_concurrency():
 update_concurrency()
 
 
-def wait_time(seconds, url_info_dict, record_info_dict, response_info_dict, error_info_dict):
+def wait_time(seconds, url_info, record_info, response_info, error_info):
 	update_delay()
 	update_concurrency()
 	update_custom_hooks()
