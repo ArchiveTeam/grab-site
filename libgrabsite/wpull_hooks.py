@@ -515,7 +515,7 @@ def update_concurrency():
 update_concurrency()
 
 
-def wait_time(_):
+def wait_time(seconds, url_info_dict, record_info_dict, response_info_dict, error_info_dict):
 	update_delay()
 	update_concurrency()
 	update_custom_hooks()
@@ -528,12 +528,12 @@ def update_custom_hooks():
 	if not custom_hooks_watcher.has_changed():
 		return
 
-	assert 2 in wpull_hook.callbacks.AVAILABLE_VERSIONS
+	assert 3 in wpull_hook.callbacks.AVAILABLE_VERSIONS
 
 	# Set these every time, because custom_hooks.py may be wrapping them,
 	# and when custom_hooks.py is reloaded, we want it re-wrap the base functions
 	# instead of its already-wrapped functions.
-	wpull_hook.callbacks.version = 2
+	wpull_hook.callbacks.version = 3
 	wpull_hook.callbacks.accept_url = accept_url
 	wpull_hook.callbacks.queued_url = queued_url
 	wpull_hook.callbacks.dequeued_url = dequeued_url
