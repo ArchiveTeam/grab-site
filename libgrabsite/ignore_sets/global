@@ -133,6 +133,7 @@
 ^https?://(ssl\.|www\.)?reddit\.com/(login\?dest=|submit\?|static/button/button)
 ^https?://(www\.)?digg\.com/submit\?
 ^https?://(www\.)?facebook\.com/(plugins/like(box)?\.php|sharer/sharer\.php|sharer?\.php|dialog/(feed|share))\?
+^https?://(www\.)?facebook\.com/v[\d\.]+/plugins/like\.php
 ^https?://(www\.)?twitter\.com/(share\?|intent/((re)?tweet|favorite)|home/?\?status=|\?status=)
 ^https?://platform\d?\.twitter\.com/widgets/tweet_button.html\?
 ^https?://www\.newsvine\.com/_wine/save\?
