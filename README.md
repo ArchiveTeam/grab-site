@@ -30,6 +30,9 @@ grab-site will manage to crawl a site with ~10M pages.
 
 Note: grab-site currently **does not work with Python 3.5 or newer**; please use Python 3.4 instead.
 
+Note: if you have any problems whatsoever installing or getting grab-site to run,
+please [file an issue](https://github.com/ludios/grab-site/issues) - thank you!
+
 **Contents**
 
 - [Install on Ubuntu 16.04 - 17.10](#install-on-ubuntu-1604---1710)
