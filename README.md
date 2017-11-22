@@ -201,6 +201,10 @@ gs-server
 
 and point your browser to http://127.0.0.1:29000/
 
+Note: gs-server listens on all interfaces by default, so you can reach the
+dashboard by a non-localhost IP as well, e.g. a LAN or WAN IP.  (Sub-note:
+no code execution capabilities are exposed on any interface.)
+
 Then, start as many crawls as you want with:
 
 ```
