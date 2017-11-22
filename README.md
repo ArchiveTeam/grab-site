@@ -64,8 +64,8 @@ This is somewhat involved because Ubuntu 16.04 and later do not include python3.
 ```
 sudo apt-get update
 sudo apt-get install --no-install-recommends git build-essential software-properties-common
-sudo apt-add-repository ppa:fkrull/deadsnakes
-sudo sed -i -r 's/ (yakkety|zesty|artful) / xenial /g' /etc/apt/sources.list.d/fkrull-ubuntu-deadsnakes-*.list
+sudo add-apt-repository ppa:deadsnakes/ppa
+sudo sed -i -r 's/ (yakkety|zesty|artful) / xenial /g' /etc/apt/sources.list.d/deadsnakes-ubuntu-ppa-*.list
 sudo apt-get update
 sudo apt-get install --no-install-recommends python3.4 python3.4-dev python3.4-venv
 pyvenv-3.4 ~/gs-venv
