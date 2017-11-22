@@ -72,7 +72,7 @@ pyvenv-3.4 ~/gs-venv
 ~/gs-venv/bin/pip3 install git+https://github.com/ludios/grab-site
 ```
 
-Add this to your `~/.bashrc` or `~/.zshrc` and start a new shell:
+Add this to your `~/.bashrc` or `~/.zshrc` and then restart your shell (e.g. by opening a new terminal tab/window):
 
 ```
 PATH="$PATH:$HOME/gs-venv/bin"
@@ -89,7 +89,7 @@ pyvenv-3.4 ~/gs-venv
 ~/gs-venv/bin/pip3 install git+https://github.com/ludios/grab-site
 ```
 
-Add this to your `~/.bashrc` or `~/.zshrc` and start a new shell:
+Add this to your `~/.bashrc` or `~/.zshrc` and then restart your shell (e.g. by opening a new terminal tab/window):
 
 ```
 PATH="$PATH:$HOME/gs-venv/bin"
@@ -113,7 +113,7 @@ Install on a non-Ubuntu distribution lacking Python 3.4.x
 	~/gs-venv/bin/pip3 install git+https://github.com/ludios/grab-site
 	```
 
-5. Add this to your `~/.bashrc` or `~/.zshrc` and start a new shell:
+5. Add this to your `~/.bashrc` or `~/.zshrc` and then restart your shell (e.g. by opening a new terminal tab/window):
 
 ```
 PATH="$PATH:$HOME/gs-venv/bin"
@@ -147,7 +147,7 @@ On OS X 10.10 - macOS 10.13:
 	~/gs-venv/bin/pip3 install git+https://github.com/ludios/grab-site
 	```
 
-5. Add this to your `~/.bash_profile` (which may not exist yet) and start a new shell:
+5. Add this to your `~/.bash_profile` (which may not exist yet) and then restart your shell (e.g. by opening a new terminal tab/window):
 
 ```
 PATH="$PATH:$HOME/gs-venv/bin"
