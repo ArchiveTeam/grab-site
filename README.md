@@ -36,7 +36,7 @@ please [file an issue](https://github.com/ludios/grab-site/issues) - thank you!
 
 **Contents**
 
-- [Install on Ubuntu 14.04, 16.04](#install-on-ubuntu-1404-1604)
+- [Install on Ubuntu 14.04, 16.04, Debian 8 (jessie)](#install-on-ubuntu-1404-1604-debian-8-jessie)
 - [Install on Ubuntu 17.10, Debian 9 (stretch), Debian 10 (buster)](#install-on-ubuntu-1710-debian-9-stretch-debian-10-buster)
 - [Install on a non-Debian/Ubuntu distribution lacking Python 3.4.x](#install-on-a-non-debianubuntu-distribution-lacking-python-34x)
 - [Install on macOS](#install-on-macos)
@@ -58,8 +58,10 @@ please [file an issue](https://github.com/ludios/grab-site/issues) - thank you!
 
 
 
-Install on Ubuntu 14.04, 16.04
+Install on Ubuntu 14.04, 16.04, Debian 8 (jessie)
 ---
+On Debian, use `su` to become root if `sudo` is not configured to give you access.
+
 ```
 sudo apt-get update
 sudo apt-get install --no-install-recommends git build-essential libssl-dev zlib1g-dev libbz2-dev libreadline-dev libsqlite3-dev
@@ -178,7 +180,7 @@ On Windows 10 Fall Creators Update (1703) or newer:
 
 7. Wait for install and create a user when prompted.
 
-8. Follow the [Install on Ubuntu 16.04 - 17.10](#install-on-ubuntu-1604---1710) steps.
+8. Follow the [Ubuntu 14.04, 16.04, Debian 8 (jessie)](#install-on-ubuntu-1404-1604-debian-8-jessie) steps.
 
 
 
