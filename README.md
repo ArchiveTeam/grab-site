@@ -36,9 +36,9 @@ please [file an issue](https://github.com/ludios/grab-site/issues) - thank you!
 
 **Contents**
 
-- [Install on Ubuntu 16.04 - 17.10](#install-on-ubuntu-1604---1710)
-- [Install on Ubuntu 14.04](#install-on-ubuntu-1404)
-- [Install on a non-Ubuntu distribution lacking Python 3.4.x](#install-on-a-non-ubuntu-distribution-lacking-python-34x)
+- [Install on Ubuntu 14.04, 16.04](#install-on-ubuntu-1404-1604)
+- [Install on Ubuntu 17.10, Debian 9 (stretch), Debian 10 (buster)](#install-on-ubuntu-1710-debian-9-stretch-debian-10-buster)
+- [Install on a non-Debian/Ubuntu distribution lacking Python 3.4.x](#install-on-a-non-debian-ubuntu-distribution-lacking-python-34x)
 - [Install on macOS](#install-on-macos)
 - [Install on Windows 10 (experimental)](#install-on-windows-10-experimental)
 - [Upgrade an existing install](#upgrade-an-existing-install)
@@ -58,18 +58,16 @@ please [file an issue](https://github.com/ludios/grab-site/issues) - thank you!
 
 
 
-Install on Ubuntu 16.04 - 17.10
+Install on Ubuntu 14.04, 16.04
 ---
-This is somewhat involved because Ubuntu 16.04 and later do not include python3.4, which grab-site requires.  We install python3.4 from a PPA which has a xenial package that also works on newer Ubuntu releases.
-
 ```
 sudo apt-get update
-sudo apt-get install --no-install-recommends git build-essential software-properties-common
-sudo add-apt-repository ppa:deadsnakes/ppa
-sudo sed -i -r 's/ (yakkety|zesty|artful) / xenial /g' /etc/apt/sources.list.d/deadsnakes-ubuntu-ppa-*.list
-sudo apt-get update
-sudo apt-get install --no-install-recommends python3.4 python3.4-dev python3.4-venv
-pyvenv-3.4 ~/gs-venv
+sudo apt-get install --no-install-recommends git build-essential libssl-dev zlib1g-dev libbz2-dev libreadline-dev libsqlite3-dev
+wget https://raw.githubusercontent.com/pyenv/pyenv-installer/master/bin/pyenv-installer
+chmod +x pyenv-installer
+./pyenv-installer
+~/.pyenv/bin/pyenv install 3.4.7
+~/.pyenv/versions/3.4.7/bin/pyvenv-3.4 ~/gs-venv
 ~/gs-venv/bin/pip3 install git+https://github.com/ludios/grab-site
 ```
 
@@ -81,12 +79,18 @@ PATH="$PATH:$HOME/gs-venv/bin"
 
 
 
-Install on Ubuntu 14.04
+Install on Ubuntu 17.10, Debian 9 (stretch), Debian 10 (buster)
 ---
+On Debian, use `su` to become root if `sudo` is not configured to give you access.
+
 ```
 sudo apt-get update
-sudo apt-get install --no-install-recommends git build-essential python3-dev python3.4-venv
-pyvenv-3.4 ~/gs-venv
+sudo apt-get install --no-install-recommends git build-essential libssl1.0-dev zlib1g-dev libbz2-dev libreadline-dev libsqlite3-dev
+wget https://raw.githubusercontent.com/pyenv/pyenv-installer/master/bin/pyenv-installer
+chmod +x pyenv-installer
+./pyenv-installer
+~/.pyenv/bin/pyenv install 3.4.7
+~/.pyenv/versions/3.4.7/bin/pyvenv-3.4 ~/gs-venv
 ~/gs-venv/bin/pip3 install git+https://github.com/ludios/grab-site
 ```
 
@@ -98,7 +102,7 @@ PATH="$PATH:$HOME/gs-venv/bin"
 
 
 
-Install on a non-Ubuntu distribution lacking Python 3.4.x
+Install on a non-Debian/Ubuntu distribution lacking Python 3.4.x
 ---
 1.	Install git.
 
