@@ -187,6 +187,7 @@ html, body, .job-ident {
 	margin: 0 0 1em 0;
 	border-radius: 3px;
 	box-shadow: 4px 4px 17px 0px #0000001c;
+	overscroll-behavior: contain;
 }
 
 .log-window-hidden {
@@ -823,7 +824,9 @@ JobsRenderer.prototype._createLogContainer = function(jobData) {
 	// starts to scroll the page instead.  We prevent this behavior here.
 	// If the user wants to scroll the page, they need to move their
 	// mouse outside a log window first.
-	if(!isSafari) {
+	if(isChrome && getChromeMajorVersion() >= 63) {
+		// No need to attach an event; .log-window { overscroll-behavior: contain } will take care of it.
+	} else if(!isSafari) {
 		logWindowAttrs["onwheel"] = function(ev) {
 			// Note: offsetHeight is "wrong" by 2px but it doesn't matter
 			//console.log(ev, logWindow.scrollTop, (logWindow.scrollHeight - logWindow.offsetHeight));
