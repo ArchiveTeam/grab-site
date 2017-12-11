@@ -3,6 +3,9 @@
 # by reddit.
 
 ^https?://www\.reddit\.com/gold\?goldtype=
+# URLs with utm_ can (hopefully) be safely ignored because reddit also sends
+# href=""s without the utm_ trackers.
+^https?://www\.reddit\.com/r/[^/]+/.*[\?&]utm_
 ^https?://www\.reddit\.com/r/[^/]+/comments/[a-z0-9]+/[^/]+/[a-z0-9]+
 ^https?://www\.reddit\.com/r/[^/]+/comments/[a-z0-9]+.*\?sort=
 ^https?://www\.reddit\.com/r/[^/]+/comments/[a-z0-9]+/[^/]+/\.compact
