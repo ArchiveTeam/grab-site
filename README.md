@@ -552,6 +552,10 @@ Thanks to [David Yip](https://github.com/yipdw), who created
 hooks in ArchiveBot served as the basis for grab-site.  The original ArchiveBot
 dashboard inspired the newer dashboard now used in both projects.
 
+Thanks to [BrowserStack](https://www.browserstack.com/) for providing free
+browser testing for grab-site, which we use to make sure the dashboard still
+works in Edge and Safari.
+
 
 
 Help
