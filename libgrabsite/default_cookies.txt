@@ -3,5 +3,10 @@
 # Skip the age gate on many subreddits
 .reddit.com	TRUE	/	FALSE	2147483647	over18	1
 
+# Skip the age gate on many games (birthtime 0 = 1970)
+store.steampowered.com	FALSE	/	FALSE	2147483647	mature_content	1
+store.steampowered.com	FALSE	/	FALSE	2147483647	birthtime	0
+store.steampowered.com	FALSE	/	FALSE	2147483647	lastagecheckage	1-January-1970
+
 # Avoid getting redirected to a non-.com TLD when crawling outside the US
 .blogspot.com	TRUE	/	FALSE	2147483647	NCR	1
