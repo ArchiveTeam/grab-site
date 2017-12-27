@@ -71,6 +71,9 @@ def patch_dns_inet_is_multicast():
 @click.option('--ignore-sets', default="", metavar='LIST',
 	help='Alias for --igsets.')
 
+@click.option('--import-ignores', default=None, metavar='FILE',
+	help='Copy this file to DIR/ignores before the crawl begins.')
+
 @click.option('--igon/--igoff', default=False,
 	help=
 		'--igon (default: false) to print all URLs being ignored to the terminal '
@@ -169,10 +172,10 @@ def patch_dns_inet_is_multicast():
 @click.argument('start_url', nargs=-1, required=False)
 
 def main(concurrency, concurrent, delay, recursive, offsite_links, igsets,
-ignore_sets, igon, video, level, page_requisites_level, max_content_length,
-sitemaps, dupespotter, warc_max_size, ua, input_file, wpull_args, start_url,
-id, dir, finished_warc_dir, permanent_error_status_codes, custom_hooks,
-which_wpull_args_partial, which_wpull_command):
+ignore_sets, import_ignores, igon, video, level, page_requisites_level,
+max_content_length, sitemaps, dupespotter, warc_max_size, ua, input_file,
+wpull_args, start_url, id, dir, finished_warc_dir, permanent_error_status_codes,
+custom_hooks, which_wpull_args_partial, which_wpull_command):
 	if not (input_file or start_url):
 		print("Neither a START_URL or --input-file= was specified; see --help", file=sys.stderr)
 		sys.exit(1)
@@ -356,7 +359,8 @@ which_wpull_args_partial, which_wpull_command):
 			pass
 
 	with open("{}/ignores".format(working_dir), "w") as f:
-		pass
+		if import_ignores is not None:
+			f.write(open(import_ignores, "r").read())
 
 	with open("{}/delay".format(working_dir), "w") as f:
 		f.write(delay)
