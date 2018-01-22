@@ -38,7 +38,7 @@ please [file an issue](https://github.com/ludios/grab-site/issues) - thank you!
 
 - [Install on Ubuntu 14.04, 16.04, Debian 8 (jessie)](#install-on-ubuntu-1404-1604-debian-8-jessie)
 - [Install on Ubuntu 17.10, Debian 9 (stretch), Debian 10 (buster)](#install-on-ubuntu-1710-debian-9-stretch-debian-10-buster)
-- [Install on Centos](#install-on-centos-7)
+- [Install on Centos 7](#install-on-centos-7)
 - [Install on a non-Debian/Ubuntu distribution lacking Python 3.4.x](#install-on-a-non-debianubuntu-distribution-lacking-python-34x)
 - [Install on macOS](#install-on-macos)
 - [Install on Windows 10 (experimental)](#install-on-windows-10-experimental)
