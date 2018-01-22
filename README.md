@@ -38,6 +38,7 @@ please [file an issue](https://github.com/ludios/grab-site/issues) - thank you!
 
 - [Install on Ubuntu 14.04, 16.04, Debian 8 (jessie)](#install-on-ubuntu-1404-1604-debian-8-jessie)
 - [Install on Ubuntu 17.10, Debian 9 (stretch), Debian 10 (buster)](#install-on-ubuntu-1710-debian-9-stretch-debian-10-buster)
+- [Install on Centos](#install-on-centos-7)
 - [Install on a non-Debian/Ubuntu distribution lacking Python 3.4.x](#install-on-a-non-debianubuntu-distribution-lacking-python-34x)
 - [Install on macOS](#install-on-macos)
 - [Install on Windows 10 (experimental)](#install-on-windows-10-experimental)
@@ -102,6 +103,27 @@ Add this to your `~/.bashrc` or `~/.zshrc` and then restart your shell (e.g. by 
 PATH="$PATH:$HOME/gs-venv/bin"
 ```
 
+
+
+Install on Centos 7
+---
+On Centos, use `su` to become root if `sudo` is not configured to give you access. We need `epel` repository to have python34 package.
+
+```
+sudo yum update
+sudo yum install epel-release
+sudo yum update
+sudo yum groupinstall 'Development Tools'
+sudo yum install git openssl-devel zlib-devel bzip2-devel readline-devel libsqlite3-devel python34-devel python34-pip
+```
+
+In Centos you can use `python34` without `pyenv`, just when you want to use python34 instead of python3, call it by `python3.4 yourfile.py`
+
+```
+sudo pip3.4 install git+https://github.com/ludios/grab-site
+```
+
+Now you can use simple `grab-site` command to run everything everywhere!
 
 
 Install on a non-Debian/Ubuntu distribution lacking Python 3.4.x
