@@ -16,7 +16,8 @@ install_requires = [
 	"lmdb>=0.89",
 	"autobahn>=0.12.1",
 	"trollius>=2.1",
-	"html5lib==0.9999999"
+	"html5lib==0.9999999",
+	"tornado==4.5.3",
 ]
 
 if 'GRAB_SITE_NO_CCHARDET' not in os.environ:
@@ -31,7 +32,7 @@ setup(
 	author_email="ivan@ludios.org",
 	classifiers=[
 		"Programming Language :: Python :: 3",
-		"Development Status :: 4 - Beta",
+		"Development Status :: 5 - Production/Stable",
 		"Intended Audience :: End Users/Desktop",
 		"License :: OSI Approved :: MIT License",
 		"Topic :: Internet :: WWW/HTTP",
