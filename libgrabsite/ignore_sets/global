@@ -141,7 +141,7 @@
 ^https?://add\.my\.yahoo\.com/(rss|content)\?
 ^https?://www\.addtoany\.com/(add_to/|share_save\?)
 ^https?://www\.addthis\.com/bookmark\.php\?
-^https?://(www\.)?pinterest\.com/pin/create/
+^https?://([^\.]+\.)?pinterest\.com/pin/create/
 ^https?://www\.linkedin\.com/(cws/share|shareArticle)\?
 ^https?://(www\.)?stumbleupon\.com/(submit\?|badge/embed/)
 ^https?://csp\.cyworld\.com/bi/bi_recommend_pop\.php\?
