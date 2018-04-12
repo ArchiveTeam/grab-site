@@ -175,7 +175,7 @@
 ^https?://api\.addthis\.com/
 ^https?://bookmark\.naver\.com/post\?
 ^https?://(www\.)?instapaper\.com/hello2\?
-^https?://getpocket\.com/save/?\?
+^https?://getpocket\.com/(save|edit)/?\?
 ^https?://medium\.com/_/vote/
 ^https?://medium\.com/_/bookmark/
 ^https?://medium\.com/_/subscribe/
