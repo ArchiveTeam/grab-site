@@ -69,7 +69,7 @@
 ^https?://b\.scorecardresearch\.com/
 ^https?://pixel\.blog\.hu/
 ^https?://pixel\.redditmedia\.com/pixel/
-^https?://alb\.reddit\.com/i\.gif
+^https?://alb\.reddit\.com/
 ^https?://pixel\.quantserve\.com/
 ^https?://pixel\.wp\.com/
 ^https?://(www|ssl)\.google-analytics\.com/(r/)?(__utm\.gif|collect\?)
