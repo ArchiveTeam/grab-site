@@ -132,29 +132,30 @@ Install on macOS
 ---
 On OS X 10.10 - macOS 10.13:
 
-1.	If xcode is not already installed, type `gcc` in Terminal; you will be
-	prompted to install the command-line developer tools.  Click 'Install'.
+Do **not** use a Python 3.4.x installer from python.org; they do not support
+the TLS 1.2 that PyPI requires.
 
-2.	If Python 3.4.x is not already installed (type `python3.4 -V`),
-	install Python 3.4.4 using the installer at the bottom of
-	https://www.python.org/downloads/release/python-344/
-
-3.	Run `locale` in your terminal.  If the output does not include "UTF-8",
-	your terminal is misconfigured and grab-site will fail to start.
-	This can be corrected with:
+1.	Run `locale` in your terminal.  If the output includes "UTF-8", you
+	are all set.  If it does not, your terminal is misconfigured and grab-site
+	will fail to start.  This can be corrected with:
 
 	-	Terminal.app: Preferences... -> Profiles -> Advanced -> **check** Set locale environment variables on startup
 
 	-	iTerm2: Preferences... -> Profiles -> Terminal -> Environment -> **check** Set locale variables automatically
 
-4.	Run:
+2.	Install Homebrew using the install step on https://brew.sh/
+
+3.	Run:
 
 	```
-	pyvenv-3.4 ~/gs-venv
+	brew update
+	brew install pyenv
+	pyenv install 3.4.8
+	~/.pyenv/versions/3.4.8/bin/pyvenv-3.4 ~/gs-venv
 	~/gs-venv/bin/pip3 install git+https://github.com/ludios/grab-site
 	```
 
-5. Add this to your `~/.bash_profile` (which may not exist yet) and then restart your shell (e.g. by opening a new terminal tab/window):
+4. Add this to your `~/.bash_profile` (which may not exist yet) and then restart your shell (e.g. by opening a new terminal tab/window):
 
 ```
 PATH="$PATH:$HOME/gs-venv/bin"
