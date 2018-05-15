@@ -68,8 +68,8 @@ sudo apt-get install --no-install-recommends git build-essential libssl-dev zlib
 wget https://raw.githubusercontent.com/pyenv/pyenv-installer/master/bin/pyenv-installer
 chmod +x pyenv-installer
 ./pyenv-installer
-~/.pyenv/bin/pyenv install 3.4.7
-~/.pyenv/versions/3.4.7/bin/pyvenv-3.4 ~/gs-venv
+~/.pyenv/bin/pyenv install 3.4.8
+~/.pyenv/versions/3.4.8/bin/pyvenv-3.4 ~/gs-venv
 ~/gs-venv/bin/pip3 install git+https://github.com/ludios/grab-site
 ```
 
@@ -91,8 +91,8 @@ sudo apt-get install --no-install-recommends git build-essential libssl1.0-dev z
 wget https://raw.githubusercontent.com/pyenv/pyenv-installer/master/bin/pyenv-installer
 chmod +x pyenv-installer
 ./pyenv-installer
-~/.pyenv/bin/pyenv install 3.4.7
-~/.pyenv/versions/3.4.7/bin/pyvenv-3.4 ~/gs-venv
+~/.pyenv/bin/pyenv install 3.4.8
+~/.pyenv/versions/3.4.8/bin/pyvenv-3.4 ~/gs-venv
 ~/gs-venv/bin/pip3 install git+https://github.com/ludios/grab-site
 ```
 
@@ -115,8 +115,8 @@ Install on a non-Debian/Ubuntu distribution lacking Python 3.4.x
 4.	Run:
 
 	```
-	~/.pyenv/bin/pyenv install 3.4.7
-	~/.pyenv/versions/3.4.7/bin/pyvenv-3.4 ~/gs-venv
+	~/.pyenv/bin/pyenv install 3.4.8
+	~/.pyenv/versions/3.4.8/bin/pyvenv-3.4 ~/gs-venv
 	~/gs-venv/bin/pip3 install git+https://github.com/ludios/grab-site
 	```
 
