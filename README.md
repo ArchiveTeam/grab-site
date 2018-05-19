@@ -36,8 +36,8 @@ please [file an issue](https://github.com/ludios/grab-site/issues) - thank you!
 
 **Contents**
 
+- [Install on Ubuntu 18.04, Debian 9 (stretch), Debian 10 (buster)](#install-on-ubuntu-1804-debian-9-stretch-debian-10-buster)
 - [Install on Ubuntu 14.04, 16.04, Debian 8 (jessie)](#install-on-ubuntu-1404-1604-debian-8-jessie)
-- [Install on Ubuntu 17.10, Debian 9 (stretch), Debian 10 (buster)](#install-on-ubuntu-1710-debian-9-stretch-debian-10-buster)
 - [Install on a non-Debian/Ubuntu distribution lacking Python 3.4.x](#install-on-a-non-debianubuntu-distribution-lacking-python-34x)
 - [Install on macOS](#install-on-macos)
 - [Install on Windows 10 (experimental)](#install-on-windows-10-experimental)
@@ -58,13 +58,13 @@ please [file an issue](https://github.com/ludios/grab-site/issues) - thank you!
 
 
 
-Install on Ubuntu 14.04, 16.04, Debian 8 (jessie)
+Install on Ubuntu 18.04, Debian 9 (stretch), Debian 10 (buster)
 ---
 On Debian, use `su` to become root if `sudo` is not configured to give you access.
 
 ```
 sudo apt-get update
-sudo apt-get install --no-install-recommends git build-essential libssl-dev zlib1g-dev libbz2-dev libreadline-dev libsqlite3-dev
+sudo apt-get install --no-install-recommends git build-essential libssl1.0-dev zlib1g-dev libbz2-dev libreadline-dev libsqlite3-dev
 wget https://raw.githubusercontent.com/pyenv/pyenv-installer/master/bin/pyenv-installer
 chmod +x pyenv-installer
 ./pyenv-installer
@@ -81,13 +81,13 @@ PATH="$PATH:$HOME/gs-venv/bin"
 
 
 
-Install on Ubuntu 17.10, Debian 9 (stretch), Debian 10 (buster)
+Install on Ubuntu 14.04, 16.04, Debian 8 (jessie)
 ---
 On Debian, use `su` to become root if `sudo` is not configured to give you access.
 
 ```
 sudo apt-get update
-sudo apt-get install --no-install-recommends git build-essential libssl1.0-dev zlib1g-dev libbz2-dev libreadline-dev libsqlite3-dev
+sudo apt-get install --no-install-recommends git build-essential libssl-dev zlib1g-dev libbz2-dev libreadline-dev libsqlite3-dev
 wget https://raw.githubusercontent.com/pyenv/pyenv-installer/master/bin/pyenv-installer
 chmod +x pyenv-installer
 ./pyenv-installer
