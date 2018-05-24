@@ -79,6 +79,7 @@
 ^https?://.+/js/chartbeat\.js$
 ^https?://[^/]+\.xiti\.com/hit\.xiti\?
 ^https?://[^/]+\.services\.livejournal\.com/ljcounter
+^https?://beacon\.wikia-services\.com/
 
 # The tracking on warnerbros.com inexplicably links to bogus warnerbros.com/\d+ pages
 ^https?://www\.warnerbros\.com/\d+$
