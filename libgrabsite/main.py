@@ -107,8 +107,8 @@ def patch_dns_inet_is_multicast():
 		'Try to limit each WARC file to around BYTES bytes before rolling over '
 		'to a new WARC file (default: 5368709120, which is 5GiB).')
 
-@click.option('--ua', default="Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:59.0) Gecko/20100101 Firefox/59.0",
-	metavar='STRING', help='Send User-Agent: STRING instead of pretending to be Firefox on Windows.')
+@click.option('--ua', default="Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:60.0) Gecko/20100101 Firefox/60.0 but not really and neither Googlebot/2.1",
+	metavar='STRING', help='Send User-Agent: STRING instead of pretending to be Firefox/Googlebot on Windows.')
 
 @click.option('--wpull-args', default="",
 	metavar='ARGS', help=
