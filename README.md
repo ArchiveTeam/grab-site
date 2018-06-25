@@ -304,7 +304,7 @@ Options can come before or after the URL.
 
 *	`--page-requisites-level=N`: recurse page requisites `N` levels instead of `5` levels.
 
-*	`--ua=STRING`: Send User-Agent: `STRING` instead of pretending to be Firefox on Windows.
+*	`--ua=STRING`: Send User-Agent: `STRING` instead of pretending to be Firefox/Googlebot on Windows.
 
 *	`--id=ID`: Use id `ID` for the crawl instead of a random 128-bit id. This must be unique for every crawl.
 
