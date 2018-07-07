@@ -368,6 +368,12 @@ Some blogspot.com blogs use "[Dynamic Views](https://support.google.com/blogger/
 
 #### Tumblr blogs
 
+If crawling from Europe, add `Googlebot` to the user agent to bypass tumblr's GDPR consent page, e.g.
+
+```
+--ua "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:60.0) Gecko/20100101 Firefox/60.0 but not really nor Googlebot/2.1"
+```
+
 Use [`--igsets=singletumblr`](https://github.com/ludios/grab-site/blob/master/libgrabsite/ignore_sets/singletumblr) to avoid crawling the homepages of other tumblr blogs.
 
 If you don't care about who liked or reblogged a post, add `\?from_c=` to the crawl's `ignores`.
