@@ -176,6 +176,11 @@ ignore_sets, import_ignores, igon, video, level, page_requisites_level,
 max_content_length, sitemaps, dupespotter, warc_max_size, ua, input_file,
 wpull_args, start_url, id, dir, finished_warc_dir, permanent_error_status_codes,
 custom_hooks, which_wpull_args_partial, which_wpull_command):
+	"""
+	Runs a crawl on one or more URLs.  For additional help, see
+
+	https://github.com/ludios/grab-site/blob/master/README.md#usage
+	"""
 	if not (input_file or start_url):
 		print("Neither a START_URL or --input-file= was specified; see --help", file=sys.stderr)
 		sys.exit(1)

@@ -9,13 +9,7 @@ def print_version(ctx, param, value):
 	ctx.exit()
 
 
-@click.command(help="""
-Dumps URLs of a particular crawl status from a wpull.db file.
-
-WPULL_DB_FILE is the path to the wpull.db file.
-
-STATUS is one of 'done', 'error', 'in_progress', 'skipped', or 'todo'.
-""")
+@click.command()
 
 @click.option('--version', is_flag=True, callback=print_version,
 	expose_value=False, is_eager=True, help='Print version and exit.')
@@ -25,6 +19,13 @@ STATUS is one of 'done', 'error', 'in_progress', 'skipped', or 'todo'.
 @click.argument('status', type=click.Choice(['done', 'error', 'in_progress', 'skipped', 'todo']))
 
 def main(wpull_db_file, status):
+	"""
+	Dumps URLs of a particular crawl status from a wpull.db file.
+
+	WPULL_DB_FILE is the path to the wpull.db file.
+
+	STATUS is one of 'done', 'error', 'in_progress', 'skipped', or 'todo'.
+	"""
 	conn = sqlite3.connect(wpull_db_file)
 	c = conn.cursor()
 
