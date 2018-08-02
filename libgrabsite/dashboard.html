@@ -100,6 +100,8 @@ html, body, .job-ident {
 	vertical-align: bottom;
 	/* Needed to avoid collapsing of leading space */
 	white-space: pre;
+	/* Keep digits in fonts like San Francisco aligned */
+	font-variant-numeric: tabular-nums;
 }
 
 .job-url {
@@ -882,7 +884,7 @@ JobsRenderer.prototype._createLogContainer = function(jobData) {
 				}
 			}, [
 				" on ",
-				h("span", {"title": startedISOString}, startedISOString.split("T")[0].substr(5)),
+				h("span", {"className": "inline-stat", "title": startedISOString}, startedISOString.split("T")[0].substr(5)),
 				h("span", {"className": "inline-stat job-nick"}, (this.showNicks ? " by " + jobData["started_by"] : "")),
 				jobNote,
 				"; ",
