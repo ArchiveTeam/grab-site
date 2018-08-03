@@ -2,4 +2,4 @@
 # because tumblr blogs can have tens of thousands of links to other tumblr
 # blogs, and grab-site's default --offsite-links behavior will otherwise grab
 # all of their homepages.
-^https?://(?!({primary_netloc}|\d+\.media\.tumblr\.com|assets\.tumblr\.com|a\.tumblr\.com)).*
+^https?://(?!({primary_netloc}|\d+\.media\.tumblr\.com|assets\.tumblr\.com|a\.tumblr\.com|t\.umblr\.com)).*
