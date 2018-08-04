@@ -156,6 +156,13 @@ html, body, .job-ident {
 	text-align: right;
 }
 
+.job-connections-aligned {
+	width: 14px;
+	overflow: hidden;
+	text-overflow: hidden;
+	text-align: right;
+}
+
 .job-delay-aligned {
 	width: 130px;
 	overflow: hidden;
@@ -856,7 +863,7 @@ JobsRenderer.prototype._createLogContainer = function(jobData) {
 		responses: h("span", {"className": "inline-stat job-responses"}, "?"),
 		responsesPerSecond: h("span", {"className": "inline-stat job-responses-per-second"}, "?"),
 		queueLength: h("span", {"className": "inline-stat job-in-queue"}, "? in q."),
-		connections: h("span", null, "?"),
+		connections: h("span", {"className": "inline-stat job-connections"}, "?"),
 		delay: h("span", {"className": "inline-stat job-delay"}, "? ms delay"),
 		ignores: h("span", {"className": "job-ignores"}, "?"),
 		jobInfo: null /* set later */
@@ -1228,6 +1235,7 @@ JobsRenderer.prototype.updateAlign = function() {
 	arrayFrom(document.querySelectorAll('.job-responses')).map(adderOrRemover('job-responses-aligned'));
 	arrayFrom(document.querySelectorAll('.job-responses-per-second')).map(adderOrRemover('job-responses-per-second-aligned'));
 	arrayFrom(document.querySelectorAll('.job-in-queue')).map(adderOrRemover('job-in-queue-aligned'));
+	arrayFrom(document.querySelectorAll('.job-connections')).map(adderOrRemover('job-connections-aligned'));
 	arrayFrom(document.querySelectorAll('.job-delay')).map(adderOrRemover('job-delay-aligned'));
 };
 
