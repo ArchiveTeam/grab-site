@@ -460,6 +460,8 @@ to use in addition to the ignore sets.
 You can `rm DIR/igoff` to display all URLs that are being filtered out
 by the ignores, and `touch DIR/igoff` to turn it back off.
 
+Note that ignores will not apply to any of the crawl's start URLs.
+
 
 
 Inspecting the URL queue

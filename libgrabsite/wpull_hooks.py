@@ -229,6 +229,8 @@ def should_ignore_url(url, record_info):
 	return ignoracle.ignores(url, **parameters)
 
 
+all_start_urls = open(os.path.join(working_dir, "all_start_urls")).read().rstrip("\n").split("\n")
+
 def accept_url(url_info, record_info, verdict, reasons):
 	update_ignoracle()
 
@@ -238,6 +240,10 @@ def accept_url(url_info, record_info, verdict, reasons):
 		# data: URLs aren't something you can grab, so drop them to avoid ignore
 		# checking and ignore logging.
 		return False
+
+	# Don't apply ignores to any of the start URLs
+	if url in all_start_urls:
+		return True
 
 	pattern = should_ignore_url(url, record_info)
 	if pattern:
@@ -329,11 +335,13 @@ def handle_error(url_info, record_info, error_info):
 
 
 stop_path = os.path.join(working_dir, "stop")
+
 def should_stop():
 	return path_exists_with_cache(stop_path)
 
 
 igoff_path = os.path.join(working_dir, "igoff")
+
 def update_igoff():
 	job_data["suppress_ignore_reports"] = path_exists_with_cache(igoff_path)
 
@@ -341,6 +349,7 @@ update_igoff()
 
 
 video_path = os.path.join(working_dir, "video")
+
 def update_video():
 	job_data["video"] = path_exists_with_cache(video_path)
 
