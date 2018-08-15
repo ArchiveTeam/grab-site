@@ -80,6 +80,7 @@
 ^https?://[^/]+\.xiti\.com/hit\.xiti\?
 ^https?://[^/]+\.services\.livejournal\.com/ljcounter
 ^https?://beacon\.wikia-services\.com/
+^https?://s\d+\.sitemeter\.com/(js/counter\.js|meter\.asp)
 
 # The tracking on warnerbros.com inexplicably links to bogus warnerbros.com/\d+ pages
 ^https?://www\.warnerbros\.com/\d+$
