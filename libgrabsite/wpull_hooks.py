@@ -532,6 +532,21 @@ def wait_time(seconds, url_info, record_info, response_info, error_info):
 	return random.uniform(job_data["delay_min"], job_data["delay_max"]) / 1000
 
 
+def get_urls(filename, url_info, document_info):
+	url = url_info["url"]
+	extra_urls = None
+	# If we see this URL, also queue the URL for the :orig quality image
+	if url.startswith("https://pbs.twimg.com/media/"):
+		new_url = re.sub(":[a-z]{1,10}$", "", url) + ":orig"
+		# see wpull/item.py:LinkType
+		extra_urls = [dict(url=new_url, link_type="media", inline=True)]
+	# Quora shows login-required screen unless you add ?share=1
+	elif url.startswith("https://www.quora.com/") and not "?" in url:
+		new_url = url + "?share=1"
+		extra_urls = [dict(url=new_url, link_type="html")]
+	return extra_urls
+
+
 @swallow_exception
 def update_custom_hooks():
 	if not custom_hooks_watcher.has_changed():
@@ -551,6 +566,7 @@ def update_custom_hooks():
 	wpull_hook.callbacks.handle_pre_response = handle_pre_response
 	wpull_hook.callbacks.exit_status = exit_status
 	wpull_hook.callbacks.wait_time = wait_time
+	wpull_hook.callbacks.get_urls = get_urls
 
 	custom_hooks_filename = os.path.join(working_dir, "custom_hooks.py")
 	with open(custom_hooks_filename, 'rb') as in_file:
