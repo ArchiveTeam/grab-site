@@ -539,7 +539,7 @@ def get_urls(filename, url_info, document_info):
 	if url.startswith("https://pbs.twimg.com/media/"):
 		new_url = re.sub(":[a-z]{1,10}$", "", url) + ":orig"
 		# see wpull/item.py:LinkType
-		extra_urls = [dict(url=new_url, link_type="media")]
+		extra_urls = [dict(url=new_url, link_type="media", inline=True)]
 	# Quora shows login-required screen unless you add ?share=1
 	elif url.startswith("https://www.quora.com/") and not "?" in url:
 		new_url = url + "?share=1"

@@ -38,7 +38,8 @@ def get_urls(filename, url_info, document_info):
 	# If we see this URL, also queue the URL for the :orig quality image
 	if url.startswith("https://pbs.twimg.com/media/"):
 		new_url = re.sub(":[a-z]{1,10}$", "", url) + ":orig"
-		extra_urls = [dict(url=new_url, link_type="media")] # see wpull/item.py:LinkType
+		# see wpull/item.py:LinkType
+		extra_urls = [dict(url=new_url, link_type="media", inline=True)]
 		print("Queueing %r" % (extra_urls,))
 		return extra_urls
 
