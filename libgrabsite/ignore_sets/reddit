@@ -2,19 +2,19 @@
 # all comments will be downloaded because many comments are collapsed
 # by reddit.
 
-^https?://www\.reddit\.com/gold\?goldtype=
+^https?://(www|old)\.reddit\.com/gold\?goldtype=
 # URLs with utm_ can (hopefully) be safely ignored because reddit also sends
 # href=""s without the utm_ trackers.
-^https?://www\.reddit\.com/r/[^/]+/.*[\?&]utm_
-^https?://www\.reddit\.com/r/[^/]+/comments/[a-z0-9]+/[^/]+/[a-z0-9]+
-^https?://www\.reddit\.com/r/[^/]+/comments/[a-z0-9]+.*\?sort=
-^https?://www\.reddit\.com/r/[^/]+/comments/[a-z0-9]+/[^/]+/\.compact
-^https?://www\.reddit\.com/r/[^/]+/(top|new|rising|controversial|gilded|ads)/.+[\?&]after=
-^https?://www\.reddit\.com/r/[^/]+/related/
-^https?://www\.reddit\.com/r/[^/]+/(gilded)?\.mobile\?
-^https?://www\.reddit\.com/r/[^/]+/search/?\?
-^https?://www\.reddit\.com/r/[^/]+/wiki/(revisions|discussions)/user/.+
-^https?://www\.reddit\.com/user/[^/]+/(comments/)?.+[\?&]sort=
-^https?://www\.reddit\.com/.+/\.rss$
+^https?://(www|old)\.reddit\.com/r/[^/]+/.*[\?&]utm_
+^https?://(www|old)\.reddit\.com/r/[^/]+/comments/[a-z0-9]+/[^/]+/[a-z0-9]+
+^https?://(www|old)\.reddit\.com/r/[^/]+/comments/[a-z0-9]+.*\?sort=
+^https?://(www|old)\.reddit\.com/r/[^/]+/comments/[a-z0-9]+/[^/]+/\.compact
+^https?://(www|old)\.reddit\.com/r/[^/]+/(top|new|rising|controversial|gilded|ads)/.+[\?&]after=
+^https?://(www|old)\.reddit\.com/r/[^/]+/related/
+^https?://(www|old)\.reddit\.com/r/[^/]+/(gilded)?\.mobile\?
+^https?://(www|old)\.reddit\.com/r/[^/]+/search/?\?
+^https?://(www|old)\.reddit\.com/r/[^/]+/wiki/(revisions|discussions)/user/.+
+^https?://(www|old)\.reddit\.com/user/[^/]+/(comments/)?.+[\?&]sort=
+^https?://(www|old)\.reddit\.com/.+/\.rss$
 \.reddit\.com/message/compose/?\?
 ^https?://(m|out|simple)\.reddit\.com/
