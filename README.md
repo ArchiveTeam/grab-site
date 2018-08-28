@@ -48,6 +48,7 @@ please [file an issue](https://github.com/ludios/grab-site/issues) - thank you!
   - [Tips for specific websites](#tips-for-specific-websites)
 - [Changing ignores during the crawl](#changing-ignores-during-the-crawl)
 - [Inspecting the URL queue](#inspecting-the-url-queue)
+- [Preventing a crawl from queuing any more URLs](#preventing-a-crawl-from-queuing-any-more-urls)
 - [Stopping a crawl](#stopping-a-crawl)
 - [Advanced `gs-server` options](#advanced-gs-server-options)
 - [Viewing the content in your WARC archives](#viewing-the-content-in-your-warc-archives)
@@ -479,6 +480,13 @@ You may want to pipe the output to `sort` and `less`:
 ```
 gs-dump-urls DIR/wpull.db todo | sort | less -S
 ```
+
+
+
+Preventing a crawl from queuing any more URLs
+---
+`rm DIR/scrape`.  Responses will no longer be scraped for URLs.  Scraping cannot
+be re-enabled for a crawl.
 
 
 
