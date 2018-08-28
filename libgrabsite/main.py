@@ -370,6 +370,9 @@ custom_hooks, which_wpull_args_partial, which_wpull_command):
 	with open("{}/delay".format(working_dir), "w") as f:
 		f.write(delay)
 
+	with open("{}/scrape".format(working_dir), "w") as f:
+		pass
+
 	# We don't actually need to write control files for this mode to work, but the
 	# only reason to use this is if you're starting wpull manually with modified
 	# arguments, and wpull_hooks.py requires the control files.

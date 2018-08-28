@@ -269,6 +269,7 @@ job_data = {
 	"max_content_length": -1,
 	"suppress_ignore_reports": True,
 	"video": True,
+	"scrape": True,
 	"concurrency": 2,
 	"bytes_downloaded": 0,
 	"items_queued": 0,
@@ -356,6 +357,19 @@ def update_video():
 update_video()
 
 
+scrape_path = os.path.join(working_dir, "scrape")
+
+def update_scrape():
+	scrape = path_exists_with_cache(scrape_path)
+	job_data["scrape"] = scrape
+	if not scrape:
+		# Empty the list of scrapers, which will stop scraping for new URLs
+		# but still keep going through what is already in the queue.
+		wpull_hook.factory.get('DemuxDocumentScraper')._document_scrapers = []
+
+update_scrape()
+
+
 def maybe_log_ignore(url, pattern):
 	update_igoff()
 	if not job_data["suppress_ignore_reports"]:
@@ -403,6 +417,8 @@ skipped_max_content_length = open(skipped_max_content_length_path, "w", encoding
 
 def handle_pre_response(url_info, url_record, response_info):
 	url = url_info['url']
+
+	update_scrape()
 
 	update_max_content_length()
 	if job_data["max_content_length"] != -1:
