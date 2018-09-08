@@ -355,7 +355,7 @@ Don't run grab-site on GCE (Google Compute Engine); as happened to me, your enti
 
 #### Website requiring login / cookies
 
-Log in to the website in Chrome and use the [cookies.txt](https://github.com/daftano/cookies.txt) extension to copy Netscape-format cookies.  Paste the cookies data into a new file.  Start grab-site with `--wpull-args=--load-cookies=ABSOLUTE_PATH_TO_COOKIES_FILE`.
+Log in to the website in Chrome or Firefox.  Use the cookies.txt extension [for Chrome](https://github.com/daftano/cookies.txt) or [for Firefox](https://addons.mozilla.org/en-US/firefox/addon/cookies-txt/) extension to copy Netscape-format cookies.  Paste the cookies data into a new file.  Start grab-site with `--wpull-args=--load-cookies=ABSOLUTE_PATH_TO_COOKIES_FILE`.
 
 #### Static websites; WordPress blogs; Discourse forums
 
