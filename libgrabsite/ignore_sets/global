@@ -181,9 +181,7 @@
 ^https?://bookmark\.naver\.com/post\?
 ^https?://(www\.)?instapaper\.com/hello2\?
 ^https?://getpocket\.com/(save|edit)/?\?
-^https?://medium\.com/_/vote/
-^https?://medium\.com/_/bookmark/
-^https?://medium\.com/_/subscribe/
+^https?://medium\.com/_/(vote|bookmark|subscribe)/
 
 # mail.google.com requires login but shows up on the web surprisingly often
 ^https?://mail\.google\.com/mail/
