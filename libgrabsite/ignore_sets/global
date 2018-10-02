@@ -182,6 +182,7 @@
 ^https?://(www\.)?instapaper\.com/hello2\?
 ^https?://getpocket\.com/(save|edit)/?\?
 ^https?://medium\.com/_/(vote|bookmark|subscribe)/
+^https?://telegram\.me/share/url\?
 
 # mail.google.com requires login but shows up on the web surprisingly often
 ^https?://mail\.google\.com/mail/
