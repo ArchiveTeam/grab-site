@@ -2,7 +2,7 @@ sudo: false
 
 language: python
 python:
-  - 3.4
+  - 3.7
 
 install:
   - travis_retry pip3 install --upgrade pip setuptools
