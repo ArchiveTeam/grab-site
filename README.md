@@ -6,8 +6,8 @@ grab-site
 grab-site is an easy preconfigured web crawler designed for backing up websites.
 Give grab-site a URL and it will recursively crawl the site and write
 [WARC files](http://www.archiveteam.org/index.php?title=The_WARC_Ecosystem).
-Internally, grab-site uses [wpull](https://github.com/chfoo/wpull/tree/v1.2.3)
-for crawling.
+Internally, grab-site uses [a fork](https://github.com/ludios/wpull) of
+[wpull](https://github.com/chfoo/wpull) for crawling.
 
 grab-site gives you
 
