@@ -184,7 +184,7 @@ class FileChangedWatcher(object):
 		changed = now_mtime != self.last_mtime
 		self.last_mtime = now_mtime
 		if changed:
-			print("Picked up the changes to %s" % self.fname)
+			print("Imported %s" % self.fname)
 		return changed
 
 
