@@ -71,7 +71,7 @@ chmod +x pyenv-installer
 ./pyenv-installer
 ~/.pyenv/bin/pyenv install 3.4.9
 ~/.pyenv/versions/3.4.9/bin/pyvenv-3.4 ~/gs-venv
-~/gs-venv/bin/pip3 install git+https://github.com/ludios/grab-site
+~/gs-venv/bin/pip3 install --process-dependency-links --no-binary --upgrade git+https://github.com/ludios/grab-site
 ```
 
 Add this to your `~/.bashrc` or `~/.zshrc` and then restart your shell (e.g. by opening a new terminal tab/window):
