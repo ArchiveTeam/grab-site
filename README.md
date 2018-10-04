@@ -94,7 +94,7 @@ chmod +x pyenv-installer
 ./pyenv-installer
 ~/.pyenv/bin/pyenv install 3.4.8
 ~/.pyenv/versions/3.4.8/bin/pyvenv-3.4 ~/gs-venv
-~/gs-venv/bin/pip3 install git+https://github.com/ludios/grab-site
+~/gs-venv/bin/pip3 install --process-dependency-links --no-binary --upgrade git+https://github.com/ludios/grab-site
 ```
 
 Add this to your `~/.bashrc` or `~/.zshrc` and then restart your shell (e.g. by opening a new terminal tab/window):
@@ -118,7 +118,7 @@ Install on a non-Debian/Ubuntu distribution lacking Python 3.4.x
 	```
 	~/.pyenv/bin/pyenv install 3.4.8
 	~/.pyenv/versions/3.4.8/bin/pyvenv-3.4 ~/gs-venv
-	~/gs-venv/bin/pip3 install git+https://github.com/ludios/grab-site
+	~/gs-venv/bin/pip3 install --process-dependency-links --no-binary --upgrade git+https://github.com/ludios/grab-site
 	```
 
 5. Add this to your `~/.bashrc` or `~/.zshrc` and then restart your shell (e.g. by opening a new terminal tab/window):
@@ -153,7 +153,7 @@ the TLS 1.2 that PyPI requires.
 	brew install pyenv
 	pyenv install 3.4.8
 	~/.pyenv/versions/3.4.8/bin/pyvenv-3.4 ~/gs-venv
-	~/gs-venv/bin/pip3 install git+https://github.com/ludios/grab-site
+	~/gs-venv/bin/pip3 install --process-dependency-links --no-binary --upgrade git+https://github.com/ludios/grab-site
 	```
 
 4. Add this to your `~/.bash_profile` (which may not exist yet) and then restart your shell (e.g. by opening a new terminal tab/window):
@@ -191,9 +191,6 @@ Upgrade an existing install
 
 To update grab-site, simply run the `~/gs-venv/bin/pip3 install ...` command used to install
 it originally (see above).
-
-To upgrade all of grab-site's dependencies, add the `--upgrade` argument (not advised unless
-you are having problems).
 
 After upgrading, stop `gs-server` with `kill` or ctrl-c, then start it again.
 Existing `grab-site` crawls will automatically reconnect to the new server.
