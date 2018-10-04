@@ -20,6 +20,7 @@ install_requires = [
 	"tornado==4.5.3",
 	"lxml",
 	"html5-parser",
+	"fb-re2==1.0.7",
 ]
 
 if 'GRAB_SITE_NO_CCHARDET' not in os.environ:
@@ -43,5 +44,8 @@ setup(
 	packages=["libgrabsite"],
 	package_data={"libgrabsite": ["*.html", "*.ico", "*.txt", "ignore_sets/*"]},
 	install_requires=install_requires,
-	dependency_links=['https://github.com/ludios/wpull/tarball/ludios#egg=wpull-1.2.5']
+	dependency_links=[
+		"https://github.com/ludios/wpull/tarball/ludios#egg=wpull-1.2.5",
+		"https://github.com/ludios/pyre2/tarball/master#egg=fb-re2-1.0.7"
+	]
 )
