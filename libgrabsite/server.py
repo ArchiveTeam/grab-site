@@ -3,8 +3,6 @@
 import os
 import json
 import pprint
-# Can't use trollius because then onConnect never gets called
-# https://github.com/tavendo/AutobahnPython/issues/426
 import asyncio
 from autobahn.asyncio.websocket import WebSocketServerFactory, WebSocketServerProtocol
 

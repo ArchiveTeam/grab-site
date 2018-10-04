@@ -8,7 +8,7 @@ import signal
 import random
 import functools
 import traceback
-import trollius as asyncio
+import asyncio
 from autobahn.asyncio.websocket import WebSocketClientFactory, WebSocketClientProtocol
 from libgrabsite.ignoracle import Ignoracle, parameterize_record_info
 import libgrabsite
@@ -533,8 +533,6 @@ def update_concurrency():
 			print("Warning: using 1 for concurrency instead of %r because it cannot be < 1" % (concurrency,))
 			concurrency = 1
 		job_data["concurrency"] = concurrency
-	# If we call this with 0, trollius blows up with
-	# ValueError('Set of coroutines/Futures is empty.')
 	wpull_hook.factory.get('Engine').set_concurrent(concurrency)
 
 update_concurrency()
