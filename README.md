@@ -29,8 +29,6 @@ grab-site will manage to crawl a site with ~10M pages.
 
 ![dashboard screenshot](https://raw.githubusercontent.com/ludios/grab-site/master/images/dashboard.png)
 
-Note: grab-site currently **does not work with Python 3.5 or newer**; please use Python 3.4 instead.
-
 Note: if you have any problems whatsoever installing or getting grab-site to run,
 please [file an issue](https://github.com/ludios/grab-site/issues) - thank you!
 
@@ -38,7 +36,7 @@ please [file an issue](https://github.com/ludios/grab-site/issues) - thank you!
 
 - [Install on Ubuntu 18.04, Debian 9 (stretch), Debian 10 (buster)](#install-on-ubuntu-1804-debian-9-stretch-debian-10-buster)
 - [Install on Ubuntu 14.04, 16.04, Debian 8 (jessie)](#install-on-ubuntu-1404-1604-debian-8-jessie)
-- [Install on a non-Debian/Ubuntu distribution lacking Python 3.4.x](#install-on-a-non-debianubuntu-distribution-lacking-python-34x)
+- [Install on a non-Debian/Ubuntu distribution lacking Python 3.7.x](#install-on-a-non-debianubuntu-distribution-lacking-python-34x)
 - [Install on macOS](#install-on-macos)
 - [Install on Windows 10 (experimental)](#install-on-windows-10-experimental)
 - [Upgrade an existing install](#upgrade-an-existing-install)
@@ -69,8 +67,8 @@ sudo apt-get install --no-install-recommends git build-essential pkg-config libs
 wget https://raw.githubusercontent.com/pyenv/pyenv-installer/master/bin/pyenv-installer
 chmod +x pyenv-installer
 ./pyenv-installer
-~/.pyenv/bin/pyenv install 3.4.9
-~/.pyenv/versions/3.4.9/bin/pyvenv-3.4 ~/gs-venv
+~/.pyenv/bin/pyenv install 3.7.0
+~/.pyenv/versions/3.7.0/bin/python -m venv ~/gs-venv
 ~/gs-venv/bin/pip3 install --process-dependency-links --no-binary --upgrade git+https://github.com/ludios/grab-site
 ```
 
@@ -92,8 +90,8 @@ sudo apt-get install --no-install-recommends git build-essential pkg-config libs
 wget https://raw.githubusercontent.com/pyenv/pyenv-installer/master/bin/pyenv-installer
 chmod +x pyenv-installer
 ./pyenv-installer
-~/.pyenv/bin/pyenv install 3.4.9
-~/.pyenv/versions/3.4.9/bin/pyvenv-3.4 ~/gs-venv
+~/.pyenv/bin/pyenv install 3.7.0
+~/.pyenv/versions/3.7.0/bin/python -m venv ~/gs-venv
 ~/gs-venv/bin/pip3 install --process-dependency-links --no-binary --upgrade git+https://github.com/ludios/grab-site
 ```
 
@@ -105,7 +103,7 @@ PATH="$PATH:$HOME/gs-venv/bin"
 
 
 
-Install on a non-Debian/Ubuntu distribution lacking Python 3.4.x
+Install on a non-Debian/Ubuntu distribution lacking Python 3.7.x
 ---
 1.	Install git, libxml2-dev, libxslt1-dev, and libre2-dev.
 
@@ -116,8 +114,8 @@ Install on a non-Debian/Ubuntu distribution lacking Python 3.4.x
 4.	Run:
 
 	```
-	~/.pyenv/bin/pyenv install 3.4.9
-	~/.pyenv/versions/3.4.9/bin/pyvenv-3.4 ~/gs-venv
+	~/.pyenv/bin/pyenv install 3.7.0
+	~/.pyenv/versions/3.7.0/bin/python -m venv ~/gs-venv
 	~/gs-venv/bin/pip3 install --process-dependency-links --no-binary --upgrade git+https://github.com/ludios/grab-site
 	```
 
@@ -132,9 +130,6 @@ PATH="$PATH:$HOME/gs-venv/bin"
 Install on macOS
 ---
 On OS X 10.10 - macOS 10.13:
-
-Do **not** use a Python 3.4.x installer from python.org; they do not support
-the TLS 1.2 that PyPI requires.
 
 1.	Run `locale` in your terminal.  If the output includes "UTF-8", you
 	are all set.  If it does not, your terminal is misconfigured and grab-site
@@ -151,8 +146,8 @@ the TLS 1.2 that PyPI requires.
 	```
 	brew update
 	brew install pyenv
-	pyenv install 3.4.9
-	~/.pyenv/versions/3.4.9/bin/pyvenv-3.4 ~/gs-venv
+	pyenv install 3.7.0
+	~/.pyenv/versions/3.7.0/bin/python -m venv ~/gs-venv
 	~/gs-venv/bin/pip3 install --process-dependency-links --no-binary --upgrade git+https://github.com/ludios/grab-site
 	```
 
