@@ -69,8 +69,8 @@ sudo apt-get install --no-install-recommends git build-essential pkg-config libs
 wget https://raw.githubusercontent.com/pyenv/pyenv-installer/master/bin/pyenv-installer
 chmod +x pyenv-installer
 ./pyenv-installer
-~/.pyenv/bin/pyenv install 3.4.8
-~/.pyenv/versions/3.4.8/bin/pyvenv-3.4 ~/gs-venv
+~/.pyenv/bin/pyenv install 3.4.9
+~/.pyenv/versions/3.4.9/bin/pyvenv-3.4 ~/gs-venv
 ~/gs-venv/bin/pip3 install git+https://github.com/ludios/grab-site
 ```
 
@@ -92,8 +92,8 @@ sudo apt-get install --no-install-recommends git build-essential pkg-config libs
 wget https://raw.githubusercontent.com/pyenv/pyenv-installer/master/bin/pyenv-installer
 chmod +x pyenv-installer
 ./pyenv-installer
-~/.pyenv/bin/pyenv install 3.4.8
-~/.pyenv/versions/3.4.8/bin/pyvenv-3.4 ~/gs-venv
+~/.pyenv/bin/pyenv install 3.4.9
+~/.pyenv/versions/3.4.9/bin/pyvenv-3.4 ~/gs-venv
 ~/gs-venv/bin/pip3 install --process-dependency-links --no-binary --upgrade git+https://github.com/ludios/grab-site
 ```
 
@@ -116,8 +116,8 @@ Install on a non-Debian/Ubuntu distribution lacking Python 3.4.x
 4.	Run:
 
 	```
-	~/.pyenv/bin/pyenv install 3.4.8
-	~/.pyenv/versions/3.4.8/bin/pyvenv-3.4 ~/gs-venv
+	~/.pyenv/bin/pyenv install 3.4.9
+	~/.pyenv/versions/3.4.9/bin/pyvenv-3.4 ~/gs-venv
 	~/gs-venv/bin/pip3 install --process-dependency-links --no-binary --upgrade git+https://github.com/ludios/grab-site
 	```
 
@@ -151,8 +151,8 @@ the TLS 1.2 that PyPI requires.
 	```
 	brew update
 	brew install pyenv
-	pyenv install 3.4.8
-	~/.pyenv/versions/3.4.8/bin/pyvenv-3.4 ~/gs-venv
+	pyenv install 3.4.9
+	~/.pyenv/versions/3.4.9/bin/pyvenv-3.4 ~/gs-venv
 	~/gs-venv/bin/pip3 install --process-dependency-links --no-binary --upgrade git+https://github.com/ludios/grab-site
 	```
 
