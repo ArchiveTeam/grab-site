@@ -22,7 +22,7 @@ def print_to_terminal(s):
 
 
 class GrabberClientProtocol(WebSocketClientProtocol):
-	def on_open(self):
+	def onOpen(self):
 		self.factory.client = self
 		self.send_object({
 			"type": "hello",
@@ -30,7 +30,7 @@ class GrabberClientProtocol(WebSocketClientProtocol):
 			"url": job_data["url"]
 		})
 
-	def on_close(self, was_clean, code, reason):
+	def onClose(self, was_clean, code, reason):
 		self.factory.client = None
 		print_to_terminal(
 			"Disconnected from ws:// server with (was_clean, code, reason): {!r}"
@@ -39,9 +39,6 @@ class GrabberClientProtocol(WebSocketClientProtocol):
 
 	def send_object(self, obj):
 		self.sendMessage(json.dumps(obj).encode("utf-8"))
-
-	onOpen = on_open
-	onClose = on_close
 
 
 class GrabberClientFactory(WebSocketClientFactory):
