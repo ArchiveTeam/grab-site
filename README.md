@@ -65,7 +65,7 @@ On Debian, use `su` to become root if `sudo` is not configured to give you acces
 
 ```
 sudo apt-get update
-sudo apt-get install --no-install-recommends git build-essential libssl1.0-dev zlib1g-dev libbz2-dev libreadline-dev libsqlite3-dev
+sudo apt-get install --no-install-recommends git build-essential pkg-config libssl1.0-dev zlib1g-dev libbz2-dev libreadline-dev libsqlite3-dev libxml2-dev libxslt1-dev
 wget https://raw.githubusercontent.com/pyenv/pyenv-installer/master/bin/pyenv-installer
 chmod +x pyenv-installer
 ./pyenv-installer
@@ -88,7 +88,7 @@ On Debian, use `su` to become root if `sudo` is not configured to give you acces
 
 ```
 sudo apt-get update
-sudo apt-get install --no-install-recommends git build-essential libssl-dev zlib1g-dev libbz2-dev libreadline-dev libsqlite3-dev
+sudo apt-get install --no-install-recommends git build-essential pkg-config libssl-dev zlib1g-dev libbz2-dev libreadline-dev libsqlite3-dev libxml2-dev libxslt1-dev
 wget https://raw.githubusercontent.com/pyenv/pyenv-installer/master/bin/pyenv-installer
 chmod +x pyenv-installer
 ./pyenv-installer
@@ -107,7 +107,7 @@ PATH="$PATH:$HOME/gs-venv/bin"
 
 Install on a non-Debian/Ubuntu distribution lacking Python 3.4.x
 ---
-1.	Install git.
+1.	Install git, libxml2-dev, and libxslt1-dev.
 
 2.	Install pyenv as described on https://github.com/yyuu/pyenv-installer#github-way-recommended
 

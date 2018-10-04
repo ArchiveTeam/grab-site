@@ -11,13 +11,15 @@ import libgrabsite
 
 install_requires = [
 	"click>=6.3",
-	"wpull==1.2.3",
+	"wpull==1.2.4",
 	"manhole>=1.0.0",
 	"lmdb>=0.89",
 	"autobahn>=0.12.1",
 	"trollius>=2.1",
 	"html5lib==0.9999999",
 	"tornado==4.5.3",
+	"lxml",
+	"html5-parser",
 ]
 
 if 'GRAB_SITE_NO_CCHARDET' not in os.environ:
@@ -40,5 +42,6 @@ setup(
 	scripts=["grab-site", "gs-server", "gs-dump-urls"],
 	packages=["libgrabsite"],
 	package_data={"libgrabsite": ["*.html", "*.ico", "*.txt", "ignore_sets/*"]},
-	install_requires=install_requires
+	install_requires=install_requires,
+	dependency_links=['https://github.com/ludios/wpull/tarball/ludios#egg=wpull-1.2.4']
 )
