@@ -11,7 +11,7 @@ import libgrabsite
 
 install_requires = [
 	"click>=6.3",
-	"wpull==1.2.4",
+	"wpull==1.2.5",
 	"manhole>=1.0.0",
 	"lmdb>=0.89",
 	"autobahn>=0.12.1",
@@ -43,5 +43,5 @@ setup(
 	packages=["libgrabsite"],
 	package_data={"libgrabsite": ["*.html", "*.ico", "*.txt", "ignore_sets/*"]},
 	install_requires=install_requires,
-	dependency_links=['https://github.com/ludios/wpull/tarball/ludios#egg=wpull-1.2.4']
+	dependency_links=['https://github.com/ludios/wpull/tarball/ludios#egg=wpull-1.2.5']
 )
