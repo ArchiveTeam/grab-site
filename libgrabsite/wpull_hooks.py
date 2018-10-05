@@ -1,3 +1,5 @@
+print("Loading wpull_hooks.py")
+
 import re
 import os
 import sys
@@ -10,9 +12,6 @@ import functools
 import traceback
 import asyncio
 
-from libgrabsite.ignoracle import Ignoracle, parameterize_record_info
-import libgrabsite
-
 from wpull.application.hook import Actions
 from wpull.application.plugin import WpullPlugin, PluginFunctions, hook, event
 from wpull.database.sqltable import SQLiteURLTable
@@ -22,6 +21,8 @@ import wpull.processor.rule
 
 from libgrabsite import dupespotter
 from libgrabsite.dupes import DupesOnDisk
+from libgrabsite.ignoracle import Ignoracle, parameterize_record_info
+import libgrabsite
 
 
 def _extract_response_code(response) -> int:
@@ -51,48 +52,48 @@ def _extract_item_size(response) -> int:
 		return 0
 
 
-class NoFsyncSQLTable(SQLiteURLTable):
-	@classmethod
-	def _apply_pragmas_callback(cls, connection, record):
-		super()._apply_pragmas_callback(connection, record)
-		connection.execute('PRAGMA synchronous=OFF')
+# class NoFsyncSQLTable(SQLiteURLTable):
+# 	@classmethod
+# 	def _apply_pragmas_callback(cls, connection, record):
+# 		super()._apply_pragmas_callback(connection, record)
+# 		connection.execute('PRAGMA synchronous=OFF')
 
 
-class DupeSpottingProcessingRule(wpull.processor.rule.ProcessingRule):
-	def __init__(self, *args, **kwargs):
-		self.dupes_db = kwargs.pop('dupes_db', None)
-		super().__init__(*args, **kwargs)
+# class DupeSpottingProcessingRule(wpull.processor.rule.ProcessingRule):
+# 	def __init__(self, *args, **kwargs):
+# 		self.dupes_db = kwargs.pop('dupes_db', None)
+# 		super().__init__(*args, **kwargs)
 
-	def scrape_document(self, request, response, url_item):
-		if _extract_item_size(response) < 30 * 1024 * 1024:
-			dupes_db = self.dupes_db
-			body = response.body.content()
-			if HTMLReader.is_response(response):
-				body = dupespotter.process_body(body, response.request.url)
-			digest = hashlib.md5(body).digest()
-			if dupes_db is not None:
-				dupe_of = dupes_db.get_old_url(digest)
-			else:
-				dupe_of = None
-			if dupe_of is not None:
-				# Don't extract links from pages we've already seen
-				# to avoid loops that descend a directory endlessly
-				print("DUPE {}\n  OF {}".format(response.request.url, dupe_of))
-				return
-			else:
-				if dupes_db is not None:
-					dupes_db.set_old_url(digest, response.request.url)
+# 	def scrape_document(self, request, response, url_item):
+# 		if _extract_item_size(response) < 30 * 1024 * 1024:
+# 			dupes_db = self.dupes_db
+# 			body = response.body.content()
+# 			if HTMLReader.is_response(response):
+# 				body = dupespotter.process_body(body, response.request.url)
+# 			digest = hashlib.md5(body).digest()
+# 			if dupes_db is not None:
+# 				dupe_of = dupes_db.get_old_url(digest)
+# 			else:
+# 				dupe_of = None
+# 			if dupe_of is not None:
+# 				# Don't extract links from pages we've already seen
+# 				# to avoid loops that descend a directory endlessly
+# 				print("DUPE {}\n  OF {}".format(response.request.url, dupe_of))
+# 				return
+# 			else:
+# 				if dupes_db is not None:
+# 					dupes_db.set_old_url(digest, response.request.url)
 
-		super().scrape_document(request, response, url_item)
+# 		super().scrape_document(request, response, url_item)
 
 
-wpull_plugin.factory.class_map['URLTableImplementation'] = NoFsyncSQLTable
-if int(os.environ["DUPESPOTTER_ENABLED"]):
-	wpull_plugin.factory.class_map['ProcessingRule'] = functools.partial(
-		DupeSpottingProcessingRule,
-		dupes_db=DupesOnDisk(
-			os.path.join(os.environ["GRAB_SITE_WORKING_DIR"], "dupes_db"))
-	)
+# wpull_plugin.factory.class_map['URLTableImplementation'] = NoFsyncSQLTable
+# if int(os.environ["DUPESPOTTER_ENABLED"]):
+# 	wpull_plugin.factory.class_map['ProcessingRule'] = functools.partial(
+# 		DupeSpottingProcessingRule,
+# 		dupes_db=DupesOnDisk(
+# 			os.path.join(os.environ["GRAB_SITE_WORKING_DIR"], "dupes_db"))
+# 	)
 
 
 real_stdout_write = sys.stdout.buffer.write
@@ -126,13 +127,12 @@ class Decayer(object):
 		return self.current
 
 
-class GrabberClientFactory(WebSocketClientFactory):
+class GrabberClientFactory(object): # WebSocketClientFactory
 	#protocol = GrabberClientProtocol
 
 	def __init__(self):
 		super().__init__()
 		self.client = None
-
 
 ws_factory = GrabberClientFactory()
 
@@ -143,18 +143,18 @@ def graceful_stop_callback():
 		pass
 
 
-loop = asyncio.get_event_loop()
-
 def forceful_stop_callback():
+	loop = asyncio.get_event_loop()
 	loop.stop()
 
 
-try:
-	loop.add_signal_handler(signal.SIGINT, graceful_stop_callback)
-	loop.add_signal_handler(signal.SIGTERM, forceful_stop_callback)
-except NotImplementedError:
-	# Not supported on Windows
-	pass
+def add_signal_handlers():
+	try:
+		loop.add_signal_handler(signal.SIGINT, graceful_stop_callback)
+		loop.add_signal_handler(signal.SIGTERM, forceful_stop_callback)
+	except NotImplementedError:
+		# Not supported on Windows
+		pass
 
 
 ignore_sets_path = os.path.join(os.path.dirname(libgrabsite.__file__), "ignore_sets")
@@ -228,10 +228,10 @@ class FileChangedWatcher(object):
 		return changed
 
 
-igsets_watcher = FileChangedWatcher(os.path.join(working_dir, "igsets"))
-ignores_watcher = FileChangedWatcher(os.path.join(working_dir, "ignores"))
-delay_watcher = FileChangedWatcher(os.path.join(working_dir, "delay"))
-concurrency_watcher = FileChangedWatcher(os.path.join(working_dir, "concurrency"))
+igsets_watcher             = FileChangedWatcher(os.path.join(working_dir, "igsets"))
+ignores_watcher            = FileChangedWatcher(os.path.join(working_dir, "ignores"))
+delay_watcher              = FileChangedWatcher(os.path.join(working_dir, "delay"))
+concurrency_watcher        = FileChangedWatcher(os.path.join(working_dir, "concurrency"))
 max_content_length_watcher = FileChangedWatcher(os.path.join(working_dir, "max_content_length"))
 
 ignoracle = Ignoracle()
@@ -256,8 +256,6 @@ def update_ignoracle():
 		print_to_terminal("\t" + ig)
 
 	ignoracle.set_patterns(ignores)
-
-update_ignoracle()
 
 
 def should_ignore_url(url, record_info):
@@ -361,15 +359,11 @@ igoff_path = os.path.join(working_dir, "igoff")
 def update_igoff():
 	job_data["suppress_ignore_reports"] = path_exists_with_cache(igoff_path)
 
-update_igoff()
-
 
 video_path = os.path.join(working_dir, "video")
 
 def update_video():
 	job_data["video"] = path_exists_with_cache(video_path)
-
-update_video()
 
 
 scrape_path = os.path.join(working_dir, "scrape")
@@ -381,8 +375,6 @@ def update_scrape():
 		# Empty the list of scrapers, which will stop scraping for new URLs
 		# but still keep going through what is already in the queue.
 		wpull_hook.factory.get('DemuxDocumentScraper')._document_scrapers = []
-
-update_scrape()
 
 
 def maybe_log_ignore(url, pattern):
@@ -511,8 +503,6 @@ def update_max_content_length():
 	with open(max_content_length_watcher.fname, "r") as f:
 		job_data["max_content_length"] = int(f.read().strip())
 
-update_max_content_length()
-
 
 @swallow_exception
 def update_delay():
@@ -524,8 +514,6 @@ def update_delay():
 			job_data["delay_min"], job_data["delay_max"] = list(int(s) for s in content.split("-", 1))
 		else:
 			job_data["delay_min"] = job_data["delay_max"] = int(content)
-
-update_delay()
 
 
 @swallow_exception
@@ -539,8 +527,6 @@ def update_concurrency():
 			concurrency = 1
 		job_data["concurrency"] = concurrency
 	wpull_hook.factory.get('Engine').set_concurrent(concurrency)
-
-update_concurrency()
 
 
 def get_urls(url_info):
@@ -613,3 +599,15 @@ class GrabSitePlugin(WpullPlugin):
     	return get_urls(url_info)
 
 really_swallow_exceptions = True
+
+print("Finished loading wpull_hooks.py")
+
+update_ignoracle()
+update_igoff()
+update_video()
+update_scrape()
+update_max_content_length()
+update_delay()
+update_concurrency()
+
+print("update_*() success in wpull_hooks.py")

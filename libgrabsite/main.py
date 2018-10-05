@@ -213,23 +213,6 @@ custom_hooks, which_wpull_args_partial, which_wpull_command):
 	no_proto_no_trailing = claim_start_url.split('://', 1)[1].rstrip('/')[:100]
 	warc_name = "{}-{}-{}".format(re.sub(r'[^-_a-zA-Z0-9%\.,;@+=]', '-', no_proto_no_trailing).lstrip('-'), ymd, id[:8])
 
-	def get_base_wpull_args():
-		return ["-U", ua,
-			"--header=Accept: text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
-			"--header=Accept-Language: en-US,en;q=0.5",
-			"--no-check-certificate",
-			"--no-robots",
-			"--inet4-only",
-			"--dns-timeout", "20",
-			"--connect-timeout", "20",
-			"--read-timeout", "900",
-			"--session-timeout", str(86400 * 2),
-			"--tries", "3",
-			"--waitretry", "5",
-			"--max-redirect", "8",
-			"--quiet"
-		]
-
 	# make absolute because wpull will start in temp/
 	if not dir:
 		working_dir = os.path.abspath(warc_name)
@@ -237,7 +220,21 @@ custom_hooks, which_wpull_args_partial, which_wpull_command):
 		working_dir = os.path.abspath(dir)
 
 	LIBGRABSITE = os.path.dirname(libgrabsite.__file__)
-	args = get_base_wpull_args() + [
+	args = [
+		"--debug",
+		"-U", ua,
+		"--header=Accept: text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
+		"--header=Accept-Language: en-US,en;q=0.5",
+		"--no-check-certificate",
+		"--no-robots",
+		"--inet4-only",
+		"--dns-timeout", "20",
+		"--connect-timeout", "20",
+		"--read-timeout", "900",
+		"--session-timeout", str(86400 * 2),
+		"--tries", "3",
+		"--waitretry", "5",
+		"--max-redirect", "8",
 		"--output-file", "{}/wpull.log".format(working_dir),
 		"--database", "{}/wpull.db".format(working_dir),
 		"--plugin-script", "{}/wpull_hooks.py".format(LIBGRABSITE),
@@ -254,7 +251,7 @@ custom_hooks, which_wpull_args_partial, which_wpull_command):
 		"--level", level,
 		"--page-requisites-level", page_requisites_level,
 		"--span-hosts-allow", span_hosts_allow,
-		"--load-cookies", "{}/default_cookies.txt".format(LIBGRABSITE)
+		"--load-cookies", "{}/default_cookies.txt".format(LIBGRABSITE),
 	]
 
 	# psutil is not available on Windows and therefore wpull's --monitor-*
