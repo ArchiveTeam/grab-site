@@ -379,8 +379,7 @@ cases, you can get JavaScript-free pages by appending `?m=1`
 ([example](http://happinessbeyondthought.blogspot.com/?m=1)).  Otherwise, you
 can archive parts of these blogs through Google Cache instead
 ([example](https://webcache.googleusercontent.com/search?q=cache:http://blog.datomic.com/))
-or by using http://archive.is/ instead of grab-site.  If neither of these options work,
-try [using grab-site with phantomjs](https://github.com/ludios/grab-site/issues/55#issuecomment-162118702).
+or by using http://archive.is/ instead of grab-site.
 
 #### Tumblr blogs
 
