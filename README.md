@@ -319,12 +319,6 @@ Options can come before or after the URL.
 
 	Also useful: `--wpull-args=--no-skip-getaddrinfo` to respect `/etc/hosts` entries.
 
-*	`--custom-hooks=PY_SCRIPT`: Copy `PY_SCRIPT` to `DIR/custom_hooks.py`,
-	then exec `DIR/custom_hooks.py` on startup and every time it changes.
-	The script gets a `wpull_hook` global that can be used to change crawl behavior.
-	See `update_custom_hooks` in [libgrabsite/wpull_hooks.py](https://github.com/ludios/grab-site/blob/master/libgrabsite/wpull_hooks.py)
-	and [custom_hooks_sample.py](https://github.com/ludios/grab-site/blob/master/extra_docs/custom_hooks_sample.py).
-
 *	`--which-wpull-args-partial`: Print a partial list of wpull arguments that
 	would be used and exit.  Excludes grab-site-specific features, and removes
 	`DIR/` from paths.  Useful for reporting bugs on wpull without grab-site involvement.
@@ -332,6 +326,8 @@ Options can come before or after the URL.
 *	`--which-wpull-command`: Populate `DIR/` but don't start wpull; instead print
 	the command that would have been used to start wpull with all of the
 	grab-site functionality.
+
+*	`--debug`: print a lot of debug information.
 
 *	`--help`: print help text.
 
