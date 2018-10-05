@@ -383,13 +383,18 @@ or by using http://archive.is/ instead of grab-site.
 
 #### Tumblr blogs
 
-Don't crawl from Europe: tumblr redirects to a GDPR `/privacy/consent` page and the `Googlebot` user agent override no longer has any effect.
+Don't crawl from Europe: tumblr redirects to a GDPR `/privacy/consent` page and
+the `Googlebot` user agent override no longer has any effect.
 
-Use [`--igsets=singletumblr`](https://github.com/ludios/grab-site/blob/master/libgrabsite/ignore_sets/singletumblr) to avoid crawling the homepages of other tumblr blogs.
+Use [`--igsets=singletumblr`](https://github.com/ludios/grab-site/blob/master/libgrabsite/ignore_sets/singletumblr)
+to avoid crawling the homepages of other tumblr blogs.
 
-If you don't care about who liked or reblogged a post, add `\?from_c=` to the crawl's `ignores`.
+If you don't care about who liked or reblogged a post, add `\?from_c=` to the
+crawl's `ignores`.
 
-Some tumblr blogs appear to require JavaScript, but they are actually just hiding the page content with CSS.  You are still likely to get a complete crawl.  (See the links in the page source for http://X.tumblr.com/archive).
+Some tumblr blogs appear to require JavaScript, but they are actually just
+hiding the page content with CSS.  You are still likely to get a complete crawl.
+(See the links in the page source for http://X.tumblr.com/archive).
 
 #### Subreddits
 
