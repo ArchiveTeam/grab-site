@@ -211,24 +211,7 @@ custom_hooks, which_wpull_args_partial, which_wpull_command):
 		id = binascii.hexlify(os.urandom(16)).decode('utf-8')
 	ymd = datetime.datetime.utcnow().isoformat()[:10]
 	no_proto_no_trailing = claim_start_url.split('://', 1)[1].rstrip('/')[:100]
-	warc_name = "{}-{}-{}".format(re.sub('[^-_a-zA-Z0-9%\.,;@+=]', '-', no_proto_no_trailing).lstrip('-'), ymd, id[:8])
-
-	def get_base_wpull_args():
-		return ["-U", ua,
-			"--header=Accept: text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
-			"--header=Accept-Language: en-US,en;q=0.5",
-			"--no-check-certificate",
-			"--no-robots",
-			"--inet4-only",
-			"--dns-timeout", "20",
-			"--connect-timeout", "20",
-			"--read-timeout", "900",
-			"--session-timeout", str(86400 * 2),
-			"--tries", "3",
-			"--waitretry", "5",
-			"--max-redirect", "8",
-			"--quiet"
-		]
+	warc_name = "{}-{}-{}".format(re.sub(r'[^-_a-zA-Z0-9%\.,;@+=]', '-', no_proto_no_trailing).lstrip('-'), ymd, id[:8])
 
 	# make absolute because wpull will start in temp/
 	if not dir:
@@ -237,11 +220,24 @@ custom_hooks, which_wpull_args_partial, which_wpull_command):
 		working_dir = os.path.abspath(dir)
 
 	LIBGRABSITE = os.path.dirname(libgrabsite.__file__)
-	args = get_base_wpull_args() + [
+	args = [
+		"--debug",
+		"-U", ua,
+		"--header=Accept: text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
+		"--header=Accept-Language: en-US,en;q=0.5",
+		"--no-check-certificate",
+		"--no-robots",
+		"--inet4-only",
+		"--dns-timeout", "20",
+		"--connect-timeout", "20",
+		"--read-timeout", "900",
+		"--session-timeout", str(86400 * 2),
+		"--tries", "3",
+		"--waitretry", "5",
+		"--max-redirect", "8",
 		"--output-file", "{}/wpull.log".format(working_dir),
 		"--database", "{}/wpull.db".format(working_dir),
-		"--plugin-script", "{}/plugin.py".format(LIBGRABSITE),
-		"--python-script", "{}/wpull_hooks.py".format(LIBGRABSITE),
+		"--plugin-script", "{}/wpull_hooks.py".format(LIBGRABSITE),
 		"--save-cookies", "{}/cookies.txt".format(working_dir),
 		"--delete-after",
 		"--page-requisites",
@@ -255,7 +251,7 @@ custom_hooks, which_wpull_args_partial, which_wpull_command):
 		"--level", level,
 		"--page-requisites-level", page_requisites_level,
 		"--span-hosts-allow", span_hosts_allow,
-		"--load-cookies", "{}/default_cookies.txt".format(LIBGRABSITE)
+		"--load-cookies", "{}/default_cookies.txt".format(LIBGRABSITE),
 	]
 
 	# psutil is not available on Windows and therefore wpull's --monitor-*
@@ -393,22 +389,21 @@ custom_hooks, which_wpull_args_partial, which_wpull_command):
 	# files in the cwd, so we must start wpull in temp/ anyway.
 	os.chdir(temp_dir)
 
-	from wpull.app import Application
-	def noop_setup_signal_handlers(self):
-		pass
-
-	# Don't let wpull install a handler for SIGINT or SIGTERM,
-	# because we install our own in wpull_hooks.py.
-	Application.setup_signal_handlers = noop_setup_signal_handlers
-
 	# Modify NO_DOCUMENT_STATUS_CODES
 	# https://github.com/chfoo/wpull/issues/143
 	from wpull.processor.web import WebProcessor
 	WebProcessor.NO_DOCUMENT_STATUS_CODES = \
 		tuple(int(code) for code in permanent_error_status_codes.split(","))
 
-	import wpull.__main__
-	wpull.__main__.main()
+	# Uncomment to debug import-time errors that are otherwise silently
+	# swallowed by wpull's plugin system:
+	#
+	# from libgrabsite import wpull_hooks as _
+
+	import wpull.application.main
+	# Don't let wpull install a handler for SIGINT or SIGTERM,
+	# because we install our own in wpull_hooks.py.
+	wpull.application.main.main(use_signals=False)
 
 
 if __name__ == '__main__':
