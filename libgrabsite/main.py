@@ -240,8 +240,7 @@ custom_hooks, which_wpull_args_partial, which_wpull_command):
 	args = get_base_wpull_args() + [
 		"--output-file", "{}/wpull.log".format(working_dir),
 		"--database", "{}/wpull.db".format(working_dir),
-		"--plugin-script", "{}/plugin.py".format(LIBGRABSITE),
-		"--python-script", "{}/wpull_hooks.py".format(LIBGRABSITE),
+		"--plugin-script", "{}/wpull_hooks.py".format(LIBGRABSITE),
 		"--save-cookies", "{}/cookies.txt".format(working_dir),
 		"--delete-after",
 		"--page-requisites",
@@ -393,22 +392,16 @@ custom_hooks, which_wpull_args_partial, which_wpull_command):
 	# files in the cwd, so we must start wpull in temp/ anyway.
 	os.chdir(temp_dir)
 
-	from wpull.app import Application
-	def noop_setup_signal_handlers(self):
-		pass
-
-	# Don't let wpull install a handler for SIGINT or SIGTERM,
-	# because we install our own in wpull_hooks.py.
-	Application.setup_signal_handlers = noop_setup_signal_handlers
-
 	# Modify NO_DOCUMENT_STATUS_CODES
 	# https://github.com/chfoo/wpull/issues/143
 	from wpull.processor.web import WebProcessor
 	WebProcessor.NO_DOCUMENT_STATUS_CODES = \
 		tuple(int(code) for code in permanent_error_status_codes.split(","))
 
-	import wpull.__main__
-	wpull.__main__.main()
+	import wpull.application.main
+	# Don't let wpull install a handler for SIGINT or SIGTERM,
+	# because we install our own in wpull_hooks.py.
+	wpull.application.main.main(use_signals=False)
 
 
 if __name__ == '__main__':
