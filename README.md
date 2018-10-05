@@ -431,15 +431,21 @@ Use `--concurrency=1 --delay=500-1500`.
 
 #### MediaWiki sites with English language
 
-Use [`--igsets=mediawiki`](https://github.com/ludios/grab-site/blob/master/libgrabsite/ignore_sets/mediawiki).  Note that this ignore set ignores old page revisions.
+Use [`--igsets=mediawiki`](https://github.com/ludios/grab-site/blob/master/libgrabsite/ignore_sets/mediawiki).
+Note that this ignore set ignores old page revisions.
 
 #### MediaWiki sites with non-English language
 
-You will probably have to add ignores with translated `Special:*` URLs based on [ignore_sets/mediawiki](https://github.com/ludios/grab-site/blob/master/libgrabsite/ignore_sets/mediawiki).
+You will probably have to add ignores with translated `Special:*` URLs based on
+[ignore_sets/mediawiki](https://github.com/ludios/grab-site/blob/master/libgrabsite/ignore_sets/mediawiki).
 
 #### Forums that aren't Discourse
 
-Forums require more manual intervention with ignore patterns.  [`--igsets=forums`](https://github.com/ludios/grab-site/blob/master/libgrabsite/ignore_sets/forums) is often useful for non-SMF forums, but you will have to add other ignore patterns, including one to ignore individual-forum-post pages if there are too many posts to crawl.  (Generally, crawling the thread pages is enough.)
+Forums require more manual intervention with ignore patterns.
+[`--igsets=forums`](https://github.com/ludios/grab-site/blob/master/libgrabsite/ignore_sets/forums)
+is often useful for non-SMF forums, but you will have to add other ignore
+patterns, including one to ignore individual-forum-post pages if there are
+too many posts to crawl.  (Generally, crawling the thread pages is enough.)
 
 #### GitHub issues / pull requests
 
@@ -449,7 +455,9 @@ Find the highest issue number from an issues page ([example](https://github.com/
 grab-site --1 https://github.com/rust-lang/rust/issues/{1..30000}
 ```
 
-This relies on your shell to expand the argument to thousands of arguments.  If there are too many arguments, you may have to write the URLs to a file and use `grab-site -i` instead:
+This relies on your shell to expand the argument to thousands of arguments.
+If there are too many arguments, you may have to write the URLs to a file
+and use `grab-site -i` instead:
 
 ```
 for i in {1..30000}; do echo https://github.com/rust-lang/rust/issues/$i >> .urls; done
@@ -458,11 +466,17 @@ grab-site --1 -i .urls
 
 #### Websites whose domains have just expired but are still up at the webhost
 
-Use a [DNS history](https://www.google.com/search?q=historical+OR+history+dns) service to find the old IP address (the DNS "A" record) for the domain.  Add a line to your `/etc/hosts` to point the domain to the old IP.  Start a crawl with `--wpull-args=--no-skip-getaddrinfo` to make wpull use `/etc/hosts`.
+Use a [DNS history](https://www.google.com/search?q=historical+OR+history+dns)
+service to find the old IP address (the DNS "A" record) for the domain.  Add a
+line to your `/etc/hosts` to point the domain to the old IP.  Start a crawl
+with `--wpull-args=--no-skip-getaddrinfo` to make wpull use `/etc/hosts`.
 
 #### twitter.com/user
 
-Use [webrecorder.io](https://webrecorder.io/) instead of grab-site.  Enter a URL, then hit the 'Auto Scroll' button at the top.  Wait until it's done and unpress the Auto Scroll button.  Click the 'N MB' icon at the top and download your WARC file.
+Use [webrecorder.io](https://webrecorder.io/) instead of grab-site.  Enter a
+URL, then hit the 'Auto Scroll' button at the top.  Wait until it's done and
+unpress the Auto Scroll button.  Click the 'N MB' icon at the top and download
+your WARC file.
 
 
 
