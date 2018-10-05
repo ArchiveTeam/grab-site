@@ -619,7 +619,6 @@ Help
 ---
 grab-site bugs and questions are welcome in
 [grab-site/issues](https://github.com/ludios/grab-site/issues).
-Please report security bugs as regular bugs.
 
 Terminal output in your bug report should be surrounded by triple backquotes, like this:
 
@@ -631,6 +630,7 @@ output
 ```
 </pre>
 
+Please report security bugs as regular bugs.
 
 
 [travis-image]: https://img.shields.io/travis/ludios/grab-site.svg
