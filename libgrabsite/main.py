@@ -79,6 +79,8 @@ def patch_dns_inet_is_multicast():
 		'--igon (default: false) to print all URLs being ignored to the terminal '
 		'and dashboard.')
 
+@click.option('--debug', is_flag=True, help='Print a lot of debugging information.')
+
 @click.option('--video/--no-video', default=True,
 	help=
 		'--no-video (default: false) to skip the download of videos by both '
@@ -172,7 +174,7 @@ def patch_dns_inet_is_multicast():
 @click.argument('start_url', nargs=-1, required=False)
 
 def main(concurrency, concurrent, delay, recursive, offsite_links, igsets,
-ignore_sets, import_ignores, igon, video, level, page_requisites_level,
+ignore_sets, import_ignores, igon, debug, video, level, page_requisites_level,
 max_content_length, sitemaps, dupespotter, warc_max_size, ua, input_file,
 wpull_args, start_url, id, dir, finished_warc_dir, permanent_error_status_codes,
 custom_hooks, which_wpull_args_partial, which_wpull_command):
@@ -221,7 +223,7 @@ custom_hooks, which_wpull_args_partial, which_wpull_command):
 
 	LIBGRABSITE = os.path.dirname(libgrabsite.__file__)
 	args = [
-		"--debug",
+		"--debug" if debug else "--quiet",
 		"-U", ua,
 		"--header=Accept: text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
 		"--header=Accept-Language: en-US,en;q=0.5",
