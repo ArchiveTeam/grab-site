@@ -11,13 +11,10 @@ import libgrabsite
 
 install_requires = [
 	"click>=6.3",
-	"wpull==1.3.1",
+	"wpull==3.0.2",
 	"manhole>=1.0.0",
 	"lmdb>=0.89",
 	"autobahn>=0.12.1",
-	"tornado==4.5.3",
-	"lxml",
-	"html5-parser",
 	"fb-re2==1.0.7",
 ]
 
@@ -43,7 +40,7 @@ setup(
 	package_data={"libgrabsite": ["*.html", "*.ico", "*.txt", "ignore_sets/*"]},
 	install_requires=install_requires,
 	dependency_links=[
-		"https://github.com/ludios/wpull/tarball/ludios#egg=wpull-1.3.1",
+		"https://github.com/ludios/wpull/tarball/master#egg=wpull-3.0.2",
 		"https://github.com/ludios/pyre2/tarball/master#egg=fb-re2-1.0.7"
 	]
 )
