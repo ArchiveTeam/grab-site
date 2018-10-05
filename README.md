@@ -333,11 +333,27 @@ Options can come before or after the URL.
 
 ### Warnings
 
-If you pay no attention to your crawls, a crawl may head down some infinite bot trap and stay there forever.  The site owner may eventually notice high CPU use or log activity, then IP-ban you.
+If you pay no attention to your crawls, a crawl may head down some infinite bot
+trap and stay there forever.  The site owner may eventually notice high CPU use
+or log activity, then IP-ban you.
 
-grab-site does not respect `robots.txt` files, because they frequently [whitelist only approved robots](https://github.com/robots.txt), [hide pages embarrassing to the site owner](https://web.archive.org/web/20140401024610/http://www.thecrimson.com/robots.txt), or block image or stylesheet resources needed for proper archival.  [See also](http://www.archiveteam.org/index.php?title=Robots.txt).  Because of this, very rarely you might run into a robot honeypot and receive an abuse@ complaint.  Your host may require a prompt response to such a complaint for your server to stay online.  So don't crawl the web from the server that hosts your critical infrastructure.
+grab-site does not respect `robots.txt` files, because they frequently
+[whitelist only approved robots](https://github.com/robots.txt),
+[hide pages embarrassing to the site owner](https://web.archive.org/web/20140401024610/http://www.thecrimson.com/robots.txt),
+or block image or stylesheet resources needed for proper archival.
+[See also](http://www.archiveteam.org/index.php?title=Robots.txt).
+Because of this, very rarely you might run into a robot honeypot and receive
+an abuse@ complaint.  Your host may require a prompt response to such a complaint
+for your server to stay online.  Therefore, we recommend against crawling the
+web from a server that hosts your critical infrastructure.
 
-Don't run grab-site on GCE (Google Compute Engine); as happened to me, your entire API project may get nuked after a few days of crawling the web, with no recourse.  Good alternatives include OVH ([OVH](https://www.ovh.com/us/dedicated-servers/), [So You Start](http://www.soyoustart.com/us/essential-servers/), [Kimsufi](http://www.kimsufi.com/us/en/index.xml)), and online.net's [dedicated](https://www.online.net/en/dedicated-server) and [Scaleway](https://www.scaleway.com/) offerings.
+Don't run grab-site on GCE (Google Compute Engine); as happened to me, your
+entire API project may get nuked after a few days of crawling the web, with
+no recourse.  Good alternatives include OVH ([OVH](https://www.ovh.com/us/dedicated-servers/),
+[So You Start](http://www.soyoustart.com/us/essential-servers/),
+[Kimsufi](http://www.kimsufi.com/us/en/index.xml)), and online.net's
+[dedicated](https://www.online.net/en/dedicated-server) and
+[Scaleway](https://www.scaleway.com/) offerings.
 
 ### Tips for specific websites
 
