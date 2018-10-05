@@ -69,7 +69,7 @@ chmod +x pyenv-installer
 ./pyenv-installer
 ~/.pyenv/bin/pyenv install 3.7.0
 ~/.pyenv/versions/3.7.0/bin/python -m venv ~/gs-venv
-~/gs-venv/bin/pip3 install --process-dependency-links --no-binary --upgrade git+https://github.com/ludios/grab-site
+~/gs-venv/bin/pip install --process-dependency-links --no-binary --upgrade git+https://github.com/ludios/grab-site
 ```
 
 Add this to your `~/.bashrc` or `~/.zshrc` and then restart your shell (e.g. by opening a new terminal tab/window):
@@ -92,7 +92,7 @@ chmod +x pyenv-installer
 ./pyenv-installer
 ~/.pyenv/bin/pyenv install 3.7.0
 ~/.pyenv/versions/3.7.0/bin/python -m venv ~/gs-venv
-~/gs-venv/bin/pip3 install --process-dependency-links --no-binary --upgrade git+https://github.com/ludios/grab-site
+~/gs-venv/bin/pip install --process-dependency-links --no-binary --upgrade git+https://github.com/ludios/grab-site
 ```
 
 Add this to your `~/.bashrc` or `~/.zshrc` and then restart your shell (e.g. by opening a new terminal tab/window):
@@ -116,7 +116,7 @@ Install on a non-Debian/Ubuntu distribution lacking Python 3.7.x
 	```
 	~/.pyenv/bin/pyenv install 3.7.0
 	~/.pyenv/versions/3.7.0/bin/python -m venv ~/gs-venv
-	~/gs-venv/bin/pip3 install --process-dependency-links --no-binary --upgrade git+https://github.com/ludios/grab-site
+	~/gs-venv/bin/pip install --process-dependency-links --no-binary --upgrade git+https://github.com/ludios/grab-site
 	```
 
 5. Add this to your `~/.bashrc` or `~/.zshrc` and then restart your shell (e.g. by opening a new terminal tab/window):
@@ -148,7 +148,7 @@ On OS X 10.10 - macOS 10.13:
 	brew install pyenv
 	pyenv install 3.7.0
 	~/.pyenv/versions/3.7.0/bin/python -m venv ~/gs-venv
-	~/gs-venv/bin/pip3 install --process-dependency-links --no-binary --upgrade git+https://github.com/ludios/grab-site
+	~/gs-venv/bin/pip install --process-dependency-links --no-binary --upgrade git+https://github.com/ludios/grab-site
 	```
 
 4. Add this to your `~/.bash_profile` (which may not exist yet) and then restart your shell (e.g. by opening a new terminal tab/window):
@@ -184,7 +184,7 @@ On Windows 10 Fall Creators Update (1703) or newer:
 Upgrade an existing install
 ---
 
-To update grab-site, simply run the `~/gs-venv/bin/pip3 install ...` command used to install
+To update grab-site, simply run the `~/gs-venv/bin/pip install ...` command used to install
 it originally (see above).
 
 After upgrading, stop `gs-server` with `kill` or ctrl-c, then start it again.
