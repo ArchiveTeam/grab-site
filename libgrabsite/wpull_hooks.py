@@ -24,6 +24,33 @@ from libgrabsite import dupespotter
 from libgrabsite.dupes import DupesOnDisk
 
 
+def _extract_response_code(response) -> int:
+	statcode = 0
+
+	try:
+		# duck typing: assume the response is
+		# wpull.protocol.http.request.Response
+		statcode = response.status_code
+	except (AttributeError, KeyError):
+		pass
+
+	try:
+		# duck typing: assume the response is
+		# wpull.protocol.ftp.request.Response
+		statcode = response.reply.code
+	except (AttributeError, KeyError):
+		pass
+
+	return statcode
+
+
+def _extract_item_size(response) -> int:
+	try:
+		return response.body.size()
+	except Exception:
+		return 0
+
+
 class NoFsyncSQLTable(SQLiteURLTable):
 	@classmethod
 	def _apply_pragmas_callback(cls, connection, record):
@@ -37,7 +64,7 @@ class DupeSpottingProcessingRule(wpull.processor.rule.ProcessingRule):
 		super().__init__(*args, **kwargs)
 
 	def scrape_document(self, request, response, url_item):
-		if response.body.size() < 30 * 1024 * 1024:
+		if _extract_item_size(response) < 30 * 1024 * 1024:
 			dupes_db = self.dupes_db
 			body = response.body.content()
 			if HTMLReader.is_response(response):
@@ -292,14 +319,14 @@ job_data = {
 def handle_result(url_info, record_info, error_info, response):
 	update_igoff()
 
-	response_code = response.status_code
+	response_code = _extract_response_code(response)
 	response_code_str = str(response_code)
 	if len(response_code_str) == 3 and response_code_str[0] in "12345":
 		job_data["r%sxx" % response_code_str[0]] += 1
 	else:
 		job_data["runk"] += 1
 
-	job_data["bytes_downloaded"] += response.body.size
+	job_data["bytes_downloaded"] += _extract_item_size(response)
 
 	stop = should_stop()
 
