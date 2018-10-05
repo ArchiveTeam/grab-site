@@ -530,14 +530,21 @@ zless DIR/FILE.warc.gz
 
 `zless -S` will turn off line wrapping.
 
-Note that grab-site requests uncompressed HTTP responses to avoid double-compression in .warc.gz files and to make zless output more useful.  However, some servers send compressed responses anyway.
+Note that grab-site requests uncompressed HTTP responses to avoid
+double-compression in .warc.gz files and to make zless output more useful.
+However, some servers will send compressed responses anyway.
 
 
 
 Automatically pausing grab-site processes when free disk is low
 ---
 
-If you automatically upload and remove finished .warc.gz files, you can still run into a situation where grab-site processes fill up your disk faster than your uploader process can handle.  To prevent this situation, you can customize and run [this script](https://github.com/ludios/grab-site/blob/master/extra_docs/pause_resume_grab_sites.sh), which will pause and resume grab-site processes as your free disk space crosses a threshold value.
+If you automatically upload and remove finished .warc.gz files, you can still
+run into a situation where grab-site processes fill up your disk faster than
+your uploader process can handle.  To prevent this situation, you can customize
+and run [this script](https://github.com/ludios/grab-site/blob/master/extra_docs/pause_resume_grab_sites.sh),
+which will pause and resume grab-site processes as your free disk space
+crosses a threshold value.
 
 
 
