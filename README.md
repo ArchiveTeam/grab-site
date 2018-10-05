@@ -398,9 +398,11 @@ hiding the page content with CSS.  You are still likely to get a complete crawl.
 
 #### Subreddits
 
-Use [`--igsets=reddit`](https://github.com/ludios/grab-site/blob/master/libgrabsite/ignore_sets/reddit) and add a `/` at the end of the URL to avoid crawling all subreddits.
+Use [`--igsets=reddit`](https://github.com/ludios/grab-site/blob/master/libgrabsite/ignore_sets/reddit)
+and add a `/` at the end of the URL to avoid crawling all subreddits.
 
-When crawling a subreddit, you **must** get the casing of the subreddit right for the recursive crawl to work.  For example,
+When crawling a subreddit, you **must** get the casing of the subreddit right
+for the recursive crawl to work.  For example,
 
 ```
 grab-site https://www.reddit.com/r/Oculus/ --igsets=reddit
@@ -416,7 +418,8 @@ You can hover over the "Hot"/"New"/... links at the top of the page to see the c
 
 #### Directory listings ("Index of ...")
 
-Use `--no-dupespotter` to avoid triggering false positives on the duplicate page detector.  Without it, the crawl may miss large parts of the directory tree.
+Use `--no-dupespotter` to avoid triggering false positives on the duplicate
+page detector.  Without it, the crawl may miss large parts of the directory tree.
 
 #### Very large websites
 
