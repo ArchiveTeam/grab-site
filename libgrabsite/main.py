@@ -359,7 +359,7 @@ which_wpull_args_partial, which_wpull_command):
 	# Mutate argv, environ, cwd before we turn into wpull
 	sys.argv[1:] = args
 	os.environ["GRAB_SITE_WORKING_DIR"] = working_dir
-	os.environ["DUPESPOTTER_ENABLED"] = "1" if dupespotter else "0"
+	os.environ["DUPESPOTTER_ENABLED"]   = "1" if dupespotter else "0"
 	# We can use --warc-tempdir= to put WARC-related temporary files in a temp
 	# directory, but wpull also creates non-WARC-related "resp_cb" temporary
 	# files in the cwd, so we must start wpull in temp/ anyway.
