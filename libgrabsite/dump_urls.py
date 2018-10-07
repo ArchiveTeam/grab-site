@@ -11,12 +11,12 @@ def print_version(ctx, param, value):
 
 @click.command()
 
-@click.option('--version', is_flag=True, callback=print_version,
-	expose_value=False, is_eager=True, help='Print version and exit.')
+@click.option("--version", is_flag=True, callback=print_version,
+	expose_value=False, is_eager=True, help="Print version and exit.")
 
-@click.argument('wpull_db_file', type=str)
+@click.argument("wpull_db_file", type=str)
 
-@click.argument('status', type=click.Choice(['done', 'error', 'in_progress', 'skipped', 'todo']))
+@click.argument("status", type=click.Choice(["done", "error", "in_progress", "skipped", "todo"]))
 
 def main(wpull_db_file, status):
 	"""
@@ -24,18 +24,18 @@ def main(wpull_db_file, status):
 
 	WPULL_DB_FILE is the path to the wpull.db file.
 
-	STATUS is one of 'done', 'error', 'in_progress', 'skipped', or 'todo'.
+	STATUS is one of "done", "error", "in_progress", "skipped", or "todo".
 	"""
 	conn = sqlite3.connect(wpull_db_file)
 	c = conn.cursor()
 
 	rows = c.execute(
-		'SELECT url_strings.url FROM urls '
-		'JOIN url_strings ON urls.url_str_id=url_strings.id '
-		'WHERE status=?;', (status,))
+		"SELECT url_strings.url FROM urls "
+		"JOIN url_strings ON urls.url_str_id=url_strings.id "
+		"WHERE status=?;", (status,))
 	for row in rows:
 		print(row[0])
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
 	main()
