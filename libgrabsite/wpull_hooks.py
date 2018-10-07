@@ -15,18 +15,9 @@ from wpull.pipeline.item import URLRecord
 from wpull.pipeline.session import ItemSession
 from wpull.url import URLInfo
 
-from libgrabsite import wpull_tweaks
+from libgrabsite import wpull_tweaks, dashboard_client
 import libgrabsite
 
-class GrabberClientFactory(object): # WebSocketClientFactory
-	#protocol = GrabberClientProtocol
-
-	def __init__(self):
-		super().__init__()
-		self.client = None
-
-
-ws_factory = GrabberClientFactory()
 
 working_dir = os.environ["GRAB_SITE_WORKING_DIR"]
 def cf(fname):
@@ -138,6 +129,7 @@ class GrabSitePlugin(WpullPlugin):
 		self.enable_stdio_capture()
 		self.add_signal_handlers()
 		self.init_job_data()
+		self.init_ws()
 		self.setup_watchers()
 		self.all_start_urls             = open(cf("all_start_urls")).read().rstrip("\n").split("\n")
 		self.skipped_videos             = open(cf("skipped_videos"),             "w", encoding="utf-8")
@@ -175,16 +167,21 @@ class GrabSitePlugin(WpullPlugin):
 		for f in ["igsets", "ignores", "delay", "concurrency", "max_content_length"]:
 			self.watchers[f] = FileChangedWatcher(cf(f))
 
+	def put_ws_queue(self, obj):
+		try:
+			self.ws_queue.put_nowait(obj)
+		except asyncio.QueueFull:
+			pass
+
 	def stdout_write_both(self, message):
 		assert isinstance(message, bytes), message
 		try:
 			self.real_stdout_write(message)
-			if ws_factory.client:
-				ws_factory.client.send_object({
-					"type":     "stdout",
-					"job_data": self.job_data,
-					"message":  message.decode("utf-8")
-				})
+			self.put_ws_queue({
+				"type":     "stdout",
+				"job_data": self.job_data,
+				"message":  message.decode("utf-8")
+			})
 		except Exception as e:
 			self.real_stderr_write((str(e) + "\n").encode("utf-8"))
 
@@ -192,12 +189,11 @@ class GrabSitePlugin(WpullPlugin):
 		assert isinstance(message, bytes), message
 		try:
 			self.real_stderr_write(message)
-			if ws_factory.client:
-				ws_factory.client.send_object({
-					"type":     "stderr",
-					"job_data": self.job_data,
-					"message":  message.decode("utf-8")
-				})
+			self.put_ws_queue({
+				"type":     "stderr",
+				"job_data": self.job_data,
+				"message":  message.decode("utf-8")
+			})
 		except Exception as e:
 			self.real_stderr_write((str(e) + "\n").encode("utf-8"))
 
@@ -223,6 +219,15 @@ class GrabSitePlugin(WpullPlugin):
 			"r5xx":                    0,
 			"runk":                    0,
 		}
+
+	def init_ws(self):
+		self.ws_queue = asyncio.Queue(maxsize=250)
+
+		ws_host = os.environ.get("GRAB_SITE_HOST", "127.0.0.1")
+		ws_port = int(os.environ.get("GRAB_SITE_PORT", 29000))
+		ws_url  = f"ws://{ws_host}:{ws_port}"
+
+		self.loop.create_task(dashboard_client.sender(self, ws_url))
 
 	@swallow_exception
 	def update_max_content_length(self):
@@ -324,14 +329,13 @@ class GrabSitePlugin(WpullPlugin):
 		else:
 			self.job_data["runk"] += 1
 
-		if ws_factory.client:
-			ws_factory.client.send_object({
-				"type":             "download",
-				"job_data":         self.job_data,
-				"url":              url_info.raw,
-				"response_code":    response_code,
-				"response_message": response_message,
-			})
+		self.put_ws_queue({
+			"type":             "download",
+			"job_data":         self.job_data,
+			"url":              url_info.raw,
+			"response_code":    response_code,
+			"response_message": response_message,
+		})
 
 		if self.should_stop():
 			return Actions.STOP
@@ -342,13 +346,12 @@ class GrabSitePlugin(WpullPlugin):
 		self.update_igoff()
 		if not self.job_data["suppress_ignore_reports"]:
 			self.print_to_terminal("IGNOR %s\n   by %s" % (url, pattern))
-			if ws_factory.client:
-				ws_factory.client.send_object({
-					"type":          "ignore",
-					"self.job_data": self.job_data,
-					"url":           url,
-					"pattern":       pattern
-				})
+			self.put_ws_queue({
+				"type":          "ignore",
+				"self.job_data": self.job_data,
+				"url":           url,
+				"pattern":       pattern
+			})
 
 	@event(PluginFunctions.queued_url)
 	def queued_url(self, _url_info: URLInfo):

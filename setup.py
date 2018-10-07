@@ -16,6 +16,7 @@ install_requires = [
 	"lmdb>=0.89",
 	"autobahn>=0.12.1",
 	"fb-re2==1.0.7",
+	"websockets>=6.0",
 ]
 
 if 'GRAB_SITE_NO_CCHARDET' not in os.environ:
