@@ -226,7 +226,7 @@ which_wpull_args_partial, which_wpull_command):
 		"--dns-timeout",      "20",
 		"--connect-timeout",  "20",
 		"--read-timeout",     "900",
-		"--session-timeout", str(86400 * 2),
+		"--session-timeout",  str(86400 * 2),
 		"--tries",            "3",
 		"--waitretry",        "5",
 		"--max-redirect",     "8",
