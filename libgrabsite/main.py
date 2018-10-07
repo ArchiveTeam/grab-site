@@ -273,13 +273,13 @@ which_wpull_args_partial, which_wpull_command):
 		args += ["--input-file", DIR_input_file]
 
 	if which_wpull_args_partial:
-		replace_2arg(args, "--output-file", ["--output-file", "wpull.log"])
-		replace_2arg(args, "--database", ["--database", "wpull.db"])
+		replace_2arg(args, "--output-file",   ["--output-file", "wpull.log"])
+		replace_2arg(args, "--database",      ["--database", "wpull.db"])
 		replace_2arg(args, "--plugin-script", [])
 		replace_2arg(args, "--python-script", [])
-		replace_2arg(args, "--save-cookies", ["--save-cookies", "cookies.txt"])
-		replace_2arg(args, "--load-cookies", [])
-		replace_2arg(args, "--warc-file", ["--warc-file", warc_name])
+		replace_2arg(args, "--save-cookies",  ["--save-cookies", "cookies.txt"])
+		replace_2arg(args, "--load-cookies",  [])
+		replace_2arg(args, "--warc-file",     ["--warc-file", warc_name])
 		try:
 			args.remove("--quiet")
 		except ValueError:
