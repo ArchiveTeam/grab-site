@@ -288,7 +288,6 @@ which_wpull_args_partial, which_wpull_command):
 		return
 
 	# Create DIR and DIR files only after which_wpull_args_* checks
-
 	os.makedirs(working_dir)
 	temp_dir = os.path.join(working_dir, "temp")
 	os.makedirs(temp_dir)
