@@ -28,16 +28,16 @@ class GrabberServerProtocol(WebSocketServerProtocol):
 
 	def onMessage(self, payload, isBinary):
 		##print(payload)
-		obj = json.loads(payload.decode('utf-8'))
+		obj = json.loads(payload.decode("utf-8"))
 		type = obj["type"]
 		if self.mode is None and type == "hello" and obj.get("mode"):
-			mode = obj['mode']
-			if mode in ('dashboard', 'grabber'):
+			mode = obj["mode"]
+			if mode in ("dashboard", "grabber"):
 				self.mode = mode
 				if mode == "grabber":
-					print("{} is grabbing {}".format(self.peer, obj['url']))
+					print("{} is grabbing {}".format(self.peer, obj["url"]))
 				elif mode == "dashboard":
-					print("{} is dashboarding with {}".format(self.peer, obj.get('user_agent', '(no User-Agent)')))
+					print("{} is dashboarding with {}".format(self.peer, obj.get("user_agent", "(no User-Agent)")))
 		elif self.mode == "grabber":
 			if type == "download":
 				self.broadcastToDashboards({
@@ -94,9 +94,9 @@ class GrabberServerFactory(WebSocketServerFactory):
 
 def main():
 	loop      = asyncio.get_event_loop()
-	ports     = list(int(p) for p in os.environ.get('GRAB_SITE_PORT', "29000").split(','))
+	ports     = list(int(p) for p in os.environ.get("GRAB_SITE_PORT", "29000").split(","))
 	factory   = GrabberServerFactory()
-	interface = os.environ.get('GRAB_SITE_INTERFACE', '0.0.0.0')
+	interface = os.environ.get("GRAB_SITE_INTERFACE", "0.0.0.0")
 	for port in ports:
 		coro = loop.create_server(factory, interface, port)
 		loop.run_until_complete(coro)
@@ -105,5 +105,5 @@ def main():
 	loop.run_forever()
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
 	main()
