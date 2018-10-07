@@ -313,7 +313,7 @@ which_wpull_args_partial, which_wpull_command):
 			u = urllib.request.urlopen(input_file)
 			with open(DIR_input_file, "wb") as f:
 				while True:
-					s = u.read(1024*1024)
+					s = u.read(1024 * 1024)
 					if not s:
 						break
 					f.write(s)
