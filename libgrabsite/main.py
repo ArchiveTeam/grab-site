@@ -150,13 +150,6 @@ def patch_dns_inet_is_multicast():
 		'A comma-separated list of HTTP status codes to treat as a permanent '
 		'error and therefore *not* retry (default: 401,403,404,405,410)')
 
-@click.option('--custom-hooks', default=None, type=str, metavar='PY_SCRIPT',
-	help=
-		'Copy PY_SCRIPT to DIR/custom_hooks.py, then exec DIR/custom_hooks.py '
-		'on startup and every time it changes.  The script gets a `wpull_hook` '
-		'global that can be used to change crawl behavior.  '
-		'See libgrabsite/wpull_hooks.py and extra_docs/custom_hooks_sample.py.')
-
 @click.option('--which-wpull-args-partial', is_flag=True,
 	help=
 		'Print a partial list of wpull arguments that would be used and exit.  '
@@ -177,7 +170,7 @@ def main(concurrency, concurrent, delay, recursive, offsite_links, igsets,
 ignore_sets, import_ignores, igon, debug, video, level, page_requisites_level,
 max_content_length, sitemaps, dupespotter, warc_max_size, ua, input_file,
 wpull_args, start_url, id, dir, finished_warc_dir, permanent_error_status_codes,
-custom_hooks, which_wpull_args_partial, which_wpull_command):
+which_wpull_args_partial, which_wpull_command):
 	"""
 	Runs a crawl on one or more URLs.  For additional help, see
 
@@ -311,13 +304,6 @@ custom_hooks, which_wpull_args_partial, which_wpull_command):
 	os.makedirs(working_dir)
 	temp_dir = os.path.join(working_dir, "temp")
 	os.makedirs(temp_dir)
-
-	DIR_custom_hooks = os.path.join(working_dir, "custom_hooks.py")
-	if custom_hooks:
-		shutil.copyfile(custom_hooks, DIR_custom_hooks)
-	else:
-		with open(DIR_custom_hooks, "wb") as _:
-			pass
 
 	if input_file is not None:
 		# wpull -i doesn't support URLs, so download the input file ourselves if necessary
