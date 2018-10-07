@@ -383,11 +383,6 @@ which_wpull_args_partial, which_wpull_command):
 	WebProcessor.NO_DOCUMENT_STATUS_CODES = \
 		tuple(int(code) for code in permanent_error_status_codes.split(","))
 
-	# Uncomment to debug import-time errors that are otherwise silently
-	# swallowed by wpull's plugin system:
-	#
-	# from libgrabsite import wpull_hooks as _
-
 	import wpull.application.main
 	# Don't let wpull install a handler for SIGINT or SIGTERM,
 	# because we install our own in wpull_hooks.py.
