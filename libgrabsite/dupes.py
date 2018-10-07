@@ -2,7 +2,7 @@
 Duplicate page content database.
 """
 
-class DupesOnDisk(object):
+class DupesOnDisk:
 	def __init__(self, filename):
 		import lmdb
 		last_error = None
@@ -15,8 +15,9 @@ class DupesOnDisk(object):
 					filename,
 					# Can't use writemap=True on OS X because it does not fully support sparse files
 					# https://acid.readthedocs.org/en/latest/engines.html
-					# Don't use writemap=True elsewhere because enormous sparse files get copied
-					# and make a non-sparse mess
+					#
+					# Don't use writemap=True elsewhere to avoid creating enormous sparse files
+					# that will inevitably get copied without hole-skipping and fill up a disk.
 					writemap=False,
 					sync=False,
 					metasync=False,
@@ -25,7 +26,7 @@ class DupesOnDisk(object):
 			except (OverflowError, lmdb.MemoryError, lmdb.Error) as e:
 				last_error = e
 			else:
-				print("Created lmdb db with map_size=%d" % (map_size,))
+				print(f"Created lmdb db with map_size={map_size}")
 				last_error = None
 				break
 		if last_error is not None:
@@ -36,14 +37,14 @@ class DupesOnDisk(object):
 			maybe_url = txn.get(digest)
 			if maybe_url is None:
 				return maybe_url
-			return maybe_url.decode('utf-8')
+			return maybe_url.decode("utf-8")
 
 	def set_old_url(self, digest, url):
 		with self._env.begin(write=True) as txn:
 			return txn.put(digest, url.encode("utf-8"))
 
 
-class DupesInMemory(object):
+class DupesInMemory:
 	def __init__(self):
 		self._digests = {}
 
@@ -52,8 +53,3 @@ class DupesInMemory(object):
 
 	def set_old_url(self, digest, url):
 		self._digests[digest] = url
-
-
-__all__ = [
-	'DupesOnDisk', 'DupesInMemory'
-]
