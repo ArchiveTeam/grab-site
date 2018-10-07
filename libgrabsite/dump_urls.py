@@ -30,8 +30,8 @@ def main(wpull_db_file, status):
 	c = conn.cursor()
 
 	rows = c.execute(
-		"SELECT url_strings.url FROM urls "
-		"JOIN url_strings ON urls.url_str_id=url_strings.id "
+		"SELECT url_strings.url FROM queued_urls "
+		"JOIN url_strings ON queued_urls.url_string_id=url_strings.id "
 		"WHERE status=?;", (status,))
 	for row in rows:
 		print(row[0])
