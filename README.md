@@ -610,6 +610,10 @@ Thanks to [David Yip](https://github.com/yipdw), who created
 hooks in ArchiveBot served as the basis for grab-site.  The original ArchiveBot
 dashboard inspired the newer dashboard now used in both projects.
 
+Thanks to [Falcon Darkstar Momot](https://github.com/falconkirtaran) for
+the many wpull 2.x fixes that were rolled into
+[ludios/wpull](https://github.com/ludios/wpull).
+
 Thanks to [JustAnotherArchivist](https://github.com/JustAnotherArchivist)
 for investigating my wpull issues.
 
