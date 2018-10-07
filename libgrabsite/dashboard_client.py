@@ -44,8 +44,10 @@ async def sender(plugin, uri):
 				})
 				while True:
 					obj = await plugin.ws_queue.get()
-					await send_object(ws, obj)
-					plugin.ws_queue.task_done()
+					try:
+						await send_object(ws, obj)
+					finally:
+						plugin.ws_queue.task_done()
 		except Exception as e:
 			delay = decayer.decay()
 			print(f"Disconnected from ws:// server: {repr(e)}")
