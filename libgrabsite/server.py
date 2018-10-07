@@ -20,11 +20,6 @@ class GrabberServerProtocol(WebSocketServerProtocol):
 		print(f"{self.peer} disconnected")
 		self.factory.clients.discard(self)
 
-	def broadcast_to_dashboards(self, obj):
-		for client in self.factory.clients:
-			if client.mode == "dashboard":
-				client.sendMessage(json.dumps(obj).encode("utf-8"))
-
 	def onMessage(self, payload, isBinary):
 		obj  = json.loads(payload.decode("utf-8"))
 		type = obj["type"]
@@ -59,6 +54,11 @@ class GrabberServerProtocol(WebSocketServerProtocol):
 					"url":      obj["url"],
 					"pattern":  obj["pattern"],
 				})
+
+	def broadcast_to_dashboards(self, obj):
+		for client in self.factory.clients:
+			if client.mode == "dashboard":
+				client.sendMessage(json.dumps(obj).encode("utf-8"))
 
 	# Called when we get an HTTP request instead of a WebSocket request
 	def sendServerStatus(self, redirectUrl=None, redirectAfter=0):
