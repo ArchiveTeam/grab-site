@@ -93,12 +93,10 @@ class GrabberServerFactory(WebSocketServerFactory):
 
 
 def main():
-	loop = asyncio.get_event_loop()
-
-	ports = list(int(p) for p in os.environ.get('GRAB_SITE_PORT', "29000").split(','))
+	loop      = asyncio.get_event_loop()
+	ports     = list(int(p) for p in os.environ.get('GRAB_SITE_PORT', "29000").split(','))
+	factory   = GrabberServerFactory()
 	interface = os.environ.get('GRAB_SITE_INTERFACE', '0.0.0.0')
-
-	factory = GrabberServerFactory()
 	for port in ports:
 		coro = loop.create_server(factory, interface, port)
 		loop.run_until_complete(coro)
