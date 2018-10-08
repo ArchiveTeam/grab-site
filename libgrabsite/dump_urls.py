@@ -29,10 +29,19 @@ def main(wpull_db_file, status):
 	conn = sqlite3.connect(wpull_db_file)
 	c = conn.cursor()
 
-	rows = c.execute(
-		"SELECT url_strings.url FROM queued_urls "
-		"JOIN url_strings ON queued_urls.url_string_id=url_strings.id "
-		"WHERE status=?;", (status,))
+	try:
+		# query for wpull 2.0+ wpull.db
+		rows = c.execute(
+			"SELECT url_strings.url FROM queued_urls "
+			"JOIN url_strings ON queued_urls.url_string_id=url_strings.id "
+			"WHERE status=?;", (status,))
+	except sqlite3.OperationalError:
+		# query for wpull 1.x wpull.db
+		rows = c.execute(
+			"SELECT url_strings.url FROM urls "
+			"JOIN url_strings ON urls.url_str_id=url_strings.id "
+			"WHERE status=?;", (status,))
+
 	for row in rows:
 		print(row[0])
 
