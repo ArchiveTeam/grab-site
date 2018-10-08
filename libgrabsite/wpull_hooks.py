@@ -24,12 +24,19 @@ working_dir = os.environ["GRAB_SITE_WORKING_DIR"]
 def cf(fname):
 	return os.path.join(working_dir, fname)
 
+def compile_combined_regexp(patterns):
+	regexp = "|".join(map(lambda pattern: f"({pattern})", patterns))
+	return re2.compile(regexp)
+
+def include_ignore_line(line):
+	return line and not line.startswith("#")
+
 ignore_sets_path = os.path.join(os.path.dirname(libgrabsite.__file__), "ignore_sets")
-def get_patterns_for_ignore_set(name: str) -> [str]:
+def get_patterns_for_ignore_set(name: str):
 	assert name != "", name
 	with open(os.path.join(ignore_sets_path, name), "r", encoding="utf-8") as f:
 		lines = f.read().strip("\n").split("\n")
-		lines = filter(lambda line: line and not line.startswith("# "), lines)
+		lines = filter(include_ignore_line, lines)
 		return lines
 
 def swallow_exception(f):
@@ -132,6 +139,7 @@ class GrabSitePlugin(WpullPlugin):
 		self.init_job_data()
 		self.init_ws()
 		self.setup_watchers()
+		self.update_ignores()
 		self.all_start_urls             = open(cf("all_start_urls")).read().rstrip("\n").split("\n")
 		self.skipped_videos             = open(cf("skipped_videos"),             "w", encoding="utf-8")
 		self.skipped_max_content_length = open(cf("skipped_max_content_length"), "w", encoding="utf-8")
@@ -265,9 +273,7 @@ class GrabSitePlugin(WpullPlugin):
 		return path_exists_with_cache(self.stop_path)
 
 	def should_ignore_url(self, url, record_info):
-		return False
-		# parameters = parameterize_record_info(record_info)
-		# return ignoracle.ignores(url, **parameters)
+		return self.combined_ignore_regexp.search(url)
 
 	igoff_path = cf("igoff")
 	def update_igoff(self):
@@ -278,6 +284,7 @@ class GrabSitePlugin(WpullPlugin):
 		self.job_data["video"] = path_exists_with_cache(self.video_path)
 
 	scrape_path = cf("scrape")
+	@swallow_exception
 	def update_scrape(self):
 		scrape = path_exists_with_cache(self.scrape_path)
 		self.job_data["scrape"] = scrape
@@ -286,13 +293,38 @@ class GrabSitePlugin(WpullPlugin):
 			# but still keep going through what is already in the queue.
 			self.app_session.factory["DemuxDocumentScraper"]._document_scrapers = []
 
+	@swallow_exception
+	def update_ignores(self):
+		if not (self.watchers["igsets"].has_changed() or self.watchers["ignores"].has_changed()):
+			return
+
+		ignores = set()
+
+		with open(cf("igsets"), "r") as f:
+			igsets = f.read().strip("\r\n\t ,").split(',')
+
+		for igset in igsets:
+			ignores.update(get_patterns_for_ignore_set(igset))
+
+		with open(cf("ignores"), "r") as f:
+			lines = f.read().strip("\n").split("\n")
+			for line in lines:
+				if include_ignore_line(line):
+					ignores.add(line)
+
+		self.print_to_terminal(f"Using these {len(ignores)} ignores:")
+		for ig in sorted(ignores):
+			self.print_to_terminal(f"\t{ig}")
+
+		self.combined_ignore_regexp = compile_combined_regexp(ignores)
+
 	@hook(PluginFunctions.accept_url)
 	def accept_url(self, item_session: ItemSession, verdict: bool, reasons: dict):
 		record_info = item_session.url_record
 		url_info    = item_session.request.url_info
 		url         = url_info.raw
 
-		#self.update_ignoracle()
+		self.update_ignores()
 
 		if url.startswith("data:"):
 			# data: URLs aren't something you can grab, so drop them to avoid ignore
@@ -308,7 +340,7 @@ class GrabSitePlugin(WpullPlugin):
 			self.maybe_log_ignore(url, pattern)
 			return False
 
-		# If we get here, none of our ignores apply.	Return the original verdict.
+		# If we get here, none of our ignores apply. Return the original verdict.
 		return verdict
 
 	def handle_result(self, url_info, record_info, error_info, response):
