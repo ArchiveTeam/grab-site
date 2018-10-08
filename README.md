@@ -145,9 +145,8 @@ On OS X 10.10 - macOS 10.13:
 
 	```
 	brew update
-	brew install pyenv
-	pyenv install 3.7.0
-	~/.pyenv/versions/3.7.0/bin/python -m venv ~/gs-venv
+	brew install python libxslt re2
+	python3 -m venv ~/gs-venv
 	~/gs-venv/bin/pip install --process-dependency-links --no-binary --upgrade git+https://github.com/ludios/grab-site
 	```
 
