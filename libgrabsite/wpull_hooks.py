@@ -1,4 +1,5 @@
 import re
+import re2
 import os
 import sys
 import time
@@ -80,8 +81,8 @@ class FileChangedWatcher(object):
 		return changed
 
 
-ICY_FIELD_PATTERN = re.compile("icy-|ice-|x-audiocast-", re.IGNORECASE)
-ICY_VALUE_PATTERN = re.compile("icecast", re.IGNORECASE)
+ICY_FIELD_PATTERN = re2.compile("(?i)^icy-|ice-|x-audiocast-")
+ICY_VALUE_PATTERN = re2.compile("(?i)^icecast")
 
 def get_content_length(response) -> int:
 	try:
