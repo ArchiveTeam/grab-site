@@ -1,26 +1,26 @@
 # This ignore set avoids grabbing the full history of each page, because there
 # are generally far too many ?oldid= pages to crawl completely.
-[\?&]oldid=\d+
-[\?&]curid=\d+
-[\?&]limit=(20|100|250|500)
-[\?&]hide(minor|bots|anons|liu|myself|redirs|links|trans|patrolled)=
-([\?&]title=|/)Special:(UserLogin|UserLogout|Translate|MobileFeedback|MobileOptions|RecentChangesLinked|Diff|MobileDiff)
-([\?&]title=|/)Special:RecentChanges&from=\d+
-([\?&]title=|/)Special:ListFiles&dir=prev&offset=\d+
-([\?&]title=|/)Special:(ListFiles|PrefixIndex).*&amp;
-([\?&]title=|/)Special:ListFiles.*&user=
-([\?&]title=|/)Special:Log/
-[\?&]action=edit&section=(\d+|new)
-[\?&]feed(format)?=atom
-[\?&]printable=yes
-[\?&]mobileaction=
-[\?&]undo(after)?=\d+
-^http://a\.wikia-beacon\.com/__track/
+^https?://{any_start_netloc}/.+[\?&]oldid=\d+
+^https?://{any_start_netloc}/.+[\?&]curid=\d+
+^https?://{any_start_netloc}/.+[\?&]limit=(20|100|250|500)
+^https?://{any_start_netloc}/.+[\?&]hide(minor|bots|anons|liu|myself|redirs|links|trans|patrolled)=
+^https?://{any_start_netloc}/.+([\?&]title=|/)Special:(UserLogin|UserLogout|Translate|MobileFeedback|MobileOptions|RecentChangesLinked|Diff|MobileDiff)
+^https?://{any_start_netloc}/.+([\?&]title=|/)Special:RecentChanges&from=\d+
+^https?://{any_start_netloc}/.+([\?&]title=|/)Special:ListFiles&dir=prev&offset=\d+
+^https?://{any_start_netloc}/.+([\?&]title=|/)Special:(ListFiles|PrefixIndex).*&amp;
+^https?://{any_start_netloc}/.+([\?&]title=|/)Special:ListFiles.*&user=
+^https?://{any_start_netloc}/.+([\?&]title=|/)Special:Log/
+^https?://{any_start_netloc}/.+[\?&]action=edit&section=(\d+|new)
+^https?://{any_start_netloc}/.+[\?&]feed(format)?=atom
+^https?://{any_start_netloc}/.+[\?&]printable=yes
+^https?://{any_start_netloc}/.+[\?&]mobileaction=
+^https?://{any_start_netloc}/.+[\?&]undo(after)?=\d+
+^https?://{any_start_netloc}/.+[\?&]lqt_method=
 
 # Links to pages that don't exist
-[\?&]redlink=1
+^https?://{any_start_netloc}/.+[\?&]redlink=1
 
 # Loops
-/User_talk:.+/User_talk:
-/User_blog:.+/User_blog:
-/User:.+/User:
+^https?://{any_start_netloc}/.*User_talk:.+/User_talk:
+^https?://{any_start_netloc}/.*User_blog:.+/User_blog:
+^https?://{any_start_netloc}/.*User:.+/User:
