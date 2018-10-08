@@ -8,6 +8,7 @@ import random
 import functools
 import traceback
 import asyncio
+import urllib.parse
 
 from wpull.application.hook import Actions
 from wpull.application.plugin import WpullPlugin, PluginFunctions, hook, event
@@ -35,9 +36,7 @@ ignore_sets_path = os.path.join(os.path.dirname(libgrabsite.__file__), "ignore_s
 def get_patterns_for_ignore_set(name: str):
 	assert name != "", name
 	with open(os.path.join(ignore_sets_path, name), "r", encoding="utf-8") as f:
-		lines = f.read().strip("\n").split("\n")
-		lines = filter(include_ignore_line, lines)
-		return lines
+		return f.read().strip("\n").split("\n")
 
 def swallow_exception(f):
 	@functools.wraps(f)
@@ -139,10 +138,11 @@ class GrabSitePlugin(WpullPlugin):
 		self.init_job_data()
 		self.init_ws()
 		self.setup_watchers()
-		self.update_ignores()
 		self.all_start_urls             = open(cf("all_start_urls")).read().rstrip("\n").split("\n")
+		self.all_start_netlocs          = set(urllib.parse.urlparse(url).netloc for url in self.all_start_urls)
 		self.skipped_videos             = open(cf("skipped_videos"),             "w", encoding="utf-8")
 		self.skipped_max_content_length = open(cf("skipped_max_content_length"), "w", encoding="utf-8")
+		self.update_ignores()
 		super().activate()
 
 	def enable_stdio_capture(self):
@@ -304,19 +304,27 @@ class GrabSitePlugin(WpullPlugin):
 			igsets = f.read().strip("\r\n\t ,").split(',')
 
 		for igset in igsets:
-			ignores.update(get_patterns_for_ignore_set(igset))
+			for pattern in get_patterns_for_ignore_set(igset):
+				if include_ignore_line(pattern):
+					ignores.update(self.ignore_pattern_to_regexp_strings(pattern))
 
 		with open(cf("ignores"), "r") as f:
 			lines = f.read().strip("\n").split("\n")
-			for line in lines:
-				if include_ignore_line(line):
-					ignores.add(line)
+			for pattern in lines:
+				if include_ignore_line(pattern):
+					ignores.update(self.ignore_pattern_to_regexp_strings(pattern))
 
 		self.print_to_terminal(f"Using these {len(ignores)} ignores:")
 		for ig in sorted(ignores):
 			self.print_to_terminal(f"\t{ig}")
 
 		self.combined_ignore_regexp = compile_combined_regexp(ignores)
+
+	def ignore_pattern_to_regexp_strings(self, pattern):
+		if "{any_start_netloc}" not in pattern:
+			return [pattern]
+
+		return [pattern.replace("{any_start_netloc}", netloc) for netloc in self.all_start_netlocs]
 
 	@hook(PluginFunctions.accept_url)
 	def accept_url(self, item_session: ItemSession, verdict: bool, reasons: dict):

@@ -28,9 +28,9 @@
 /clientscript/.+/clientscript/clientscript/
 /clientscript/clientscript/clientscript/
 /lib/exe/.*lib[-_]exe[-_]lib[-_]exe[-_]
-^https?://{primary_netloc}/.*&amp;amp;amp;
-^https?://{primary_netloc}/.*amp%3Bamp%3Bamp%3B
-^https?://{primary_netloc}/.+/plugins/ultimate-social-media-plus/.+/like/like/
+^https?://{any_start_netloc}/.*&amp;amp;amp;
+^https?://{any_start_netloc}/.*amp%3Bamp%3Bamp%3B
+^https?://{any_start_netloc}/.+/plugins/ultimate-social-media-plus/.+/like/like/
 
 # URLs that are very likely incorrectly extracted by wpull
 /(%5C)+(%22|%27)
@@ -43,7 +43,7 @@
 /\\+["']
 /\\/\\/
 /'\+[^/]+\+'
-^https?://{primary_netloc}/.+/%3Ca%20href=
+^https?://{any_start_netloc}/.+/%3Ca%20href=
 ^https?://www\.youtube\.com/.*\[\[.+\]\]
 ^https?://www\.youtube\.com/.*\{\{.+\}\}
 
@@ -217,11 +217,11 @@
 ^https?://.+/.+/disqus\.com/forums/$
 
 # Bogus literal "/page/%d/" URLs (not filled with a number)
-^https?://{primary_netloc}(/.*|/)page/%d/$
+^https?://{any_start_netloc}(/.*|/)page/%d/$
 
 # Bogus URLs on tumblr blogs
-^https?://{primary_netloc}/.*(\?|%5Cx26)route=(/page/:page|/archive/:year/:month|/tagged/:tag|/post/:id|/image/:post_id)
-^https?://{primary_netloc}/.*%5Cx26route=/archive
+^https?://{any_start_netloc}/.*(\?|%5Cx26)route=(/page/:page|/archive/:year/:month|/tagged/:tag|/post/:id|/image/:post_id)
+^https?://{any_start_netloc}/.*%5Cx26route=/archive
 
 # There are too many avatars on tumblr.com
 ^https?://\d+\.media\.tumblr\.com/avatar_.+_16\.pn[gj]$
@@ -233,24 +233,24 @@
 ^https?://www\.dreamwidth\.org/tools/(memadd|tellafriend)\?
 
 ^https?://r-login\.wordpress\.com/remote-login\.php
-^https?://{primary_netloc}/(wp-admin/|wp-login\.php\?)
+^https?://{any_start_netloc}/(wp-admin/|wp-login\.php\?)
 ^https?://[^/]+\.facebook\.com/login\.php
 
 # Ignore /search.*updated-(min|max)= blogspot pagination because all posts are
 # crawled anyway via the _archive.html pages.  Need to ignore on all domains
 # because blogspot also runs on non-blogspot.com domains.
-^https?://{primary_netloc}/search(/label/[^\?]+|\?q=[^&]+|)[\?&]updated-(min|max)=\d{4}-\d\d-\d\dT\d\d:\d\d:\d\d.*&max-results=\d+
+^https?://{any_start_netloc}/search(/label/[^\?]+|\?q=[^&]+|)[\?&]updated-(min|max)=\d{4}-\d\d-\d\dT\d\d:\d\d:\d\d.*&max-results=\d+
 
 # Ignore bogus /CSI/ links on blogspot.com
 ^https?://.+\.blogspot\.(com|in|com\.au|co\.uk|jp|co\.nz|ca|de|it|fr|se|sg|es|pt|com\.br|ar|mx|kr)/(\d{4}/\d{2}/|search/label/)(CSI/$|.*/CSI/CSI/CSI/)
 
 # Links to ?share=(twitter|facebook|reddit|email|google-plus-1) etc.
 # These typically redirect.
-^https?://{primary_netloc}/.+[\?&]share=[a-z]{4,}
+^https?://{any_start_netloc}/.+[\?&]share=[a-z]{4,}
 
 # Per-comment links
-^https?://{primary_netloc}/.+[\?&]mode=reply
-^https?://{primary_netloc}/.+[\?&](replyto(com)?|like_comment)=\d+
-^https?://{primary_netloc}/.+\?showComment(=|%5C)\d+
-^https?://{primary_netloc}/.+/quote-comment-\d+/$
-^https?://{primary_netloc}/.+/jetpack-comment/\?blogid=\d+&postid=\d+
+^https?://{any_start_netloc}/.+[\?&]mode=reply
+^https?://{any_start_netloc}/.+[\?&](replyto(com)?|like_comment)=\d+
+^https?://{any_start_netloc}/.+\?showComment(=|%5C)\d+
+^https?://{any_start_netloc}/.+/quote-comment-\d+/$
+^https?://{any_start_netloc}/.+/jetpack-comment/\?blogid=\d+&postid=\d+
