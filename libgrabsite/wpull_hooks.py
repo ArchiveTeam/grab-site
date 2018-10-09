@@ -27,7 +27,7 @@ def cf(fname):
 
 def re2_compile(regexp):
 	# Validate with re first, because re2 may be more prone to segfaulting on
-	# bad regexps.
+	# bad regexps, and because re returns useful errors.
 	re.compile(regexp)
 	return re2.compile(regexp)
 
