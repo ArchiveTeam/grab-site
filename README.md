@@ -5,7 +5,7 @@ grab-site
 
 grab-site is an easy preconfigured web crawler designed for backing up websites.
 Give grab-site a URL and it will recursively crawl the site and write
-[WARC files](http://www.archiveteam.org/index.php?title=The_WARC_Ecosystem).
+[WARC files](https://www.archiveteam.org/index.php?title=The_WARC_Ecosystem).
 Internally, grab-site uses [a fork](https://github.com/ludios/wpull) of
 [wpull](https://github.com/chfoo/wpull) for crawling.
 
@@ -317,7 +317,7 @@ grab-site does not respect `robots.txt` files, because they frequently
 [whitelist only approved robots](https://github.com/robots.txt),
 [hide pages embarrassing to the site owner](https://web.archive.org/web/20140401024610/http://www.thecrimson.com/robots.txt),
 or block image or stylesheet resources needed for proper archival.
-[See also](http://www.archiveteam.org/index.php?title=Robots.txt).
+[See also](https://www.archiveteam.org/index.php?title=Robots.txt).
 Because of this, very rarely you might run into a robot honeypot and receive
 an abuse@ complaint.  Your host may require a prompt response to such a complaint
 for your server to stay online.  Therefore, we recommend against crawling the
@@ -326,8 +326,8 @@ web from a server that hosts your critical infrastructure.
 Don't run grab-site on GCE (Google Compute Engine); as happened to me, your
 entire API project may get nuked after a few days of crawling the web, with
 no recourse.  Good alternatives include OVH ([OVH](https://www.ovh.com/us/dedicated-servers/),
-[So You Start](http://www.soyoustart.com/us/essential-servers/),
-[Kimsufi](http://www.kimsufi.com/us/en/index.xml)), and online.net's
+[So You Start](https://www.soyoustart.com/us/essential-servers/),
+[Kimsufi](https://www.kimsufi.com/us/en/index.xml)), and online.net's
 [dedicated](https://www.online.net/en/dedicated-server) and
 [Scaleway](https://www.scaleway.com/) offerings.
 
@@ -352,10 +352,10 @@ The defaults work fine except for blogs with a JavaScript-only Dynamic Views the
 Some blogspot.com blogs use "[Dynamic Views](https://support.google.com/blogger/answer/1229061?hl=en)"
 themes that require JavaScript and serve absolutely no HTML content.  In rare
 cases, you can get JavaScript-free pages by appending `?m=1`
-([example](http://happinessbeyondthought.blogspot.com/?m=1)).  Otherwise, you
+([example](https://happinessbeyondthought.blogspot.com/?m=1)).  Otherwise, you
 can archive parts of these blogs through Google Cache instead
 ([example](https://webcache.googleusercontent.com/search?q=cache:http://blog.datomic.com/))
-or by using http://archive.is/ instead of grab-site.
+or by using https://archive.is/ instead of grab-site.
 
 #### Tumblr blogs
 
@@ -370,7 +370,7 @@ crawl's `ignores`.
 
 Some tumblr blogs appear to require JavaScript, but they are actually just
 hiding the page content with CSS.  You are still likely to get a complete crawl.
-(See the links in the page source for http://X.tumblr.com/archive).
+(See the links in the page source for https://X.tumblr.com/archive).
 
 #### Subreddits
 
@@ -470,7 +470,7 @@ changes will be applied within a few seconds.
 
 `DIR/igsets` is a comma-separated list of ignore sets to use.
 
-`DIR/ignores` is a newline-separated list of [Python 3 regular expressions](http://pythex.org/)
+`DIR/ignores` is a newline-separated list of [Python 3 regular expressions](https://pythex.org/)
 to use in addition to the ignore sets.
 
 You can `rm DIR/igoff` to display all URLs that are being filtered out
