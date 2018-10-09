@@ -324,7 +324,7 @@ class GrabSitePlugin(WpullPlugin):
 		if "{any_start_netloc}" not in pattern:
 			return [pattern]
 
-		return [pattern.replace("{any_start_netloc}", netloc) for netloc in self.all_start_netlocs]
+		return [pattern.replace("{any_start_netloc}", re.escape(netloc)) for netloc in self.all_start_netlocs]
 
 	@hook(PluginFunctions.accept_url)
 	def accept_url(self, item_session: ItemSession, verdict: bool, reasons: dict):
