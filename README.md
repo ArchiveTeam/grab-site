@@ -81,7 +81,7 @@ PATH="$PATH:$HOME/gs-venv/bin"
 
 Install on a non-Debian/Ubuntu distribution lacking Python 3.7.x
 ---
-1.	Install git, libxml2-dev, libxslt1-dev, and libre2-dev.
+1.	Install git, libxml2-dev, libxslt1-dev, libre2-dev, and pkg-config.
 
 2.	Install pyenv as described on https://github.com/yyuu/pyenv-installer#github-way-recommended
 
