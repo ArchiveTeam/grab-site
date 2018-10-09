@@ -17,4 +17,4 @@
 ^https?://(www|old)\.reddit\.com/user/[^/]+/(comments/)?.+[\?&]sort=
 ^https?://(www|old)\.reddit\.com/.+/\.rss$
 \.reddit\.com/message/compose/?\?
-^https?://(m|out|simple)\.reddit\.com/
+^https?://(m|out|simple|amp)\.reddit\.com/
