@@ -454,11 +454,10 @@ of tweets for a user.  Redirect `snscrape`'s output to a list of URLs with
 `> urls` and pass this file to `grab-site --1 -i urls`.
 
 Alternatively, use [webrecorder.io](https://webrecorder.io/) instead of
-grab-site.  Enter a URL, then click 'Turn on autoscroll' in the three-dots
-menu.  Wait until it is done and unpress the Auto Scroll button.  Click the
-'N MB' icon at the top and download your WARC file.  When using this method,
-keep in mind that `twitter.com/user` returns a maximum of 3200 tweets while a
-[from:user](https://twitter.com/search?q=from%3Ainternetarchive&src=typd&f=realtime&qf=off&lang=en)
+grab-site.  It has an autoscroll feature and you can download the WARCs.
+
+Keep in mind that scrolling `twitter.com/user` returns a maximum of 3200 tweets,
+while a [from:user](https://twitter.com/search?q=from%3Ainternetarchive&src=typd&f=realtime&qf=off&lang=en)
 query can return more.
 
 
