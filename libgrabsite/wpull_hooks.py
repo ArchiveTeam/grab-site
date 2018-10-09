@@ -396,7 +396,7 @@ class GrabSitePlugin(WpullPlugin):
 		if not self.job_data["suppress_ignore_reports"]:
 			self.print_to_terminal(f"IGNOR {url}\n   by {pattern}")
 			self.put_ws_queue({
-				"type":    "ignore",
+				"type":     "ignore",
 				"job_data": self.job_data,
 				"url":      url,
 				"pattern":  pattern
