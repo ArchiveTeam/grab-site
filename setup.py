@@ -15,7 +15,7 @@ install_requires = [
 	"manhole>=1.0.0",
 	"lmdb>=0.89",
 	"autobahn>=0.12.1",
-	"fb-re2==1.0.7",
+	"fb-re2>=1.0.6",
 	"websockets>=6.0",
 ]
 
@@ -42,6 +42,5 @@ setup(
 	install_requires=install_requires,
 	dependency_links=[
 		"https://github.com/ludios/wpull/tarball/master#egg=wpull-3.0.5",
-		"https://github.com/ludios/pyre2/tarball/master#egg=fb-re2-1.0.7"
 	]
 )
