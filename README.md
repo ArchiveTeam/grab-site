@@ -34,8 +34,7 @@ please [file an issue](https://github.com/ludios/grab-site/issues) - thank you!
 
 **Contents**
 
-- [Install on Ubuntu 18.04, Debian 9 (stretch), Debian 10 (buster)](#install-on-ubuntu-1804-debian-9-stretch-debian-10-buster)
-- [Install on Ubuntu 14.04, 16.04, Debian 8 (jessie)](#install-on-ubuntu-1404-1604-debian-8-jessie)
+- [Install on Ubuntu 14.04, 16.04, 18.04, Debian 8 (stretch), Debian 9 (stretch), Debian 10 (buster)](#install-on-ubuntu-1404-1604-1804-debian-8-jessie-9-stretch-debian-10-buster)
 - [Install on a non-Debian/Ubuntu distribution lacking Python 3.7.x](#install-on-a-non-debianubuntu-distribution-lacking-python-34x)
 - [Install on macOS](#install-on-macos)
 - [Install on Windows 10 (experimental)](#install-on-windows-10-experimental)
@@ -57,30 +56,7 @@ please [file an issue](https://github.com/ludios/grab-site/issues) - thank you!
 
 
 
-Install on Ubuntu 18.04, Debian 9 (stretch), Debian 10 (buster)
----
-On Debian, use `su` to become root if `sudo` is not configured to give you access.
-
-```
-sudo apt-get update
-sudo apt-get install --no-install-recommends git build-essential pkg-config libssl1.0-dev zlib1g-dev libbz2-dev libreadline-dev libsqlite3-dev libxml2-dev libxslt1-dev libre2-dev
-wget https://raw.githubusercontent.com/pyenv/pyenv-installer/master/bin/pyenv-installer
-chmod +x pyenv-installer
-./pyenv-installer
-~/.pyenv/bin/pyenv install 3.7.0
-~/.pyenv/versions/3.7.0/bin/python -m venv ~/gs-venv
-~/gs-venv/bin/pip install --process-dependency-links --no-binary --upgrade git+https://github.com/ludios/grab-site
-```
-
-Add this to your `~/.bashrc` or `~/.zshrc` and then restart your shell (e.g. by opening a new terminal tab/window):
-
-```
-PATH="$PATH:$HOME/gs-venv/bin"
-```
-
-
-
-Install on Ubuntu 14.04, 16.04, Debian 8 (jessie)
+Install on Ubuntu 14.04, 16.04, 18.04, Debian 8 (jessie), Debian 9 (stretch), Debian 10 (buster)
 ---
 On Debian, use `su` to become root if `sudo` is not configured to give you access.
 
