@@ -83,7 +83,7 @@ class FileChangedWatcher(object):
 		changed         = now_mtime != self.last_mtime
 		self.last_mtime = now_mtime
 		if changed:
-			print("Imported %s" % self.fname)
+			print(f"Imported {self.fname}")
 		return changed
 
 
@@ -263,7 +263,7 @@ class GrabSitePlugin(WpullPlugin):
 		with open(self.watchers["concurrency"].fname, "r") as f:
 			concurrency = int(f.read().strip())
 			if concurrency < 1:
-				print("Warning: using 1 for concurrency instead of %r because it cannot be < 1" % (concurrency,))
+				print(f"Warning: using 1 for concurrency instead of {concurrency} because it cannot be < 1")
 				concurrency = 1
 			self.job_data["concurrency"] = concurrency
 		self.app_session.factory["PipelineSeries"].concurrency = concurrency
@@ -375,7 +375,7 @@ class GrabSitePlugin(WpullPlugin):
 		response_code_str = str(response_code)
 
 		if len(response_code_str) == 3 and response_code_str[0] in "12345":
-			self.job_data["r%sxx" % response_code_str[0]] += 1
+			self.job_data[f"r{response_code_str[0]}xx"] += 1
 		else:
 			self.job_data["runk"] += 1
 
@@ -393,14 +393,13 @@ class GrabSitePlugin(WpullPlugin):
 		return Actions.NORMAL
 
 	def maybe_log_ignore(self, url, pattern):
-		self.update_igoff()
 		if not self.job_data["suppress_ignore_reports"]:
-			self.print_to_terminal("IGNOR %s\n   by %s" % (url, pattern))
+			self.print_to_terminal(f"IGNOR {url}\n   by {pattern}")
 			self.put_ws_queue({
-				"type":          "ignore",
-				"self.job_data": self.job_data,
-				"url":           url,
-				"pattern":       pattern
+				"type":    "ignore",
+				"job_data": self.job_data,
+				"url":      url,
+				"pattern":  pattern
 			})
 
 	@event(PluginFunctions.queued_url)
@@ -435,13 +434,13 @@ class GrabSitePlugin(WpullPlugin):
 		url = url_info.raw
 
 		self.update_max_content_length()
-		if self.job_data["max_content_length"] != -1:
+		limit = self.job_data["max_content_length"]
+		if limit != -1:
 			length = get_content_length(response)
-			if length > self.job_data["max_content_length"]:
+			if length > limit:
 				self.skipped_max_content_length.write(url + "\n")
 				self.skipped_max_content_length.flush()
-				self.maybe_log_ignore(url, "[content-length %d over limit %d]" % (
-					length, self.job_data["max_content_length"]))
+				self.maybe_log_ignore(url, f"[content-length {length} over limit {limit}]")
 				return Actions.FINISH
 
 		self.update_video()
