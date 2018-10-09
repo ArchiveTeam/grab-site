@@ -121,7 +121,7 @@ On OS X 10.10 - macOS 10.13:
 
 	```
 	brew update
-	brew install python libxslt re2
+	brew install python libxslt re2 pkg-config
 	python3 -m venv ~/gs-venv
 	~/gs-venv/bin/pip install --process-dependency-links --no-binary --upgrade git+https://github.com/ludios/grab-site
 	```
