@@ -318,6 +318,7 @@ class GrabSitePlugin(WpullPlugin):
 		for ig in sorted(ignores):
 			self.print_to_terminal(f"\t{ig}")
 
+		self.compiled_ignores       = [(ig, re2.compile(ig)) for ig in ignores]
 		self.combined_ignore_regexp = compile_combined_regexp(ignores)
 
 	def ignore_pattern_to_regexp_strings(self, pattern):
@@ -325,6 +326,12 @@ class GrabSitePlugin(WpullPlugin):
 			return [pattern]
 
 		return [pattern.replace("{any_start_netloc}", re.escape(netloc)) for netloc in self.all_start_netlocs]
+
+	def get_specific_ignore_pattern(self, url):
+		for pattern, regexp in self.compiled_ignores:
+			if regexp.search(url):
+				# We can't use regexp.pattern because that quickly causes segfaults
+				return pattern
 
 	@hook(PluginFunctions.accept_url)
 	def accept_url(self, item_session: ItemSession, verdict: bool, reasons: dict):
@@ -343,9 +350,11 @@ class GrabSitePlugin(WpullPlugin):
 		if url in self.all_start_urls:
 			return True
 
-		pattern = self.should_ignore_url(url, record_info)
-		if pattern:
-			self.maybe_log_ignore(url, pattern)
+		should_ignore = self.should_ignore_url(url, record_info)
+		if should_ignore:
+			if not self.job_data["suppress_ignore_reports"]:
+				pattern = self.get_specific_ignore_pattern(url)
+				self.maybe_log_ignore(url, pattern)
 			return False
 
 		# If we get here, none of our ignores apply. Return the original verdict.

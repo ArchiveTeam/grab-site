@@ -237,6 +237,7 @@ Options can come before or after the URL.
 
 *	`--igon`: Print all URLs being ignored to the terminal and dashboard.  Can be
 	changed during the crawl by `touch`ing or `rm`ing the `DIR/igoff` file.
+	This is slower because it needs to find the specific regexp to blame.
 
 *	`--no-video`: Skip the download of videos by both mime type and file extension.
 	Skipped videos are logged to `DIR/skipped_videos`.  Can be
