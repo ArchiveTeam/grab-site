@@ -34,7 +34,7 @@ please [file an issue](https://github.com/ludios/grab-site/issues) - thank you!
 
 **Contents**
 
-- [Install on Ubuntu 14.04, 16.04, 18.04, Debian 8 (jessie), Debian 9 (stretch), Debian 10 (buster)](#install-on-ubuntu-1404-1604-1804-debian-8-jessie-debian-9-stretch-debian-10-buster)
+- [Install on Ubuntu 16.04, 18.04, Debian 9 (stretch), Debian 10 (buster)](#install-on-ubuntu-1604-1804-debian-9-stretch-debian-10-buster)
 - [Install on a non-Debian/Ubuntu distribution lacking Python 3.7.x](#install-on-a-non-debianubuntu-distribution-lacking-python-34x)
 - [Install on macOS](#install-on-macos)
 - [Install on Windows 10 (experimental)](#install-on-windows-10-experimental)
@@ -56,7 +56,7 @@ please [file an issue](https://github.com/ludios/grab-site/issues) - thank you!
 
 
 
-Install on Ubuntu 14.04, 16.04, 18.04, Debian 8 (jessie), Debian 9 (stretch), Debian 10 (buster)
+Install on Ubuntu 16.04, 18.04, Debian 9 (stretch), Debian 10 (buster)
 ---
 On Debian, use `su` to become root if `sudo` is not configured to give you access.
 
