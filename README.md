@@ -449,10 +449,17 @@ with `--wpull-args=--no-skip-getaddrinfo` to make wpull use `/etc/hosts`.
 
 #### twitter.com/user
 
-Use [webrecorder.io](https://webrecorder.io/) instead of grab-site.  Enter a
-URL, then hit the 'Auto Scroll' button at the top.  Wait until it's done and
-unpress the Auto Scroll button.  Click the 'N MB' icon at the top and download
-your WARC file.
+Use [snscrape](https://github.com/JustAnotherArchivist/snscrape) to get a list
+of tweets for a user.  Redirect `snscrape`'s output to a list of URLs with
+`> urls` and pass this file to `grab-site --1 -i urls`.
+
+Alternatively, use [webrecorder.io](https://webrecorder.io/) instead of grab-site.
+Enter a URL, then hit the 'Auto Scroll' button at the top.  Wait until it is done
+and unpress the Auto Scroll button.  Click the 'N MB' icon at the top and download
+your WARC file.  When using this method, keep in mind that `twitter.com/user` returns
+a maximum of 3200 tweets while a
+[from:user](https://twitter.com/search?q=from%3Ainternetarchive&src=typd&f=realtime&qf=off&lang=en)
+query can return more.
 
 
 
