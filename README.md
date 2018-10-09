@@ -62,7 +62,7 @@ On Debian, use `su` to become root if `sudo` is not configured to give you acces
 
 ```
 sudo apt-get update
-sudo apt-get install --no-install-recommends git build-essential pkg-config libssl-dev zlib1g-dev libbz2-dev libreadline-dev libsqlite3-dev libffi-dev libxml2-dev libxslt1-dev libre2-dev
+sudo apt-get install --no-install-recommends git build-essential libssl-dev zlib1g-dev libbz2-dev libreadline-dev libsqlite3-dev libffi-dev libxml2-dev libxslt1-dev libre2-dev pkg-config
 wget https://raw.githubusercontent.com/pyenv/pyenv-installer/master/bin/pyenv-installer
 chmod +x pyenv-installer
 ./pyenv-installer
