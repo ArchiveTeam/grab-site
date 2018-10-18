@@ -35,7 +35,8 @@ please [file an issue](https://github.com/ludios/grab-site/issues) - thank you!
 **Contents**
 
 - [Install on Ubuntu 16.04, 18.04, Debian 9 (stretch), Debian 10 (buster)](#install-on-ubuntu-1604-1804-debian-9-stretch-debian-10-buster)
-- [Install on a non-Debian/Ubuntu distribution lacking Python 3.7.x](#install-on-a-non-debianubuntu-distribution-lacking-python-37x)
+- [Install on NixOS 18.09](#install-on-nixos-1809)
+- [Install on another distribution lacking Python 3.7.x](#install-on-another-distribution-lacking-python-37x)
 - [Install on macOS](#install-on-macos)
 - [Install on Windows 10 (experimental)](#install-on-windows-10-experimental)
 - [Upgrade an existing install](#upgrade-an-existing-install)
@@ -79,7 +80,30 @@ PATH="$PATH:$HOME/gs-venv/bin"
 
 
 
-Install on a non-Debian/Ubuntu distribution lacking Python 3.7.x
+Install on NixOS 18.09
+---
+
+```
+nix-shell -p python37 libxml2 libxslt python37Packages.virtualenv pkgconfig re2
+
+# Python 3.7.0 has a bug in imp that breaks yapsy unless we turn off
+# hash-based pyc compilation: https://bugs.python.org/issue34056
+unset SOURCE_DATE_EPOCH
+python3.7 -m venv ~/gs-venv
+~/gs-venv/bin/pip install --process-dependency-links --no-binary --upgrade git+https://github.com/ludios/grab-site
+
+exit # exit nix-shell
+```
+
+Add this to your `~/.bashrc` or `~/.zshrc` and then restart your shell (e.g. by opening a new terminal tab/window):
+
+```
+PATH="$PATH:$HOME/gs-venv/bin"
+```
+
+
+
+Install on another distribution lacking Python 3.7.x
 ---
 1.	Install git, libxml2-dev, libxslt1-dev, libre2-dev, and pkg-config.
 
