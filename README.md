@@ -63,7 +63,13 @@ On Debian, use `su` to become root if `sudo` is not configured to give you acces
 
 ```
 sudo apt-get update
-sudo apt-get install --no-install-recommends git build-essential libssl-dev zlib1g-dev libbz2-dev libreadline-dev libsqlite3-dev libffi-dev libxml2-dev libxslt1-dev libre2-dev pkg-config
+sudo apt-get install --no-install-recommends git build-essential libssl-dev zlib1g-dev libbz2-dev \
+	libreadline-dev libsqlite3-dev libffi-dev libxml2-dev libxslt1-dev libre2-dev pkg-config
+```
+
+As a **non-root** user:
+
+```
 wget https://raw.githubusercontent.com/pyenv/pyenv-installer/master/bin/pyenv-installer
 chmod +x pyenv-installer
 ./pyenv-installer
@@ -71,6 +77,10 @@ chmod +x pyenv-installer
 ~/.pyenv/versions/3.7.0/bin/python -m venv ~/gs-venv
 ~/gs-venv/bin/pip install --process-dependency-links --no-binary --upgrade git+https://github.com/ludios/grab-site
 ```
+
+`--process-dependency-links` is necessary to get [ludios/wpull](https://github.com/ludios/wpull) instead of wpull from PyPI.
+
+`--no-binary` is necessary for the html5-parser build.
 
 Add this to your `~/.bashrc` or `~/.zshrc` and then restart your shell (e.g. by opening a new terminal tab/window):
 
@@ -82,6 +92,8 @@ PATH="$PATH:$HOME/gs-venv/bin"
 
 Install on NixOS 18.09
 ---
+
+As a **non-root** user:
 
 ```
 nix-shell -p python37 libxml2 libxslt python37Packages.virtualenv pkgconfig re2
@@ -107,11 +119,11 @@ Install on another distribution lacking Python 3.7.x
 ---
 1.	Install git, libxml2-dev, libxslt1-dev, libre2-dev, and pkg-config.
 
-2.	Install pyenv as described on https://github.com/yyuu/pyenv-installer#github-way-recommended
+2.	Install the packages needed to compile Python and its built-in sqlite3 module: https://github.com/yyuu/pyenv/wiki/Common-build-problems
 
-3.	Install the packages needed to compile Python and its built-in sqlite3 module: https://github.com/yyuu/pyenv/wiki/Common-build-problems
+3.	As a **non-root** user, install pyenv as described on https://github.com/yyuu/pyenv-installer#github-way-recommended
 
-4.	Run:
+4.	As a **non-root** user, run:
 
 	```
 	~/.pyenv/bin/pyenv install 3.7.0
