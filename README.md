@@ -74,8 +74,8 @@ As a **non-root** user:
 wget https://raw.githubusercontent.com/pyenv/pyenv-installer/master/bin/pyenv-installer
 chmod +x pyenv-installer
 ./pyenv-installer
-~/.pyenv/bin/pyenv install 3.7.0
-~/.pyenv/versions/3.7.0/bin/python -m venv ~/gs-venv
+~/.pyenv/bin/pyenv install 3.7.1
+~/.pyenv/versions/3.7.1/bin/python -m venv ~/gs-venv
 ~/gs-venv/bin/pip install --process-dependency-links --no-binary --upgrade git+https://github.com/ludios/grab-site
 ```
 
@@ -99,9 +99,6 @@ As a **non-root** user:
 ```
 nix-shell -p python37 libxml2 libxslt python37Packages.virtualenv pkgconfig re2
 
-# Python 3.7.0 has a bug in imp that breaks yapsy unless we turn off
-# hash-based pyc compilation: https://bugs.python.org/issue34056
-unset SOURCE_DATE_EPOCH
 python3.7 -m venv ~/gs-venv
 ~/gs-venv/bin/pip install --process-dependency-links --no-binary --upgrade git+https://github.com/ludios/grab-site
 
@@ -127,8 +124,8 @@ Install on another distribution lacking Python 3.7.x
 4.	As a **non-root** user, run:
 
 	```
-	~/.pyenv/bin/pyenv install 3.7.0
-	~/.pyenv/versions/3.7.0/bin/python -m venv ~/gs-venv
+	~/.pyenv/bin/pyenv install 3.7.1
+	~/.pyenv/versions/3.7.1/bin/python -m venv ~/gs-venv
 	~/gs-venv/bin/pip install --process-dependency-links --no-binary --upgrade git+https://github.com/ludios/grab-site
 	```
 
