@@ -1,0 +1,35 @@
+#!/usr/bin/env bash
+
+set -eu -o pipefail -o verbose
+
+server_log=$(mktemp)
+python -u -m http.server 0 > "$server_log" &
+port=
+# Try until server starts up
+while [[ "$port" = "" ]]; do
+	port=$(grep -P -o 'port \d+' "$server_log" | cut -d ' ' -f 2 || true)
+	sleep 0.1
+done
+server="http://127.0.0.1:$port/"
+
+trash=$(mktemp -d)
+cd "$trash"
+
+nodnspython=--wpull-args=--no-skip-getaddrinfo
+
+grab-site --1 "$server"
+grab-site $nodnspython --1 "$server"
+ls -l 127.0.0.1*
+gs-dump-urls 127.0.0.1*/wpull.db done
+grab-site $nodnspython --1 --permanent-error-status-codes=404 "$server"
+echo '.*' > ignores
+grab-site $nodnspython --import-ignores ignores "$server"
+grab-site $nodnspython --1 --id my-id --no-dupespotter --no-video --concurrent 3 "$server" "$server/another"
+# TODO: test -i with remote URL list
+echo "$server" > local-url-list
+grab-site $nodnspython --1 -i local-url-list
+grab-site $nodnspython --1 -i local-url-list --which-wpull-args-partial
+grab-site $nodnspython --1 -i local-url-list --which-wpull-command
+
+# kill http.server
+kill $!

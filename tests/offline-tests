@@ -1,0 +1,8 @@
+#!/usr/bin/env bash
+
+set -eu -o pipefail -o verbose
+
+grab-site --help
+grab-site --version
+gs-dump-urls --help
+python -c 'import libgrabsite.server'
