@@ -20,7 +20,9 @@ nodnspython=--wpull-args=--no-skip-getaddrinfo
 grab-site --1 "$server"
 grab-site $nodnspython --1 "$server"
 ls -l 127.0.0.1*
-gs-dump-urls 127.0.0.1*/wpull.db done
+for i in 127.0.0.1*/wpull.db; do
+	gs-dump-urls "$i" done
+done
 grab-site $nodnspython --1 --permanent-error-status-codes=404 "$server"
 echo '.*' > ignores
 grab-site $nodnspython --import-ignores ignores "$server"
