@@ -393,8 +393,11 @@ or by using https://archive.is/ instead of grab-site.
 
 #### Tumblr blogs
 
-Don't crawl from Europe: tumblr redirects to a GDPR `/privacy/consent` page and
-the `Googlebot` user agent override no longer has any effect.
+Either don't crawl from Europe (because tumblr redirects to a GDPR `/privacy/consent` page), or add `Googlebot` to the user agent:
+
+```
+--ua "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:64.0) Gecko/20100101 Firefox/64.0 but not really nor Googlebot/2.1"
+```
 
 Use [`--igsets=singletumblr`](https://github.com/ludios/grab-site/blob/master/libgrabsite/ignore_sets/singletumblr)
 to avoid crawling the homepages of other tumblr blogs.
