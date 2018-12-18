@@ -154,9 +154,9 @@ On OS X 10.10 - macOS 10.13:
 
 4. Add this to your `~/.bash_profile` (which may not exist yet) and then restart your shell (e.g. by opening a new terminal tab/window):
 
-```
-PATH="$PATH:$HOME/gs-venv/bin"
-```
+	```
+	PATH="$PATH:$HOME/gs-venv/bin"
+	```
 
 ### Using Nix
 
