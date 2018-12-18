@@ -35,7 +35,7 @@ please [file an issue](https://github.com/ludios/grab-site/issues) - thank you!
 **Contents**
 
 - [Install on Ubuntu 16.04, 18.04, Debian 9 (stretch), Debian 10 (buster)](#install-on-ubuntu-1604-1804-debian-9-stretch-debian-10-buster)
-- [Install on NixOS 18.09](#install-on-nixos-1809)
+- [Install on NixOS](#install-on-nixos)
 - [Install on another distribution lacking Python 3.7.x](#install-on-another-distribution-lacking-python-37x)
 - [Install on macOS](#install-on-macos)
 - [Install on Windows 10 (experimental)](#install-on-windows-10-experimental)
@@ -91,49 +91,39 @@ PATH="$PATH:$HOME/gs-venv/bin"
 
 
 
-Install on NixOS 18.09
+Install on NixOS
 ---
 
 As a **non-root** user:
 
 ```
-nix-shell -p python37 libxml2 libxslt python37Packages.virtualenv pkgconfig re2
-
-python3.7 -m venv ~/gs-venv
-~/gs-venv/bin/pip install --process-dependency-links --no-binary --upgrade git+https://github.com/ludios/grab-site
-
-exit # exit nix-shell
-```
-
-Add this to your `~/.bashrc` or `~/.zshrc` and then restart your shell (e.g. by opening a new terminal tab/window):
-
-```
-PATH="$PATH:$HOME/gs-venv/bin"
+nix-env -f https://github.com/NixOS/nixpkgs/archive/master.tar.gz -iA grab-site
 ```
 
 
 
 Install on another distribution lacking Python 3.7.x
 ---
-1.	Install git, libxml2-dev, libxslt1-dev, libre2-dev, and pkg-config.
+grab-site and its dependencies are available in [nixpkgs](https://github.com/NixOS/nixpkgs), which can be used on any Linux distribution.
 
-2.	Install the packages needed to compile Python and its built-in sqlite3 module: https://github.com/yyuu/pyenv/wiki/Common-build-problems
+1.	As root:
 
-3.	As a **non-root** user, install pyenv as described on https://github.com/yyuu/pyenv-installer#github-way-recommended
-
-4.	As a **non-root** user, run:
+	Where `USER` is your non-root username:
 
 	```
-	~/.pyenv/bin/pyenv install 3.7.1
-	~/.pyenv/versions/3.7.1/bin/python -m venv ~/gs-venv
-	~/gs-venv/bin/pip install --process-dependency-links --no-binary --upgrade git+https://github.com/ludios/grab-site
+	mkdir /nix
+	chown USER:USER /nix
 	```
 
-5. Add this to your `~/.bashrc` or `~/.zshrc` and then restart your shell (e.g. by opening a new terminal tab/window):
+2.	As the **non-root** user, install Nix: https://nixos.org/nix/download.html
 
-```
-PATH="$PATH:$HOME/gs-venv/bin"
-```
+3.	As the **non-root** user:
+
+	```
+	nix-env -f https://github.com/NixOS/nixpkgs/archive/master.tar.gz -iA grab-site
+	```
+
+And then restart your shell (e.g. by opening a new terminal tab/window).
 
 
 
