@@ -139,6 +139,8 @@ On OS X 10.10 - macOS 10.13:
 
 	-	iTerm2: Preferences... -> Profiles -> Terminal -> Environment -> **check** Set locale variables automatically
 
+### Using Homebrew
+
 2.	Install Homebrew using the install step on https://brew.sh/
 
 3.	Run:
@@ -155,6 +157,20 @@ On OS X 10.10 - macOS 10.13:
 ```
 PATH="$PATH:$HOME/gs-venv/bin"
 ```
+
+### Using Nix
+
+As an alternative to the Homebrew install, if you prefer Nix.
+
+2.	Install Nix: https://nixos.org/nix/download.html
+
+3.	Run:
+
+	```
+	nix-env -f https://github.com/NixOS/nixpkgs/archive/master.tar.gz -iA grab-site
+	```
+
+And then restart your shell (e.g. by opening a new terminal tab/window).
 
 
 
