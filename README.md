@@ -199,8 +199,8 @@ On Windows 10 Fall Creators Update (1703) or newer:
 Upgrade an existing install
 ---
 
-To update grab-site, simply run the `~/gs-venv/bin/pip install ...` command used to install
-it originally (see above).
+To update grab-site, simply run the `~/gs-venv/bin/pip install ...` or
+`nix-env ...` command used to install it originally (see above).
 
 After upgrading, stop `gs-server` with `kill` or ctrl-c, then start it again.
 Existing `grab-site` crawls will automatically reconnect to the new server.
