@@ -18,7 +18,7 @@ grab-site gives you
 	This allows you to skip the crawling of junk URLs that would
 	otherwise prevent your crawl from ever finishing.  See below.
 
-*	an extensively tested default ignore set ([global](https://github.com/ludios/grab-site/blob/master/libgrabsite/ignore_sets/global))
+*	an extensively tested default ignore set ([global](https://github.com/ArchiveTeam/grab-site/blob/master/libgrabsite/ignore_sets/global))
 	as well as additional (optional) ignore sets for forums, reddit, etc.
 
 *	duplicate page detection: links are not followed on pages whose
@@ -27,10 +27,10 @@ grab-site gives you
 The URL queue is kept on disk instead of in memory.  If you're really lucky,
 grab-site will manage to crawl a site with ~10M pages.
 
-![dashboard screenshot](https://raw.githubusercontent.com/ludios/grab-site/master/images/dashboard.png)
+![dashboard screenshot](https://raw.githubusercontent.com/ArchiveTeam/grab-site/master/images/dashboard.png)
 
 Note: if you have any problems whatsoever installing or getting grab-site to run,
-please [file an issue](https://github.com/ludios/grab-site/issues) - thank you!
+please [file an issue](https://github.com/ArchiveTeam/grab-site/issues) - thank you!
 
 **Contents**
 
@@ -76,7 +76,7 @@ chmod +x pyenv-installer
 ./pyenv-installer
 ~/.pyenv/bin/pyenv install 3.7.2
 ~/.pyenv/versions/3.7.2/bin/python -m venv ~/gs-venv
-~/gs-venv/bin/pip install --no-binary --upgrade git+https://github.com/ludios/grab-site
+~/gs-venv/bin/pip install --no-binary --upgrade git+https://github.com/ArchiveTeam/grab-site
 ```
 
 `--no-binary` is necessary for the html5-parser build.
@@ -147,7 +147,7 @@ On OS X 10.10 - macOS 10.13:
 	brew update
 	brew install python libxslt re2 pkg-config
 	python3 -m venv ~/gs-venv
-	~/gs-venv/bin/pip install --no-binary --upgrade git+https://github.com/ludios/grab-site
+	~/gs-venv/bin/pip install --no-binary --upgrade git+https://github.com/ArchiveTeam/grab-site
 	```
 
 4. Add this to your `~/.bash_profile` (which may not exist yet) and then restart your shell (e.g. by opening a new terminal tab/window):
@@ -252,9 +252,9 @@ Options can come before or after the URL.
 *	`--igsets=IGSET1,IGSET2`: use ignore sets `IGSET1` and `IGSET2`.
 
 	Ignore sets are used to avoid requesting junk URLs using a pre-made set of
-	regular expressions.  See [the full list of available ignore sets](https://github.com/ludios/grab-site/tree/master/libgrabsite/ignore_sets).
+	regular expressions.  See [the full list of available ignore sets](https://github.com/ArchiveTeam/grab-site/tree/master/libgrabsite/ignore_sets).
 
-	The [global](https://github.com/ludios/grab-site/blob/master/libgrabsite/ignore_sets/global)
+	The [global](https://github.com/ArchiveTeam/grab-site/blob/master/libgrabsite/ignore_sets/global)
 	ignore set is implied and always enabled.
 
 	The ignore sets can be changed during the crawl by editing the `DIR/igsets` file.
@@ -403,7 +403,7 @@ Either don't crawl from Europe (because tumblr redirects to a GDPR `/privacy/con
 --ua "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:64.0) Gecko/20100101 Firefox/64.0 but not really nor Googlebot/2.1"
 ```
 
-Use [`--igsets=singletumblr`](https://github.com/ludios/grab-site/blob/master/libgrabsite/ignore_sets/singletumblr)
+Use [`--igsets=singletumblr`](https://github.com/ArchiveTeam/grab-site/blob/master/libgrabsite/ignore_sets/singletumblr)
 to avoid crawling the homepages of other tumblr blogs.
 
 If you don't care about who liked or reblogged a post, add `\?from_c=` to the
@@ -415,7 +415,7 @@ hiding the page content with CSS.  You are still likely to get a complete crawl.
 
 #### Subreddits
 
-Use [`--igsets=reddit`](https://github.com/ludios/grab-site/blob/master/libgrabsite/ignore_sets/reddit)
+Use [`--igsets=reddit`](https://github.com/ArchiveTeam/grab-site/blob/master/libgrabsite/ignore_sets/reddit)
 and add a `/` at the end of the URL to avoid crawling all subreddits.
 
 When crawling a subreddit, you **must** get the casing of the subreddit right
@@ -448,18 +448,18 @@ Use `--concurrency=1 --delay=500-1500`.
 
 #### MediaWiki sites with English language
 
-Use [`--igsets=mediawiki`](https://github.com/ludios/grab-site/blob/master/libgrabsite/ignore_sets/mediawiki).
+Use [`--igsets=mediawiki`](https://github.com/ArchiveTeam/grab-site/blob/master/libgrabsite/ignore_sets/mediawiki).
 Note that this ignore set ignores old page revisions.
 
 #### MediaWiki sites with non-English language
 
 You will probably have to add ignores with translated `Special:*` URLs based on
-[ignore_sets/mediawiki](https://github.com/ludios/grab-site/blob/master/libgrabsite/ignore_sets/mediawiki).
+[ignore_sets/mediawiki](https://github.com/ArchiveTeam/grab-site/blob/master/libgrabsite/ignore_sets/mediawiki).
 
 #### Forums that aren't Discourse
 
 Forums require more manual intervention with ignore patterns.
-[`--igsets=forums`](https://github.com/ludios/grab-site/blob/master/libgrabsite/ignore_sets/forums)
+[`--igsets=forums`](https://github.com/ArchiveTeam/grab-site/blob/master/libgrabsite/ignore_sets/forums)
 is often useful for non-SMF forums, but you will have to add other ignore
 patterns, including one to ignore individual-forum-post pages if there are
 too many posts to crawl.  (Generally, crawling the thread pages is enough.)
@@ -613,7 +613,7 @@ Automatically pausing grab-site processes when free disk is low
 If you automatically upload and remove finished .warc.gz files, you can still
 run into a situation where grab-site processes fill up your disk faster than
 your uploader process can handle.  To prevent this situation, you can customize
-and run [this script](https://github.com/ludios/grab-site/blob/master/extra_docs/pause_resume_grab_sites.sh),
+and run [this script](https://github.com/ArchiveTeam/grab-site/blob/master/extra_docs/pause_resume_grab_sites.sh),
 which will pause and resume grab-site processes as your free disk space
 crosses a threshold value.
 
@@ -635,7 +635,7 @@ dashboard inspired the newer dashboard now used in both projects.
 
 Thanks to [Falcon Darkstar Momot](https://github.com/falconkirtaran) for
 the many wpull 2.x fixes that were rolled into
-[ludios/wpull](https://github.com/ludios/wpull).
+[ArchiveTeam/wpull](https://github.com/ArchiveTeam/wpull).
 
 Thanks to [JustAnotherArchivist](https://github.com/JustAnotherArchivist)
 for investigating my wpull issues.
@@ -645,7 +645,7 @@ for investigating my wpull issues.
 Help
 ---
 grab-site bugs and questions are welcome in
-[grab-site/issues](https://github.com/ludios/grab-site/issues).
+[grab-site/issues](https://github.com/ArchiveTeam/grab-site/issues).
 
 Terminal output in your bug report should be surrounded by triple backquotes, like this:
 
@@ -660,5 +660,5 @@ output
 Please report security bugs as regular bugs.
 
 
-[travis-image]: https://img.shields.io/travis/ludios/grab-site.svg
-[travis-url]: https://travis-ci.org/ludios/grab-site
+[travis-image]: https://img.shields.io/travis/ArchiveTeam/grab-site.svg
+[travis-url]: https://travis-ci.org/ArchiveTeam/grab-site

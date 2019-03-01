@@ -30,7 +30,7 @@ def replace_2arg(args, arg, replacement):
 def patch_dns_inet_is_multicast():
 	"""
 	Patch dnspython's dns.inet.is_multicast to not raise ValueError:
-	https://github.com/ludios/grab-site/issues/111
+	https://github.com/ArchiveTeam/grab-site/issues/111
 	"""
 	import dns.inet
 	is_multicast_dnspython = dns.inet.is_multicast
@@ -174,7 +174,7 @@ which_wpull_args_partial, which_wpull_command):
 	"""
 	Runs a crawl on one or more URLs.  For additional help, see
 
-	https://github.com/ludios/grab-site/blob/master/README.md#usage
+	https://github.com/ArchiveTeam/grab-site/blob/master/README.md#usage
 	"""
 	if not (input_file or start_url):
 		print("Neither a START_URL or --input-file= was specified; see --help", file=sys.stderr)
