@@ -147,7 +147,7 @@ On OS X 10.10 - macOS 10.13:
 	brew update
 	brew install python libxslt re2 pkg-config
 	python3 -m venv ~/gs-venv
-	~/gs-venv/bin/pip install --no-binary --upgrade git+https://github.com/ArchiveTeam/grab-site
+	PKG_CONFIG_PATH="/usr/local/opt/libxml2/lib/pkgconfig" ~/gs-venv/bin/pip install --no-binary --upgrade git+https://github.com/ArchiveTeam/grab-site
 	```
 
 4. Add this to your `~/.bash_profile` (which may not exist yet) and then restart your shell (e.g. by opening a new terminal tab/window):
