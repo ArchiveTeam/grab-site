@@ -74,8 +74,8 @@ As a **non-root** user:
 wget https://raw.githubusercontent.com/pyenv/pyenv-installer/master/bin/pyenv-installer
 chmod +x pyenv-installer
 ./pyenv-installer
-~/.pyenv/bin/pyenv install 3.7.2
-~/.pyenv/versions/3.7.2/bin/python -m venv ~/gs-venv
+~/.pyenv/bin/pyenv install 3.7.3
+~/.pyenv/versions/3.7.3/bin/python -m venv ~/gs-venv
 ~/gs-venv/bin/pip install --no-binary --upgrade git+https://github.com/ArchiveTeam/grab-site
 ```
 
