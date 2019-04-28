@@ -5,6 +5,9 @@
 # Skip the quarantine gate on some subreddits
 .reddit.com	TRUE	/	FALSE	2147483647	_options	%7B%22pref_quarantine_optin%22%3A%20true%7D
 
+# Skip the age gate on saidit
+.saidit.net	TRUE	/	FALSE	2147483647	over18	1
+
 # Skip the age gate on many games (birthtime 0 = 1970)
 store.steampowered.com	FALSE	/	FALSE	2147483647	mature_content	1
 store.steampowered.com	FALSE	/	FALSE	2147483647	birthtime	0
