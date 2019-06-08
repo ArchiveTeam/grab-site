@@ -354,7 +354,8 @@ class GrabSitePlugin(WpullPlugin):
 
 		# Don't apply ignores to any of the start URLs
 		if url in self.all_start_urls:
-			return True
+			# Return original verdict instead of True to avoid infinite retries
+			return verdict
 
 		should_ignore = self.should_ignore_url(url, record_info)
 		if should_ignore:
