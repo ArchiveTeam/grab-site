@@ -127,6 +127,8 @@ And then restart your shell (e.g. by opening a new terminal tab/window).
 
 Install on macOS
 ---
+Please note macOS is currently affected by [issue #157](https://github.com/ArchiveTeam/grab-site/issues/157), help with a fix would be appreciated.
+
 On OS X 10.10 - macOS 10.13:
 
 1.	Run `locale` in your terminal.  If the output includes "UTF-8", you
