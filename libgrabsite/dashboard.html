@@ -1561,7 +1561,9 @@ Dashboard.prototype.handleData = function(data) {
 };
 
 Dashboard.prototype.connectWebSocket = function() {
-	this.ws = new WebSocket("ws://" + this.host + "/stream");
+	// Use wss:// if we're behind a reverse proxy serving with https://
+	var protocol = window.location.protocol == "https:" ? "wss:" : "ws:";
+	this.ws = new WebSocket(protocol + "//" + this.host + "/stream");
 
 	this.ws.onmessage = function(ev) {
 		this.queue.push(ev["data"]);
