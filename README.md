@@ -76,10 +76,10 @@ chmod +x pyenv-installer
 ./pyenv-installer
 ~/.pyenv/bin/pyenv install 3.7.3
 ~/.pyenv/versions/3.7.3/bin/python -m venv ~/gs-venv
-~/gs-venv/bin/pip install --no-binary --upgrade git+https://github.com/ArchiveTeam/grab-site
+~/gs-venv/bin/pip install --no-binary lxml --upgrade git+https://github.com/ArchiveTeam/grab-site
 ```
 
-`--no-binary` is necessary for the html5-parser build.
+`--no-binary lxml` is necessary for the html5-parser build.
 
 Add this to your `~/.bashrc` or `~/.zshrc` and then restart your shell (e.g. by opening a new terminal tab/window):
 
@@ -149,7 +149,7 @@ On OS X 10.10 - macOS 10.13:
 	brew update
 	brew install python libxslt re2 pkg-config
 	python3 -m venv ~/gs-venv
-	PKG_CONFIG_PATH="/usr/local/opt/libxml2/lib/pkgconfig" ~/gs-venv/bin/pip install --no-binary --upgrade git+https://github.com/ArchiveTeam/grab-site
+	PKG_CONFIG_PATH="/usr/local/opt/libxml2/lib/pkgconfig" ~/gs-venv/bin/pip install --no-binary lxml --upgrade git+https://github.com/ArchiveTeam/grab-site
 	```
 
 4. Add this to your `~/.bash_profile` (which may not exist yet) and then restart your shell (e.g. by opening a new terminal tab/window):

@@ -10,7 +10,7 @@ before_install:
 
 install:
   - travis_retry pip install --upgrade pip setuptools
-  - travis_retry pip install --no-binary --upgrade .
+  - travis_retry pip install --no-binary lxml --upgrade .
 
 script:
   - ./tests/offline-tests
