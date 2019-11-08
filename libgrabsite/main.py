@@ -142,7 +142,9 @@ def patch_dns_inet_is_multicast():
 	'characters of the id).')
 
 @click.option('--finished-warc-dir', default=None, type=str, metavar='FINISHED_WARC_DIR',
-	help='Move finished .warc.gz and .cdx files to this directory.')
+	help=
+		'Absolute path to a directory into which finished .warc.gz and .cdx '
+		'files will be moved.')
 
 @click.option('--permanent-error-status-codes', default='401,403,404,405,410', type=str,
 	metavar='STATUS_CODES',

@@ -322,7 +322,8 @@ Options can come before or after the URL.
 *	`--dir=DIR`: Put control files, temporary files, and unfinished WARCs in `DIR`
 	(default: a directory name based on the URL, date, and first 8 characters of the id).
 
-*	`--finished-warc-dir=FINISHED_WARC_DIR`: Move finished `.warc.gz` and `.cdx` files to this directory.
+*	`--finished-warc-dir=FINISHED_WARC_DIR`: absolute path to a directory into
+	which finished `.warc.gz` and `.cdx` files will be moved.
 
 *	`--permanent-error-status-codes=STATUS_CODES`: A comma-separated list of
 	HTTP status codes to treat as a permanent error and therefore **not** retry
