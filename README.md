@@ -68,6 +68,8 @@ sudo apt-get install --no-install-recommends \
     libsqlite3-dev libffi-dev libxml2-dev libxslt1-dev libre2-dev pkg-config
 ```
 
+If you see `Unable to locate package`, run the two commands again.
+
 As a **non-root** user:
 
 ```
