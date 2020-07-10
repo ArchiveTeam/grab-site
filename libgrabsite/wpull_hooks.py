@@ -25,15 +25,20 @@ working_dir = os.environ["GRAB_SITE_WORKING_DIR"]
 def cf(fname):
 	return os.path.join(working_dir, fname)
 
-def re2_compile(regexp):
+def re_compile(regexp):
 	# Validate with re first, because re2 may be more prone to segfaulting on
 	# bad regexps, and because re returns useful errors.
 	re.compile(regexp)
-	return re2.compile(regexp)
+	try:
+		return re2.compile(regexp)
+	except re.error:
+		# Regular expressions with lookaround expressions cannot be compiled with
+		# re2, so on error try compiling with re.
+		return re.compile(regexp)
 
 def compile_combined_regexp(patterns):
 	regexp = "|".join(map(lambda pattern: f"({pattern})", patterns))
-	return re2_compile(regexp)
+	return re_compile(regexp)
 
 def include_ignore_line(line):
 	return line and not line.startswith("#")
@@ -324,7 +329,7 @@ class GrabSitePlugin(WpullPlugin):
 		for ig in sorted(ignores):
 			self.print_to_terminal(f"\t{ig}")
 
-		self.compiled_ignores       = [(ig, re2_compile(ig)) for ig in ignores]
+		self.compiled_ignores       = [(ig, re_compile(ig)) for ig in ignores]
 		self.combined_ignore_regexp = compile_combined_regexp(ignores)
 
 	def ignore_pattern_to_regexp_strings(self, pattern):
