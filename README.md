@@ -577,22 +577,7 @@ These environmental variables control which server each `grab-site` process conn
 
 Viewing the content in your WARC archives
 ---
-You can use [ikreymer/webarchiveplayer](https://github.com/ikreymer/webarchiveplayer)
-to view the content inside your WARC archives.  It requires Python 2, so install it with
-`pip` instead of `pip3`:
-
-```
-sudo apt-get install --no-install-recommends git build-essential python-dev python-pip
-pip install --user git+https://github.com/ikreymer/webarchiveplayer
-```
-
-And use it with:
-
-```
-~/.local/bin/webarchiveplayer <path to WARC>
-```
-
-then point your browser to http://127.0.0.1:8090/
+Try [ReplayWeb.page](https://replayweb.page/) or [webrecorder-player](https://github.com/webrecorder/webrecorder-player).
 
 
 
