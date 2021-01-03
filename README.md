@@ -59,6 +59,7 @@ please [file an issue](https://github.com/ArchiveTeam/grab-site/issues) - thank 
 
 Install on Ubuntu 16.04, 18.04, Debian 9 (stretch), Debian 10 (buster)
 ---
+
 On Debian, use `su` to become root if `sudo` is not configured to give you access.
 
 ```
@@ -104,6 +105,7 @@ nix-env -f https://github.com/NixOS/nixpkgs/archive/master.tar.gz -iA grab-site
 
 Install on another distribution lacking Python 3.7.x
 ---
+
 grab-site and its dependencies are available in [nixpkgs](https://github.com/NixOS/nixpkgs), which can be used on any Linux distribution.
 
 1.	As root:
@@ -129,7 +131,6 @@ And then restart your shell (e.g. by opening a new terminal tab/window).
 
 Install on macOS
 ---
-Please note macOS is currently affected by [issue #157](https://github.com/ArchiveTeam/grab-site/issues/157), help with a fix would be appreciated.
 
 On OS X 10.10 - macOS 10.13:
 
@@ -194,6 +195,7 @@ As an alternative to the Homebrew install, if you prefer Nix.
 
 Install on Windows 10 (experimental)
 ---
+
 On Windows 10 Fall Creators Update (1703) or newer:
 
 1. Start menu -> search "feature" -> Turn Windows features on or off
@@ -227,6 +229,7 @@ Existing `grab-site` crawls will automatically reconnect to the new server.
 
 Usage
 ---
+
 First, start the dashboard with:
 
 ```
@@ -593,6 +596,7 @@ These environmental variables control which server each `grab-site` process conn
 
 Viewing the content in your WARC archives
 ---
+
 Try [ReplayWeb.page](https://replayweb.page/) or [webrecorder-player](https://github.com/webrecorder/webrecorder-player).
 
 
@@ -627,6 +631,7 @@ crosses a threshold value.
 
 Thanks
 ---
+
 grab-site is made possible only because of [wpull](https://github.com/chfoo/wpull),
 written by [Christopher Foo](https://github.com/chfoo) who spent a year
 making something much better than wget.  ArchiveTeam's most pressing
