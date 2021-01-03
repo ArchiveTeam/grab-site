@@ -132,7 +132,7 @@ And then restart your shell (e.g. by opening a new terminal tab/window).
 Install on macOS
 ---
 
-On OS X 10.10 - macOS 10.13:
+On OS X 10.10 - macOS 11:
 
 1.	Run `locale` in your terminal.  If the output includes "UTF-8", you
 	are all set.  If it does not, your terminal is misconfigured and grab-site
