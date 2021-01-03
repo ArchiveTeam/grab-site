@@ -149,8 +149,8 @@ On OS X 10.10 - macOS 10.13:
 
 	```
 	brew update
-	brew install python libxslt re2 pkg-config
-	python3 -m venv ~/gs-venv
+	brew install python@3.7 libxslt re2 pkg-config
+	/usr/local/opt/python@3.7/bin/python3 -m venv ~/gs-venv
 	PKG_CONFIG_PATH="/usr/local/opt/libxml2/lib/pkgconfig" ~/gs-venv/bin/pip install --no-binary lxml --upgrade git+https://github.com/ArchiveTeam/grab-site
 	```
 
@@ -166,13 +166,27 @@ As an alternative to the Homebrew install, if you prefer Nix.
 
 2.	Install Nix: https://nixos.org/nix/download.html
 
-3.	Run:
+	On macOS 10.15 or 11+, you will instead need:
+
+	```
+	sh <(curl -L https://nixos.org/nix/install) --darwin-use-unencrypted-nix-store-volume
+	```
+
+	To put `nix-env` in your PATH, add this to your `~/.zshrc` (macOS 10.15, 11+) or `~/.bash_profile` (earlier):
+
+	```
+	. ~/.nix-profile/etc/profile.d/nix.sh
+	```
+
+	and then restart your shell (e.g. by opening a new terminal tab/window)
+
+3.	`nix-env` is now available to install grab-site. Run:
 
 	```
 	nix-env -f https://github.com/NixOS/nixpkgs/archive/master.tar.gz -iA grab-site
 	```
 
-And then restart your shell (e.g. by opening a new terminal tab/window).
+	and then restart your shell.
 
 
 
