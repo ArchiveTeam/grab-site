@@ -154,11 +154,13 @@ On OS X 10.10 - macOS 10.13:
 	PKG_CONFIG_PATH="/usr/local/opt/libxml2/lib/pkgconfig" ~/gs-venv/bin/pip install --no-binary lxml --upgrade git+https://github.com/ArchiveTeam/grab-site
 	```
 
-4. Add this to your `~/.bash_profile` (which may not exist yet) and then restart your shell (e.g. by opening a new terminal tab/window):
+4.	To put the `grab-site` binaries in your PATH, add this to your `~/.zshrc` (macOS 10.15, 11+) or `~/.bash_profile` (earlier):
 
 	```
 	PATH="$PATH:$HOME/gs-venv/bin"
 	```
+
+	and then restart your shell (e.g. by opening a new terminal tab/window)
 
 ### Using Nix
 
