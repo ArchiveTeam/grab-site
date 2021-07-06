@@ -354,6 +354,8 @@ Options can come before or after the URL.
 	see `wpull --help`.  `ARGS` is split with `shlex.split` and individual
 	arguments can contain spaces if quoted, e.g.
 	`--wpull-args="--youtube-dl \"--youtube-dl-exe=/My Documents/youtube-dl\""`
+	
+	Example: don't want WARC compression? You can try `--wpull-args=--no-warc-compression`.
 
 	Also useful: `--wpull-args=--no-skip-getaddrinfo` to respect `/etc/hosts` entries.
 
