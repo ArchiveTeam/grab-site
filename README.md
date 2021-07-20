@@ -59,6 +59,7 @@ please [file an issue](https://github.com/ArchiveTeam/grab-site/issues) - thank 
 
 Install on Ubuntu 16.04, 18.04, Debian 9 (stretch), Debian 10 (buster)
 ---
+
 On Debian, use `su` to become root if `sudo` is not configured to give you access.
 
 ```
@@ -68,18 +69,20 @@ sudo apt-get install --no-install-recommends \
     libsqlite3-dev libffi-dev libxml2-dev libxslt1-dev libre2-dev pkg-config
 ```
 
+If you see `Unable to locate package`, run the two commands again.
+
 As a **non-root** user:
 
 ```
 wget https://raw.githubusercontent.com/pyenv/pyenv-installer/master/bin/pyenv-installer
 chmod +x pyenv-installer
 ./pyenv-installer
-~/.pyenv/bin/pyenv install 3.7.2
-~/.pyenv/versions/3.7.2/bin/python -m venv ~/gs-venv
-~/gs-venv/bin/pip install --no-binary --upgrade git+https://github.com/ArchiveTeam/grab-site
+~/.pyenv/bin/pyenv install 3.7.10
+~/.pyenv/versions/3.7.10/bin/python -m venv ~/gs-venv
+~/gs-venv/bin/pip install --no-binary lxml --upgrade git+https://github.com/ArchiveTeam/grab-site
 ```
 
-`--no-binary` is necessary for the html5-parser build.
+`--no-binary lxml` is necessary for the html5-parser build.
 
 Add this to your `~/.bashrc` or `~/.zshrc` and then restart your shell (e.g. by opening a new terminal tab/window):
 
@@ -102,6 +105,7 @@ nix-env -f https://github.com/NixOS/nixpkgs/archive/master.tar.gz -iA grab-site
 
 Install on another distribution lacking Python 3.7.x
 ---
+
 grab-site and its dependencies are available in [nixpkgs](https://github.com/NixOS/nixpkgs), which can be used on any Linux distribution.
 
 1.	As root:
@@ -127,7 +131,8 @@ And then restart your shell (e.g. by opening a new terminal tab/window).
 
 Install on macOS
 ---
-On OS X 10.10 - macOS 10.13:
+
+On OS X 10.10 - macOS 11:
 
 1.	Run `locale` in your terminal.  If the output includes "UTF-8", you
 	are all set.  If it does not, your terminal is misconfigured and grab-site
@@ -145,16 +150,18 @@ On OS X 10.10 - macOS 10.13:
 
 	```
 	brew update
-	brew install python libxslt re2 pkg-config
-	python3 -m venv ~/gs-venv
-	~/gs-venv/bin/pip install --no-binary --upgrade git+https://github.com/ArchiveTeam/grab-site
+	brew install python@3.7 libxslt re2 pkg-config
+	/usr/local/opt/python@3.7/bin/python3 -m venv ~/gs-venv
+	PKG_CONFIG_PATH="/usr/local/opt/libxml2/lib/pkgconfig" ~/gs-venv/bin/pip install --no-binary lxml --upgrade git+https://github.com/ArchiveTeam/grab-site
 	```
 
-4. Add this to your `~/.bash_profile` (which may not exist yet) and then restart your shell (e.g. by opening a new terminal tab/window):
+4.	To put the `grab-site` binaries in your PATH, add this to your `~/.zshrc` (macOS 10.15, 11+) or `~/.bash_profile` (earlier):
 
 	```
 	PATH="$PATH:$HOME/gs-venv/bin"
 	```
+
+	and then restart your shell (e.g. by opening a new terminal tab/window)
 
 ### Using Nix
 
@@ -162,18 +169,33 @@ As an alternative to the Homebrew install, if you prefer Nix.
 
 2.	Install Nix: https://nixos.org/nix/download.html
 
-3.	Run:
+	On macOS 10.15 or 11+, you will instead need:
+
+	```
+	sh <(curl -L https://nixos.org/nix/install) --darwin-use-unencrypted-nix-store-volume
+	```
+
+	To put `nix-env` in your PATH, add this to your `~/.zshrc` (macOS 10.15, 11+) or `~/.bash_profile` (earlier):
+
+	```
+	. ~/.nix-profile/etc/profile.d/nix.sh
+	```
+
+	and then restart your shell (e.g. by opening a new terminal tab/window)
+
+3.	`nix-env` is now available to install grab-site. Run:
 
 	```
 	nix-env -f https://github.com/NixOS/nixpkgs/archive/master.tar.gz -iA grab-site
 	```
 
-And then restart your shell (e.g. by opening a new terminal tab/window).
+	and then restart your shell.
 
 
 
 Install on Windows 10 (experimental)
 ---
+
 On Windows 10 Fall Creators Update (1703) or newer:
 
 1. Start menu -> search "feature" -> Turn Windows features on or off
@@ -207,6 +229,7 @@ Existing `grab-site` crawls will automatically reconnect to the new server.
 
 Usage
 ---
+
 First, start the dashboard with:
 
 ```
@@ -318,7 +341,8 @@ Options can come before or after the URL.
 *	`--dir=DIR`: Put control files, temporary files, and unfinished WARCs in `DIR`
 	(default: a directory name based on the URL, date, and first 8 characters of the id).
 
-*	`--finished-warc-dir=FINISHED_WARC_DIR`: Move finished `.warc.gz` and `.cdx` files to this directory.
+*	`--finished-warc-dir=FINISHED_WARC_DIR`: absolute path to a directory into
+	which finished `.warc.gz` and `.cdx` files will be moved.
 
 *	`--permanent-error-status-codes=STATUS_CODES`: A comma-separated list of
 	HTTP status codes to treat as a permanent error and therefore **not** retry
@@ -400,7 +424,7 @@ or by using https://archive.is/ instead of grab-site.
 Either don't crawl from Europe (because tumblr redirects to a GDPR `/privacy/consent` page), or add `Googlebot` to the user agent:
 
 ```
---ua "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:64.0) Gecko/20100101 Firefox/64.0 but not really nor Googlebot/2.1"
+--ua "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:64.0) Gecko/20100101 Firefox/70.0 but not really nor Googlebot/2.1"
 ```
 
 Use [`--igsets=singletumblr`](https://github.com/ArchiveTeam/grab-site/blob/master/libgrabsite/ignore_sets/singletumblr)
@@ -572,22 +596,8 @@ These environmental variables control which server each `grab-site` process conn
 
 Viewing the content in your WARC archives
 ---
-You can use [ikreymer/webarchiveplayer](https://github.com/ikreymer/webarchiveplayer)
-to view the content inside your WARC archives.  It requires Python 2, so install it with
-`pip` instead of `pip3`:
 
-```
-sudo apt-get install --no-install-recommends git build-essential python-dev python-pip
-pip install --user git+https://github.com/ikreymer/webarchiveplayer
-```
-
-And use it with:
-
-```
-~/.local/bin/webarchiveplayer <path to WARC>
-```
-
-then point your browser to http://127.0.0.1:8090/
+Try [ReplayWeb.page](https://replayweb.page/) or [webrecorder-player](https://github.com/webrecorder/webrecorder-player).
 
 
 
@@ -621,6 +631,7 @@ crosses a threshold value.
 
 Thanks
 ---
+
 grab-site is made possible only because of [wpull](https://github.com/chfoo/wpull),
 written by [Christopher Foo](https://github.com/chfoo) who spent a year
 making something much better than wget.  ArchiveTeam's most pressing

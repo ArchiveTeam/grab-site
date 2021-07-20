@@ -109,7 +109,7 @@ def patch_dns_inet_is_multicast():
 		'Try to limit each WARC file to around BYTES bytes before rolling over '
 		'to a new WARC file (default: 5368709120, which is 5GiB).')
 
-@click.option('--ua', default="Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:64.0) Gecko/20100101 Firefox/64.0",
+@click.option('--ua', default="Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:77.0) Gecko/20100101 Firefox/77.0",
 	metavar='STRING', help='Send User-Agent: STRING instead of pretending to be Firefox on Windows.')
 
 @click.option('--wpull-args', default="",
@@ -142,7 +142,9 @@ def patch_dns_inet_is_multicast():
 	'characters of the id).')
 
 @click.option('--finished-warc-dir', default=None, type=str, metavar='FINISHED_WARC_DIR',
-	help='Move finished .warc.gz and .cdx files to this directory.')
+	help=
+		'Absolute path to a directory into which finished .warc.gz and .cdx '
+		'files will be moved.')
 
 @click.option('--permanent-error-status-codes', default='401,403,404,405,410', type=str,
 	metavar='STATUS_CODES',
