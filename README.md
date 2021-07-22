@@ -420,6 +420,12 @@ You can exit by using CTRL-p + CTRL+q, as documented further [here](https://docs
 
 ##### Access container
 
+To enter a container with a running process (either gs-server or grab-site):
+
+```
+docker exec -it grab-server sh
+```
+
 #### Run grab-site on Docker
 
 The following commands will download example.com to a local directory, "data". This will vary slightly in the example usage, so please review your paths before executing any scripts!
@@ -483,7 +489,6 @@ Resume it using [docker unpause](https://docs.docker.com/engine/reference/comman
 ```
 docker unpause ead9034470ed
 ```
-
 
 ### Warnings
 
