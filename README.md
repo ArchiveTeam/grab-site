@@ -398,15 +398,37 @@ Run a container named "grab-server" to host the dashboard and for grab-site inst
 docker run --name=grab-server -d -p 29000:29000 --restart=unless-stopped grab-site:latest
 ```
 
+The server will be running with the port forwarded (the -p parameter) from the container port 29000 -> host port 29000. You can access it via http://localhost:29000
+
+##### View logs
+
+To tail the gs-server instance:
+
+```
+docker logs -f grab-server
+```
+
+##### Attach to process
+
+You can attach local STDIN/STDOUT/STDERR to your running gs-server instance:
+
+```
+docker attach grab-server
+```
+
+You can exit by using CTRL-p + CTRL+q, as documented further [here](https://docs.docker.com/engine/reference/commandline/attach/).
+
+##### Access container
+
 #### Run grab-site on Docker
 
-The following commands will download example.com to a local directory, "data"
+The following commands will download example.com to a local directory, "data". This will vary slightly in the example usage, so please review your paths before executing any scripts!
 
 ##### Linux host
 
 From any common shell:
 ```
-docker run --rm -d -e GRAB_SITE_HOST=grab-server -v /data:/data:rw / grab-site:latest ./grab-site https://www.example.com/ --dir=/data/run
+docker run --rm -d -e GRAB_SITE_HOST=grab-server -v ./data:/data:rw / grab-site:latest ./grab-site https://www.example.com/ --dir=/data/run
 ```
 
 ##### Windows host
@@ -417,6 +439,51 @@ docker run --rm -d -e GRAB_SITE_HOST=grab-server -v C:\projects\grab-site\data:/
 ```
 
 Note: Windows file shares can be done several ways, this is using the legacy Windows full path volume sharing which can be "slower" if you are using WSL2.
+
+##### grab-site processes
+
+When you run a docker run with the -d flag you will get returned to you the unique ID of the container. You can use this to follow the logs.
+
+If you'd like to name your container, please specify a --name to the grab-site container you are trying to run. If you do not specify it, it will give it a funny name which you can find from here:
+
+Show all containers:
+
+```
+docker ps -a
+```
+
+##### View logs
+
+You can then use the container ID or the name here:
+
+```
+docker logs -f ead9034470ed
+```
+
+##### Attach to process
+
+You can attach local STDIN/STDOUT/STDERR to your running gs-server instance:
+
+```
+docker attach ead9034470ed
+```
+
+You can exit by using CTRL-p + CTRL+q, as documented further [here](https://docs.docker.com/engine/reference/commandline/attach/).
+
+##### Pause a crawl
+
+You can pause a crawl by using [docker pause](https://docs.docker.com/engine/reference/commandline/pause/):
+
+```
+docker pause ead9034470ed
+```
+
+Resume it using [docker unpause](https://docs.docker.com/engine/reference/commandline/unpause/):
+
+```
+docker unpause ead9034470ed
+```
+
 
 ### Warnings
 
