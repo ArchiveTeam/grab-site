@@ -42,6 +42,7 @@ please [file an issue](https://github.com/ArchiveTeam/grab-site/issues) - thank 
 - [Upgrade an existing install](#upgrade-an-existing-install)
 - [Usage](#usage)
   - [`grab-site` options, ordered by importance](#grab-site-options-ordered-by-importance)
+  - [Docker](#docker)
   - [Warnings](#warnings)
   - [Tips for specific websites](#tips-for-specific-websites)
 - [Changing ignores during the crawl](#changing-ignores-during-the-crawl)
@@ -368,6 +369,54 @@ Options can come before or after the URL.
 *	`--debug`: print a lot of debug information.
 
 *	`--help`: print help text.
+
+### Docker
+
+grab-site and gs-server can be called from Docker! Please see: [Get Docker](https://docs.docker.com/get-docker/) for more information
+
+#### Docker Build
+
+To build the application, including all dependencies, run:
+
+```
+docker build grab-site:latest .
+```
+
+##### Simple container access
+
+You can use the system's shell to inspect files and run the programs:
+
+```
+docker run --rm -it --entrypoint sh grab-site:latest
+```
+
+#### Run gs-server on Docker
+
+Run a container named "grab-server" to host the dashboard and for grab-site instances to connect to:
+
+```
+docker run --name=grab-server -d -p 29000:29000 --restart=unless-stopped grab-site:latest
+```
+
+#### Run grab-site on Docker
+
+The following commands will download example.com to a local directory, "data"
+
+##### Linux host
+
+From any common shell:
+```
+docker run --rm -d -e GRAB_SITE_HOST=grab-server -v /data:/data:rw / grab-site:latest ./grab-site https://www.example.com/ --dir=/data/run
+```
+
+##### Windows host
+
+From a PowerShell window:
+```
+docker run --rm -d -e GRAB_SITE_HOST=grab-server -v C:\projects\grab-site\data:/data:rw grab-site:latest ./grab-site https://www.example.com/ --dir=/data/run
+```
+
+Note: Windows file shares can be done several ways, this is using the legacy Windows full path volume sharing which can be "slower" if you are using WSL2.
 
 ### Warnings
 
