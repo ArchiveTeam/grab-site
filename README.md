@@ -392,20 +392,20 @@ docker run --rm -it --entrypoint sh grab-site:latest
 
 #### Run gs-server on Docker
 
-Run a container named "grab-server" to host the dashboard and for grab-site instances to connect to:
+Run a container named "gs-server" to host the dashboard and for grab-site instances to connect to:
 
 ```
-docker run --name=grab-server -d -p 29000:29000 --restart=unless-stopped grab-site:latest
+docker run --name=gs-server -d -p 29000:29000 --restart=unless-stopped grab-site:latest
 ```
 
-The server will be running with the port forwarded (the -p parameter) from the container port 29000 -> host port 29000. You can access it via http://localhost:29000
+The server will be running with the port forwarded (the -p parameter) from the host port 29000 -> container port 29000. You can access it via [http://localhost:29000](http://localhost:29000)
 
 ##### View logs
 
 To tail the gs-server instance:
 
 ```
-docker logs -f grab-server
+docker logs -f gs-server
 ```
 
 ##### Attach to process
@@ -413,7 +413,7 @@ docker logs -f grab-server
 You can attach local STDIN/STDOUT/STDERR to your running gs-server instance:
 
 ```
-docker attach grab-server
+docker attach gs-server
 ```
 
 You can exit by using CTRL-p + CTRL+q, as documented further [here](https://docs.docker.com/engine/reference/commandline/attach/).
@@ -423,7 +423,7 @@ You can exit by using CTRL-p + CTRL+q, as documented further [here](https://docs
 To enter a container with a running process (either gs-server or grab-site):
 
 ```
-docker exec -it grab-server sh
+docker exec -it gs-server sh
 ```
 
 #### Run grab-site on Docker
@@ -434,14 +434,14 @@ The following commands will download example.com to a local directory, "data". T
 
 From any common shell:
 ```
-docker run --rm -d -e GRAB_SITE_HOST=grab-server -v ./data:/data:rw / grab-site:latest ./grab-site https://www.example.com/ --dir=/data/run
+docker run --rm -d -e GRAB_SITE_HOST=gs-server -v ./data:/data:rw / grab-site:latest ./grab-site https://www.example.com/ --dir=/data/run
 ```
 
 ##### Windows host
 
 From a PowerShell window:
 ```
-docker run --rm -d -e GRAB_SITE_HOST=grab-server -v C:\projects\grab-site\data:/data:rw grab-site:latest ./grab-site https://www.example.com/ --dir=/data/run
+docker run --rm -d -e GRAB_SITE_HOST=gs-server -v C:\projects\grab-site\data:/data:rw grab-site:latest ./grab-site https://www.example.com/ --dir=/data/run
 ```
 
 Note: Windows file shares can be done several ways, this is using the legacy Windows full path volume sharing which can be "slower" if you are using WSL2.

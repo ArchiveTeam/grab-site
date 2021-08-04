@@ -42,8 +42,8 @@ COPY --chown=grab-site:grab-site . .
 RUN pip install . \
 	&& chmod +x entrypoint.sh
 
-# docker build grab-site:latest .
+# docker build -t grab-site:latest .
 # docker run --rm -it --entrypoint sh grab-site:latest
-# docker run --name=grab-server -d -p 29000:29000 --restart=unless-stopped grab-site:latest
-# docker run --rm -d -e GRAB_SITE_HOST=grab-server -v /data:/data:rw / grab-site:latest ./grab-site https://www.example.com/ --dir=/data/run
-# docker run --rm -d -e GRAB_SITE_HOST=grab-server -v C:\projects\grab-site\data:/data:rw grab-site:latest ./grab-site https://www.example.com/ --dir=/data/run
+# docker run --name=gs-server -d -p 29000:29000 --restart=unless-stopped grab-site:latest
+# docker run --rm -d -e GRAB_SITE_HOST=gs-server -v /data:/data:rw / grab-site:latest ./grab-site https://www.example.com/ --dir=/data/run
+# docker run --rm -d -e GRAB_SITE_HOST=gs-server -v C:\projects\grab-site\data:/data:rw grab-site:latest ./grab-site https://www.example.com/ --dir=/data/run
