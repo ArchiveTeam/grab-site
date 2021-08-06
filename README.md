@@ -379,7 +379,7 @@ grab-site and gs-server can be called from Docker! Please see: [Get Docker](http
 To build the application, including all dependencies, run:
 
 ```
-docker build grab-site:latest .
+docker build -t grab-site:latest .
 ```
 
 ##### Simple container access
