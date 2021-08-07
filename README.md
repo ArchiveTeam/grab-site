@@ -374,6 +374,23 @@ Options can come before or after the URL.
 
 grab-site and gs-server can be called from Docker! Please see: [Get Docker](https://docs.docker.com/get-docker/) for more information
 
+#### Quick Start
+
+```
+# Build application & environment
+docker build -t grab-site:latest .
+
+# Create a network for inter-node communication and name resolution on linux hosts
+docker network create -d bridge grab-network
+
+# Start gs-server dashboard
+docker run --net=grab-network --name=gs-server -d -p 29000:29000 --restart=unless-stopped grab-site:latest
+
+# Create a grab-site instance that crawls a website and stores it in ./data/example.com
+# Ensure that ./data exists and container has write privileges on volume
+docker run --net=grab-network --rm -d -e GRAB_SITE_HOST=gs-server -v ./data:/data:rw grab-site:latest grab-site https://www.example.com/ --delay=100-250 --concurrency=4 --no-offsite-links
+```
+
 #### Docker Build
 
 To build the application, including all dependencies, run:
@@ -390,12 +407,24 @@ You can use the system's shell to inspect files and run the programs:
 docker run --rm -it --entrypoint sh grab-site:latest
 ```
 
+#### Docker Network
+
+grab-site and gs-server communicate to eachother on a network that is isolated from any other container outside of a grab-site related container.
+
+The following will create a docker network called "grab-network" for our gs-server and grab-site instances to talk to (and find eachother) on.
+
+```
+docker network create -d bridge grab-network
+```
+
+We will use this "grab-network" later in `docker run` commands with the `--net="grab-network"` flag.
+
 #### Run gs-server on Docker
 
 Run a container named "gs-server" to host the dashboard and for grab-site instances to connect to:
 
 ```
-docker run --name=gs-server -d -p 29000:29000 --restart=unless-stopped grab-site:latest
+docker run --net=grab-network --name=gs-server -d -p 29000:29000 --restart=unless-stopped grab-site:latest
 ```
 
 The server will be running with the port forwarded (the -p parameter) from the host port 29000 -> container port 29000. You can access it via [http://localhost:29000](http://localhost:29000)
@@ -434,14 +463,14 @@ The following commands will download example.com to a local directory, "data". T
 
 From any common shell:
 ```
-docker run --rm -d -e GRAB_SITE_HOST=gs-server -v ./data:/data:rw / grab-site:latest ./grab-site https://www.example.com/ --dir=/data/run
+docker run --net=grab-network --rm -d -e GRAB_SITE_HOST=gs-server -v ./data:/data:rw / grab-site:latest grab-site https://www.example.com/
 ```
 
 ##### Windows host
 
 From a PowerShell window:
 ```
-docker run --rm -d -e GRAB_SITE_HOST=gs-server -v C:\projects\grab-site\data:/data:rw grab-site:latest ./grab-site https://www.example.com/ --dir=/data/run
+docker run --net=grab-network --rm -d -e GRAB_SITE_HOST=gs-server -v C:\projects\grab-site\data:/data:rw grab-site:latest grab-site https://www.example.com/
 ```
 
 Note: Windows file shares can be done several ways, this is using the legacy Windows full path volume sharing which can be "slower" if you are using WSL2.

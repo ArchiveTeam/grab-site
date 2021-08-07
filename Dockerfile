@@ -31,8 +31,9 @@ RUN apk add --no-cache \
 	&& chown -R grab-site:grab-site /data
 
 USER grab-site:grab-site
-ENTRYPOINT [ "/app/entrypoint.sh" ]
-CMD [ "./gs-server" ]
+ENV PATH="/app:$PATH"
+ENTRYPOINT [ "entrypoint.sh" ]
+CMD [ "gs-server" ]
 
 # TODO: resolve dependencies before loading library code to take advantage of build caching
 # 	setup.py requires libgrabsite/__init__.py (__version__ property) to work
@@ -42,8 +43,11 @@ COPY --chown=grab-site:grab-site . .
 RUN pip install . \
 	&& chmod +x entrypoint.sh
 
+WORKDIR /data
+
 # docker build -t grab-site:latest .
 # docker run --rm -it --entrypoint sh grab-site:latest
-# docker run --name=gs-server -d -p 29000:29000 --restart=unless-stopped grab-site:latest
-# docker run --rm -d -e GRAB_SITE_HOST=gs-server -v /data:/data:rw / grab-site:latest ./grab-site https://www.example.com/ --dir=/data/run
-# docker run --rm -d -e GRAB_SITE_HOST=gs-server -v C:\projects\grab-site\data:/data:rw grab-site:latest ./grab-site https://www.example.com/ --dir=/data/run
+# docker network create -d bridge grab-network
+# docker run --net=grab-network --name=gs-server -d -p 29000:29000 --restart=unless-stopped grab-site:latest
+# docker run --net=grab-network --rm -d -e GRAB_SITE_HOST=gs-server -v ./data:/data:rw grab-site:latest grab-site https://www.example.com/
+# docker run --net=grab-network --rm -d -e GRAB_SITE_HOST=gs-server -v C:\projects\grab-site\data:/data:rw grab-site:latest grab-site https://www.example.com/
