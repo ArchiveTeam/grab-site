@@ -34,7 +34,7 @@ please [file an issue](https://github.com/ArchiveTeam/grab-site/issues) - thank 
 
 **Contents**
 
-- [Install on Ubuntu 16.04, 18.04, Debian 9 (stretch), Debian 10 (buster)](#install-on-ubuntu-1604-1804-debian-9-stretch-debian-10-buster)
+- [Install on Ubuntu 16.04, 18.04, 20.04, Debian 9 (stretch), Debian 10 (buster)](#install-on-ubuntu-1604-1804-2004-debian-9-stretch-debian-10-buster)
 - [Install on NixOS](#install-on-nixos)
 - [Install on another distribution lacking Python 3.7.x](#install-on-another-distribution-lacking-python-37x)
 - [Install on macOS](#install-on-macos)
@@ -57,7 +57,7 @@ please [file an issue](https://github.com/ArchiveTeam/grab-site/issues) - thank 
 
 
 
-Install on Ubuntu 16.04, 18.04, Debian 9 (stretch), Debian 10 (buster)
+Install on Ubuntu 16.04, 18.04, 20.04, Debian 9 (stretch), Debian 10 (buster)
 ---
 
 On Debian, use `su` to become root if `sudo` is not configured to give you access.
@@ -212,7 +212,7 @@ On Windows 10 Fall Creators Update (1703) or newer:
 
 7. Wait for install and create a user when prompted.
 
-8. Follow the [Ubuntu 16.04, 18.04, Debian 9 (stretch), Debian 10 (buster)](#install-on-ubuntu-1604-1804-debian-9-stretch-debian-10-buster) steps.
+8. Follow the [Ubuntu 16.04, 18.04, 20.04, Debian 9 (stretch), Debian 10 (buster)](#install-on-ubuntu-1604-1804-2004-debian-9-stretch-debian-10-buster) steps.
 
 
 
