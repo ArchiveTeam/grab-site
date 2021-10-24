@@ -34,7 +34,7 @@ please [file an issue](https://github.com/ArchiveTeam/grab-site/issues) - thank 
 
 **Contents**
 
-- [Install on Ubuntu 16.04, 18.04, Debian 9 (stretch), Debian 10 (buster)](#install-on-ubuntu-1604-1804-debian-9-stretch-debian-10-buster)
+- [Install on Ubuntu 16.04, 18.04, 20.04, Debian 9 (stretch), Debian 10 (buster)](#install-on-ubuntu-1604-1804-2004-debian-9-stretch-debian-10-buster)
 - [Install on NixOS](#install-on-nixos)
 - [Install on another distribution lacking Python 3.7.x](#install-on-another-distribution-lacking-python-37x)
 - [Install on macOS](#install-on-macos)
@@ -57,7 +57,7 @@ please [file an issue](https://github.com/ArchiveTeam/grab-site/issues) - thank 
 
 
 
-Install on Ubuntu 16.04, 18.04, Debian 9 (stretch), Debian 10 (buster)
+Install on Ubuntu 16.04, 18.04, 20.04, Debian 9 (stretch), Debian 10 (buster)
 ---
 
 On Debian, use `su` to become root if `sudo` is not configured to give you access.
@@ -77,8 +77,8 @@ As a **non-root** user:
 wget https://raw.githubusercontent.com/pyenv/pyenv-installer/master/bin/pyenv-installer
 chmod +x pyenv-installer
 ./pyenv-installer
-~/.pyenv/bin/pyenv install 3.7.10
-~/.pyenv/versions/3.7.10/bin/python -m venv ~/gs-venv
+~/.pyenv/bin/pyenv install 3.7.11
+~/.pyenv/versions/3.7.11/bin/python -m venv ~/gs-venv
 ~/gs-venv/bin/pip install --no-binary lxml --upgrade git+https://github.com/ArchiveTeam/grab-site
 ```
 
@@ -98,7 +98,7 @@ Install on NixOS
 As a **non-root** user:
 
 ```
-nix-env -f https://github.com/NixOS/nixpkgs/archive/master.tar.gz -iA grab-site
+nix-env -f https://github.com/NixOS/nixpkgs/archive/release-21.05.tar.gz -iA grab-site
 ```
 
 
@@ -122,7 +122,7 @@ grab-site and its dependencies are available in [nixpkgs](https://github.com/Nix
 3.	As the **non-root** user:
 
 	```
-	nix-env -f https://github.com/NixOS/nixpkgs/archive/master.tar.gz -iA grab-site
+	nix-env -f https://github.com/NixOS/nixpkgs/archive/release-21.05.tar.gz -iA grab-site
 	```
 
 And then restart your shell (e.g. by opening a new terminal tab/window).
@@ -186,7 +186,7 @@ As an alternative to the Homebrew install, if you prefer Nix.
 3.	`nix-env` is now available to install grab-site. Run:
 
 	```
-	nix-env -f https://github.com/NixOS/nixpkgs/archive/master.tar.gz -iA grab-site
+	nix-env -f https://github.com/NixOS/nixpkgs/archive/release-21.05.tar.gz -iA grab-site
 	```
 
 	and then restart your shell.
@@ -212,7 +212,7 @@ On Windows 10 Fall Creators Update (1703) or newer:
 
 7. Wait for install and create a user when prompted.
 
-8. Follow the [Ubuntu 16.04, 18.04, Debian 9 (stretch), Debian 10 (buster)](#install-on-ubuntu-1604-1804-debian-9-stretch-debian-10-buster) steps.
+8. Follow the [Ubuntu 16.04, 18.04, 20.04, Debian 9 (stretch), Debian 10 (buster)](#install-on-ubuntu-1604-1804-2004-debian-9-stretch-debian-10-buster) steps.
 
 
 
