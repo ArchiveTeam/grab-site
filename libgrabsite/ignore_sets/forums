@@ -25,3 +25,4 @@
 /\?view=getlastpost$
 /index\.php\?sharelink=
 /ucp\.php\?mode=delete_cookies
+/index.php\?action=(verificationcode|printpage|reporttm|emailuser|quickmod2)
