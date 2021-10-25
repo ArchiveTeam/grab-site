@@ -355,7 +355,10 @@ Options can come before or after the URL.
 	arguments can contain spaces if quoted, e.g.
 	`--wpull-args="--youtube-dl \"--youtube-dl-exe=/My Documents/youtube-dl\""`
 
-	Also useful: `--wpull-args=--no-skip-getaddrinfo` to respect `/etc/hosts` entries.
+	Examples:
+
+	*	`--wpull-args=--no-skip-getaddrinfo` to respect `/etc/hosts` entries.
+	*	`--wpull-args=--no-warc-compression` to write uncompressed WARC files.
 
 *	`--which-wpull-args-partial`: Print a partial list of wpull arguments that
 	would be used and exit.  Excludes grab-site-specific features, and removes
