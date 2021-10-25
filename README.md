@@ -65,7 +65,7 @@ On Debian, use `su` to become root if `sudo` is not configured to give you acces
 ```
 sudo apt-get update
 sudo apt-get install --no-install-recommends \
-    git build-essential libssl-dev zlib1g-dev libbz2-dev libreadline-dev \
+    git build-essential libssl-dev zlib1g-dev libbz2-dev libreadline-dev python3.7-dev \
     libsqlite3-dev libffi-dev libxml2-dev libxslt1-dev libre2-dev pkg-config
 ```
 
