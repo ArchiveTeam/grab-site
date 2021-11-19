@@ -112,7 +112,7 @@ def patch_dns_inet_is_multicast():
 @click.option('--ua', default="Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:77.0) Gecko/20100101 Firefox/77.0",
 	metavar='STRING', help='Send User-Agent: STRING instead of pretending to be Firefox on Windows.')
 
-@click.option('--wpull-args', default="",
+@click.option('--wpull-args', multiple=True, default=[],
 	metavar='ARGS', help=
 		r'String containing additional arguments to pass to wpull; '
 		r'see ~/.local/bin/wpull --help.  ARGS is split with shlex.split '
@@ -267,7 +267,7 @@ which_wpull_args_partial, which_wpull_command):
 		args += ["--recursive"]
 
 	if wpull_args:
-		args += shlex.split(wpull_args)
+		args += wpull_args
 
 	DIR_input_file = os.path.join(working_dir, "input_file")
 	if start_url:
