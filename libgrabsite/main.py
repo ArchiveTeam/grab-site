@@ -267,7 +267,8 @@ which_wpull_args_partial, which_wpull_command):
 		args += ["--recursive"]
 
 	if wpull_args:
-		args += wpull_args
+		for called_argument in wpull_args:
+			args += shlex.split(called_argument)
 
 	DIR_input_file = os.path.join(working_dir, "input_file")
 	if start_url:
