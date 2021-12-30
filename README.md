@@ -60,7 +60,7 @@ please [file an issue](https://github.com/ArchiveTeam/grab-site/issues) - thank 
 Install on Ubuntu 16.04, 18.04, 20.04, Debian 9 (stretch), Debian 10 (buster)
 ---
 
-On Debian, use `su` to become root if `sudo` is not configured to give you access.
+1.	On Debian, use `su` to become root if `sudo` is not configured to give you access.
 
 ```
 sudo apt-get update
@@ -71,7 +71,7 @@ sudo apt-get install --no-install-recommends \
 
 If you see `Unable to locate package`, run the two commands again.
 
-As a **non-root** user:
+2.	As a **non-root** user:
 
 ```
 wget https://raw.githubusercontent.com/pyenv/pyenv-installer/master/bin/pyenv-installer
@@ -84,7 +84,7 @@ chmod +x pyenv-installer
 
 `--no-binary lxml` is necessary for the html5-parser build.
 
-Add this to your `~/.bashrc` or `~/.zshrc` and then restart your shell (e.g. by opening a new terminal tab/window):
+3.	Add this to your `~/.bashrc` or `~/.zshrc` and then restart your shell (e.g. by opening a new terminal tab/window):
 
 ```
 PATH="$PATH:$HOME/gs-venv/bin"
