@@ -99,7 +99,7 @@ Install on NixOS
 As a **non-root** user:
 
 ```
-nix-env -f https://github.com/NixOS/nixpkgs/archive/release-21.05.tar.gz -iA grab-site
+nix-env -f https://github.com/NixOS/nixpkgs/archive/release-21.11.tar.gz -iA grab-site
 ```
 
 
@@ -123,7 +123,7 @@ grab-site and its dependencies are available in [nixpkgs](https://github.com/Nix
 3.	As the **non-root** user:
 
 	```
-	nix-env -f https://github.com/NixOS/nixpkgs/archive/release-21.05.tar.gz -iA grab-site
+	nix-env -f https://github.com/NixOS/nixpkgs/archive/release-21.11.tar.gz -iA grab-site
 	```
 
 	and then restart your shell (e.g. by opening a new terminal tab/window).
@@ -187,7 +187,7 @@ As an alternative to the Homebrew install, if you prefer Nix.
 3.	`nix-env` is now available to install grab-site. Run:
 
 	```
-	nix-env -f https://github.com/NixOS/nixpkgs/archive/release-21.05.tar.gz -iA grab-site
+	nix-env -f https://github.com/NixOS/nixpkgs/archive/release-21.11.tar.gz -iA grab-site
 	```
 
 	and then restart your shell.
