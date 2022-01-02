@@ -34,9 +34,9 @@ please [file an issue](https://github.com/ArchiveTeam/grab-site/issues) - thank 
 
 **Contents**
 
-- [Install on Ubuntu 16.04, 18.04, 20.04, Debian 9 (stretch), Debian 10 (buster)](#install-on-ubuntu-1604-1804-2004-debian-9-stretch-debian-10-buster)
+- [Install on Ubuntu 16.04, 18.04, 20.04, Debian 9 (stretch), Debian 10 (buster), Debian 11 (bullseye)](#install-on-ubuntu-1604-1804-2004-debian-9-stretch-debian-10-buster-debian-11-bullseye)
 - [Install on NixOS](#install-on-nixos)
-- [Install on another distribution lacking Python 3.7.x](#install-on-another-distribution-lacking-python-37x)
+- [Install on another distribution lacking Python 3.7.x or 3.8.x](#install-on-another-distribution-lacking-python-37x-or-38x)
 - [Install on macOS](#install-on-macos)
 - [Install on Windows 10 (experimental)](#install-on-windows-10-experimental)
 - [Upgrade an existing install](#upgrade-an-existing-install)
@@ -57,7 +57,7 @@ please [file an issue](https://github.com/ArchiveTeam/grab-site/issues) - thank 
 
 
 
-Install on Ubuntu 16.04, 18.04, 20.04, Debian 9 (stretch), Debian 10 (buster)
+Install on Ubuntu 16.04, 18.04, 20.04, Debian 9 (stretch), Debian 10 (buster), Debian 11 (bullseye)
 ---
 
 1.	On Debian, use `su` to become root if `sudo` is not configured to give you access.
@@ -77,8 +77,8 @@ Install on Ubuntu 16.04, 18.04, 20.04, Debian 9 (stretch), Debian 10 (buster)
 	wget https://raw.githubusercontent.com/pyenv/pyenv-installer/master/bin/pyenv-installer
 	chmod +x pyenv-installer
 	./pyenv-installer
-	~/.pyenv/bin/pyenv install 3.7.11
-	~/.pyenv/versions/3.7.11/bin/python -m venv ~/gs-venv
+	~/.pyenv/bin/pyenv install 3.8.12
+	~/.pyenv/versions/3.8.12/bin/python -m venv ~/gs-venv
 	~/gs-venv/bin/pip install --no-binary lxml --upgrade git+https://github.com/ArchiveTeam/grab-site
 	```
 
@@ -104,7 +104,7 @@ nix-env -f https://github.com/NixOS/nixpkgs/archive/release-21.05.tar.gz -iA gra
 
 
 
-Install on another distribution lacking Python 3.7.x
+Install on another distribution lacking Python 3.7.x or 3.8.x
 ---
 
 grab-site and its dependencies are available in [nixpkgs](https://github.com/NixOS/nixpkgs), which can be used on any Linux distribution.
