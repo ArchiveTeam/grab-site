@@ -84,12 +84,13 @@ Install on Ubuntu 16.04, 18.04, 20.04, Debian 9 (stretch), Debian 10 (buster)
 
 	`--no-binary lxml` is necessary for the html5-parser build.
 
-3.	Add this to your `~/.bashrc` or `~/.zshrc` and then restart your shell (e.g. by opening a new terminal tab/window):
+3.	Add this to your `~/.bashrc` or `~/.zshrc`:
 
 	```
 	PATH="$PATH:$HOME/gs-venv/bin"
 	```
 
+4.  Restart your shell (e.g. by opening a new terminal tab/window.)
 
 
 Install on NixOS
