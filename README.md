@@ -90,7 +90,7 @@ Install on Ubuntu 16.04, 18.04, 20.04, Debian 9 (stretch), Debian 10 (buster)
 	PATH="$PATH:$HOME/gs-venv/bin"
 	```
 
-4.  Restart your shell (e.g. by opening a new terminal tab/window.)
+	and then restart your shell (e.g. by opening a new terminal tab/window).
 
 
 Install on NixOS
@@ -126,7 +126,7 @@ grab-site and its dependencies are available in [nixpkgs](https://github.com/Nix
 	nix-env -f https://github.com/NixOS/nixpkgs/archive/release-21.05.tar.gz -iA grab-site
 	```
 
-And then restart your shell (e.g. by opening a new terminal tab/window).
+	and then restart your shell (e.g. by opening a new terminal tab/window).
 
 
 
@@ -162,7 +162,7 @@ On OS X 10.10 - macOS 11:
 	PATH="$PATH:$HOME/gs-venv/bin"
 	```
 
-	and then restart your shell (e.g. by opening a new terminal tab/window)
+	and then restart your shell (e.g. by opening a new terminal tab/window).
 
 ### Using Nix
 
@@ -182,7 +182,7 @@ As an alternative to the Homebrew install, if you prefer Nix.
 	. ~/.nix-profile/etc/profile.d/nix.sh
 	```
 
-	and then restart your shell (e.g. by opening a new terminal tab/window)
+	and then restart your shell (e.g. by opening a new terminal tab/window).
 
 3.	`nix-env` is now available to install grab-site. Run:
 
