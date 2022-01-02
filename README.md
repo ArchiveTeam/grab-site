@@ -65,8 +65,8 @@ Install on Ubuntu 16.04, 18.04, 20.04, Debian 9 (stretch), Debian 10 (buster)
 	```
 	sudo apt-get update
 	sudo apt-get install --no-install-recommends \
-    	git build-essential libssl-dev zlib1g-dev libbz2-dev libreadline-dev \
-    	libsqlite3-dev libffi-dev libxml2-dev libxslt1-dev libre2-dev pkg-config
+	    git build-essential libssl-dev zlib1g-dev libbz2-dev libreadline-dev \
+	    libsqlite3-dev libffi-dev libxml2-dev libxslt1-dev libre2-dev pkg-config
 	```
 
 	If you see `Unable to locate package`, run the two commands again.
