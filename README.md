@@ -62,33 +62,33 @@ Install on Ubuntu 16.04, 18.04, 20.04, Debian 9 (stretch), Debian 10 (buster)
 
 1.	On Debian, use `su` to become root if `sudo` is not configured to give you access.
 
-```
-sudo apt-get update
-sudo apt-get install --no-install-recommends \
-    git build-essential libssl-dev zlib1g-dev libbz2-dev libreadline-dev \
-    libsqlite3-dev libffi-dev libxml2-dev libxslt1-dev libre2-dev pkg-config
-```
+	```
+	sudo apt-get update
+	sudo apt-get install --no-install-recommends \
+    	git build-essential libssl-dev zlib1g-dev libbz2-dev libreadline-dev \
+    	libsqlite3-dev libffi-dev libxml2-dev libxslt1-dev libre2-dev pkg-config
+	```
 
-If you see `Unable to locate package`, run the two commands again.
+	If you see `Unable to locate package`, run the two commands again.
 
 2.	As a **non-root** user:
 
-```
-wget https://raw.githubusercontent.com/pyenv/pyenv-installer/master/bin/pyenv-installer
-chmod +x pyenv-installer
-./pyenv-installer
-~/.pyenv/bin/pyenv install 3.7.11
-~/.pyenv/versions/3.7.11/bin/python -m venv ~/gs-venv
-~/gs-venv/bin/pip install --no-binary lxml --upgrade git+https://github.com/ArchiveTeam/grab-site
-```
+	```
+	wget https://raw.githubusercontent.com/pyenv/pyenv-installer/master/bin/pyenv-installer
+	chmod +x pyenv-installer
+	./pyenv-installer
+	~/.pyenv/bin/pyenv install 3.7.11
+	~/.pyenv/versions/3.7.11/bin/python -m venv ~/gs-venv
+	~/gs-venv/bin/pip install --no-binary lxml --upgrade git+https://github.com/ArchiveTeam/grab-site
+	```
 
-`--no-binary lxml` is necessary for the html5-parser build.
+	`--no-binary lxml` is necessary for the html5-parser build.
 
 3.	Add this to your `~/.bashrc` or `~/.zshrc` and then restart your shell (e.g. by opening a new terminal tab/window):
 
-```
-PATH="$PATH:$HOME/gs-venv/bin"
-```
+	```
+	PATH="$PATH:$HOME/gs-venv/bin"
+	```
 
 
 
