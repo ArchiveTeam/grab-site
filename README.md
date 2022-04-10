@@ -193,12 +193,10 @@ For M1 Macs, use the next section instead of this one.
 
 As an alternative to the Homebrew install, if you prefer Nix.
 
-2.	Install Nix: https://nixos.org/nix/download.html
-
-	On macOS 10.15 or 11+, you will instead need:
+2.	Install Nix: https://nixos.org/download.html#nix-install-macos
 
 	```
-	sh <(curl -L https://nixos.org/nix/install) --darwin-use-unencrypted-nix-store-volume
+	sh <(curl -L https://nixos.org/nix/install)
 	```
 
 	To put `nix-env` in your PATH, add this to your `~/.zshrc` (macOS 10.15, 11+) or `~/.bash_profile` (earlier):
