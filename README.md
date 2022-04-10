@@ -189,26 +189,6 @@ For M1 Macs, use the next section instead of this one.
 
 	and then restart your shell (e.g. by opening a new terminal tab/window).
 
-### Using Nix
-
-As an alternative to the Homebrew install, if you prefer Nix.
-
-2.	Install Nix: https://nixos.org/download.html#nix-install-macos
-
-	```
-	sh <(curl -L https://nixos.org/nix/install)
-	```
-
-	and then restart your shell (e.g. by opening a new terminal tab/window).
-
-3.	`nix-env` is now available to install grab-site. Run:
-
-	```
-	nix-env -f https://github.com/NixOS/nixpkgs/archive/release-21.11.tar.gz -iA grab-site
-	```
-
-	and then restart your shell.
-
 
 
 Install on Windows 10 (experimental)
