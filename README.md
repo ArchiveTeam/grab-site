@@ -199,12 +199,6 @@ As an alternative to the Homebrew install, if you prefer Nix.
 	sh <(curl -L https://nixos.org/nix/install)
 	```
 
-	To put `nix-env` in your PATH, add this to your `~/.zshrc` (macOS 10.15, 11+) or `~/.bash_profile` (earlier):
-
-	```
-	. ~/.nix-profile/etc/profile.d/nix.sh
-	```
-
 	and then restart your shell (e.g. by opening a new terminal tab/window).
 
 3.	`nix-env` is now available to install grab-site. Run:
