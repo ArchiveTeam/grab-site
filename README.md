@@ -143,7 +143,9 @@ On OS X 10.10 - macOS 11:
 
 	-	iTerm2: Preferences... -> Profiles -> Terminal -> Environment -> **check** Set locale variables automatically
 
-### Using Homebrew
+### Using Homebrew (**Intel Mac**)
+
+For M1 Macs, use the next section instead of this one.
 
 2.	Install Homebrew using the install step on https://brew.sh/
 
@@ -151,9 +153,32 @@ On OS X 10.10 - macOS 11:
 
 	```
 	brew update
-	brew install python@3.7 libxslt re2 pkg-config
-	/usr/local/opt/python@3.7/bin/python3 -m venv ~/gs-venv
+	brew install python@3.8 libxslt re2 pkg-config
+	/usr/local/opt/python@3.8/bin/python3 -m venv ~/gs-venv
 	PKG_CONFIG_PATH="/usr/local/opt/libxml2/lib/pkgconfig" ~/gs-venv/bin/pip install --no-binary lxml --upgrade git+https://github.com/ArchiveTeam/grab-site
+	```
+
+4.	To put the `grab-site` binaries in your PATH, add this to your `~/.zshrc` (macOS 10.15, 11+) or `~/.bash_profile` (earlier):
+
+	```
+	PATH="$PATH:$HOME/gs-venv/bin"
+	```
+
+	and then restart your shell (e.g. by opening a new terminal tab/window).
+
+### Using Homebrew (**M1 Mac**)
+
+2.	Install Homebrew using the install step on https://brew.sh/
+
+	If you already have a Homebrew install at `/usr/local`, you may need to first remove that old Intel-based Homebrew install.
+
+3.	Run:
+
+	```
+	brew update
+	brew install python@3.8 libxslt re2 pkg-config
+	/opt/homebrew/opt/python@3.8/bin/python3 -m venv ~/gs-venv
+	PKG_CONFIG_PATH="/opt/homebrew/opt/libxml2/lib/pkgconfig" ~/gs-venv/bin/pip install --no-binary lxml --upgrade git+https://github.com/ArchiveTeam/grab-site
 	```
 
 4.	To put the `grab-site` binaries in your PATH, add this to your `~/.zshrc` (macOS 10.15, 11+) or `~/.bash_profile` (earlier):
