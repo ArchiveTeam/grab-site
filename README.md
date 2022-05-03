@@ -32,6 +32,11 @@ grab-site will manage to crawl a site with ~10M pages.
 Note: if you have any problems whatsoever installing or getting grab-site to run,
 please [file an issue](https://github.com/ArchiveTeam/grab-site/issues) - thank you!
 
+The installation methods below are the only ones supported in our GitHub issues.
+Please do not modify the installation steps unless you really know what you're
+doing, with both Python packaging and your operating system. grab-site runs
+on a specific version of Python (3.7 or 3.8) and with specific dependency versions.
+
 **Contents**
 
 - [Install on Ubuntu 16.04, 18.04, 20.04, Debian 9 (stretch), Debian 10 (buster), Debian 11 (bullseye)](#install-on-ubuntu-1604-1804-2004-debian-9-stretch-debian-10-buster-debian-11-bullseye)
