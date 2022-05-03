@@ -210,7 +210,7 @@ On Windows 10 Fall Creators Update (1703) or newer:
 
 7. Wait for install and create a user when prompted.
 
-8. Follow the [Ubuntu 16.04, 18.04, 20.04, Debian 9 (stretch), Debian 10 (buster)](#install-on-ubuntu-1604-1804-2004-debian-9-stretch-debian-10-buster) steps.
+8. Follow the [Ubuntu 16.04, 18.04, 20.04, Debian 9 (stretch), Debian 10 (buster)](#install-on-ubuntu-1604-1804-2004-debian-9-stretch-debian-10-buster-debian-11-bullseye) steps.
 
 
 
