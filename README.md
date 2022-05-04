@@ -83,8 +83,8 @@ Install on Ubuntu 16.04, 18.04, 20.04, Debian 9 (stretch), Debian 10 (buster), D
 	wget https://raw.githubusercontent.com/pyenv/pyenv-installer/master/bin/pyenv-installer
 	chmod +x pyenv-installer
 	./pyenv-installer
-	~/.pyenv/bin/pyenv install 3.8.12
-	~/.pyenv/versions/3.8.12/bin/python -m venv ~/gs-venv
+	~/.pyenv/bin/pyenv install 3.8.13
+	~/.pyenv/versions/3.8.13/bin/python -m venv ~/gs-venv
 	~/gs-venv/bin/pip install --no-binary lxml --upgrade git+https://github.com/ArchiveTeam/grab-site
 	```
 
