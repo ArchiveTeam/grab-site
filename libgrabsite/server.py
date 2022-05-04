@@ -1,5 +1,7 @@
 #!/usr/bin/env python3
 
+import txaio
+txaio.use_asyncio()
 import os
 import json
 import pprint
