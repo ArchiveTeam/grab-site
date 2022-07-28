@@ -57,10 +57,6 @@
 # We don't want to change language
 ^https?://www\.flickr\.com/change_language\.gne
 
-# Links to Wikipedia are very common, and the thumbnails are almost always
-# already archived at archive.org.
-^https?://upload\.wikimedia\.org/wikipedia/[^/]+/thumb/
-
 # Tracking scripts, tracking pixels, analytics
 ^https?://geo\.yahoo\.com/b\?
 ^https?://b\.scorecardresearch\.com/
