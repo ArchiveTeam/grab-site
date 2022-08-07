@@ -105,8 +105,16 @@ Install on NixOS
 As a **non-root** user:
 
 ```
+nix-env -f https://github.com/ivan/nixpkgs/archive/release-22.05-latest-grab-site.tar.gz -iA grab-site
+```
+(to install the latest version of grab-site)
+
+OR
+
+```
 nix-env -f https://github.com/NixOS/nixpkgs/archive/release-22.05.tar.gz -iA grab-site
 ```
+(to install grab-site 2.2.2 from the official NixOS/nixpkgs)
 
 
 
@@ -129,8 +137,16 @@ grab-site and its dependencies are available in [nixpkgs](https://github.com/Nix
 3.	As the **non-root** user:
 
 	```
+	nix-env -f https://github.com/ivan/nixpkgs/archive/release-22.05-latest-grab-site.tar.gz -iA grab-site
+	```
+	(to install the latest version of grab-site)
+
+	OR
+
+	```
 	nix-env -f https://github.com/NixOS/nixpkgs/archive/release-22.05.tar.gz -iA grab-site
 	```
+	(to install grab-site 2.2.2 from the official NixOS/nixpkgs)
 
 	and then restart your shell (e.g. by opening a new terminal tab/window).
 
