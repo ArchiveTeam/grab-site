@@ -37,6 +37,9 @@ def re_compile(regexp):
 		return re.compile(regexp)
 
 def compile_combined_regexp(patterns):
+	# If there are no patterns, we want to ignore nothing, not everything.
+	if not patterns:
+		return re_compile("$^")
 	regexp = "|".join(map(lambda pattern: f"({pattern})", patterns))
 	return re_compile(regexp)
 
