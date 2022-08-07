@@ -282,9 +282,11 @@ Options can come before or after the URL.
 	regular expressions.  See [the full list of available ignore sets](https://github.com/ArchiveTeam/grab-site/tree/master/libgrabsite/ignore_sets).
 
 	The [global](https://github.com/ArchiveTeam/grab-site/blob/master/libgrabsite/ignore_sets/global)
-	ignore set is implied and always enabled.
+	ignore set is implied and enabled unless `--no-global-igset` is used.
 
 	The ignore sets can be changed during the crawl by editing the `DIR/igsets` file.
+
+*	`--no-global-igset`: don't add the [global](https://github.com/ArchiveTeam/grab-site/blob/master/libgrabsite/ignore_sets/global) ignore set.
 
 *	`--no-offsite-links`: avoid following links to a depth of 1 on other domains.
 
