@@ -313,6 +313,8 @@ class GrabSitePlugin(WpullPlugin):
 
 		with open(cf("igsets"), "r") as f:
 			igsets = f.read().strip("\r\n\t ,").split(',')
+			if igsets == [""]:
+				igsets = []
 
 		for igset in igsets:
 			for pattern in get_patterns_for_ignore_set(igset):
