@@ -40,7 +40,7 @@ CMD [ "gs-server" ]
 
 COPY --chown=grab-site:grab-site . .
 
-RUN pip install . \
+RUN pip install --no-cache-dir . \
 	&& chmod +x entrypoint.sh
 
 WORKDIR /data
