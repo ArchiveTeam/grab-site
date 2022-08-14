@@ -37,6 +37,9 @@ def re_compile(regexp):
 		return re.compile(regexp)
 
 def compile_combined_regexp(patterns):
+	# If there are no patterns, we want to ignore nothing, not everything.
+	if not patterns:
+		return re_compile("$^")
 	regexp = "|".join(map(lambda pattern: f"({pattern})", patterns))
 	return re_compile(regexp)
 
@@ -313,6 +316,8 @@ class GrabSitePlugin(WpullPlugin):
 
 		with open(cf("igsets"), "r") as f:
 			igsets = f.read().strip("\r\n\t ,").split(',')
+			if igsets == [""]:
+				igsets = []
 
 		for igset in igsets:
 			for pattern in get_patterns_for_ignore_set(igset):

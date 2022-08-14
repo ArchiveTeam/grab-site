@@ -71,6 +71,9 @@ def patch_dns_inet_is_multicast():
 @click.option('--ignore-sets', default="", metavar='LIST',
 	help='Alias for --igsets.')
 
+@click.option('--no-global-igset', is_flag=True,
+	help='Do not add the "global" ignore set.')
+
 @click.option('--import-ignores', default=None, metavar='FILE',
 	help='Copy this file to DIR/ignores before the crawl begins.')
 
@@ -109,7 +112,7 @@ def patch_dns_inet_is_multicast():
 		'Try to limit each WARC file to around BYTES bytes before rolling over '
 		'to a new WARC file (default: 5368709120, which is 5GiB).')
 
-@click.option('--ua', default="Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:77.0) Gecko/20100101 Firefox/77.0",
+@click.option('--ua', default="Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:103.0) Gecko/20100101 Firefox/103.0",
 	metavar='STRING', help='Send User-Agent: STRING instead of pretending to be Firefox on Windows.')
 
 @click.option('--wpull-args', default="",
@@ -169,10 +172,10 @@ def patch_dns_inet_is_multicast():
 @click.argument('start_url', nargs=-1, required=False)
 
 def main(concurrency, concurrent, delay, recursive, offsite_links, igsets,
-ignore_sets, import_ignores, igon, debug, video, level, page_requisites_level,
-max_content_length, sitemaps, dupespotter, warc_max_size, ua, input_file,
-wpull_args, start_url, id, dir, finished_warc_dir, permanent_error_status_codes,
-which_wpull_args_partial, which_wpull_command):
+ignore_sets, no_global_igset, import_ignores, igon, debug, video, level,
+page_requisites_level, max_content_length, sitemaps, dupespotter, warc_max_size,
+ua, input_file, wpull_args, start_url, id, dir, finished_warc_dir,
+permanent_error_status_codes, which_wpull_args_partial, which_wpull_command):
 	"""
 	Runs a crawl on one or more URLs.  For additional help, see
 
@@ -326,7 +329,7 @@ which_wpull_args_partial, which_wpull_command):
 		f.write(str(max_content_length))
 
 	with open("{}/igsets".format(working_dir), "w") as f:
-		f.write("global,{}".format(igsets))
+		f.write("{}{}".format("" if no_global_igset else "global,", igsets))
 
 	if video:
 		with open("{}/video".format(working_dir), "w") as f:

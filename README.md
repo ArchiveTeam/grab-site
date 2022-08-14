@@ -6,7 +6,7 @@ grab-site
 grab-site is an easy preconfigured web crawler designed for backing up websites.
 Give grab-site a URL and it will recursively crawl the site and write
 [WARC files](https://www.archiveteam.org/index.php?title=The_WARC_Ecosystem).
-Internally, grab-site uses [a fork](https://github.com/ludios/wpull) of
+Internally, grab-site uses [a fork](https://github.com/ArchiveTeam/ludios_wpull) of
 [wpull](https://github.com/chfoo/wpull) for crawling.
 
 grab-site gives you
@@ -32,11 +32,16 @@ grab-site will manage to crawl a site with ~10M pages.
 Note: if you have any problems whatsoever installing or getting grab-site to run,
 please [file an issue](https://github.com/ArchiveTeam/grab-site/issues) - thank you!
 
+The installation methods below are the only ones supported in our GitHub issues.
+Please do not modify the installation steps unless you really know what you're
+doing, with both Python packaging and your operating system. grab-site runs
+on a specific version of Python (3.7 or 3.8) and with specific dependency versions.
+
 **Contents**
 
-- [Install on Ubuntu 16.04, 18.04, 20.04, Debian 9 (stretch), Debian 10 (buster)](#install-on-ubuntu-1604-1804-2004-debian-9-stretch-debian-10-buster)
+- [Install on Ubuntu 16.04, 18.04, 20.04, Debian 9 (stretch), Debian 10 (buster), Debian 11 (bullseye)](#install-on-ubuntu-1604-1804-2004-debian-9-stretch-debian-10-buster-debian-11-bullseye)
 - [Install on NixOS](#install-on-nixos)
-- [Install on another distribution lacking Python 3.7.x](#install-on-another-distribution-lacking-python-37x)
+- [Install on another distribution lacking Python 3.7.x or 3.8.x](#install-on-another-distribution-lacking-python-37x-or-38x)
 - [Install on macOS](#install-on-macos)
 - [Install on Windows 10 (experimental)](#install-on-windows-10-experimental)
 - [Upgrade an existing install](#upgrade-an-existing-install)
@@ -58,39 +63,41 @@ please [file an issue](https://github.com/ArchiveTeam/grab-site/issues) - thank 
 
 
 
-Install on Ubuntu 16.04, 18.04, 20.04, Debian 9 (stretch), Debian 10 (buster)
+Install on Ubuntu 16.04, 18.04, 20.04, Debian 9 (stretch), Debian 10 (buster), Debian 11 (bullseye)
 ---
 
-On Debian, use `su` to become root if `sudo` is not configured to give you access.
+1.	On Debian, use `su` to become root if `sudo` is not configured to give you access.
 
-```
-sudo apt-get update
-sudo apt-get install --no-install-recommends \
-    git build-essential libssl-dev zlib1g-dev libbz2-dev libreadline-dev \
-    libsqlite3-dev libffi-dev libxml2-dev libxslt1-dev libre2-dev pkg-config
-```
+	```
+	sudo apt-get update
+	sudo apt-get install --no-install-recommends \
+	    wget ca-certificates git build-essential libssl-dev zlib1g-dev \
+	    libbz2-dev libreadline-dev libsqlite3-dev libffi-dev libxml2-dev \
+	    libxslt1-dev libre2-dev pkg-config
+	```
 
-If you see `Unable to locate package`, run the two commands again.
+	If you see `Unable to locate package`, run the two commands again.
 
-As a **non-root** user:
+2.	As a **non-root** user:
 
-```
-wget https://raw.githubusercontent.com/pyenv/pyenv-installer/master/bin/pyenv-installer
-chmod +x pyenv-installer
-./pyenv-installer
-~/.pyenv/bin/pyenv install 3.7.11
-~/.pyenv/versions/3.7.11/bin/python -m venv ~/gs-venv
-~/gs-venv/bin/pip install --no-binary lxml --upgrade git+https://github.com/ArchiveTeam/grab-site
-```
+	```
+	wget https://raw.githubusercontent.com/pyenv/pyenv-installer/master/bin/pyenv-installer
+	chmod +x pyenv-installer
+	./pyenv-installer
+	~/.pyenv/bin/pyenv install 3.8.13
+	~/.pyenv/versions/3.8.13/bin/python -m venv ~/gs-venv
+	~/gs-venv/bin/pip install --no-binary lxml --upgrade git+https://github.com/ArchiveTeam/grab-site
+	```
 
-`--no-binary lxml` is necessary for the html5-parser build.
+	`--no-binary lxml` is necessary for the html5-parser build.
 
-Add this to your `~/.bashrc` or `~/.zshrc` and then restart your shell (e.g. by opening a new terminal tab/window):
+3.	Add this to your `~/.bashrc` or `~/.zshrc`:
 
-```
-PATH="$PATH:$HOME/gs-venv/bin"
-```
+	```
+	PATH="$PATH:$HOME/gs-venv/bin"
+	```
 
+	and then restart your shell (e.g. by opening a new terminal tab/window).
 
 
 Install on NixOS
@@ -99,12 +106,20 @@ Install on NixOS
 As a **non-root** user:
 
 ```
-nix-env -f https://github.com/NixOS/nixpkgs/archive/release-21.05.tar.gz -iA grab-site
+nix-env -f https://github.com/ivan/nixpkgs/archive/release-22.05-latest-grab-site.tar.gz -iA grab-site
 ```
+(to install the latest version of grab-site)
+
+OR
+
+```
+nix-env -f https://github.com/NixOS/nixpkgs/archive/release-22.05.tar.gz -iA grab-site
+```
+(to install grab-site 2.2.2 from the official NixOS/nixpkgs)
 
 
 
-Install on another distribution lacking Python 3.7.x
+Install on another distribution lacking Python 3.7.x or 3.8.x
 ---
 
 grab-site and its dependencies are available in [nixpkgs](https://github.com/NixOS/nixpkgs), which can be used on any Linux distribution.
@@ -123,10 +138,18 @@ grab-site and its dependencies are available in [nixpkgs](https://github.com/Nix
 3.	As the **non-root** user:
 
 	```
-	nix-env -f https://github.com/NixOS/nixpkgs/archive/release-21.05.tar.gz -iA grab-site
+	nix-env -f https://github.com/ivan/nixpkgs/archive/release-22.05-latest-grab-site.tar.gz -iA grab-site
 	```
+	(to install the latest version of grab-site)
 
-And then restart your shell (e.g. by opening a new terminal tab/window).
+	OR
+
+	```
+	nix-env -f https://github.com/NixOS/nixpkgs/archive/release-22.05.tar.gz -iA grab-site
+	```
+	(to install grab-site 2.2.2 from the official NixOS/nixpkgs)
+
+	and then restart your shell (e.g. by opening a new terminal tab/window).
 
 
 
@@ -143,7 +166,9 @@ On OS X 10.10 - macOS 11:
 
 	-	iTerm2: Preferences... -> Profiles -> Terminal -> Environment -> **check** Set locale variables automatically
 
-### Using Homebrew
+### Using Homebrew (**Intel Mac**)
+
+For M1 Macs, use the next section instead of this one.
 
 2.	Install Homebrew using the install step on https://brew.sh/
 
@@ -151,8 +176,8 @@ On OS X 10.10 - macOS 11:
 
 	```
 	brew update
-	brew install python@3.7 libxslt re2 pkg-config
-	/usr/local/opt/python@3.7/bin/python3 -m venv ~/gs-venv
+	brew install python@3.8 libxslt re2 pkg-config
+	/usr/local/opt/python@3.8/bin/python3 -m venv ~/gs-venv
 	PKG_CONFIG_PATH="/usr/local/opt/libxml2/lib/pkgconfig" ~/gs-venv/bin/pip install --no-binary lxml --upgrade git+https://github.com/ArchiveTeam/grab-site
 	```
 
@@ -162,35 +187,30 @@ On OS X 10.10 - macOS 11:
 	PATH="$PATH:$HOME/gs-venv/bin"
 	```
 
-	and then restart your shell (e.g. by opening a new terminal tab/window)
+	and then restart your shell (e.g. by opening a new terminal tab/window).
 
-### Using Nix
+### Using Homebrew (**M1 Mac**)
 
-As an alternative to the Homebrew install, if you prefer Nix.
+2.	Install Homebrew using the install step on https://brew.sh/
 
-2.	Install Nix: https://nixos.org/nix/download.html
+	If you already have a Homebrew install at `/usr/local`, you may need to first remove that old Intel-based Homebrew install.
 
-	On macOS 10.15 or 11+, you will instead need:
-
-	```
-	sh <(curl -L https://nixos.org/nix/install) --darwin-use-unencrypted-nix-store-volume
-	```
-
-	To put `nix-env` in your PATH, add this to your `~/.zshrc` (macOS 10.15, 11+) or `~/.bash_profile` (earlier):
+3.	Run:
 
 	```
-	. ~/.nix-profile/etc/profile.d/nix.sh
+	brew update
+	brew install python@3.8 libxslt re2 pkg-config
+	/opt/homebrew/opt/python@3.8/bin/python3 -m venv ~/gs-venv
+	PKG_CONFIG_PATH="/opt/homebrew/opt/libxml2/lib/pkgconfig" ~/gs-venv/bin/pip install --no-binary lxml --upgrade git+https://github.com/ArchiveTeam/grab-site
 	```
 
-	and then restart your shell (e.g. by opening a new terminal tab/window)
-
-3.	`nix-env` is now available to install grab-site. Run:
+4.	To put the `grab-site` binaries in your PATH, add this to your `~/.zshrc` (macOS 10.15, 11+) or `~/.bash_profile` (earlier):
 
 	```
-	nix-env -f https://github.com/NixOS/nixpkgs/archive/release-21.05.tar.gz -iA grab-site
+	PATH="$PATH:$HOME/gs-venv/bin"
 	```
 
-	and then restart your shell.
+	and then restart your shell (e.g. by opening a new terminal tab/window).
 
 
 
@@ -213,7 +233,7 @@ On Windows 10 Fall Creators Update (1703) or newer:
 
 7. Wait for install and create a user when prompted.
 
-8. Follow the [Ubuntu 16.04, 18.04, 20.04, Debian 9 (stretch), Debian 10 (buster)](#install-on-ubuntu-1604-1804-2004-debian-9-stretch-debian-10-buster) steps.
+8. Follow the [Ubuntu 16.04, 18.04, 20.04, Debian 9 (stretch), Debian 10 (buster)](#install-on-ubuntu-1604-1804-2004-debian-9-stretch-debian-10-buster-debian-11-bullseye) steps.
 
 
 
@@ -250,11 +270,6 @@ grab-site 'URL'
 ```
 
 Do this inside tmux unless they're very short crawls.
-Note that [tmux 2.1 is broken and will lock up frequently](https://github.com/tmux/tmux/issues/298).
-Ubuntu 16.04 users probably need to remove tmux 2.1 and
-[install tmux 1.8 from Ubuntu 14.04](https://gist.github.com/ivan/42597ad48c9f10cdd3c05418210e805b).
-If you are unable to downgrade tmux, detaching immediately after starting the
-crawl may be enough to avoid the problem.
 
 grab-site outputs WARCs, logs, and control files to a new subdirectory in the
 directory from which you launched `grab-site`, referred to here as "DIR".
@@ -279,9 +294,11 @@ Options can come before or after the URL.
 	regular expressions.  See [the full list of available ignore sets](https://github.com/ArchiveTeam/grab-site/tree/master/libgrabsite/ignore_sets).
 
 	The [global](https://github.com/ArchiveTeam/grab-site/blob/master/libgrabsite/ignore_sets/global)
-	ignore set is implied and always enabled.
+	ignore set is implied and enabled unless `--no-global-igset` is used.
 
 	The ignore sets can be changed during the crawl by editing the `DIR/igsets` file.
+
+*	`--no-global-igset`: don't add the [global](https://github.com/ArchiveTeam/grab-site/blob/master/libgrabsite/ignore_sets/global) ignore set.
 
 *	`--no-offsite-links`: avoid following links to a depth of 1 on other domains.
 

@@ -6,7 +6,7 @@ from wpull.database.sqltable import SQLiteURLTable
 from wpull.document.html import HTMLReader
 from wpull.processor.rule import ProcessingRule
 
-from libgrabsite import dupespotter
+from libgrabsite import dupespotter, __version__
 from libgrabsite.dupes import DupesOnDisk
 
 
@@ -57,6 +57,9 @@ class DupeSpottingProcessingRule(ProcessingRule):
 
 def activate(app_session):
 	app_session.factory.class_map['URLTableImplementation'] = NoFsyncSQLTable
+
+	warc_recorder_cls = app_session.factory.class_map['WARCRecorder']
+	warc_recorder_cls.DEFAULT_SOFTWARE_STRING = f'grab-site/{__version__} ' + warc_recorder_cls.DEFAULT_SOFTWARE_STRING
 
 	if int(os.environ["DUPESPOTTER_ENABLED"]):
 		dupes_db_location = os.path.join(os.environ["GRAB_SITE_WORKING_DIR"], "dupes_db")
