@@ -396,160 +396,142 @@ grab-site and gs-server can be called from Docker! Please see: [Get Docker](http
 
 #### Quick Start
 
-Run these commands from the repository root.
+Make sure you have cloned the repository and have created the data directory:
 
+```sh
+mkdir -p ./data
 ```
-# Build application & environment
-docker build -t grab-site:latest .
 
-# Create a network for inter-node communication and name resolution on linux hosts
-docker network create -d bridge gs-network
-
-# Start gs-server dashboard
-docker run --net=gs-network --name=gs-server -d -p 29000:29000 --restart=unless-stopped grab-site:latest
-
-# Ensure that ./data exists and container has write privileges on volume
-mkdir -p data
-
-# Create a grab-site instance that crawls a website and stores it in ./data/example.com
-docker run --net=gs-network --rm -d -v "$(pwd)/data:/data:rw" grab-site:latest grab-site https://www.example.com/ --delay=100-250 --concurrency=4 --no-offsite-links
-```
+On Windows, this directory will automatically create itself when it is used as the target for the mount in the run step.
 
 #### Docker Build
 
-To build the application, including all dependencies, run:
+The first major step is to build the application, including all dependencies:
 
-```
+```sh
 docker build -t grab-site:latest .
 ```
 
-##### Single-container deployment
-By default within the Dockerfile `GRAB_SITE_HOST` is set to `gs-server` with the expectation that a container called `gs-server` will be accessible by instances of `grab-site`.
+##### Monolithic Container
+Optionally, you can specify the build argument `GRAB_SITE_HOST`, which defaults to `gs-server` expecting a container called `gs-server` will be accessible by instances of `grab-site`.
 
-You can override GRAB_SITE_HOST if you plan on running a single container containing gs-server and manually run grab-site processes within that single container:
-```
+This argument becomes the default `GRAB_SITE_HOST` environmental variable for all containers.
+
+You can override `GRAB_SITE_HOST` if you plan on running a single container containing gs-server and manually run grab-site processes within that single container, for example:
+
+```sh
 docker build --build-arg GRAB_SITE_HOST=127.0.0.1 -t grab-site:latest .
 ```
 
-This is not the default configuration _in the Docker environment_, because the current best practice for deployment of a Docker application states that each process should be running in a separate container _without_ a init process such as systemd, rc.d, upstart, etc.
+Note that this is not the recommended configuration _in the Docker environment_, because the current best practice for deployment of a Docker application states that each process should be running in a separate container _without_ a init process such as systemd, rc.d, upstart, etc.
 
-##### Simple container access
+##### Image Inspection
 
-You can use the container's shell to inspect files and run the programs within the built container:
+In development and for configuration, you may find it handy to get a new container's shell to inspect files and run the programs within the built image:
 
-```
+```sh
 docker run --rm -it --entrypoint sh grab-site:latest
 ```
 
 #### Docker Network
 
-`grab-site` and `gs-server` communicate to eachother on a network that is isolated from any other container outside of the network.
+The second major step is to create an isolated network for the containers running `grab-site` and `gs-server` to communicate with eachother on a network that is isolated/inaccessible from any other container outside of the network.
 
-The following will create a docker network called "gs-network" for our gs-server and grab-site instances to talk to (and find eachother) on.
+The following will create a docker network called `gs-network` for our gs-server and grab-site instances to talk to (and find eachother) on:
 
-```
+```sh
 docker network create -d bridge gs-network
 ```
 
-We will use this "gs-network" later in `docker run` commands with the `--net="gs-network"` flag.
+We will use this `gs-network` later in `docker run` commands with the `--net=gs-network` flag.
 
 #### Run gs-server on Docker
 
-Run a container named "gs-server" to host the dashboard and for grab-site instances to connect to:
+The third major step is to run a container named "gs-server" to host the dashboard and for grab-site instances to connect to:
 
-```
+```sh
 docker run --net=gs-network --name=gs-server -d -p 29000:29000 --restart=unless-stopped grab-site:latest
 ```
 
 The server will be running with the port forwarded (the -p parameter) from the host port 29000 -> container port 29000. You can access it via [http://localhost:29000](http://localhost:29000)
 
-##### View logs
+##### View gs-server logs
 
-To tail the gs-server instance:
+Optionally, to tail the gs-server instance:
 
-```
+```sh
 docker logs -f gs-server
 ```
 
-##### Attach to process
+##### Attach to gs-server process
 
-You can attach local STDIN/STDOUT/STDERR to your running gs-server instance:
+Optionally, you can attach local STDIN/STDOUT/STDERR to your running `gs-server` instance:
 
-```
+```sh
 docker attach gs-server
 ```
 
 You can exit by using CTRL-p + CTRL+q, as documented further [here](https://docs.docker.com/engine/reference/commandline/attach/).
 
-##### Access container
+##### Access gs-server container
 
-To enter a container with a running process (either gs-server or grab-site):
+Optionally, to enter the currently running `gs-server` container:
 
-```
+```sh
 docker exec -it gs-server sh
 ```
 
+You will normally not need to do this.
+
 #### Run grab-site on Docker
 
-The following commands will download example.com to a local directory, "data". This will vary slightly in the example usage, so please review your paths before executing any scripts!
+The final step is running the following command to download example.com to a local directory `data`.
 
-##### Linux host
+This example works for various Linux shells and PowerShell:
 
-From any common shell:
-```
-docker run --net=gs-network --rm -d -e GRAB_SITE_HOST=gs-server -v ./data:/data:rw / grab-site:latest grab-site https://www.example.com/
-```
-
-##### Windows host
-
-From a PowerShell window:
-```
-docker run --net=gs-network --rm -d -e GRAB_SITE_HOST=gs-server -v C:\projects\grab-site\data:/data:rw grab-site:latest grab-site https://www.example.com/
+```sh
+docker run --net=gs-network --rm -d -e GRAB_SITE_HOST=gs-server -v "$(pwd)/data:/data:rw" grab-site:latest grab-site https://www.example.com/
 ```
 
 Note: Windows file shares can be done several ways, this is using the legacy Windows full path volume sharing which can be "slower" if you are using WSL2.
 
-##### grab-site processes
+##### View grab-site logs
 
-When you run a docker run with the -d flag you will get returned to you the unique ID of the container. You can use this to follow the logs.
+When you run a docker run with the -d flag you will get returned to you the unique ID of the container. If you'd like to name your container, please specify a `--name` to the `docker run` command you are trying to run.
 
-If you'd like to name your container, please specify a --name to the grab-site container you are trying to run. If you do not specify it, it will give it a funny name which you can find from here:
+If you do not specify a name, it will give it a funny name which you can find from the list of all containers using:
 
-Show all containers:
-
-```
+```sh
 docker ps -a
 ```
 
-##### View logs
-
 You can then use the container ID or the name here:
 
-```
+```sh
 docker logs -f ead9034470ed
 ```
 
-##### Attach to process
+##### Attach to grab-site process
 
 You can attach local STDIN/STDOUT/STDERR to your running gs-server instance:
 
-```
+```sh
 docker attach ead9034470ed
 ```
 
 You can exit by using CTRL-p + CTRL+q, as documented further [here](https://docs.docker.com/engine/reference/commandline/attach/).
 
-##### Pause a crawl
+##### Suspend a grab-site crawl
 
 You can pause a crawl by using [docker pause](https://docs.docker.com/engine/reference/commandline/pause/):
 
-```
+```sh
 docker pause ead9034470ed
 ```
 
 Resume it using [docker unpause](https://docs.docker.com/engine/reference/commandline/unpause/):
 
-```
+```sh
 docker unpause ead9034470ed
 ```
 
