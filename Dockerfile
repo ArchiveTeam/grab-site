@@ -34,7 +34,9 @@ RUN apk add --no-cache \
 		patch \
 	&& ln -s /usr/include/libxml2/libxml /usr/include/libxml
 
-USER grab-site:grab-site
+ENV PATH="/app:$PATH"
+ENTRYPOINT [ "entrypoint.sh" ]
+CMD [ "gs-server" ]
 
 # TODO: resolve dependencies before loading library code to take advantage of build caching
 # 	setup.py requires libgrabsite/__init__.py (__version__ property) to work
@@ -46,10 +48,6 @@ COPY --chown=grab-site:grab-site . .
 RUN pip install --no-cache-dir .
 
 # Set up runtime environment
-USER root:root
-ENV PATH="/app:$PATH"
-ENTRYPOINT [ "entrypoint.sh" ]
-CMD [ "gs-server" ]
 WORKDIR /data
 
 # docker build -t grab-site:latest .
