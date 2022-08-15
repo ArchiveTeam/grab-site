@@ -1,5 +1,5 @@
-ARG PYTHON_VERSION=3.7
-ARG ALPINE_VERSION=3.13
+ARG PYTHON_VERSION=3.8
+ARG ALPINE_VERSION=3.16
 
 FROM python:${PYTHON_VERSION}-alpine${ALPINE_VERSION}
 
@@ -12,6 +12,12 @@ ARG GRAB_SITE_HOST=gs-server
 ENV GRAB_SITE_HOST=${GRAB_SITE_HOST}
 EXPOSE 29000
 
+RUN addgroup -g 10000 -S grab-site \
+	&& adduser -u 10000 -S -G grab-site grab-site \
+	&& chown -R grab-site:grab-site $(pwd) \
+	&& mkdir -p /data \
+	&& chown -R grab-site:grab-site /data
+
 RUN apk add --no-cache \
 		git \
 		gcc \
@@ -23,13 +29,7 @@ RUN apk add --no-cache \
 		libffi-dev \
 		openssl-dev \
 		patch \
-		cargo \
-	&& ln -s /usr/include/libxml2/libxml /usr/include/libxml \
-	&& addgroup -S grab-site \
-	&& adduser -S -G grab-site grab-site \
-	&& chown -R grab-site:grab-site $(pwd) \
-	&& mkdir -p /data \
-	&& chown -R grab-site:grab-site /data
+	&& ln -s /usr/include/libxml2/libxml /usr/include/libxml
 
 USER grab-site:grab-site
 ENV PATH="/app:$PATH"
@@ -41,8 +41,7 @@ CMD [ "gs-server" ]
 
 COPY --chown=grab-site:grab-site . .
 
-RUN pip install --no-cache-dir . \
-	&& chmod +x entrypoint.sh
+RUN pip install --no-cache-dir .
 
 WORKDIR /data
 
