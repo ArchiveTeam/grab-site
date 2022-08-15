@@ -392,7 +392,9 @@ Options can come before or after the URL.
 
 ### Docker
 
-grab-site and gs-server can be called from Docker! Please see: [Get Docker](https://docs.docker.com/get-docker/) for more information
+`grab-site` and `gs-server` can be run from Docker!
+
+Please see [Get Docker](https://docs.docker.com/get-docker/) to get started.
 
 #### Quick Start
 
@@ -423,7 +425,7 @@ You can override `GRAB_SITE_HOST` if you plan on running a single container cont
 docker build --build-arg GRAB_SITE_HOST=127.0.0.1 -t grab-site:latest .
 ```
 
-Note that this is not the recommended configuration _in the Docker environment_, because the current best practice for deployment of a Docker application states that each process should be running in a separate container _without_ a init process such as systemd, rc.d, upstart, etc.
+Note that this is not the recommended configuration _in the Docker environment_, because the [current best practice](https://docs.docker.com/config/containers/multi-service_container/) for deployment of a Docker application states that each process should be running in a separate container _without_ a init process such as systemd, rc.d, upstart, etc. in order to let Docker manage the lifecycle of the process, instead.
 
 ##### Image Inspection
 
@@ -437,7 +439,7 @@ docker run --rm -it --entrypoint sh grab-site:latest
 
 The second major step is to create an isolated network for the containers running `grab-site` and `gs-server` to communicate with eachother on a network that is isolated/inaccessible from any other container outside of the network.
 
-The following will create a docker network called `gs-network` for our gs-server and grab-site instances to talk to (and find eachother) on:
+The following will create a docker network called `gs-network` for our gs-server and grab-site instances to connect within:
 
 ```sh
 docker network create -d bridge gs-network
@@ -447,17 +449,17 @@ We will use this `gs-network` later in `docker run` commands with the `--net=gs-
 
 #### Run gs-server on Docker
 
-The third major step is to run a container named "gs-server" to host the dashboard and for grab-site instances to connect to:
+The third major step is to run a container named `gs-server` to host the dashboard and for grab-site instances to connect to:
 
 ```sh
 docker run --net=gs-network --name=gs-server -d -p 29000:29000 --restart=unless-stopped grab-site:latest
 ```
 
-The server will be running with the port forwarded (the -p parameter) from the host port 29000 -> container port 29000. You can access it via [http://localhost:29000](http://localhost:29000)
+The server will be running with the port forwarded (the -p parameter) from the host port 29000 -> container port 29000. You can access it via [http://localhost:29000](http://localhost:29000). The name of the container should correspond to the `GRAB_SITE_HOST` build argument, which defaults to `gs-server`.
 
 ##### View gs-server logs
 
-Optionally, to tail the gs-server instance:
+Optionally, to tail the `gs-server` instance:
 
 ```sh
 docker logs -f gs-server
@@ -485,7 +487,7 @@ You will normally not need to do this.
 
 #### Run grab-site on Docker
 
-The final step is running the following command to download example.com to a local directory `data`.
+The final step is running the following command to download `example.com` to a local directory `data`.
 
 This example works for various Linux shells and PowerShell:
 
@@ -513,7 +515,7 @@ docker logs -f ead9034470ed
 
 ##### Attach to grab-site process
 
-You can attach local STDIN/STDOUT/STDERR to your running gs-server instance:
+You can attach local STDIN/STDOUT/STDERR to your running `gs-server` instance:
 
 ```sh
 docker attach ead9034470ed
