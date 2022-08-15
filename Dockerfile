@@ -8,7 +8,8 @@ VOLUME [ "/data" ]
 
 ENV GRAB_SITE_INTERFACE=0.0.0.0
 ENV GRAB_SITE_PORT=29000
-ENV GRAB_SITE_HOST=127.0.0.1
+ARG GRAB_SITE_HOST=gs-server
+ENV GRAB_SITE_HOST=${GRAB_SITE_HOST}
 EXPOSE 29000
 
 RUN apk add --no-cache \
@@ -47,7 +48,7 @@ WORKDIR /data
 
 # docker build -t grab-site:latest .
 # docker run --rm -it --entrypoint sh grab-site:latest
-# docker network create -d bridge grab-network
-# docker run --net=grab-network --name=gs-server -d -p 29000:29000 --restart=unless-stopped grab-site:latest
-# docker run --net=grab-network --rm -d -e GRAB_SITE_HOST=gs-server -v ./data:/data:rw grab-site:latest grab-site https://www.example.com/
-# docker run --net=grab-network --rm -d -e GRAB_SITE_HOST=gs-server -v C:\projects\grab-site\data:/data:rw grab-site:latest grab-site https://www.example.com/
+# docker network create -d bridge gs-network
+# docker run --net=gs-network --name=gs-server -d -p 29000:29000 --restart=unless-stopped grab-site:latest
+# docker run --net=gs-network --rm -d -e GRAB_SITE_HOST=gs-server -v ./data:/data:rw grab-site:latest grab-site https://www.example.com/
+# docker run --net=gs-network --rm -d -e GRAB_SITE_HOST=gs-server -v C:\projects\grab-site\data:/data:rw grab-site:latest grab-site https://www.example.com/
