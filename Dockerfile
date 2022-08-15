@@ -19,6 +19,7 @@ RUN addgroup -g 10000 -S grab-site \
 	&& chown -R grab-site:grab-site /data
 
 RUN apk add --no-cache \
+		su-exec>=0.2 \
 		git \
 		gcc \
 		libxml2-dev \
@@ -31,7 +32,7 @@ RUN apk add --no-cache \
 		patch \
 	&& ln -s /usr/include/libxml2/libxml /usr/include/libxml
 
-USER grab-site:grab-site
+#USER grab-site:grab-site
 ENV PATH="/app:$PATH"
 ENTRYPOINT [ "entrypoint.sh" ]
 CMD [ "gs-server" ]

@@ -408,7 +408,7 @@ docker run --net=gs-network --name=gs-server -d -p 29000:29000 --restart=unless-
 
 # Create a grab-site instance that crawls a website and stores it in ./data/example.com
 # Ensure that ./data exists and container has write privileges on volume
-docker run --net=gs-network --rm -d -v ./data:/data:rw grab-site:latest grab-site https://www.example.com/ --delay=100-250 --concurrency=4 --no-offsite-links
+docker run --net=gs-network --rm -d -v "$(pwd)/data:/data:rw" grab-site:latest grab-site https://www.example.com/ --delay=100-250 --concurrency=4 --no-offsite-links
 ```
 
 #### Docker Build
