@@ -12,12 +12,14 @@ ARG GRAB_SITE_HOST=gs-server
 ENV GRAB_SITE_HOST=${GRAB_SITE_HOST}
 EXPOSE 29000
 
+# Add user and group for grab-site
 RUN addgroup -g 10000 -S grab-site \
 	&& adduser -u 10000 -S -G grab-site grab-site \
 	&& chown -R grab-site:grab-site $(pwd) \
 	&& mkdir -p /data \
 	&& chown -R grab-site:grab-site /data
 
+# Install system dependencies
 RUN apk add --no-cache \
 		su-exec>=0.2 \
 		git \
@@ -32,18 +34,22 @@ RUN apk add --no-cache \
 		patch \
 	&& ln -s /usr/include/libxml2/libxml /usr/include/libxml
 
-#USER grab-site:grab-site
-ENV PATH="/app:$PATH"
-ENTRYPOINT [ "entrypoint.sh" ]
-CMD [ "gs-server" ]
+USER grab-site:grab-site
 
 # TODO: resolve dependencies before loading library code to take advantage of build caching
 # 	setup.py requires libgrabsite/__init__.py (__version__ property) to work
 
+# Copy application files
 COPY --chown=grab-site:grab-site . .
 
+# Install application dependencies
 RUN pip install --no-cache-dir .
 
+# Set up runtime environment
+USER root:root
+ENV PATH="/app:$PATH"
+ENTRYPOINT [ "entrypoint.sh" ]
+CMD [ "gs-server" ]
 WORKDIR /data
 
 # docker build -t grab-site:latest .

@@ -396,6 +396,8 @@ grab-site and gs-server can be called from Docker! Please see: [Get Docker](http
 
 #### Quick Start
 
+Run these commands from the repository root.
+
 ```
 # Build application & environment
 docker build -t grab-site:latest .
@@ -406,8 +408,10 @@ docker network create -d bridge gs-network
 # Start gs-server dashboard
 docker run --net=gs-network --name=gs-server -d -p 29000:29000 --restart=unless-stopped grab-site:latest
 
-# Create a grab-site instance that crawls a website and stores it in ./data/example.com
 # Ensure that ./data exists and container has write privileges on volume
+mkdir -p data
+
+# Create a grab-site instance that crawls a website and stores it in ./data/example.com
 docker run --net=gs-network --rm -d -v "$(pwd)/data:/data:rw" grab-site:latest grab-site https://www.example.com/ --delay=100-250 --concurrency=4 --no-offsite-links
 ```
 
