@@ -398,6 +398,26 @@ Please see [Get Docker](https://docs.docker.com/get-docker/) to get started.
 
 #### Quick Start
 
+##### Debian Docker Daemon
+
+On a Debian Docker daemon, you will want to run everything as the grab-site user. The following will create that user on the host machine with the same uid/gid as the user/group in the container and add it to the docker group that should have been set up with your Docker daemon installation.
+
+```sh
+sudo addgroup --system --gid 10000 grab-site
+sudo adduser --system --uid 10000 --gid 10000 grab-site
+sudo usermod -aG docker grab-site
+```
+
+As it is configured, the grab-site user does not allow a direct login. If you are a user that belongs to the sudoers group, you can run:
+
+```sh
+sudo su -l grab-site -s /bin/bash
+```
+
+Once you are accessing a bash terminal under the grab-site user, you can follow all the commands.
+
+#### Data directory
+
 Make sure you have cloned the repository and have created the data directory:
 
 ```sh
@@ -405,6 +425,14 @@ mkdir -p ./data
 ```
 
 On Windows, this directory will automatically create itself when it is used as the target for the mount in the run step.
+
+##### Configuration
+
+The paths in `--input-file`, `--import-ignores`, `--dir`, `--finished-warc-dir`, and `--wpull-args` refer to paths in the container.
+
+The instructions in this document mount the `./data` directory to `/data` within the container. This is the current working directory, while the application itself is stored within `/app` and included in the `$PATH` environmental variable.
+
+Considering the Docker configuration in addition to the default configuration of grab-site, your crawls will be shared across all `grab-site` instances, and each instance will be working in its own subfolder, per-crawl in the `/data` directory.
 
 #### Docker Build
 
