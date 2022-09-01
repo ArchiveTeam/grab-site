@@ -672,8 +672,8 @@ Thanks to [JustAnotherArchivist](https://github.com/JustAnotherArchivist)
 for investigating my wpull issues.
 
 Thanks to [BrowserStack](https://www.browserstack.com/) for providing free
-browser testing for grab-site, which we use to make sure the dashboard still
-works in Edge and Safari.
+browser testing for grab-site, which we use to make sure the dashboard works
+in various browsers.
 
 [<img src="https://user-images.githubusercontent.com/211271/29110431-887941d2-7cde-11e7-8c2f-199d85c5a3b5.png" height="30" alt="BrowserStack Logo">](https://www.browserstack.com/)
 
