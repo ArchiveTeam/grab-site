@@ -39,7 +39,7 @@ on a specific version of Python (3.7 or 3.8) and with specific dependency versio
 
 **Contents**
 
-- [Install on Ubuntu 16.04, 18.04, 20.04, Debian 9 (stretch), Debian 10 (buster), Debian 11 (bullseye)](#install-on-ubuntu-1604-1804-2004-debian-9-stretch-debian-10-buster-debian-11-bullseye)
+- [Install on Ubuntu 18.04, 20.04, 22.04, Debian 10 (buster), Debian 11 (bullseye)](#install-on-ubuntu-1804-2004-2204-debian-10-buster-debian-11-bullseye)
 - [Install on NixOS](#install-on-nixos)
 - [Install on another distribution lacking Python 3.7.x or 3.8.x](#install-on-another-distribution-lacking-python-37x-or-38x)
 - [Install on macOS](#install-on-macos)
@@ -63,7 +63,7 @@ on a specific version of Python (3.7 or 3.8) and with specific dependency versio
 
 
 
-Install on Ubuntu 16.04, 18.04, 20.04, Debian 9 (stretch), Debian 10 (buster), Debian 11 (bullseye)
+Install on Ubuntu 18.04, 20.04, 22.04, Debian 10 (buster), Debian 11 (bullseye)
 ---
 
 1.	On Debian, use `su` to become root if `sudo` is not configured to give you access.
@@ -84,8 +84,8 @@ Install on Ubuntu 16.04, 18.04, 20.04, Debian 9 (stretch), Debian 10 (buster), D
 	wget https://raw.githubusercontent.com/pyenv/pyenv-installer/master/bin/pyenv-installer
 	chmod +x pyenv-installer
 	./pyenv-installer
-	~/.pyenv/bin/pyenv install 3.8.13
-	~/.pyenv/versions/3.8.13/bin/python -m venv ~/gs-venv
+	~/.pyenv/bin/pyenv install 3.8.15
+	~/.pyenv/versions/3.8.15/bin/python -m venv ~/gs-venv
 	~/gs-venv/bin/pip install --no-binary lxml --upgrade git+https://github.com/ArchiveTeam/grab-site
 	```
 
@@ -106,16 +106,8 @@ Install on NixOS
 As a **non-root** user:
 
 ```
-nix-env -f https://github.com/ivan/nixpkgs/archive/release-22.05-latest-grab-site.tar.gz -iA grab-site
+nix-env -f https://github.com/NixOS/nixpkgs/archive/release-22.11.tar.gz -iA grab-site
 ```
-(to install the latest version of grab-site)
-
-OR
-
-```
-nix-env -f https://github.com/NixOS/nixpkgs/archive/release-22.05.tar.gz -iA grab-site
-```
-(to install grab-site 2.2.2 from the official NixOS/nixpkgs)
 
 
 
@@ -138,16 +130,8 @@ grab-site and its dependencies are available in [nixpkgs](https://github.com/Nix
 3.	As the **non-root** user:
 
 	```
-	nix-env -f https://github.com/ivan/nixpkgs/archive/release-22.05-latest-grab-site.tar.gz -iA grab-site
+	nix-env -f https://github.com/NixOS/nixpkgs/archive/release-22.11.tar.gz -iA grab-site
 	```
-	(to install the latest version of grab-site)
-
-	OR
-
-	```
-	nix-env -f https://github.com/NixOS/nixpkgs/archive/release-22.05.tar.gz -iA grab-site
-	```
-	(to install grab-site 2.2.2 from the official NixOS/nixpkgs)
 
 	and then restart your shell (e.g. by opening a new terminal tab/window).
 
@@ -233,7 +217,7 @@ On Windows 10 Fall Creators Update (1703) or newer:
 
 7. Wait for install and create a user when prompted.
 
-8. Follow the [Ubuntu 16.04, 18.04, 20.04, Debian 9 (stretch), Debian 10 (buster)](#install-on-ubuntu-1604-1804-2004-debian-9-stretch-debian-10-buster-debian-11-bullseye) steps.
+8. Follow the [Ubuntu 18.04, 20.04, 22.04, Debian 10 (buster), Debian 11 (bullseye)](#install-on-ubuntu-1804-2004-2204-debian-10-buster-debian-11-bullseye) steps.
 
 
 
@@ -846,6 +830,12 @@ the many wpull 2.x fixes that were rolled into
 
 Thanks to [JustAnotherArchivist](https://github.com/JustAnotherArchivist)
 for investigating my wpull issues.
+
+Thanks to [BrowserStack](https://www.browserstack.com/) for providing free
+browser testing for grab-site, which we use to make sure the dashboard works
+in various browsers.
+
+[<img src="https://user-images.githubusercontent.com/211271/29110431-887941d2-7cde-11e7-8c2f-199d85c5a3b5.png" height="30" alt="BrowserStack Logo">](https://www.browserstack.com/)
 
 
 
