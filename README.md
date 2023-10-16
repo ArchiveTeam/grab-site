@@ -39,26 +39,43 @@ on a specific version of Python (3.7 or 3.8) and with specific dependency versio
 
 **Contents**
 
-- [Install on Ubuntu 18.04, 20.04, 22.04, Debian 10 (buster), Debian 11 (bullseye)](#install-on-ubuntu-1804-2004-2204-debian-10-buster-debian-11-bullseye)
-- [Install on NixOS](#install-on-nixos)
-- [Install on another distribution lacking Python 3.7.x or 3.8.x](#install-on-another-distribution-lacking-python-37x-or-38x)
-- [Install on macOS](#install-on-macos)
-- [Install on Windows 10 (experimental)](#install-on-windows-10-experimental)
-- [Upgrade an existing install](#upgrade-an-existing-install)
-- [Usage](#usage)
-  - [`grab-site` options, ordered by importance](#grab-site-options-ordered-by-importance)
-  - [Warnings](#warnings)
-  - [Tips for specific websites](#tips-for-specific-websites)
-- [Changing ignores during the crawl](#changing-ignores-during-the-crawl)
-- [Inspecting the URL queue](#inspecting-the-url-queue)
-- [Preventing a crawl from queuing any more URLs](#preventing-a-crawl-from-queuing-any-more-urls)
-- [Stopping a crawl](#stopping-a-crawl)
-- [Advanced `gs-server` options](#advanced-gs-server-options)
-- [Viewing the content in your WARC archives](#viewing-the-content-in-your-warc-archives)
-- [Inspecting WARC files in the terminal](#inspecting-warc-files-in-the-terminal)
-- [Automatically pausing grab-site processes when free disk is low](#automatically-pausing-grab-site-processes-when-free-disk-is-low)
-- [Thanks](#thanks)
-- [Help](#help)
+- [grab-site](#grab-site)
+	- [Install on Ubuntu 18.04, 20.04, 22.04, Debian 10 (buster), Debian 11 (bullseye)](#install-on-ubuntu-1804-2004-2204-debian-10-buster-debian-11-bullseye)
+	- [Install on NixOS](#install-on-nixos)
+	- [Install on another distribution lacking Python 3.7.x or 3.8.x](#install-on-another-distribution-lacking-python-37x-or-38x)
+	- [Install on macOS](#install-on-macos)
+		- [Using Homebrew (**Intel Mac**)](#using-homebrew-intel-mac)
+		- [Using Homebrew (**M1 Mac**)](#using-homebrew-m1-mac)
+	- [Install on Windows 10 (experimental)](#install-on-windows-10-experimental)
+	- [Upgrade an existing install](#upgrade-an-existing-install)
+	- [Usage](#usage)
+		- [`grab-site` options, ordered by importance](#grab-site-options-ordered-by-importance)
+		- [Warnings](#warnings)
+		- [Tips for specific websites](#tips-for-specific-websites)
+			- [Website requiring login / cookies](#website-requiring-login--cookies)
+			- [Static websites; WordPress blogs; Discourse forums](#static-websites-wordpress-blogs-discourse-forums)
+			- [Blogger / blogspot.com blogs](#blogger--blogspotcom-blogs)
+			- [Tumblr blogs](#tumblr-blogs)
+			- [Subreddits](#subreddits)
+			- [Directory listings ("Index of ...")](#directory-listings-index-of-)
+			- [Very large websites](#very-large-websites)
+			- [Websites that are likely to ban you for crawling fast](#websites-that-are-likely-to-ban-you-for-crawling-fast)
+			- [MediaWiki sites with English language](#mediawiki-sites-with-english-language)
+			- [MediaWiki sites with non-English language](#mediawiki-sites-with-non-english-language)
+			- [Forums that aren't Discourse](#forums-that-arent-discourse)
+			- [GitHub issues / pull requests](#github-issues--pull-requests)
+			- [Websites whose domains have just expired but are still up at the webhost](#websites-whose-domains-have-just-expired-but-are-still-up-at-the-webhost)
+			- [twitter.com/user](#twittercomuser)
+	- [Changing ignores during the crawl](#changing-ignores-during-the-crawl)
+	- [Inspecting the URL queue](#inspecting-the-url-queue)
+	- [Preventing a crawl from queuing any more URLs](#preventing-a-crawl-from-queuing-any-more-urls)
+	- [Stopping a crawl](#stopping-a-crawl)
+	- [Advanced `gs-server` options](#advanced-gs-server-options)
+	- [Viewing the content in your WARC archives](#viewing-the-content-in-your-warc-archives)
+	- [Inspecting WARC files in the terminal](#inspecting-warc-files-in-the-terminal)
+	- [Automatically pausing grab-site processes when free disk is low](#automatically-pausing-grab-site-processes-when-free-disk-is-low)
+	- [Thanks](#thanks)
+	- [Help](#help)
 
 
 
@@ -108,6 +125,11 @@ As a **non-root** user:
 nix-env -f https://github.com/NixOS/nixpkgs/archive/release-22.11.tar.gz -iA grab-site
 ```
 
+or for nix profiles:
+
+```
+nix profile install nixpkgs/release-22.11#grab-site
+```
 
 
 Install on another distribution lacking Python 3.7.x or 3.8.x
