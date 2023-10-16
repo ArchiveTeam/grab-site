@@ -108,6 +108,11 @@ As a **non-root** user:
 nix-env -f https://github.com/NixOS/nixpkgs/archive/release-22.11.tar.gz -iA grab-site
 ```
 
+or, if you are using profiles (ie when you have flakes enabled):
+
+```
+nix profile install nixpkgs/release-22.11#grab-site
+```
 
 
 Install on another distribution lacking Python 3.7.x or 3.8.x
