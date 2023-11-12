@@ -104,8 +104,6 @@ Install on NixOS
 
 grab-site was removed from nixpkgs master; 23.05 is the last release to contain grab-site.
 
-As a **non-root** user:
-
 ```
 nix-env -f https://github.com/NixOS/nixpkgs/archive/release-23.05.tar.gz -iA grab-site
 ```
