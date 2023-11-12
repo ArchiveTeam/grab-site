@@ -1,0 +1,13 @@
+[[source]]
+url = "https://pypi.org/simple"
+verify_ssl = true
+name = "pypi"
+
+[packages]
+grab-site = {editable = true, path = "."}
+
+[dev-packages]
+
+[requires]
+python_version = "3.10" # feel-free to set this version to your python version
+# pipenv is fickle about this
