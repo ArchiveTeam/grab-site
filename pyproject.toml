@@ -14,14 +14,10 @@ classifiers = [
 dependencies = [
 	"autobahn>=23.6.2",
 	"click>=8.1.7",
-	# TODO: https://github.com/facebook/pyre2/issues/24 fb-re2>=1.0.7
-	"fb-re2 @ https://github.com/facebook/pyre2/tarball/refs/pull/25/merge#egg=fb-re2",
+	"grab-site[fix-re2, fix-wpull]",
 	"lmdb>=1.4.1",
-	"manhole>=1.8.0",
+	"txaio>=23.1.1",
 	"websockets>=12.0",
-	# TODO: https://github.com/ArchiveTeam/grab-site/issues/198 SQLAlchemy>=1.4
-	# TODO: https://github.com/ArchiveTeam/wpull/issues/404 wpull>=2.0.1
-	"wpull @ https://github.com/matthewcen/ludios_wpull/tarball/master#egg=wpull-3.0.9",
 ]
 description = "The archivist's web crawler: WARC output, dashboard for all crawls, dynamic ignore patterns"
 dynamic = ["version"]
@@ -29,12 +25,20 @@ name = "grab-site"
 requires-python = ">=3.9"
 
 [project.optional-dependencies]
-chardet = [
-	# TODO: https://github.com/python/cpython/issues/79315 python>=3.11
-	# TODO: https://github.com/PyYoshi/cChardet/issues/81 cchardet>=2.1.7
-	"faust-cchardet>=2.1.19",
+fix-re2 = [
+	# TODO: https://github.com/facebook/pyre2/issues/24 fb-re2>=1.0.7
+	"fb-re2 @ https://github.com/facebook/pyre2/tarball/refs/pull/25/merge#egg=fb-re2",
 ]
-psutil = ["psutil>=5.9.6"]
+fix-wpull = [
+	"manhole>=1.8.0",
+	"packaging>=21.2",
+	"psutil>=5.9.6",
+	# TODO: https://github.com/ArchiveTeam/grab-site/issues/198 SQLAlchemy>=1.4
+	# TODO: https://github.com/ArchiveTeam/wpull/issues/404 wpull>=2.0.1
+	"wpull @ https://github.com/matthewcen/ludios_wpull/tarball/master#egg=wpull-3.0.9",
+	# TODO: https://github.com/tibonihoo/yapsy/issues/16 python>=3.12
+	"yapsy @ https://github.com/tibonihoo/yapsy/tarball/master#egg=yapsy&subdirectory=package",
+]
 
 [project.scripts]
 grab-site = "grab_site.main:main"
