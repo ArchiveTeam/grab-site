@@ -43,3 +43,6 @@ gs-server = "grab_site.server:main"
 
 [project.urls]
 homepage = "https://ludios.org/grab-site"
+
+[tool.setuptools.package-data]
+grab_site = ["*.html", "*.ico", "*.txt", "ignore_sets/*"]
