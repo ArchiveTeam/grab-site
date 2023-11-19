@@ -1,4 +1,0 @@
-#!/usr/bin/env python3
-
-from libgrabsite import dump_urls
-dump_urls.main()
