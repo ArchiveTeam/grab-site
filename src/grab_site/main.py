@@ -10,12 +10,12 @@ import binascii
 import datetime
 import shlex
 import click
-import libgrabsite
+import grab_site
 
 def print_version(ctx, param, value):
 	if not value or ctx.resilient_parsing:
 		return
-	click.echo(libgrabsite.__version__)
+	click.echo(grab_site.__version__)
 	ctx.exit()
 
 def replace_2arg(args, arg, replacement):
@@ -220,7 +220,7 @@ permanent_error_status_codes, which_wpull_args_partial, which_wpull_command):
 	else:
 		working_dir = os.path.abspath(dir)
 
-	LIBGRABSITE = os.path.dirname(libgrabsite.__file__)
+	LIBGRABSITE = os.path.dirname(grab_site.__file__)
 	args = [
 		"--debug" if debug else "--quiet",
 		"-U",                      ua,

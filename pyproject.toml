@@ -29,9 +29,9 @@ requires-python = ">=3"
 chardet = ["cchardet>=1.0.0"]
 
 [project.scripts]
-grab-site = "libgrabsite.main:main"
-gs-dump-urls = "libgrabsite.dump_urls:main"
-gs-server = "libgrabsite.server:main"
+grab-site = "grab_site.main:main"
+gs-dump-urls = "grab_site.dump_urls:main"
+gs-server = "grab_site.server:main"
 
 [project.urls]
 homepage = "https://ludios.org/grab-site"

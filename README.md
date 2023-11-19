@@ -18,7 +18,7 @@ grab-site gives you
 	This allows you to skip the crawling of junk URLs that would
 	otherwise prevent your crawl from ever finishing.  See below.
 
-*	an extensively tested default ignore set ([global](https://github.com/ArchiveTeam/grab-site/blob/master/libgrabsite/ignore_sets/global))
+*	an extensively tested default ignore set ([global](https://github.com/ArchiveTeam/grab-site/blob/master/src/grab_site/ignore_sets/global))
 	as well as additional (optional) ignore sets for forums, reddit, etc.
 
 *	duplicate page detection: links are not followed on pages whose
@@ -274,14 +274,14 @@ Options can come before or after the URL.
 *	`--igsets=IGSET1,IGSET2`: use ignore sets `IGSET1` and `IGSET2`.
 
 	Ignore sets are used to avoid requesting junk URLs using a pre-made set of
-	regular expressions.  See [the full list of available ignore sets](https://github.com/ArchiveTeam/grab-site/tree/master/libgrabsite/ignore_sets).
+	regular expressions.  See [the full list of available ignore sets](https://github.com/ArchiveTeam/grab-site/tree/master/src/grab_site/ignore_sets).
 
-	The [global](https://github.com/ArchiveTeam/grab-site/blob/master/libgrabsite/ignore_sets/global)
+	The [global](https://github.com/ArchiveTeam/grab-site/blob/master/src/grab_site/ignore_sets/global)
 	ignore set is implied and enabled unless `--no-global-igset` is used.
 
 	The ignore sets can be changed during the crawl by editing the `DIR/igsets` file.
 
-*	`--no-global-igset`: don't add the [global](https://github.com/ArchiveTeam/grab-site/blob/master/libgrabsite/ignore_sets/global) ignore set.
+*	`--no-global-igset`: don't add the [global](https://github.com/ArchiveTeam/grab-site/blob/master/src/grab_site/ignore_sets/global) ignore set.
 
 *	`--no-offsite-links`: avoid following links to a depth of 1 on other domains.
 
@@ -431,7 +431,7 @@ Either don't crawl from Europe (because tumblr redirects to a GDPR `/privacy/con
 --ua "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:64.0) Gecko/20100101 Firefox/70.0 but not really nor Googlebot/2.1"
 ```
 
-Use [`--igsets=singletumblr`](https://github.com/ArchiveTeam/grab-site/blob/master/libgrabsite/ignore_sets/singletumblr)
+Use [`--igsets=singletumblr`](https://github.com/ArchiveTeam/grab-site/blob/master/src/grab_site/ignore_sets/singletumblr)
 to avoid crawling the homepages of other tumblr blogs.
 
 If you don't care about who liked or reblogged a post, add `\?from_c=` to the
@@ -443,7 +443,7 @@ hiding the page content with CSS.  You are still likely to get a complete crawl.
 
 #### Subreddits
 
-Use [`--igsets=reddit`](https://github.com/ArchiveTeam/grab-site/blob/master/libgrabsite/ignore_sets/reddit)
+Use [`--igsets=reddit`](https://github.com/ArchiveTeam/grab-site/blob/master/src/grab_site/ignore_sets/reddit)
 and add a `/` at the end of the URL to avoid crawling all subreddits.
 
 When crawling a subreddit, you **must** get the casing of the subreddit right
@@ -476,18 +476,18 @@ Use `--concurrency=1 --delay=500-1500`.
 
 #### MediaWiki sites with English language
 
-Use [`--igsets=mediawiki`](https://github.com/ArchiveTeam/grab-site/blob/master/libgrabsite/ignore_sets/mediawiki).
+Use [`--igsets=mediawiki`](https://github.com/ArchiveTeam/grab-site/blob/master/src/grab_site/ignore_sets/mediawiki).
 Note that this ignore set ignores old page revisions.
 
 #### MediaWiki sites with non-English language
 
 You will probably have to add ignores with translated `Special:*` URLs based on
-[ignore_sets/mediawiki](https://github.com/ArchiveTeam/grab-site/blob/master/libgrabsite/ignore_sets/mediawiki).
+[ignore_sets/mediawiki](https://github.com/ArchiveTeam/grab-site/blob/master/src/grab_site/ignore_sets/mediawiki).
 
 #### Forums that aren't Discourse
 
 Forums require more manual intervention with ignore patterns.
-[`--igsets=forums`](https://github.com/ArchiveTeam/grab-site/blob/master/libgrabsite/ignore_sets/forums)
+[`--igsets=forums`](https://github.com/ArchiveTeam/grab-site/blob/master/src/grab_site/ignore_sets/forums)
 is often useful for non-SMF forums, but you will have to add other ignore
 patterns, including one to ignore individual-forum-post pages if there are
 too many posts to crawl.  (Generally, crawling the thread pages is enough.)
