@@ -79,4 +79,7 @@ COPY ./Dockerfile ${WORKDIR}
 
 EXPOSE 29000
 
+VOLUME  /tmp/gs
+WORKDIR /tmp/gs
+
 CMD ["gs-server"]

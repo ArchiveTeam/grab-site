@@ -65,13 +65,7 @@ Install using Docker
 ---
 
 ```shell
-docker volume create gs-data
-docker run --rm \
-	--name gs-0 \
-	--publish 29000:29000 \
-	--volume gs-data:/tmp/gs \
-	--workdir /tmp/gs \
-	ghcr.io/archiveteam/grab-site:latest
+docker run --rm --name gs-0 --publish 29000:29000 ghcr.io/archiveteam/grab-site:latest
 docker exec gs-0 grab-site --debug "https://example.org"
 docker exec gs-0 gs-dump-urls "/tmp/gs/<url>-<date>-<hash>/wpull.db" done
 ```
