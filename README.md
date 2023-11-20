@@ -35,13 +35,13 @@ please [file an issue](https://github.com/ArchiveTeam/grab-site/issues) - thank 
 The installation methods below are the only ones supported in our GitHub issues.
 Please do not modify the installation steps unless you really know what you're
 doing, with both Python packaging and your operating system. grab-site runs
-on a specific version of Python (3.7 or 3.8) and with specific dependency versions.
+on a specific version of Python (3.9, 3.10, 3.11, 3.12) and with specific dependency versions.
 
 **Contents**
 
-- [Install on Ubuntu 18.04, 20.04, 22.04, Debian 10 (buster), Debian 11 (bullseye)](#install-on-ubuntu-1804-2004-2204-debian-10-buster-debian-11-bullseye)
+- [Install using Docker](#install-using-docker)
+- [Install on Debian](#install-on-debian)
 - [Install on NixOS](#install-on-nixos)
-- [Install on another distribution lacking Python 3.7.x or 3.8.x](#install-on-another-distribution-lacking-python-37x-or-38x)
 - [Install on macOS](#install-on-macos)
 - [Install on Windows 10 (experimental)](#install-on-windows-10-experimental)
 - [Upgrade an existing install](#upgrade-an-existing-install)
@@ -61,42 +61,36 @@ on a specific version of Python (3.7 or 3.8) and with specific dependency versio
 - [Help](#help)
 
 
-
-Install on Ubuntu 18.04, 20.04, 22.04, Debian 10 (buster), Debian 11 (bullseye)
+Install using Docker
 ---
 
-1.	On Debian, use `su` to become root if `sudo` is not configured to give you access.
+```shell
+docker volume create gs-data
+docker run --rm \
+	--name gs-0 \
+	--publish 29000:29000 \
+	--volume gs-data:/tmp/gs \
+	--workdir /tmp/gs \
+	ghcr.io/archiveteam/grab-site:latest
+docker exec gs-0 grab-site --debug "https://example.org"
+docker exec gs-0 gs-dump-urls "/tmp/gs/<url>-<date>-<hash>/wpull.db" done
+```
 
-	```
-	sudo apt-get update
-	sudo apt-get install --no-install-recommends \
-	    wget ca-certificates git build-essential libssl-dev zlib1g-dev \
-	    libbz2-dev libreadline-dev libsqlite3-dev libffi-dev libxml2-dev \
-	    libxslt1-dev libre2-dev pkg-config
-	```
 
-	If you see `Unable to locate package`, run the two commands again.
 
-2.	As a **non-root** user:
+Install on Debian
+---
 
-	```
-	wget https://raw.githubusercontent.com/pyenv/pyenv-installer/master/bin/pyenv-installer
-	chmod +x pyenv-installer
-	./pyenv-installer
-	~/.pyenv/bin/pyenv install 3.8.15
-	~/.pyenv/versions/3.8.15/bin/python -m venv ~/gs-venv
-	~/gs-venv/bin/pip install --no-binary lxml --upgrade git+https://github.com/ArchiveTeam/grab-site
-	```
+```
+sudo apt-get -y update
+sudo apt-get -y install --no-install-recommends build-essential libre2-dev libxml2-dev libxslt-dev pkg-config zlib1g-dev
+python3 -m venv .venv
+. .venv/bin/activate
+pip install --no-binary lxml .
+```
 
-	`--no-binary lxml` is necessary for the html5-parser build.
+`--no-binary lxml` is necessary for the html5-parser build.
 
-3.	Add this to your `~/.bashrc` or `~/.zshrc`:
-
-	```
-	PATH="$PATH:$HOME/gs-venv/bin"
-	```
-
-	and then restart your shell (e.g. by opening a new terminal tab/window).
 
 
 Install on NixOS
@@ -110,32 +104,7 @@ nix-env -f https://github.com/NixOS/nixpkgs/archive/release-23.05.tar.gz -iA gra
 
 
 
-Install on another distribution lacking Python 3.7.x or 3.8.x
----
-
-grab-site and its dependencies are available in [nixpkgs](https://github.com/NixOS/nixpkgs), which can be used on any Linux distribution.
-
-1.	As root:
-
-	Where `USER` is your non-root username:
-
-	```
-	mkdir /nix
-	chown USER:USER /nix
-	```
-
-2.	As the **non-root** user, install Nix: https://nixos.org/nix/download.html
-
-3.	As the **non-root** user:
-
-	```
-	nix-env -f https://github.com/NixOS/nixpkgs/archive/release-23.05.tar.gz -iA grab-site
-	```
-
-	and then restart your shell (e.g. by opening a new terminal tab/window).
-
-
-
+<!-- TODO: update sections below -->
 Install on macOS
 ---
 
