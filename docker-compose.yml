@@ -1,0 +1,17 @@
+version: "3.9"
+
+services:
+    app:
+        build:
+            context: .
+            dockerfile: Dockerfile
+        image: ghcr.io/archiveteam/grab-site:latest
+        ports:
+            - 29000:29000
+        pull_policy: if_not_present
+        volumes:
+            - app_data:/tmp/grab-site
+        working_dir: /tmp/grab-site
+
+volumes:
+    app_data:
