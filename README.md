@@ -18,7 +18,7 @@ grab-site gives you
 	This allows you to skip the crawling of junk URLs that would
 	otherwise prevent your crawl from ever finishing.  See below.
 
-*	an extensively tested default ignore set ([global](https://github.com/ArchiveTeam/grab-site/blob/master/libgrabsite/ignore_sets/global))
+*	an extensively tested default ignore set ([global](https://github.com/ArchiveTeam/grab-site/blob/master/src/grab_site/ignore_sets/global))
 	as well as additional (optional) ignore sets for forums, reddit, etc.
 
 *	duplicate page detection: links are not followed on pages whose
@@ -35,13 +35,13 @@ please [file an issue](https://github.com/ArchiveTeam/grab-site/issues) - thank 
 The installation methods below are the only ones supported in our GitHub issues.
 Please do not modify the installation steps unless you really know what you're
 doing, with both Python packaging and your operating system. grab-site runs
-on a specific version of Python (3.7 or 3.8) and with specific dependency versions.
+on a specific version of Python (3.9, 3.10, 3.11, 3.12) and with specific dependency versions.
 
 **Contents**
 
-- [Install on Ubuntu 18.04, 20.04, 22.04, Debian 10 (buster), Debian 11 (bullseye)](#install-on-ubuntu-1804-2004-2204-debian-10-buster-debian-11-bullseye)
+- [Install using Docker](#install-using-docker)
+- [Install on Debian](#install-on-debian)
 - [Install on NixOS](#install-on-nixos)
-- [Install on another distribution lacking Python 3.7.x or 3.8.x](#install-on-another-distribution-lacking-python-37x-or-38x)
 - [Install on macOS](#install-on-macos)
 - [Install on Windows 10 (experimental)](#install-on-windows-10-experimental)
 - [Upgrade an existing install](#upgrade-an-existing-install)
@@ -61,42 +61,35 @@ on a specific version of Python (3.7 or 3.8) and with specific dependency versio
 - [Help](#help)
 
 
-
-Install on Ubuntu 18.04, 20.04, 22.04, Debian 10 (buster), Debian 11 (bullseye)
+Install using Docker
 ---
 
-1.	On Debian, use `su` to become root if `sudo` is not configured to give you access.
+For quick usage with debug logging and with cleanup of the container:
+```shell
+docker run --rm --detach --name gs-0 --publish 29000:29000 --volume "${PWD}/data:/tmp/gs" ghcr.io/archiveteam/grab-site:latest
+docker exec gs-0 grab-site --debug --no-offsite-links "https://example.org"
+docker stop gs-0
+```
 
-	```
-	sudo apt-get update
-	sudo apt-get install --no-install-recommends \
-	    wget ca-certificates git build-essential libssl-dev zlib1g-dev \
-	    libbz2-dev libreadline-dev libsqlite3-dev libffi-dev libxml2-dev \
-	    libxslt1-dev libre2-dev pkg-config
-	```
+If you want to extract the list of "done" urls:
+```shell
+docker exec gs-0 gs-dump-urls "/tmp/gs/<url>-<date>-<hash>/wpull.db" done
+```
 
-	If you see `Unable to locate package`, run the two commands again.
 
-2.	As a **non-root** user:
+Install on Debian
+---
 
-	```
-	wget https://raw.githubusercontent.com/pyenv/pyenv-installer/master/bin/pyenv-installer
-	chmod +x pyenv-installer
-	./pyenv-installer
-	~/.pyenv/bin/pyenv install 3.8.15
-	~/.pyenv/versions/3.8.15/bin/python -m venv ~/gs-venv
-	~/gs-venv/bin/pip install --no-binary lxml --upgrade git+https://github.com/ArchiveTeam/grab-site
-	```
+```
+sudo apt-get -y update
+sudo apt-get -y install --no-install-recommends build-essential libre2-dev libxml2-dev libxslt-dev pkg-config zlib1g-dev
+python3 -m venv .venv
+. .venv/bin/activate
+pip install --no-binary lxml .
+```
 
-	`--no-binary lxml` is necessary for the html5-parser build.
+`--no-binary lxml` is necessary for the html5-parser build.
 
-3.	Add this to your `~/.bashrc` or `~/.zshrc`:
-
-	```
-	PATH="$PATH:$HOME/gs-venv/bin"
-	```
-
-	and then restart your shell (e.g. by opening a new terminal tab/window).
 
 
 Install on NixOS
@@ -110,32 +103,7 @@ nix-env -f https://github.com/NixOS/nixpkgs/archive/release-23.05.tar.gz -iA gra
 
 
 
-Install on another distribution lacking Python 3.7.x or 3.8.x
----
-
-grab-site and its dependencies are available in [nixpkgs](https://github.com/NixOS/nixpkgs), which can be used on any Linux distribution.
-
-1.	As root:
-
-	Where `USER` is your non-root username:
-
-	```
-	mkdir /nix
-	chown USER:USER /nix
-	```
-
-2.	As the **non-root** user, install Nix: https://nixos.org/nix/download.html
-
-3.	As the **non-root** user:
-
-	```
-	nix-env -f https://github.com/NixOS/nixpkgs/archive/release-23.05.tar.gz -iA grab-site
-	```
-
-	and then restart your shell (e.g. by opening a new terminal tab/window).
-
-
-
+<!-- TODO: update sections below -->
 Install on macOS
 ---
 
@@ -274,14 +242,14 @@ Options can come before or after the URL.
 *	`--igsets=IGSET1,IGSET2`: use ignore sets `IGSET1` and `IGSET2`.
 
 	Ignore sets are used to avoid requesting junk URLs using a pre-made set of
-	regular expressions.  See [the full list of available ignore sets](https://github.com/ArchiveTeam/grab-site/tree/master/libgrabsite/ignore_sets).
+	regular expressions.  See [the full list of available ignore sets](https://github.com/ArchiveTeam/grab-site/tree/master/src/grab_site/ignore_sets).
 
-	The [global](https://github.com/ArchiveTeam/grab-site/blob/master/libgrabsite/ignore_sets/global)
+	The [global](https://github.com/ArchiveTeam/grab-site/blob/master/src/grab_site/ignore_sets/global)
 	ignore set is implied and enabled unless `--no-global-igset` is used.
 
 	The ignore sets can be changed during the crawl by editing the `DIR/igsets` file.
 
-*	`--no-global-igset`: don't add the [global](https://github.com/ArchiveTeam/grab-site/blob/master/libgrabsite/ignore_sets/global) ignore set.
+*	`--no-global-igset`: don't add the [global](https://github.com/ArchiveTeam/grab-site/blob/master/src/grab_site/ignore_sets/global) ignore set.
 
 *	`--no-offsite-links`: avoid following links to a depth of 1 on other domains.
 
@@ -431,7 +399,7 @@ Either don't crawl from Europe (because tumblr redirects to a GDPR `/privacy/con
 --ua "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:64.0) Gecko/20100101 Firefox/70.0 but not really nor Googlebot/2.1"
 ```
 
-Use [`--igsets=singletumblr`](https://github.com/ArchiveTeam/grab-site/blob/master/libgrabsite/ignore_sets/singletumblr)
+Use [`--igsets=singletumblr`](https://github.com/ArchiveTeam/grab-site/blob/master/src/grab_site/ignore_sets/singletumblr)
 to avoid crawling the homepages of other tumblr blogs.
 
 If you don't care about who liked or reblogged a post, add `\?from_c=` to the
@@ -443,7 +411,7 @@ hiding the page content with CSS.  You are still likely to get a complete crawl.
 
 #### Subreddits
 
-Use [`--igsets=reddit`](https://github.com/ArchiveTeam/grab-site/blob/master/libgrabsite/ignore_sets/reddit)
+Use [`--igsets=reddit`](https://github.com/ArchiveTeam/grab-site/blob/master/src/grab_site/ignore_sets/reddit)
 and add a `/` at the end of the URL to avoid crawling all subreddits.
 
 When crawling a subreddit, you **must** get the casing of the subreddit right
@@ -476,18 +444,18 @@ Use `--concurrency=1 --delay=500-1500`.
 
 #### MediaWiki sites with English language
 
-Use [`--igsets=mediawiki`](https://github.com/ArchiveTeam/grab-site/blob/master/libgrabsite/ignore_sets/mediawiki).
+Use [`--igsets=mediawiki`](https://github.com/ArchiveTeam/grab-site/blob/master/src/grab_site/ignore_sets/mediawiki).
 Note that this ignore set ignores old page revisions.
 
 #### MediaWiki sites with non-English language
 
 You will probably have to add ignores with translated `Special:*` URLs based on
-[ignore_sets/mediawiki](https://github.com/ArchiveTeam/grab-site/blob/master/libgrabsite/ignore_sets/mediawiki).
+[ignore_sets/mediawiki](https://github.com/ArchiveTeam/grab-site/blob/master/src/grab_site/ignore_sets/mediawiki).
 
 #### Forums that aren't Discourse
 
 Forums require more manual intervention with ignore patterns.
-[`--igsets=forums`](https://github.com/ArchiveTeam/grab-site/blob/master/libgrabsite/ignore_sets/forums)
+[`--igsets=forums`](https://github.com/ArchiveTeam/grab-site/blob/master/src/grab_site/ignore_sets/forums)
 is often useful for non-SMF forums, but you will have to add other ignore
 patterns, including one to ignore individual-forum-post pages if there are
 too many posts to crawl.  (Generally, crawling the thread pages is enough.)

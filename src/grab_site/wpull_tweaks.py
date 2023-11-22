@@ -6,8 +6,8 @@ from wpull.database.sqltable import SQLiteURLTable
 from wpull.document.html import HTMLReader
 from wpull.processor.rule import ProcessingRule
 
-from libgrabsite import dupespotter, __version__
-from libgrabsite.dupes import DupesOnDisk
+from grab_site import dupespotter, __version__
+from grab_site.dupes import DupesOnDisk
 
 
 def response_body_size(response) -> int:

@@ -1,11 +1,11 @@
 import click
 import sqlite3
-import libgrabsite
+import grab_site
 
 def print_version(ctx, param, value):
 	if not value or ctx.resilient_parsing:
 		return
-	click.echo(libgrabsite.__version__)
+	click.echo(grab_site.__version__)
 	ctx.exit()
 
 

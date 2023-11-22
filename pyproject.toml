@@ -1,0 +1,52 @@
+[build-system]
+build-backend = "setuptools.build_meta"
+requires = ["setuptools>=68.2.2"]
+
+[project]
+authors = [{ email = "ivan@ludios.org", name = "Ivan Kozik" }]
+classifiers = [
+	"Development Status :: 5 - Production/Stable",
+	"Intended Audience :: End Users/Desktop",
+	"License :: OSI Approved :: MIT License",
+	"Programming Language :: Python :: 3",
+	"Topic :: Internet :: WWW/HTTP",
+]
+dependencies = [
+	"autobahn>=23.6.2",
+	"click>=8.1.7",
+	"grab-site[fix-re2, fix-wpull]",
+	"lmdb>=1.4.1",
+	"txaio>=23.1.1",
+	"websockets>=12.0",
+]
+description = "The archivist's web crawler: WARC output, dashboard for all crawls, dynamic ignore patterns"
+dynamic = ["version"]
+name = "grab-site"
+requires-python = ">=3.9"
+
+[project.optional-dependencies]
+fix-re2 = [
+	# TODO: https://github.com/facebook/pyre2/issues/24 fb-re2>=1.0.7
+	"fb-re2 @ https://github.com/facebook/pyre2/tarball/refs/pull/25/merge#egg=fb-re2",
+]
+fix-wpull = [
+	"manhole>=1.8.0",
+	"packaging>=21.2",
+	"psutil>=5.9.6",
+	# TODO: https://github.com/ArchiveTeam/grab-site/issues/198 SQLAlchemy>=1.4
+	# TODO: https://github.com/ArchiveTeam/wpull/issues/404 wpull>=2.0.1
+	"wpull @ https://github.com/matthewcen/ludios_wpull/tarball/master#egg=wpull-3.0.9",
+	# TODO: https://github.com/tibonihoo/yapsy/issues/16 python>=3.12
+	"yapsy @ https://github.com/tibonihoo/yapsy/tarball/master#egg=yapsy&subdirectory=package",
+]
+
+[project.scripts]
+grab-site = "grab_site.main:main"
+gs-dump-urls = "grab_site.dump_urls:main"
+gs-server = "grab_site.server:main"
+
+[project.urls]
+homepage = "https://ludios.org/grab-site"
+
+[tool.setuptools.package-data]
+grab_site = ["*.html", "*.ico", "*.txt", "ignore_sets/*"]

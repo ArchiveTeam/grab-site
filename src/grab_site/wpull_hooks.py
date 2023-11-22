@@ -17,8 +17,8 @@ from wpull.pipeline.item import URLRecord
 from wpull.pipeline.session import ItemSession
 from wpull.url import URLInfo
 
-from libgrabsite import wpull_tweaks, dashboard_client
-import libgrabsite
+from grab_site import wpull_tweaks, dashboard_client
+import grab_site
 
 
 working_dir = os.environ["GRAB_SITE_WORKING_DIR"]
@@ -46,7 +46,7 @@ def compile_combined_regexp(patterns):
 def include_ignore_line(line):
 	return line and not line.startswith("#")
 
-ignore_sets_path = os.path.join(os.path.dirname(libgrabsite.__file__), "ignore_sets")
+ignore_sets_path = os.path.join(os.path.dirname(grab_site.__file__), "ignore_sets")
 def get_patterns_for_ignore_set(name: str):
 	assert name != "", name
 	with open(os.path.join(ignore_sets_path, name), "r", encoding="utf-8") as f:
