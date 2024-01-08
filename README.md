@@ -103,10 +103,10 @@ Install on Ubuntu 18.04, 20.04, 22.04, Debian 10 (buster), Debian 11 (bullseye)
 Install on NixOS
 ---
 
-As a **non-root** user:
+grab-site was removed from nixpkgs master; 23.05 is the last release to contain grab-site.
 
 ```
-nix-env -f https://github.com/NixOS/nixpkgs/archive/release-22.11.tar.gz -iA grab-site
+nix-env -f https://github.com/NixOS/nixpkgs/archive/release-23.05.tar.gz -iA grab-site
 ```
 
 
@@ -130,7 +130,7 @@ grab-site and its dependencies are available in [nixpkgs](https://github.com/Nix
 3.	As the **non-root** user:
 
 	```
-	nix-env -f https://github.com/NixOS/nixpkgs/archive/release-22.11.tar.gz -iA grab-site
+	nix-env -f https://github.com/NixOS/nixpkgs/archive/release-23.05.tar.gz -iA grab-site
 	```
 
 	and then restart your shell (e.g. by opening a new terminal tab/window).
