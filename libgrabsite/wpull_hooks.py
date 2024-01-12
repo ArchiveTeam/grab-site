@@ -9,6 +9,7 @@ import functools
 import traceback
 import asyncio
 import urllib.parse
+import logging
 
 from wpull.application.hook import Actions
 from wpull.application.plugin import WpullPlugin, PluginFunctions, hook, event
@@ -149,6 +150,7 @@ class GrabSitePlugin(WpullPlugin):
 		self.loop = asyncio.get_event_loop()
 		self.enable_stdio_capture()
 		self.add_signal_handlers()
+		self.logger = logging.getLogger("grab_site.wpull_plugin")
 		self.init_job_data()
 		self.init_ws()
 		self.setup_watchers()
@@ -156,6 +158,7 @@ class GrabSitePlugin(WpullPlugin):
 		self.all_start_netlocs          = set(urllib.parse.urlparse(url).netloc for url in self.all_start_urls)
 		self.skipped_videos             = open(cf("skipped_videos"),             "w", encoding="utf-8")
 		self.skipped_max_content_length = open(cf("skipped_max_content_length"), "w", encoding="utf-8")
+		self.compiled_ignores = []
 		self.update_ignores()
 		super().activate()
 
@@ -258,6 +261,7 @@ class GrabSitePlugin(WpullPlugin):
 			return
 		with open(self.watchers["max_content_length"].fname, "r") as f:
 			self.job_data["max_content_length"] = int(f.read().strip())
+		self.logger.info(f"Settings change: max_content_length = {self.job_data['max_content_length']}")
 
 	@swallow_exception
 	def update_delay(self):
@@ -269,6 +273,8 @@ class GrabSitePlugin(WpullPlugin):
 				self.job_data["delay_min"], self.job_data["delay_max"] = list(int(s) for s in content.split("-", 1))
 			else:
 				self.job_data["delay_min"] = self.job_data["delay_max"] = int(content)
+		max_string = f"-{self.job_data['delay_max']}" if self.job_data["delay_min"] != self.job_data["delay_max"] else ""
+		self.logger.info(f"Settings change: delay = {self.job_data['delay_min']}{max_string}")
 
 	@swallow_exception
 	def update_concurrency(self):
@@ -281,6 +287,7 @@ class GrabSitePlugin(WpullPlugin):
 				concurrency = 1
 			self.job_data["concurrency"] = concurrency
 		self.app_session.factory["PipelineSeries"].concurrency = concurrency
+		self.logger.info(f"Settings change: concurrency = {concurrency}")
 
 	stop_path = cf("stop")
 	def should_stop(self):
@@ -301,6 +308,9 @@ class GrabSitePlugin(WpullPlugin):
 	@swallow_exception
 	def update_scrape(self):
 		scrape = path_exists_with_cache(self.scrape_path)
+		if scrape == self.job_data["scrape"]:
+			return
+		self.logger.info(f"Settings change: scrape = {scrape}")
 		self.job_data["scrape"] = scrape
 		if not scrape:
 			# Empty the list of scrapers, which will stop scraping for new URLs
@@ -333,6 +343,15 @@ class GrabSitePlugin(WpullPlugin):
 		self.print_to_terminal(f"Using these {len(ignores)} ignores:")
 		for ig in sorted(ignores):
 			self.print_to_terminal(f"\t{ig}")
+
+		# Log changes
+		old_ignores = set(x[0] for x in self.compiled_ignores)
+		added_ignores = ignores - old_ignores
+		removed_ignores = old_ignores - ignores
+		for ig in added_ignores:
+			self.logger.info(f"Adding ignore: {ig}")
+		for ig in removed_ignores:
+			self.logger.info(f"Removing ignore: {ig}")
 
 		self.compiled_ignores       = [(ig, re_compile(ig)) for ig in ignores]
 		self.combined_ignore_regexp = compile_combined_regexp(ignores)
@@ -371,7 +390,9 @@ class GrabSitePlugin(WpullPlugin):
 		if should_ignore:
 			if not self.job_data["suppress_ignore_reports"]:
 				pattern = self.get_specific_ignore_pattern(url)
-				self.maybe_log_ignore(url, pattern)
+			else:
+				pattern = "[ignore pattern match]"
+			self.maybe_log_ignore(url, pattern)
 			return False
 
 		# If we get here, none of our ignores apply. Return the original verdict.
@@ -410,6 +431,7 @@ class GrabSitePlugin(WpullPlugin):
 		return Actions.NORMAL
 
 	def maybe_log_ignore(self, url, pattern):
+		self.logger.info(f"Ignoring ‘{url}’: {pattern}")
 		if not self.job_data["suppress_ignore_reports"]:
 			self.print_to_terminal(f"IGNOR {url}\n   by {pattern}")
 			self.put_ws_queue({
