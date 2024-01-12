@@ -108,6 +108,11 @@ grab-site was removed from nixpkgs master; 23.05 is the last release to contain 
 nix-env -f https://github.com/NixOS/nixpkgs/archive/release-23.05.tar.gz -iA grab-site
 ```
 
+or, if you are using profiles (ie when you have flakes enabled):
+
+```
+nix profile install nixpkgs/release-22.11#grab-site
+```
 
 
 Install on another distribution lacking Python 3.7.x or 3.8.x
