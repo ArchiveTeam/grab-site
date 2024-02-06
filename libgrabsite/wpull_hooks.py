@@ -104,9 +104,12 @@ class FileChangedWatcher(object):
 			print(f"Imported {self.fname}")
 		return changed
 
-
-ICY_FIELD_PATTERN = re2.compile("(?i)^icy-|ice-|x-audiocast-")
-ICY_VALUE_PATTERN = re2.compile("(?i)^icecast")
+try:
+	ICY_FIELD_PATTERN = re2.compile("(?i)^icy-|ice-|x-audiocast-")
+	ICY_VALUE_PATTERN = re2.compile("(?i)^icecast")
+except NameError:
+	ICY_FIELD_PATTERN = re.compile("(?i)^icy-|ice-|x-audiocast-")
+	ICY_VALUE_PATTERN = re.compile("(?i)^icecast")
 
 def get_content_length(response) -> int:
 	try:
