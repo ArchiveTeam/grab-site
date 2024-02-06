@@ -353,7 +353,7 @@ permanent_error_status_codes, which_wpull_args_partial, which_wpull_command):
 	# only reason to use this is if you're starting wpull manually with modified
 	# arguments, and wpull_hooks.py requires the control files.
 	if which_wpull_command:
-		bin = sys.argv[0].replace("/grab-site", "/wpull") # TODO
+		bin = re.sub("/grab-site$", "/wpull", sys.argv[0])
 		print("GRAB_SITE_WORKING_DIR={} DUPESPOTTER_ENABLED={} {} {}".format(
 			working_dir, int(dupespotter), bin, " ".join(shlex.quote(a) for a in args)))
 		return
