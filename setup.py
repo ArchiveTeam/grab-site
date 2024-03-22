@@ -21,8 +21,8 @@ setup(
 		"License :: OSI Approved :: MIT License",
 		"Topic :: Internet :: WWW/HTTP",
 	],
-	scripts=["grab-site", "gs-server", "patched-wpull"],
+	scripts=["grab-site", "gs-server"],
 	packages=["libgrabsite"],
-	package_data={"libgrabsite": ["*.html"]},
-	install_requires=["wpull", "manhole", "lmdb", "autobahn", "aiohttp", "trollius"],
+	package_data={"libgrabsite": ["*.html", "patched-wpull"]},
+	install_requires=["click", "wpull", "cchardet", "manhole", "lmdb", "autobahn", "aiohttp", "trollius"],
 )

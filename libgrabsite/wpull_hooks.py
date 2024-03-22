@@ -17,7 +17,7 @@ def printToReal(s):
 	sys.stdout.buffer.flush()
 
 
-class MyClientProtocol(WebSocketClientProtocol):
+class GrabberClientProtocol(WebSocketClientProtocol):
 	def onOpen(self):
 		self.factory.client = self
 		printToReal("{} connected to WebSocket server".format(self.__class__.__name__))
@@ -37,15 +37,15 @@ class MyClientProtocol(WebSocketClientProtocol):
 		self.sendMessage(json.dumps(obj).encode("utf-8"))
 
 
-class MyClientFactory(WebSocketClientFactory):
-	protocol = MyClientProtocol
+class GrabberClientFactory(WebSocketClientFactory):
+	protocol = GrabberClientProtocol
 
 	def __init__(self):
 		super().__init__()
 		self.client = None
 
 
-wsFactory = MyClientFactory()
+wsFactory = GrabberClientFactory()
 
 @asyncio.coroutine
 def connectToServer():
@@ -63,16 +63,16 @@ def connectToServer():
 loop = asyncio.get_event_loop()
 asyncio.ensure_future(connectToServer())
 
-def graceful_stop_callback():
+def gracefulStopCallback():
 	printToReal("\n^C detected, creating 'stop' file, please wait for exit...")
 	with open(os.path.join(workingDir, "stop"), "wb") as f:
 		pass
 
-def forceful_stop_callback():
+def forcefulStopCallback():
 	loop.stop()
 
-loop.add_signal_handler(signal.SIGINT, graceful_stop_callback)
-loop.add_signal_handler(signal.SIGTERM, forceful_stop_callback)
+loop.add_signal_handler(signal.SIGINT, gracefulStopCallback)
+loop.add_signal_handler(signal.SIGTERM, forcefulStopCallback)
 
 
 igsetCache = {}
@@ -96,12 +96,12 @@ def mtime(f):
 class FileChangedWatcher(object):
 	def __init__(self, fname):
 		self.fname = fname
-		self.last_mtime = mtime(fname)
+		self.lastModificationTime = mtime(fname)
 
-	def has_changed(self):
-		now_mtime = mtime(self.fname)
-		changed = mtime(self.fname) != self.last_mtime
-		self.last_mtime = now_mtime
+	def hasChanged(self):
+		nowModificationTime = mtime(self.fname)
+		changed = mtime(self.fname) != self.lastModificationTime
+		self.lastModificationTime = nowModificationTime
 		return changed
 
 
@@ -118,7 +118,10 @@ def updateIgnoracle():
 		ignores = set(ig for ig in f.read().strip("\r\n").split('\n') if ig != "")
 
 	for igset in igsets:
-		ignores.update(getPatternsForIgnoreSet(igset))
+		patterns = getPatternsForIgnoreSet(igset)
+		if igset == "global":
+			patterns = filter(lambda p: "archive\\.org" not in p, patterns)
+		ignores.update(patterns)
 
 	printToReal("Using these %d ignores:" % len(ignores))
 	printToReal(pprint.pformat(ignores))
@@ -137,7 +140,7 @@ def shouldIgnoreURL(url, recordInfo):
 
 
 def acceptURL(urlInfo, recordInfo, verdict, reasons):
-	if igsetsWatcher.has_changed() or ignoresWatcher.has_changed():
+	if igsetsWatcher.hasChanged() or ignoresWatcher.hasChanged():
 		updateIgnoracle()
 
 	url = urlInfo['url']
@@ -160,7 +163,7 @@ def queuedURL(urlInfo):
 	jobData["items_queued"] += 1
 
 
-def dequeuedURL(url_info, record_info):
+def dequeuedURL(urlInfo, recordInfo):
 	jobData["items_downloaded"] += 1
 
 
@@ -169,6 +172,7 @@ jobData = {
 	"url": open(os.path.join(workingDir, "start_url")).read().strip(),
 	"started_at": os.stat(os.path.join(workingDir, "start_url")).st_mtime,
 	"suppress_ignore_reports": True,
+	"concurrency": int(open(os.path.join(workingDir, "concurrency")).read().strip()),
 	"bytes_downloaded": 0,
 	"items_queued": 0,
 	"items_downloaded": 0,
@@ -260,16 +264,16 @@ def maybeLogIgnore(url, pattern):
 ICY_FIELD_PATTERN = re.compile('icy-|ice-|x-audiocast-', re.IGNORECASE)
 ICY_VALUE_PATTERN = re.compile('icecast', re.IGNORECASE)
 
-def handlePreResponse(urlInfo, url_record, response_info):
+def handlePreResponse(urlInfo, urlRecord, responseInfo):
 	url = urlInfo['url']
 
 	# Check if server version starts with ICY
-	if response_info.get('version', '') == 'ICY':
+	if responseInfo.get('version', '') == 'ICY':
 		maybeLogIgnore(url, '[icy version]')
 		return wpull_hook.actions.FINISH
 
 	# Loop through all the server headers for matches
-	for field, value in response_info.get('fields', []):
+	for field, value in responseInfo.get('fields', []):
 		if ICY_FIELD_PATTERN.match(field):
 			maybeLogIgnore(url, '[icy field]')
 			return wpull_hook.actions.FINISH
@@ -296,6 +300,7 @@ def stdoutWriteToBoth(message):
 	except Exception as e:
 		realStderrWrite((str(e) + "\n").encode("utf-8"))
 
+
 def stderrWriteToBoth(message):
 	assert isinstance(message, bytes), message
 	try:
@@ -313,6 +318,13 @@ sys.stdout.buffer.write = stdoutWriteToBoth
 sys.stderr.buffer.write = stderrWriteToBoth
 
 
+def exitStatus(code):
+	print()
+	print("Finished grab {} {} with exit code {}".format(jobData["ident"], jobData["url"], code))
+	print("Output is in directory:\n{}".format(workingDir))
+	return code
+
+
 assert 2 in wpull_hook.callbacks.AVAILABLE_VERSIONS
 
 wpull_hook.callbacks.version = 2
@@ -322,3 +334,4 @@ wpull_hook.callbacks.dequeued_url = dequeuedURL
 wpull_hook.callbacks.handle_response = handleResponse
 wpull_hook.callbacks.handle_error = handleError
 wpull_hook.callbacks.handle_pre_response = handlePreResponse
+wpull_hook.callbacks.exit_status = exitStatus

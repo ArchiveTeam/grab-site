@@ -9,10 +9,10 @@ import asyncio
 import aiohttp.web
 from autobahn.asyncio.websocket import WebSocketServerFactory, WebSocketServerProtocol
 
-class MyServerProtocol(WebSocketServerProtocol):
+class GrabberServerProtocol(WebSocketServerProtocol):
 	def __init__(self):
 		super().__init__()
-		self.mode = "dashboard"
+		self.mode = None
 
 	def onConnect(self, request):
 		self.peer = request.peer
@@ -33,38 +33,40 @@ class MyServerProtocol(WebSocketServerProtocol):
 		##print(payload)
 		obj = json.loads(payload.decode('utf-8'))
 		type = obj["type"]
-		if type == "hello" and obj.get("mode"):
+		if self.mode is None and type == "hello" and obj.get("mode"):
 			mode = obj['mode']
 			if mode in ('dashboard', 'grabber'):
-				print("{} set mode {}".format(self.peer, mode))
+				self.mode = mode
 				if mode == "grabber":
 					print("{} is grabbing {}".format(self.peer, obj['url']))
-				self.mode = mode
-		elif type == "download":
-			self.broadcastToDashboards({
-				"type": type,
-				"job_data": obj["job_data"],
-				"url": obj["url"],
-				"response_code": obj["response_code"],
-				"wget_code": obj["response_message"]
-			})
-		elif type in ("stdout", "stderr"):
-			self.broadcastToDashboards({
-				"type": type,
-				"job_data": obj["job_data"],
-				"message": obj["message"]
-			})
-		elif type == "ignore":
-			self.broadcastToDashboards({
-				"type": type,
-				"job_data": obj["job_data"],
-				"url": obj["url"],
-				"pattern": obj["pattern"],
-			})
+				elif mode == "dashboard":
+					print("{} is dashboarding with {}".format(self.peer, obj['user_agent']))
+		elif self.mode == "grabber":
+			if type == "download":
+				self.broadcastToDashboards({
+					"type": type,
+					"job_data": obj["job_data"],
+					"url": obj["url"],
+					"response_code": obj["response_code"],
+					"wget_code": obj["response_message"]
+				})
+			elif type in ("stdout", "stderr"):
+				self.broadcastToDashboards({
+					"type": type,
+					"job_data": obj["job_data"],
+					"message": obj["message"]
+				})
+			elif type == "ignore":
+				self.broadcastToDashboards({
+					"type": type,
+					"job_data": obj["job_data"],
+					"url": obj["url"],
+					"pattern": obj["pattern"],
+				})
 
 
-class MyServerFactory(WebSocketServerFactory):
-	protocol = MyServerProtocol
+class GrabberServerFactory(WebSocketServerFactory):
+	protocol = GrabberServerProtocol
 
 	def __init__(self):
 		super().__init__()
@@ -98,7 +100,7 @@ def main():
 	httpCoro = httpServer(loop, httpInterface, httpPort)
 	loop.run_until_complete(httpCoro)
 
-	wsFactory = MyServerFactory()
+	wsFactory = GrabberServerFactory()
 	wsCoro = loop.create_server(wsFactory, wsInterface, wsPort)
 	loop.run_until_complete(wsCoro)
 
