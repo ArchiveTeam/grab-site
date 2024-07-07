@@ -1,5 +1,5 @@
 grab-site
-===
+=========
 
 [![Build status][travis-image]][travis-url]
 
@@ -493,7 +493,7 @@ You will probably have to add ignores with translated `Special:*` URLs based on
 
 Forums require more manual intervention with ignore patterns.
 [`--igsets=forums`](https://github.com/ArchiveTeam/grab-site/blob/master/libgrabsite/ignore_sets/forums)
-is often useful for non-SMF forums, but you will have to add other ignore
+is often useful for most forums, but you will have to add other ignore
 patterns, including one to ignore individual-forum-post pages if there are
 too many posts to crawl.  (Generally, crawling the thread pages is enough.)
 
