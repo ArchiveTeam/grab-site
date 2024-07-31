@@ -1,0 +1,16 @@
+/user\.php\?module=NS-User&op=logout
+/index\.php\?name=PNphpBB2&file=posting
+/index\.php\?name=PNphpBB2&file=privmsg
+/index\.php\?name=PNphpBB2&file=search
+/index\.php\?name=PNphpBB2&file=tellafriend
+/index\.php\?name=PNphpBB2&file=printview
+/index\.php\?name=PNphpBB2&file=viewtopic&p=
+/index\.php\?name=PNphpBB2&file=viewforum&f=.*&mark=topics
+/index\.php\?name=PNphpBB2&file=viewtopic&t=.*&unwatch=topic
+/index\.php\?name=PNphpBB2&file=viewtopic&t=.*&start=0&postdays=0&postorder=
+/index\.php\?name=PNphpBB2&file=viewtopic&t=.*&watch=topic
+/index\.php\?name=PNphpBB2&file=viewtopic&t=.*&view=previous
+/index\.php\?name=PNphpBB2&file=viewtopic&t=.*&view=next
+/index\.php\?name=PNphpBB2&file=viewtopic&t=.*&start=0
+/modules\.php\?op=modload&name=Messages&file=replypmsg
+wwp\.icq\.com/
