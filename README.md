@@ -118,27 +118,10 @@ nix profile install nixpkgs/release-22.11#grab-site
 Install on another distribution lacking Python 3.7.x or 3.8.x
 ---
 
-grab-site and its dependencies are available in [nixpkgs](https://github.com/NixOS/nixpkgs), which can be used on any Linux distribution.
-
-1.	As root:
-
-	Where `USER` is your non-root username:
-
-	```
-	mkdir /nix
-	chown USER:USER /nix
-	```
-
-2.	As the **non-root** user, install Nix: https://nixos.org/nix/download.html
-
-3.	As the **non-root** user:
-
-	```
-	nix-env -f https://github.com/NixOS/nixpkgs/archive/release-23.05.tar.gz -iA grab-site
-	```
-
-	and then restart your shell (e.g. by opening a new terminal tab/window).
-
+After installing [uv](https://docs.astral.sh/uv/), you can run
+```
+uv tool install --python=3.8 --no-binary-package lxml git+https://github.com/ArchiveTeam/grab-site/
+```
 
 
 Install on macOS
