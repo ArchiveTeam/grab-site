@@ -166,6 +166,9 @@ def patch_dns_inet_is_multicast():
 		"Populate DIR/ but don't start wpull; instead print the command that would "
 		"have been used to start wpull with all of the grab-site functionality.")
 
+@click.option('--resume', is_flag=True,
+	help='Resume a crawl that was previously stopped. Use with --dir to specify the crawl directory.')
+
 @click.option('--version', is_flag=True, callback=print_version,
 	expose_value=False, is_eager=True, help='Print version and exit.')
 
@@ -174,14 +177,22 @@ def patch_dns_inet_is_multicast():
 def main(concurrency, concurrent, delay, recursive, offsite_links, igsets,
 ignore_sets, no_global_igset, import_ignores, igon, debug, video, level,
 page_requisites_level, max_content_length, sitemaps, dupespotter, warc_max_size,
-ua, input_file, wpull_args, start_url, id, dir, finished_warc_dir,
+ua, input_file, wpull_args, start_url, id, dir, finished_warc_dir, resume,
 permanent_error_status_codes, which_wpull_args_partial, which_wpull_command):
 	"""
 	Runs a crawl on one or more URLs.  For additional help, see
 
 	https://github.com/ArchiveTeam/grab-site/blob/master/README.md#usage
 	"""
-	if not (input_file or start_url):
+	if resume and not dir:
+		print("Error: --resume requires --dir to specify the crawl directory", file=sys.stderr)
+		sys.exit(1)
+
+	if resume and not os.path.exists(dir):
+		print(f"Error: Crawl directory {dir} does not exist", file=sys.stderr)
+		sys.exit(1)
+
+	if not resume and not (input_file or start_url):
 		print("Neither a START_URL or --input-file= was specified; see --help", file=sys.stderr)
 		sys.exit(1)
 	elif input_file and start_url:
@@ -269,6 +280,11 @@ permanent_error_status_codes, which_wpull_args_partial, which_wpull_command):
 	if recursive:
 		args += ["--recursive"]
 
+	if resume:
+		# Add --warc-append to wpull_args if not already present
+		if "--warc-append" not in wpull_args:
+			wpull_args = ("--warc-append " + wpull_args).strip()
+
 	if wpull_args:
 		args += shlex.split(wpull_args)
 
@@ -293,11 +309,16 @@ permanent_error_status_codes, which_wpull_args_partial, which_wpull_command):
 		return
 
 	# Create DIR and DIR files only after which_wpull_args_* checks
-	os.makedirs(working_dir)
-	temp_dir = os.path.join(working_dir, "temp")
-	os.makedirs(temp_dir)
+	if resume:
+		temp_dir = os.path.join(working_dir, "temp")
+		if not os.path.exists(temp_dir):
+			os.makedirs(temp_dir)
+	else:
+		os.makedirs(working_dir)
+		temp_dir = os.path.join(working_dir, "temp")
+		os.makedirs(temp_dir)
 
-	if input_file is not None:
+	if input_file is not None and not resume:
 		# wpull -i doesn't support URLs, so download the input file ourselves if necessary
 		if input_file_is_remote:
 			# TODO: use wpull with correct user agent instead of urllib.request
@@ -312,15 +333,16 @@ permanent_error_status_codes, which_wpull_args_partial, which_wpull_command):
 		else:
 			shutil.copyfile(input_file, DIR_input_file)
 
-	with open("{}/id".format(working_dir), "w") as f:
-		f.write(id)
+	if not resume:
+		with open("{}/id".format(working_dir), "w") as f:
+			f.write(id)
 
-	with open("{}/start_url".format(working_dir), "w") as f:
-		f.write(claim_start_url)
+		with open("{}/start_url".format(working_dir), "w") as f:
+			f.write(claim_start_url)
 
-	with open("{}/all_start_urls".format(working_dir), "w") as f:
-		for u in start_url:
-			f.write(u + "\n")
+		with open("{}/all_start_urls".format(working_dir), "w") as f:
+			for u in start_url:
+				f.write(u + "\n")
 
 	with open("{}/concurrency".format(working_dir), "w") as f:
 		f.write(str(concurrency))
@@ -348,6 +370,10 @@ permanent_error_status_codes, which_wpull_args_partial, which_wpull_command):
 
 	with open("{}/scrape".format(working_dir), "w") as f:
 		pass
+
+	# For resume mode, remove the stop file if it exists
+	if resume and os.path.exists("{}/stop".format(working_dir)):
+		os.unlink("{}/stop".format(working_dir))
 
 	# We don't actually need to write control files for this mode to work, but the
 	# only reason to use this is if you're starting wpull manually with modified
