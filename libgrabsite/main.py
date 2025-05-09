@@ -218,18 +218,28 @@ permanent_error_status_codes, which_wpull_args_partial, which_wpull_command):
 		else:
 			claim_start_url = 'file://' + os.path.abspath(input_file)
 
-	if not id:
-		id = binascii.hexlify(os.urandom(16)).decode('utf-8')
-	ymd                  = datetime.datetime.utcnow().isoformat()[:10]
-	no_proto_no_trailing = claim_start_url.split('://', 1)[1].rstrip('/')[:100]
-	unwanted_chars_re    = r'[^-_a-zA-Z0-9%\.,;@+=]'
-	warc_name            = "{}-{}-{}".format(re.sub(unwanted_chars_re, '-', no_proto_no_trailing).lstrip('-'), ymd, id[:8])
-
 	# make absolute because wpull will start in temp/
 	if not dir:
+		if not id:
+			id = binascii.hexlify(os.urandom(16)).decode('utf-8')
+		ymd                  = datetime.datetime.utcnow().isoformat()[:10]
+		no_proto_no_trailing = claim_start_url.split('://', 1)[1].rstrip('/')[:100]
+		unwanted_chars_re    = r'[^-_a-zA-Z0-9%\.,;@+=]'
+		warc_name            = "{}-{}-{}".format(re.sub(unwanted_chars_re, '-', no_proto_no_trailing).lstrip('-'), ymd, id[:8])
 		working_dir = os.path.abspath(warc_name)
 	else:
 		working_dir = os.path.abspath(dir)
+
+	# For resume mode, use the directory name as the WARC name
+	if resume:
+		warc_name = os.path.basename(working_dir)
+	else:
+		if not id:
+			id = binascii.hexlify(os.urandom(16)).decode('utf-8')
+		ymd                  = datetime.datetime.utcnow().isoformat()[:10]
+		no_proto_no_trailing = claim_start_url.split('://', 1)[1].rstrip('/')[:100]
+		unwanted_chars_re    = r'[^-_a-zA-Z0-9%\.,;@+=]'
+		warc_name            = "{}-{}-{}".format(re.sub(unwanted_chars_re, '-', no_proto_no_trailing).lstrip('-'), ymd, id[:8])
 
 	LIBGRABSITE = os.path.dirname(libgrabsite.__file__)
 	args = [
