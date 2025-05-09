@@ -354,32 +354,32 @@ permanent_error_status_codes, which_wpull_args_partial, which_wpull_command):
 			for u in start_url:
 				f.write(u + "\n")
 
-	with open("{}/concurrency".format(working_dir), "w") as f:
-		f.write(str(concurrency))
+		with open("{}/concurrency".format(working_dir), "w") as f:
+			f.write(str(concurrency))
 
-	with open("{}/max_content_length".format(working_dir), "w") as f:
-		f.write(str(max_content_length))
+		with open("{}/max_content_length".format(working_dir), "w") as f:
+			f.write(str(max_content_length))
 
-	with open("{}/igsets".format(working_dir), "w") as f:
-		f.write("{}{}".format("" if no_global_igset else "global,", igsets))
+		with open("{}/igsets".format(working_dir), "w") as f:
+			f.write("{}{}".format("" if no_global_igset else "global,", igsets))
 
-	if video:
-		with open("{}/video".format(working_dir), "w") as f:
+		if video:
+			with open("{}/video".format(working_dir), "w") as f:
+				pass
+
+		if not igon:
+			with open("{}/igoff".format(working_dir), "w") as f:
+				pass
+
+		with open("{}/ignores".format(working_dir), "w") as f:
+			if import_ignores is not None:
+				f.write(open(import_ignores, "r").read())
+
+		with open("{}/delay".format(working_dir), "w") as f:
+			f.write(delay)
+
+		with open("{}/scrape".format(working_dir), "w") as f:
 			pass
-
-	if not igon:
-		with open("{}/igoff".format(working_dir), "w") as f:
-			pass
-
-	with open("{}/ignores".format(working_dir), "w") as f:
-		if import_ignores is not None:
-			f.write(open(import_ignores, "r").read())
-
-	with open("{}/delay".format(working_dir), "w") as f:
-		f.write(delay)
-
-	with open("{}/scrape".format(working_dir), "w") as f:
-		pass
 
 	# For resume mode, remove the stop file if it exists
 	if resume and os.path.exists("{}/stop".format(working_dir)):
