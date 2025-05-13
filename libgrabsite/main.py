@@ -230,9 +230,41 @@ permanent_error_status_codes, which_wpull_args_partial, which_wpull_command):
 	else:
 		working_dir = os.path.abspath(dir)
 
-	# For resume mode, use the directory name as the WARC name
+	# For resume mode, find warc file matching the crawl ID
 	if resume:
-		warc_name = os.path.basename(working_dir)
+		# Read the id file
+		id_file_path = os.path.join(working_dir, "id")
+		if not os.path.exists(id_file_path):
+			print(f"Error: Cannot resume because {id_file_path} does not exist", file=sys.stderr)
+			sys.exit(1)
+
+		with open(id_file_path, "r") as f:
+			crawl_id = f.read().strip()
+
+		id_part = crawl_id[:8]
+
+		# Look for matching WARC files in working_dir or finished_warc_dir
+		warc_name = None
+
+		# Search in working_dir first
+		for file in os.listdir(working_dir):
+			if file.endswith(".warc.gz") and f"-{id_part}-" in file:
+				# Extract base name without sequence number
+				parts = file.split("-")
+				warc_name = "-".join(parts[:-1])  # Remove the sequence number and extension
+				break
+
+		# If not found and finished_warc_dir exists, search there
+		if not warc_name and finished_warc_dir and os.path.exists(finished_warc_dir):
+			for file in os.listdir(finished_warc_dir):
+				if file.endswith(".warc.gz") and f"-{id_part}-" in file:
+					parts = file.split("-")
+					warc_name = "-".join(parts[:-1])  # Remove the sequence number and extension
+					break
+
+		# Fallback to directory name if no matching files found
+		if not warc_name:
+			warc_name = os.path.basename(working_dir)
 	else:
 		if not id:
 			id = binascii.hexlify(os.urandom(16)).decode('utf-8')
