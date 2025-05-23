@@ -1,5 +1,8 @@
 import re
-import re2
+try:
+	import re2
+except ImportError:
+	pass
 import os
 import sys
 import time
@@ -28,13 +31,14 @@ def cf(fname):
 def re_compile(regexp):
 	# Validate with re first, because re2 may be more prone to segfaulting on
 	# bad regexps, and because re returns useful errors.
-	re.compile(regexp)
+	compiled = re.compile(regexp)
 	try:
-		return re2.compile(regexp)
-	except re.error:
+		compiled = re2.compile(regexp)
+	except (re.error, NameError):
 		# Regular expressions with lookaround expressions cannot be compiled with
-		# re2, so on error try compiling with re.
-		return re.compile(regexp)
+		# re2, so on error (or if re2 is unavailable) use the one compiled with re.
+		pass
+	return compiled
 
 def compile_combined_regexp(patterns):
 	# If there are no patterns, we want to ignore nothing, not everything.
@@ -100,9 +104,12 @@ class FileChangedWatcher(object):
 			print(f"Imported {self.fname}")
 		return changed
 
-
-ICY_FIELD_PATTERN = re2.compile("(?i)^icy-|ice-|x-audiocast-")
-ICY_VALUE_PATTERN = re2.compile("(?i)^icecast")
+try:
+	ICY_FIELD_PATTERN = re2.compile("(?i)^icy-|ice-|x-audiocast-")
+	ICY_VALUE_PATTERN = re2.compile("(?i)^icecast")
+except NameError:
+	ICY_FIELD_PATTERN = re.compile("(?i)^icy-|ice-|x-audiocast-")
+	ICY_VALUE_PATTERN = re.compile("(?i)^icecast")
 
 def get_content_length(response) -> int:
 	try:
