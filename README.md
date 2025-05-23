@@ -47,6 +47,7 @@ on a specific version of Python (3.7 or 3.8) and with specific dependency versio
 - [Upgrade an existing install](#upgrade-an-existing-install)
 - [Usage](#usage)
   - [`grab-site` options, ordered by importance](#grab-site-options-ordered-by-importance)
+  - [Docker](#docker)
   - [Warnings](#warnings)
   - [Tips for specific websites](#tips-for-specific-websites)
 - [Changing ignores during the crawl](#changing-ignores-during-the-crawl)
@@ -360,6 +361,181 @@ Options can come before or after the URL.
 *	`--debug`: print a lot of debug information.
 
 *	`--help`: print help text.
+
+### Docker
+
+`grab-site` and `gs-server` can be run from Docker!
+
+Please see [Get Docker](https://docs.docker.com/get-docker/) to get started.
+
+#### Quick Start
+
+##### Debian Docker Daemon
+
+On a Debian Docker daemon, you will want to run everything as the grab-site user. The following will create that user on the host machine with the same uid/gid as the user/group in the container and add it to the docker group that should have been set up with your Docker daemon installation.
+
+```sh
+sudo addgroup --system --gid 10000 grab-site
+sudo adduser --system --uid 10000 --gid 10000 grab-site
+sudo usermod -aG docker grab-site
+```
+
+As it is configured, the grab-site user does not allow a direct login. If you are a user that belongs to the sudoers group, you can run:
+
+```sh
+sudo su -l grab-site -s /bin/bash
+```
+
+Once you are accessing a bash terminal under the grab-site user, you can follow all the commands.
+
+#### Data directory
+
+Make sure you have cloned the repository and have created the data directory:
+
+```sh
+mkdir -p ./data
+```
+
+On Windows, this directory will automatically create itself when it is used as the target for the mount in the run step.
+
+##### Configuration
+
+The paths in `--input-file`, `--import-ignores`, `--dir`, `--finished-warc-dir`, and `--wpull-args` refer to paths in the container.
+
+The instructions in this document mount the `./data` directory to `/data` within the container. This is the current working directory, while the application itself is stored within `/app` and included in the `$PATH` environmental variable.
+
+Considering the Docker configuration in addition to the default configuration of grab-site, your crawls will be shared across all `grab-site` instances, and each instance will be working in its own subfolder, per-crawl in the `/data` directory.
+
+#### Docker Build
+
+The first major step is to build the application, including all dependencies:
+
+```sh
+docker build -t grab-site:latest .
+```
+
+##### Monolithic Container
+Optionally, you can specify the build argument `GRAB_SITE_HOST`, which defaults to `gs-server` expecting a container called `gs-server` will be accessible by instances of `grab-site`.
+
+This argument becomes the default `GRAB_SITE_HOST` environmental variable for all containers.
+
+You can override `GRAB_SITE_HOST` if you plan on running a single container containing gs-server and manually run grab-site processes within that single container, for example:
+
+```sh
+docker build --build-arg GRAB_SITE_HOST=127.0.0.1 -t grab-site:latest .
+```
+
+Note that this is not the recommended configuration _in the Docker environment_, because the [current best practice](https://docs.docker.com/config/containers/multi-service_container/) for deployment of a Docker application states that each process should be running in a separate container _without_ a init process such as systemd, rc.d, upstart, etc. in order to let Docker manage the lifecycle of the process, instead.
+
+##### Image Inspection
+
+In development and for configuration, you may find it handy to get a new container's shell to inspect files and run the programs within the built image:
+
+```sh
+docker run --rm -it --entrypoint sh grab-site:latest
+```
+
+#### Docker Network
+
+The second major step is to create an isolated network for the containers running `grab-site` and `gs-server` to communicate with eachother on a network that is isolated/inaccessible from any other container outside of the network.
+
+The following will create a docker network called `gs-network` for our gs-server and grab-site instances to connect within:
+
+```sh
+docker network create -d bridge gs-network
+```
+
+We will use this `gs-network` later in `docker run` commands with the `--net=gs-network` flag.
+
+#### Run gs-server on Docker
+
+The third major step is to run a container named `gs-server` to host the dashboard and for grab-site instances to connect to:
+
+```sh
+docker run --net=gs-network --name=gs-server -d -p 29000:29000 --restart=unless-stopped grab-site:latest
+```
+
+The server will be running with the port forwarded (the -p parameter) from the host port 29000 -> container port 29000. You can access it via [http://localhost:29000](http://localhost:29000). The name of the container should correspond to the `GRAB_SITE_HOST` build argument, which defaults to `gs-server`.
+
+##### View gs-server logs
+
+Optionally, to tail the `gs-server` instance:
+
+```sh
+docker logs -f gs-server
+```
+
+##### Attach to gs-server process
+
+Optionally, you can attach local STDIN/STDOUT/STDERR to your running `gs-server` instance:
+
+```sh
+docker attach gs-server
+```
+
+You can exit by using CTRL-p + CTRL+q, as documented further [here](https://docs.docker.com/engine/reference/commandline/attach/).
+
+##### Access gs-server container
+
+Optionally, to enter the currently running `gs-server` container:
+
+```sh
+docker exec -it gs-server sh
+```
+
+You will normally not need to do this.
+
+#### Run grab-site on Docker
+
+The final step is running the following command to download `example.com` to a local directory `data`.
+
+This example works for various Linux shells and PowerShell:
+
+```sh
+docker run --net=gs-network --rm -d -e GRAB_SITE_HOST=gs-server -v "$(pwd)/data:/data:rw" grab-site:latest grab-site https://www.example.com/
+```
+
+Note: Windows file shares can be done several ways, this is using the legacy Windows full path volume sharing which can be "slower" if you are using WSL2.
+
+##### View grab-site logs
+
+When you run a docker run with the -d flag you will get returned to you the unique ID of the container. If you'd like to name your container, please specify a `--name` to the `docker run` command you are trying to run.
+
+If you do not specify a name, it will give it a funny name which you can find from the list of all containers using:
+
+```sh
+docker ps -a
+```
+
+You can then use the container ID or the name here:
+
+```sh
+docker logs -f ead9034470ed
+```
+
+##### Attach to grab-site process
+
+You can attach local STDIN/STDOUT/STDERR to your running `gs-server` instance:
+
+```sh
+docker attach ead9034470ed
+```
+
+You can exit by using CTRL-p + CTRL+q, as documented further [here](https://docs.docker.com/engine/reference/commandline/attach/).
+
+##### Suspend a grab-site crawl
+
+You can pause a crawl by using [docker pause](https://docs.docker.com/engine/reference/commandline/pause/):
+
+```sh
+docker pause ead9034470ed
+```
+
+Resume it using [docker unpause](https://docs.docker.com/engine/reference/commandline/unpause/):
+
+```sh
+docker unpause ead9034470ed
+```
 
 ### Warnings
 
