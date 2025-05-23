@@ -357,6 +357,10 @@ Options can come before or after the URL.
 	the command that would have been used to start wpull with all of the
 	grab-site functionality.
 
+*	`--resume`: Resume a crawl that was previously stopped. Must be used with
+	`--dir` to specify the crawl directory to resume. This will append to existing
+	WARC files instead of creating new ones.
+
 *	`--debug`: print a lot of debug information.
 
 *	`--help`: print help text.
@@ -569,6 +573,16 @@ Stopping a crawl
 ---
 You can `touch DIR/stop` or press ctrl-c, which will do the same.  You will
 have to wait for the current downloads to finish.
+
+Resuming a crawl
+---
+If a crawl was stopped, you can resume it using the `--resume` option:
+
+```
+grab-site --dir=DIR --resume
+```
+
+This will continue crawling from where you left off, appending to the existing WARC files.
 
 
 
