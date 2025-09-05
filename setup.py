@@ -15,7 +15,7 @@ install_requires = [
 	"manhole>=1.0.0",
 	"lmdb>=0.89",
 	"autobahn>=0.12.1",
-	"google-re2>=1.0.6",
+	"google-re2==1.1.20240702",
 	"websockets>=6.0",
 ]
 
