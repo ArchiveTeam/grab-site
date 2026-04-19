@@ -72,7 +72,7 @@ Install on Ubuntu 18.04, 20.04, 22.04, Debian 10 (buster), Debian 11 (bullseye)
 	sudo apt-get install --no-install-recommends \
 	    wget ca-certificates git build-essential libssl-dev zlib1g-dev \
 	    libbz2-dev libreadline-dev libsqlite3-dev libffi-dev libxml2-dev \
-	    libxslt1-dev libre2-dev pkg-config
+	    libxslt1-dev pkg-config
 	```
 
 	If you see `Unable to locate package`, run the two commands again.
@@ -147,7 +147,7 @@ For M1 Macs, use the next section instead of this one.
 
 	```
 	brew update
-	brew install python@3.8 libxslt re2 pkg-config
+	brew install python@3.8 libxslt pkg-config
 	/usr/local/opt/python@3.8/bin/python3 -m venv ~/gs-venv
 	PKG_CONFIG_PATH="/usr/local/opt/libxml2/lib/pkgconfig" ~/gs-venv/bin/pip install --no-binary lxml --upgrade git+https://github.com/ArchiveTeam/grab-site
 	```
@@ -170,7 +170,7 @@ For M1 Macs, use the next section instead of this one.
 
 	```
 	brew update
-	brew install python@3.8 libxslt re2 pkg-config
+	brew install python@3.8 libxslt pkg-config
 	/opt/homebrew/opt/python@3.8/bin/python3 -m venv ~/gs-venv
 	PKG_CONFIG_PATH="/opt/homebrew/opt/libxml2/lib/pkgconfig" ~/gs-venv/bin/pip install --no-binary lxml --upgrade git+https://github.com/ArchiveTeam/grab-site
 	```
@@ -356,6 +356,10 @@ Options can come before or after the URL.
 *	`--which-wpull-command`: Populate `DIR/` but don't start wpull; instead print
 	the command that would have been used to start wpull with all of the
 	grab-site functionality.
+
+*	`--resume`: Resume a crawl that was previously stopped. Must be used with
+	`--dir` to specify the crawl directory to resume. This will append to existing
+	WARC files instead of creating new ones.
 
 *	`--debug`: print a lot of debug information.
 
@@ -569,6 +573,16 @@ Stopping a crawl
 ---
 You can `touch DIR/stop` or press ctrl-c, which will do the same.  You will
 have to wait for the current downloads to finish.
+
+Resuming a crawl
+---
+If a crawl was stopped, you can resume it using the `--resume` option:
+
+```
+grab-site --dir=DIR --resume
+```
+
+This will continue crawling from where you left off, appending to the existing WARC files.
 
 
 

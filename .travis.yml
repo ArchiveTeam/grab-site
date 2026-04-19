@@ -6,7 +6,7 @@ python:
 
 before_install:
   - sudo apt-get update
-  - sudo apt-get install -y --no-install-recommends libxml2-dev libxslt1-dev libre2-dev pkg-config
+  - sudo apt-get install -y --no-install-recommends libxml2-dev libxslt1-dev pkg-config
 
 install:
   - travis_retry pip install --upgrade pip setuptools

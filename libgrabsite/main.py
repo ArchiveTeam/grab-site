@@ -166,6 +166,9 @@ def patch_dns_inet_is_multicast():
 		"Populate DIR/ but don't start wpull; instead print the command that would "
 		"have been used to start wpull with all of the grab-site functionality.")
 
+@click.option('--resume', is_flag=True,
+	help='Resume a crawl that was previously stopped. Use with --dir to specify the crawl directory.')
+
 @click.option('--version', is_flag=True, callback=print_version,
 	expose_value=False, is_eager=True, help='Print version and exit.')
 
@@ -174,14 +177,22 @@ def patch_dns_inet_is_multicast():
 def main(concurrency, concurrent, delay, recursive, offsite_links, igsets,
 ignore_sets, no_global_igset, import_ignores, igon, debug, video, level,
 page_requisites_level, max_content_length, sitemaps, dupespotter, warc_max_size,
-ua, input_file, wpull_args, start_url, id, dir, finished_warc_dir,
+ua, input_file, wpull_args, start_url, id, dir, finished_warc_dir, resume,
 permanent_error_status_codes, which_wpull_args_partial, which_wpull_command):
 	"""
 	Runs a crawl on one or more URLs.  For additional help, see
 
 	https://github.com/ArchiveTeam/grab-site/blob/master/README.md#usage
 	"""
-	if not (input_file or start_url):
+	if resume and not dir:
+		print("Error: --resume requires --dir to specify the crawl directory", file=sys.stderr)
+		sys.exit(1)
+
+	if resume and not os.path.exists(dir):
+		print(f"Error: Crawl directory {dir} does not exist", file=sys.stderr)
+		sys.exit(1)
+
+	if not resume and not (input_file or start_url):
 		print("Neither a START_URL or --input-file= was specified; see --help", file=sys.stderr)
 		sys.exit(1)
 	elif input_file and start_url:
@@ -207,18 +218,60 @@ permanent_error_status_codes, which_wpull_args_partial, which_wpull_command):
 		else:
 			claim_start_url = 'file://' + os.path.abspath(input_file)
 
-	if not id:
-		id = binascii.hexlify(os.urandom(16)).decode('utf-8')
-	ymd                  = datetime.datetime.utcnow().isoformat()[:10]
-	no_proto_no_trailing = claim_start_url.split('://', 1)[1].rstrip('/')[:100]
-	unwanted_chars_re    = r'[^-_a-zA-Z0-9%\.,;@+=]'
-	warc_name            = "{}-{}-{}".format(re.sub(unwanted_chars_re, '-', no_proto_no_trailing).lstrip('-'), ymd, id[:8])
-
 	# make absolute because wpull will start in temp/
 	if not dir:
+		if not id:
+			id = binascii.hexlify(os.urandom(16)).decode('utf-8')
+		ymd                  = datetime.datetime.utcnow().isoformat()[:10]
+		no_proto_no_trailing = claim_start_url.split('://', 1)[1].rstrip('/')[:100]
+		unwanted_chars_re    = r'[^-_a-zA-Z0-9%\.,;@+=]'
+		warc_name            = "{}-{}-{}".format(re.sub(unwanted_chars_re, '-', no_proto_no_trailing).lstrip('-'), ymd, id[:8])
 		working_dir = os.path.abspath(warc_name)
 	else:
 		working_dir = os.path.abspath(dir)
+
+	# For resume mode, find warc file matching the crawl ID
+	if resume:
+		# Read the id file
+		id_file_path = os.path.join(working_dir, "id")
+		if not os.path.exists(id_file_path):
+			print(f"Error: Cannot resume because {id_file_path} does not exist", file=sys.stderr)
+			sys.exit(1)
+
+		with open(id_file_path, "r") as f:
+			crawl_id = f.read().strip()
+
+		id_part = crawl_id[:8]
+
+		# Look for matching WARC files in working_dir or finished_warc_dir
+		warc_name = None
+
+		# Search in working_dir first
+		for file in os.listdir(working_dir):
+			if file.endswith(".warc.gz") and f"-{id_part}-" in file:
+				# Extract base name without sequence number
+				parts = file.split("-")
+				warc_name = "-".join(parts[:-1])  # Remove the sequence number and extension
+				break
+
+		# If not found and finished_warc_dir exists, search there
+		if not warc_name and finished_warc_dir and os.path.exists(finished_warc_dir):
+			for file in os.listdir(finished_warc_dir):
+				if file.endswith(".warc.gz") and f"-{id_part}-" in file:
+					parts = file.split("-")
+					warc_name = "-".join(parts[:-1])  # Remove the sequence number and extension
+					break
+
+		# Fallback to directory name if no matching files found
+		if not warc_name:
+			warc_name = os.path.basename(working_dir)
+	else:
+		if not id:
+			id = binascii.hexlify(os.urandom(16)).decode('utf-8')
+		ymd                  = datetime.datetime.utcnow().isoformat()[:10]
+		no_proto_no_trailing = claim_start_url.split('://', 1)[1].rstrip('/')[:100]
+		unwanted_chars_re    = r'[^-_a-zA-Z0-9%\.,;@+=]'
+		warc_name            = "{}-{}-{}".format(re.sub(unwanted_chars_re, '-', no_proto_no_trailing).lstrip('-'), ymd, id[:8])
 
 	LIBGRABSITE = os.path.dirname(libgrabsite.__file__)
 	args = [
@@ -269,6 +322,11 @@ permanent_error_status_codes, which_wpull_args_partial, which_wpull_command):
 	if recursive:
 		args += ["--recursive"]
 
+	if resume:
+		# Add --warc-append to wpull_args if not already present
+		if "--warc-append" not in wpull_args:
+			wpull_args = ("--warc-append " + wpull_args).strip()
+
 	if wpull_args:
 		args += shlex.split(wpull_args)
 
@@ -293,11 +351,16 @@ permanent_error_status_codes, which_wpull_args_partial, which_wpull_command):
 		return
 
 	# Create DIR and DIR files only after which_wpull_args_* checks
-	os.makedirs(working_dir)
-	temp_dir = os.path.join(working_dir, "temp")
-	os.makedirs(temp_dir)
+	if resume:
+		temp_dir = os.path.join(working_dir, "temp")
+		if not os.path.exists(temp_dir):
+			os.makedirs(temp_dir)
+	else:
+		os.makedirs(working_dir)
+		temp_dir = os.path.join(working_dir, "temp")
+		os.makedirs(temp_dir)
 
-	if input_file is not None:
+	if input_file is not None and not resume:
 		# wpull -i doesn't support URLs, so download the input file ourselves if necessary
 		if input_file_is_remote:
 			# TODO: use wpull with correct user agent instead of urllib.request
@@ -312,42 +375,47 @@ permanent_error_status_codes, which_wpull_args_partial, which_wpull_command):
 		else:
 			shutil.copyfile(input_file, DIR_input_file)
 
-	with open("{}/id".format(working_dir), "w") as f:
-		f.write(id)
+	if not resume:
+		with open("{}/id".format(working_dir), "w") as f:
+			f.write(id)
 
-	with open("{}/start_url".format(working_dir), "w") as f:
-		f.write(claim_start_url)
+		with open("{}/start_url".format(working_dir), "w") as f:
+			f.write(claim_start_url)
 
-	with open("{}/all_start_urls".format(working_dir), "w") as f:
-		for u in start_url:
-			f.write(u + "\n")
+		with open("{}/all_start_urls".format(working_dir), "w") as f:
+			for u in start_url:
+				f.write(u + "\n")
 
-	with open("{}/concurrency".format(working_dir), "w") as f:
-		f.write(str(concurrency))
+		with open("{}/concurrency".format(working_dir), "w") as f:
+			f.write(str(concurrency))
 
-	with open("{}/max_content_length".format(working_dir), "w") as f:
-		f.write(str(max_content_length))
+		with open("{}/max_content_length".format(working_dir), "w") as f:
+			f.write(str(max_content_length))
 
-	with open("{}/igsets".format(working_dir), "w") as f:
-		f.write("{}{}".format("" if no_global_igset else "global,", igsets))
+		with open("{}/igsets".format(working_dir), "w") as f:
+			f.write("{}{}".format("" if no_global_igset else "global,", igsets))
 
-	if video:
-		with open("{}/video".format(working_dir), "w") as f:
+		if video:
+			with open("{}/video".format(working_dir), "w") as f:
+				pass
+
+		if not igon:
+			with open("{}/igoff".format(working_dir), "w") as f:
+				pass
+
+		with open("{}/ignores".format(working_dir), "w") as f:
+			if import_ignores is not None:
+				f.write(open(import_ignores, "r").read())
+
+		with open("{}/delay".format(working_dir), "w") as f:
+			f.write(delay)
+
+		with open("{}/scrape".format(working_dir), "w") as f:
 			pass
 
-	if not igon:
-		with open("{}/igoff".format(working_dir), "w") as f:
-			pass
-
-	with open("{}/ignores".format(working_dir), "w") as f:
-		if import_ignores is not None:
-			f.write(open(import_ignores, "r").read())
-
-	with open("{}/delay".format(working_dir), "w") as f:
-		f.write(delay)
-
-	with open("{}/scrape".format(working_dir), "w") as f:
-		pass
+	# For resume mode, remove the stop file if it exists
+	if resume and os.path.exists("{}/stop".format(working_dir)):
+		os.unlink("{}/stop".format(working_dir))
 
 	# We don't actually need to write control files for this mode to work, but the
 	# only reason to use this is if you're starting wpull manually with modified
