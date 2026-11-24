@@ -1,6 +1,7 @@
 import faulthandler
 faulthandler.enable()
 
+import asyncio
 import re
 import os
 import sys
@@ -374,6 +375,8 @@ permanent_error_status_codes, which_wpull_args_partial, which_wpull_command):
 	from wpull.processor.web import WebProcessor
 	WebProcessor.NO_DOCUMENT_STATUS_CODES = \
 		tuple(int(code) for code in permanent_error_status_codes.split(","))
+
+	asyncio.set_event_loop(asyncio.new_event_loop())
 
 	import wpull.application.main
 	# Don't let wpull install a handler for SIGINT or SIGTERM,
