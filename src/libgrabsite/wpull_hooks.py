@@ -509,7 +509,11 @@ class GrabSitePlugin(WpullPlugin):
     def handle_result(self, url_info, record_info, error_info, response):
         self.update_igoff()
 
-        self.job_data["bytes_downloaded"] += wpull_tweaks.response_body_size(response)
+        # response_body_size() returns None when the size is unknown (and
+        # response is None for errors raised before any response arrived).
+        self.job_data["bytes_downloaded"] += (
+            wpull_tweaks.response_body_size(response) or 0
+        )
 
         response_code = 0
         response_message = ""

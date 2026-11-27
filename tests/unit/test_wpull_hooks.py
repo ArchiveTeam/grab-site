@@ -1,6 +1,8 @@
+import collections
 import re
 import types
 import unittest
+from unittest import mock
 
 from tests.unit import _stubs  # noqa: F401
 from libgrabsite import wpull_hooks as wh
@@ -529,6 +531,85 @@ class AddSignalHandlersTests(unittest.TestCase):
         loop = _FakeLoop(raises=RuntimeError("loop closed"))
         with self.assertRaises(RuntimeError):
             wh.GrabSitePlugin.add_signal_handlers(_fake_self(loop))
+
+
+class _SizeError:
+    def size(self):
+        raise OSError("fstat failed")
+
+
+class _Body:
+    def __init__(self, n):
+        self._n = n
+
+    def size(self):
+        return self._n
+
+
+class _Response:
+    def __init__(self, body):
+        self.body = body
+        self.reason = "OK"
+
+
+class _ItemSession:
+    def __init__(self, response):
+        self.response = response
+        self.request = types.SimpleNamespace(
+            url_info=types.SimpleNamespace(raw="http://example.com/x")
+        )
+        self.url_record = None
+
+
+class HandleResultBytesTests(unittest.TestCase):
+    """handle_result must tolerate a body size that cannot be determined."""
+
+    def make_plugin(self):
+        p = wh.GrabSitePlugin.__new__(wh.GrabSitePlugin)
+        p.job_data = collections.defaultdict(int)
+        p.job_data["bytes_downloaded"] = 0
+        p.update_igoff = mock.Mock()
+        p.put_ws_queue = mock.Mock()
+        p.should_stop = mock.Mock(return_value=False)
+        return p
+
+    def test_error_without_response_does_not_raise(self):
+        # wpull calls handle_error before any response exists, so response
+        # is None. Previously this raised TypeError (int += None).
+        p = self.make_plugin()
+        session = _ItemSession(response=None)
+        result = p.handle_error(session, OSError("connection refused"))
+        self.assertEqual(result, wh.Actions.NORMAL)
+        self.assertEqual(p.job_data["bytes_downloaded"], 0)
+        self.assertEqual(p.job_data["runk"], 1)
+
+    def test_unknown_body_size_on_success_does_not_raise(self):
+        p = self.make_plugin()
+        resp = _Response(_SizeError())
+        result = p.handle_result(
+            types.SimpleNamespace(raw="http://example.com/x"), None, None, resp
+        )
+        self.assertEqual(result, wh.Actions.NORMAL)
+        self.assertEqual(p.job_data["bytes_downloaded"], 0)
+
+    def test_known_body_size_is_accumulated(self):
+        p = self.make_plugin()
+        p.job_data["bytes_downloaded"] = 10
+        resp = _Response(_Body(25))
+        p.handle_result(
+            types.SimpleNamespace(raw="http://example.com/x"), None, None, resp
+        )
+        self.assertEqual(p.job_data["bytes_downloaded"], 35)
+
+    def test_unknown_size_does_not_discard_running_total(self):
+        p = self.make_plugin()
+        p.job_data["bytes_downloaded"] = 10
+        p.handle_error(_ItemSession(response=None), OSError("reset"))
+        resp = _Response(_SizeError())
+        p.handle_result(
+            types.SimpleNamespace(raw="http://example.com/x"), None, None, resp
+        )
+        self.assertEqual(p.job_data["bytes_downloaded"], 10)
 
 
 if __name__ == "__main__":
