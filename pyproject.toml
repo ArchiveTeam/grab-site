@@ -1,0 +1,42 @@
+[build-system]
+requires = ["setuptools>=61"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "grab-site"
+dynamic = ["version"]
+description = "The archivist's web crawler: WARC output, dashboard for all crawls, dynamic ignore patterns"
+readme = "README.md"
+license = { file = "LICENSE" }
+authors = [{ name = "Ivan Kozik", email = "ivan@ludios.org" }]
+requires-python = ">=3.8"
+classifiers = [
+  "Programming Language :: Python :: 3",
+  "Development Status :: 5 - Production/Stable",
+  "Intended Audience :: End Users/Desktop",
+  "License :: OSI Approved :: MIT License",
+  "Topic :: Internet :: WWW/HTTP",
+]
+dependencies = [
+  "click>=6.3",
+  "wpull @ https://github.com/ArchiveTeam/ludios_wpull/archive/refs/tags/3.0.9.zip",
+  "manhole>=1.0.0",
+  "lmdb>=0.89",
+  "autobahn>=0.12.1",
+  "google-re2>=1.0.6",
+  "websockets>=6.0",
+]
+
+[project.scripts]
+grab-site = "libgrabsite.main:main"
+gs-server = "libgrabsite.server:main"
+gs-dump-urls = "libgrabsite.dump_urls:main"
+
+[tool.setuptools.dynamic]
+version = { attr = "libgrabsite.__version__" }
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.setuptools.package-data]
+libgrabsite = ["*.html", "*.ico", "*.txt", "ignore_sets/*"]
