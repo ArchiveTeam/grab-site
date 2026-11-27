@@ -181,6 +181,53 @@ class IcyPatternTests(unittest.TestCase):
         self.assertTrue(wh.ICY_VALUE_PATTERN.match("Icecast 2.4"))
         self.assertFalse(wh.ICY_VALUE_PATTERN.match("nginx"))
 
+    def test_field_pattern_is_anchored_for_every_alternative(self):
+        # Without a group, ^ only applied to "icy-"; search() then matched
+        # "ice-" / "x-audiocast-" anywhere in a header name.
+        for f in ("service-id", "device-type", "office-x", "xx-audiocast-y"):
+            self.assertIsNone(wh.ICY_FIELD_PATTERN.search(f), f)
+
+
+class FindIcyReasonTests(unittest.TestCase):
+    @staticmethod
+    def response(pairs=(), version="HTTP/1.1"):
+        r = FakeResponse(pairs)
+        r.version = version
+        return r
+
+    def test_icy_version(self):
+        self.assertEqual(
+            wh.find_icy_reason(self.response(version="ICY")), "[icy version]"
+        )
+
+    def test_icy_field(self):
+        for name in ("icy-name", "ICY-Genre", "x-audiocast-name", "ice-audio-info"):
+            r = self.response([(name, "x")])
+            self.assertEqual(wh.find_icy_reason(r), "[icy field]", name)
+
+    def test_lookalike_headers_are_not_icy(self):
+        for name in ("service-id", "device-type", "office-x", "X-Device-Id"):
+            r = self.response([(name, "1")])
+            self.assertIsNone(wh.find_icy_reason(r), name)
+
+    def test_icecast_server_header(self):
+        r = self.response([("Server", "Icecast 2.4.4")])
+        self.assertEqual(wh.find_icy_reason(r), "[icy server]")
+
+    def test_server_header_name_is_case_insensitive(self):
+        for name in ("server", "SERVER"):
+            r = self.response([(name, "Icecast 2.4.4")])
+            self.assertEqual(wh.find_icy_reason(r), "[icy server]", name)
+
+    def test_non_icecast_server_header(self):
+        for name in ("Server", "server"):
+            r = self.response([(name, "nginx")])
+            self.assertIsNone(wh.find_icy_reason(r), name)
+
+    def test_ordinary_response(self):
+        r = self.response([("Content-Type", "text/html"), ("Server", "nginx")])
+        self.assertIsNone(wh.find_icy_reason(r))
+
 
 class CachingDecoratorTests(unittest.TestCase):
     def test_caches_within_window(self):

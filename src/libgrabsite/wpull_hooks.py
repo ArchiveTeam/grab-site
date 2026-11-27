@@ -118,8 +118,21 @@ class FileChangedWatcher(object):
         return changed
 
 
-ICY_FIELD_PATTERN = re2.compile("(?i)^icy-|ice-|x-audiocast-")
+ICY_FIELD_PATTERN = re2.compile("(?i)^(icy-|ice-|x-audiocast-)")
 ICY_VALUE_PATTERN = re2.compile("(?i)^icecast")
+
+
+def find_icy_reason(response) -> str | None:
+    """Return the ignore tag if the response looks like an Icecast/SHOUTcast stream."""
+    if response.version == "ICY":
+        return "[icy version]"
+    for field, value in response.fields.get_all():
+        if ICY_FIELD_PATTERN.match(field):
+            return "[icy field]"
+        # Header names are case-insensitive (RFC 9110), so "server" must match too.
+        if field.lower() == "server" and ICY_VALUE_PATTERN.match(value):
+            return "[icy server]"
+    return None
 
 
 def get_content_length(response) -> int:
@@ -530,20 +543,10 @@ class GrabSitePlugin(WpullPlugin):
                 self.maybe_log_ignore(url, "[video]")
                 return Actions.FINISH
 
-        # Check if server version starts with ICY
-        if response.version == "ICY":
-            self.maybe_log_ignore(url, "[icy version]")
+        icy_reason = find_icy_reason(response)
+        if icy_reason:
+            self.maybe_log_ignore(url, icy_reason)
             return Actions.FINISH
-
-        # Loop through all the server headers for matches
-        for field, value in response.fields.get_all():
-            if ICY_FIELD_PATTERN.match(field):
-                self.maybe_log_ignore(url, "[icy field]")
-                return Actions.FINISH
-
-            if field == "Server" and ICY_VALUE_PATTERN.match(value):
-                self.maybe_log_ignore(url, "[icy server]")
-                return Actions.FINISH
 
         # Nothing matched, allow download
         self.print_to_terminal(url + " ...")
