@@ -1,6 +1,9 @@
 import json
 import asyncio
+import logging
 import websockets
+
+logger = logging.getLogger(__name__)
 
 
 class Decayer:
@@ -35,7 +38,7 @@ async def sender(plugin, uri):
     while True:
         try:
             async with websockets.connect(uri) as ws:
-                print(f"Connected to {uri}")
+                logger.info("Connected to %s", uri)
                 decayer.reset()
                 await send_object(
                     ws,
@@ -49,5 +52,5 @@ async def sender(plugin, uri):
                         plugin.ws_queue.task_done()
         except Exception as e:
             delay = decayer.decay()
-            print(f"Disconnected from ws:// server: {repr(e)}")
+            logger.warning("Disconnected from ws:// server: %r", e)
             await asyncio.sleep(delay)

@@ -1,6 +1,7 @@
 import os
 import hashlib
 import functools
+import logging
 
 from wpull.database.sqltable import SQLiteURLTable
 from wpull.document.html import HTMLReader
@@ -8,6 +9,8 @@ from wpull.processor.rule import ProcessingRule
 
 from libgrabsite import dupespotter, __version__
 from libgrabsite.dupes import DupesOnDisk
+
+logger = logging.getLogger(__name__)
 
 
 def response_body_size(response) -> int | None:
@@ -51,7 +54,7 @@ class DupeSpottingProcessingRule(ProcessingRule):
             if dupe_of is not None:
                 # Don't extract links from pages we've already seen
                 # to avoid loops that descend a directory endlessly
-                print("DUPE {}\n  OF {}".format(url, dupe_of))
+                logger.info("DUPE %s\n  OF %s", url, dupe_of)
                 return
             else:
                 if dupes_db is not None:

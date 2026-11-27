@@ -9,6 +9,7 @@ import random
 import functools
 import traceback
 import asyncio
+import logging
 import urllib.parse
 
 from wpull.application.hook import Actions
@@ -20,6 +21,8 @@ from wpull.url import URLInfo
 
 from libgrabsite import wpull_tweaks, dashboard_client
 import libgrabsite
+
+logger = logging.getLogger(__name__)
 
 
 working_dir = os.environ["GRAB_SITE_WORKING_DIR"]
@@ -83,11 +86,11 @@ def caching_decorator(f):
     def wrapper(path):
         timestamp, val = cache.get(path, (-CONTROL_FILE_CACHE_SEC, None))
         if timestamp > (time.monotonic() - CONTROL_FILE_CACHE_SEC):
-            # print(f"returning cached value {path} {val}")
+            # logger.debug("returning cached value %s %s", path, val)
             return val
         val = f(path)
         cache[path] = (time.monotonic(), val)
-        # print(f"returning new value {path} {val}")
+        # logger.debug("returning new value %s %s", path, val)
         return val
 
     return wrapper
@@ -115,7 +118,7 @@ class FileChangedWatcher(object):
         changed = now_mtime != self.last_mtime
         self.last_mtime = now_mtime
         if changed:
-            print(f"Imported {self.fname}")
+            logger.info("Imported %s", self.fname)
         return changed
 
 
@@ -344,8 +347,9 @@ class GrabSitePlugin(WpullPlugin):
         with open(self.watchers["concurrency"].fname, "r") as f:
             concurrency = int(f.read().strip())
             if concurrency < 1:
-                print(
-                    f"Warning: using 1 for concurrency instead of {concurrency} because it cannot be < 1"
+                logger.warning(
+                    "using 1 for concurrency instead of %s because it cannot be < 1",
+                    concurrency,
                 )
                 concurrency = 1
             self.job_data["concurrency"] = concurrency
@@ -566,11 +570,14 @@ class GrabSitePlugin(WpullPlugin):
 
     @hook(PluginFunctions.exit_status)
     def exit_status(self, _app_session: AppSession, code: int) -> int:
-        print()
-        print(
-            f"Finished grab {self.job_data['ident']} {self.job_data['url']} with exit code {code}"
+        logger.info("")
+        logger.info(
+            "Finished grab %s %s with exit code %s",
+            self.job_data["ident"],
+            self.job_data["url"],
+            code,
         )
-        print(f"Output is in directory:\n{working_dir}")
+        logger.info("Output is in directory:\n%s", working_dir)
         return code
 
     @hook(PluginFunctions.wait_time)

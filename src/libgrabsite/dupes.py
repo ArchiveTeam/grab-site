@@ -2,6 +2,10 @@
 Duplicate page content database.
 """
 
+import logging
+
+logger = logging.getLogger(__name__)
+
 
 class DupesOnDisk:
     def __init__(self, filename):
@@ -36,7 +40,7 @@ class DupesOnDisk:
             except (OverflowError, lmdb.MemoryError, lmdb.Error) as e:
                 last_error = e
             else:
-                print(f"Created lmdb db with map_size={map_size}")
+                logger.info("Created lmdb db with map_size=%s", map_size)
                 last_error = None
                 break
         if last_error is not None:

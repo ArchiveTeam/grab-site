@@ -1,4 +1,5 @@
 import faulthandler
+import logging
 
 faulthandler.enable()
 
@@ -12,6 +13,24 @@ import datetime
 import shlex
 import click
 import libgrabsite
+
+logger = logging.getLogger(__name__)
+
+
+def configure_logging():
+    """Send libgrabsite's messages to stdout (info) and stderr (warnings and up)."""
+    lib_logger = logging.getLogger("libgrabsite")
+    if lib_logger.handlers:
+        return
+    lib_logger.setLevel(logging.INFO)
+    out = logging.StreamHandler(sys.stdout)
+    out.setFormatter(logging.Formatter("%(message)s"))
+    out.addFilter(lambda record: record.levelno < logging.WARNING)
+    err = logging.StreamHandler(sys.stderr)
+    err.setLevel(logging.WARNING)
+    err.setFormatter(logging.Formatter("%(levelname)s: %(message)s"))
+    lib_logger.addHandler(out)
+    lib_logger.addHandler(err)
 
 
 def print_version(ctx, param, value):
@@ -265,17 +284,13 @@ def main(
 
     https://github.com/ArchiveTeam/grab-site/blob/master/README.md#usage
     """
+    configure_logging()
+
     if not (input_file or start_url):
-        print(
-            "Neither a START_URL or --input-file= was specified; see --help",
-            file=sys.stderr,
-        )
+        logger.error("Neither a START_URL or --input-file= was specified; see --help")
         sys.exit(1)
     elif input_file and start_url:
-        print(
-            "Can't specify both START_URL and --input-file=; see --help",
-            file=sys.stderr,
-        )
+        logger.error("Can't specify both START_URL and --input-file=; see --help")
         sys.exit(1)
 
     span_hosts_allow = "page-requisites,linked-pages"

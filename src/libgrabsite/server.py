@@ -6,8 +6,11 @@ txaio.use_asyncio()
 import os
 import json
 import asyncio
+import logging
 from autobahn.asyncio.websocket import WebSocketServerFactory, WebSocketServerProtocol
 from libgrabsite import dashboard_assets
+
+logger = logging.getLogger(__name__)
 
 
 # Fields a grabber must send, per message type, and the Python type each must have.
@@ -38,21 +41,21 @@ class GrabberServerProtocol(WebSocketServerProtocol):
 
     def onConnect(self, request):
         self.peer = request.peer
-        print(f"{self.peer} connected")
+        logger.info("%s connected", self.peer)
         self.factory.clients.add(self)
 
     def onClose(self, wasClean, code, reason):
-        print(f"{self.peer} disconnected")
+        logger.info("%s disconnected", self.peer)
         self.factory.clients.discard(self)
 
     def onMessage(self, payload, isBinary):
         try:
             obj = json.loads(payload.decode("utf-8"))
         except (UnicodeDecodeError, ValueError):
-            print(f"{self.peer} sent a message that is not valid JSON; ignoring it")
+            logger.warning("%s sent a message that is not valid JSON; ignoring it", self.peer)
             return
         if not isinstance(obj, dict):
-            print(f"{self.peer} sent a message that is not a JSON object; ignoring it")
+            logger.warning("%s sent a message that is not a JSON object; ignoring it", self.peer)
             return
         type = obj.get("type")
         if self.mode is None:
@@ -66,29 +69,29 @@ class GrabberServerProtocol(WebSocketServerProtocol):
         mode = obj.get("mode")
         if mode == "grabber":
             self.mode = mode
-            print(f"{self.peer} is grabbing {obj.get('url')}")
+            logger.info("%s is grabbing %s", self.peer, obj.get("url"))
         elif mode == "dashboard":
             self.mode = mode
             user_agent = obj.get("user_agent", "(no User-Agent)")
-            print(f"{self.peer} is dashboarding with {user_agent}")
+            logger.info("%s is dashboarding with %s", self.peer, user_agent)
 
     def handle_grabber_message(self, type, obj):
         if type not in GRABBER_MESSAGE_FIELDS:
             return
         job_data = obj.get("job_data")
         if not isinstance(job_data, dict):
-            print(f"{self.peer} sent {type} without job_data; ignoring it")
+            logger.warning("%s sent %s without job_data; ignoring it", self.peer, type)
             return
         missing = _has_fields(job_data, JOB_DATA_FIELDS)
         if missing is not None:
-            print(
-                f"{self.peer} sent job_data with bad or missing {missing!r}; ignoring it"
+            logger.warning(
+                "%s sent job_data with bad or missing %r; ignoring it", self.peer, missing
             )
             return
         missing = _has_fields(obj, GRABBER_MESSAGE_FIELDS[type])
         if missing is not None:
-            print(
-                f"{self.peer} sent {type} with bad or missing {missing!r}; ignoring it"
+            logger.warning(
+                "%s sent %s with bad or missing %r; ignoring it", self.peer, type, missing
             )
             return
 
@@ -162,6 +165,9 @@ class GrabberServerFactory(WebSocketServerFactory):
 
 
 def main():
+    logging.basicConfig(
+        level=logging.INFO, format="%(asctime)s %(levelname)s %(message)s"
+    )
     loop = asyncio.new_event_loop()
     asyncio.set_event_loop(loop)
     ports = list(int(p) for p in os.environ.get("GRAB_SITE_PORT", "29000").split(","))
@@ -172,7 +178,7 @@ def main():
     for port in ports:
         coro = loop.create_server(factory, interface, port)
         loop.run_until_complete(coro)
-        print(f"grab-site server listening on {interface}:{port}")
+        logger.info("grab-site server listening on %s:%s", interface, port)
 
     loop.run_forever()
 
