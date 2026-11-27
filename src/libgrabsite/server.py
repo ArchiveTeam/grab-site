@@ -9,6 +9,27 @@ import asyncio
 from autobahn.asyncio.websocket import WebSocketServerFactory, WebSocketServerProtocol
 
 
+# Fields a grabber must send, per message type, and the Python type each must have.
+# Anything else is dropped, so the dashboard never receives a message it
+# cannot render.
+GRABBER_MESSAGE_FIELDS = {
+    "download": {"url": str, "response_code": int, "response_message": str},
+    "stdout": {"message": str},
+    "stderr": {"message": str},
+    "ignore": {"url": str, "pattern": str},
+}
+
+JOB_DATA_FIELDS = {"ident": str, "url": str, "started_at": (int, float, str)}
+
+
+def _has_fields(obj, fields):
+    """Return the name of the first field in fields that is missing or has the wrong type, or None."""
+    for name, expected in fields.items():
+        if name not in obj or not isinstance(obj[name], expected):
+            return name
+    return None
+
+
 class GrabberServerProtocol(WebSocketServerProtocol):
     def __init__(self):
         super().__init__()
@@ -24,50 +45,86 @@ class GrabberServerProtocol(WebSocketServerProtocol):
         self.factory.clients.discard(self)
 
     def onMessage(self, payload, isBinary):
-        obj = json.loads(payload.decode("utf-8"))
-        type = obj["type"]
-        if self.mode is None and type == "hello" and obj.get("mode"):
-            mode = obj["mode"]
-            if mode in ("dashboard", "grabber"):
-                self.mode = mode
-                if mode == "grabber":
-                    print(f"{self.peer} is grabbing {obj['url']}")
-                elif mode == "dashboard":
-                    user_agent = obj.get("user_agent", "(no User-Agent)")
-                    print(f"{self.peer} is dashboarding with {user_agent}")
+        try:
+            obj = json.loads(payload.decode("utf-8"))
+        except (UnicodeDecodeError, ValueError):
+            print(f"{self.peer} sent a message that is not valid JSON; ignoring it")
+            return
+        if not isinstance(obj, dict):
+            print(f"{self.peer} sent a message that is not a JSON object; ignoring it")
+            return
+        type = obj.get("type")
+        if self.mode is None:
+            self.handle_hello(obj)
         elif self.mode == "grabber":
-            if type == "download":
-                self.broadcast_to_dashboards(
-                    {
-                        "type": type,
-                        "job_data": obj["job_data"],
-                        "url": obj["url"],
-                        "response_code": obj["response_code"],
-                        "wget_code": obj["response_message"],
-                    }
-                )
-            elif type in ("stdout", "stderr"):
-                self.broadcast_to_dashboards(
-                    {
-                        "type": type,
-                        "job_data": obj["job_data"],
-                        "message": obj["message"],
-                    }
-                )
-            elif type == "ignore":
-                self.broadcast_to_dashboards(
-                    {
-                        "type": type,
-                        "job_data": obj["job_data"],
-                        "url": obj["url"],
-                        "pattern": obj["pattern"],
-                    }
-                )
+            self.handle_grabber_message(type, obj)
+
+    def handle_hello(self, obj):
+        if obj.get("type") != "hello":
+            return
+        mode = obj.get("mode")
+        if mode == "grabber":
+            self.mode = mode
+            print(f"{self.peer} is grabbing {obj.get('url')}")
+        elif mode == "dashboard":
+            self.mode = mode
+            user_agent = obj.get("user_agent", "(no User-Agent)")
+            print(f"{self.peer} is dashboarding with {user_agent}")
+
+    def handle_grabber_message(self, type, obj):
+        if type not in GRABBER_MESSAGE_FIELDS:
+            return
+        job_data = obj.get("job_data")
+        if not isinstance(job_data, dict):
+            print(f"{self.peer} sent {type} without job_data; ignoring it")
+            return
+        missing = _has_fields(job_data, JOB_DATA_FIELDS)
+        if missing is not None:
+            print(
+                f"{self.peer} sent job_data with bad or missing {missing!r}; ignoring it"
+            )
+            return
+        missing = _has_fields(obj, GRABBER_MESSAGE_FIELDS[type])
+        if missing is not None:
+            print(
+                f"{self.peer} sent {type} with bad or missing {missing!r}; ignoring it"
+            )
+            return
+
+        if type == "download":
+            self.broadcast_to_dashboards(
+                {
+                    "type": type,
+                    "job_data": job_data,
+                    "url": obj["url"],
+                    "response_code": obj["response_code"],
+                    "wget_code": obj["response_message"],
+                }
+            )
+        elif type in ("stdout", "stderr"):
+            self.broadcast_to_dashboards(
+                {
+                    "type": type,
+                    "job_data": job_data,
+                    "message": obj["message"],
+                }
+            )
+        elif type == "ignore":
+            self.broadcast_to_dashboards(
+                {
+                    "type": type,
+                    "job_data": job_data,
+                    "url": obj["url"],
+                    "pattern": obj["pattern"],
+                }
+            )
 
     def broadcast_to_dashboards(self, obj):
+        # Encode once, then send the same bytes to every dashboard.
+        payload = json.dumps(obj).encode("utf-8")
         for client in self.factory.clients:
             if client.mode == "dashboard":
-                client.sendMessage(json.dumps(obj).encode("utf-8"))
+                client.sendMessage(payload)
 
     # Called when we get an HTTP request instead of a WebSocket request
     def sendServerStatus(self, redirectUrl=None, redirectAfter=0):
@@ -105,7 +162,9 @@ def main():
     asyncio.set_event_loop(loop)
     ports = list(int(p) for p in os.environ.get("GRAB_SITE_PORT", "29000").split(","))
     factory = GrabberServerFactory()
-    interface = os.environ.get("GRAB_SITE_INTERFACE", "0.0.0.0")
+    # Loopback by default: the dashboard has no authentication, so anyone who
+    # can reach the port could inject events. Set GRAB_SITE_INTERFACE to expose it.
+    interface = os.environ.get("GRAB_SITE_INTERFACE", "127.0.0.1")
     for port in ports:
         coro = loop.create_server(factory, interface, port)
         loop.run_until_complete(coro)

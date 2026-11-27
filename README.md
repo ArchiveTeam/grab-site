@@ -295,9 +295,10 @@ gs-server
 
 and point your browser to http://127.0.0.1:29000/
 
-Note: gs-server listens on all interfaces by default, so you can reach the
-dashboard by a non-localhost IP as well, e.g. a LAN or WAN IP.  (Sub-note:
-no code execution capabilities are exposed on any interface.)
+Note: gs-server listens only on 127.0.0.1 by default.  To reach the dashboard
+from another machine, e.g. over a LAN, start it with
+`GRAB_SITE_INTERFACE=0.0.0.0 gs-server`.  The dashboard has no authentication,
+so anyone who can reach the port can add events to it.
 
 Then, start as many crawls as you want with:
 
@@ -641,7 +642,7 @@ Advanced `gs-server` options
 ---
 These environmental variables control what `gs-server` listens on:
 
-*	`GRAB_SITE_INTERFACE` (default `0.0.0.0`)
+*	`GRAB_SITE_INTERFACE` (default `127.0.0.1`; the Docker image sets `0.0.0.0`).  The dashboard has no authentication, so only expose it on a network you trust.
 *	`GRAB_SITE_PORT` (default `29000`)
 
 These environmental variables control which server each `grab-site` process connects to:

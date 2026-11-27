@@ -471,6 +471,10 @@ var h = function(elem, attrs, thing) {
 	var e = document.createElement(elem);
 	if(attrs != null) {
 		for(var attr in attrs) {
+			if(attrs[attr] == null) {
+				// e.g. safeHref() rejected a URL: leave the attribute unset
+				continue;
+			}
 			if(attr == "spellcheck" || attr == "readonly") {
 				e.setAttribute(attr, attrs[attr]);
 			} else if(attr == "class") {
@@ -486,9 +490,20 @@ var h = function(elem, attrs, thing) {
 	return e;
 };
 
+/**
+ * Returns the URL if it is http, https or ftp, else null. Message URLs come from
+ * grabbers and are untrusted, so a javascript: or data: URL must never become a link.
+ */
+var safeHref = function(url) {
+	return typeof url == "string" && /^(https?|ftp):\/\//i.test(url) ? url : null;
+};
+
 var href = function(href, text) {
 	var a = h("a");
-	a.href = href;
+	var safe = safeHref(href);
+	if(safe != null) {
+		a.href = safe;
+	}
 	a.textContent = text;
 	return a;
 };
@@ -874,7 +889,7 @@ JobsRenderer.prototype._createLogContainer = function(jobData) {
 
 	statsElements.jobInfo = h(
 		"span", {"className": "job-info"}, [
-			h("a", {"className": "inline-stat job-url", "href": jobData["url"]}, jobData["url"]),
+			h("a", {"className": "inline-stat job-url", "href": safeHref(jobData["url"])}, jobData["url"]),
 			// Clicking anywhere in this area will set the filter to a regexp that
 			// matches only this job URL, thus hiding everything but this job.
 			h("span", {
@@ -943,13 +958,13 @@ JobsRenderer.prototype._createLogContainer = function(jobData) {
 JobsRenderer.prototype._renderDownloadLine = function(data, logSegment) {
 	var code = data["response_code"];
 	if(code >= 400 && code < 500) {
-		var attrs = {"className": "line-warning", "href": data["url"]};
+		var attrs = {"className": "line-warning", "href": safeHref(data["url"])};
 	} else if(code === 0 || code >= 500) {
-		var attrs = {"className": "line-error", "href": data["url"]};
+		var attrs = {"className": "line-error", "href": safeHref(data["url"])};
 	} else if(code && code >= 300 && code < 400) {
-		var attrs = {"className": "line-redirect", "href": data["url"]};
+		var attrs = {"className": "line-redirect", "href": safeHref(data["url"])};
 	} else {
-		var attrs = {"className": "line-normal", "href": data["url"]};
+		var attrs = {"className": "line-normal", "href": safeHref(data["url"])};
 	}
 	logSegment.appendChild(
 		h("a", attrs, code + " " + data["wget_code"] + " " + data["url"])
@@ -974,7 +989,7 @@ JobsRenderer.prototype._moreDomRenderDownloadLine = function(data, logSegment) {
 	}
 	logSegment.appendChild(h("div", attrs, [
 		code + " " + data["wget_code"] + " ",
-		h("a", {"href": data["url"], "className": "log-url"}, data["url"])
+		h("a", {"href": safeHref(data["url"]), "className": "log-url"}, data["url"])
 	]));
 	return 1;
 };
@@ -983,7 +998,7 @@ JobsRenderer.prototype._renderIgnoreLine = function(data, logSegment) {
 	var attrs = Reusable.obj_className_line_ignore;
 	logSegment.appendChild(h("div", attrs, [
 		h('span', null, " IGNOR "),
-		h('a', {"href": data["url"], "className": "ignore"}, data["url"]),
+		h('a', {"href": safeHref(data["url"]), "className": "ignore"}, data["url"]),
 		h('span', Reusable.obj_className_bold, " by "),
 		data["pattern"]
 	]));
@@ -1311,7 +1326,7 @@ ContextMenuRenderer.prototype.makeEntries = function(ident, url) {
 	return [
 		// Unfortunately, this does not open it in a background tab
 		// like the real context menu does.
-		 h('a', {'href': url}, "Open link in new tab")
+		 h('a', {'href': safeHref(url)}, "Open link in new tab")
 		,h('span', {'onclick': this.makeCopyTextFn(url)}, "Copy link address")
 	].concat(commands);
 };
@@ -1548,7 +1563,10 @@ Dashboard.prototype.keyPress = function(ev) {
 		byId('filter-box').focus();
 		byId('filter-box').select();
 	} else if(ev.which == 118) { // v
-		window.open(this.jobsRenderer.firstFilterMatch["url"]);
+		var firstUrl = safeHref(this.jobsRenderer.firstFilterMatch["url"]);
+		if(firstUrl != null) {
+			window.open(firstUrl);
+		}
 	}
 };
 
