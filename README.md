@@ -35,13 +35,13 @@ please [file an issue](https://github.com/ArchiveTeam/grab-site/issues) - thank 
 The installation methods below are the only ones supported in our GitHub issues.
 Please do not modify the installation steps unless you really know what you're
 doing, with both Python packaging and your operating system. grab-site runs
-on a specific version of Python (3.7 or 3.8) and with specific dependency versions.
+on a specific version of Python (3.12 or newer) and with specific dependency versions.
 
 **Contents**
 
 - [Install on Ubuntu 18.04, 20.04, 22.04, Debian 10 (buster), Debian 11 (bullseye)](#install-on-ubuntu-1804-2004-2204-debian-10-buster-debian-11-bullseye)
 - [Install on NixOS](#install-on-nixos)
-- [Install on another distribution lacking Python 3.7.x or 3.8.x](#install-on-another-distribution-lacking-python-37x-or-38x)
+- [Install on another distribution lacking Python 3.12](#install-on-another-distribution-lacking-python-312)
 - [Install on macOS](#install-on-macos)
 - [Install on Windows 10 (experimental)](#install-on-windows-10-experimental)
 - [Upgrade an existing install](#upgrade-an-existing-install)
@@ -83,8 +83,8 @@ Install on Ubuntu 18.04, 20.04, 22.04, Debian 10 (buster), Debian 11 (bullseye)
 	wget https://raw.githubusercontent.com/pyenv/pyenv-installer/master/bin/pyenv-installer
 	chmod +x pyenv-installer
 	./pyenv-installer
-	~/.pyenv/bin/pyenv install 3.8.15
-	~/.pyenv/versions/3.8.15/bin/python -m venv ~/gs-venv
+	~/.pyenv/bin/pyenv install 3.12.16
+	~/.pyenv/versions/3.12.16/bin/python -m venv ~/gs-venv
 	~/gs-venv/bin/pip install --no-binary lxml --upgrade git+https://github.com/ArchiveTeam/grab-site
 	```
 
@@ -115,12 +115,12 @@ nix profile install nixpkgs/release-22.11#grab-site
 ```
 
 
-Install on another distribution lacking Python 3.7.x or 3.8.x
+Install on another distribution lacking Python 3.12
 ---
 
 After installing [uv](https://docs.astral.sh/uv/), you can run
 ```
-uv tool install --python=3.8 --no-binary-package lxml git+https://github.com/ArchiveTeam/grab-site/
+uv tool install --python=3.12 --no-binary-package lxml git+https://github.com/ArchiveTeam/grab-site/
 ```
 
 
@@ -147,8 +147,8 @@ For M1 Macs, use the next section instead of this one.
 
 	```
 	brew update
-	brew install python@3.8 libxslt re2 pkg-config
-	/usr/local/opt/python@3.8/bin/python3 -m venv ~/gs-venv
+	brew install python@3.12 libxslt re2 pkg-config
+	/usr/local/opt/python@3.12/bin/python3 -m venv ~/gs-venv
 	PKG_CONFIG_PATH="/usr/local/opt/libxml2/lib/pkgconfig" ~/gs-venv/bin/pip install --no-binary lxml --upgrade git+https://github.com/ArchiveTeam/grab-site
 	```
 
@@ -170,8 +170,8 @@ For M1 Macs, use the next section instead of this one.
 
 	```
 	brew update
-	brew install python@3.8 libxslt re2 pkg-config
-	/opt/homebrew/opt/python@3.8/bin/python3 -m venv ~/gs-venv
+	brew install python@3.12 libxslt re2 pkg-config
+	/opt/homebrew/opt/python@3.12/bin/python3 -m venv ~/gs-venv
 	PKG_CONFIG_PATH="/opt/homebrew/opt/libxml2/lib/pkgconfig" ~/gs-venv/bin/pip install --no-binary lxml --upgrade git+https://github.com/ArchiveTeam/grab-site
 	```
 

@@ -18,13 +18,13 @@ classifiers = [
   "Topic :: Internet :: WWW/HTTP",
 ]
 dependencies = [
-  "click>=6.3",
+  "click>=8.5.1",
   "wpull @ https://github.com/ArchiveTeam/ludios_wpull/releases/download/5.1.0/wpull-5.1.0-py3-none-any.whl",
-  "manhole>=1.0.0",
-  "lmdb>=0.89",
-  "autobahn>=0.12.1",
-  "google-re2>=1.0.6",
-  "websockets>=6.0",
+  "manhole>=1.8.1",
+  "lmdb>=3.0.0",
+  "autobahn>=26.11.2",
+  "google-re2>=1.1.20251105",
+  "websockets>=17.4",
 ]
 
 [project.scripts]
@@ -34,6 +34,12 @@ gs-dump-urls = "libgrabsite.dump_urls:main"
 
 [tool.setuptools.dynamic]
 version = { attr = "libgrabsite.__version__" }
+
+[tool.uv]
+# html5-parser (pulled in by wpull) is only distributed as an sdist and is built
+# against the system libxml2. A binary lxml wheel bundles its own libxml2, and
+# the two then refuse to load together. Build lxml from source instead.
+no-binary-package = ["lxml"]
 
 [tool.setuptools.packages.find]
 where = ["src"]

@@ -146,13 +146,14 @@ def has_video_ext(url: str) -> bool:
 class GrabSitePlugin(WpullPlugin):
 	def activate(self):
 		wpull_tweaks.activate(self.app_session)
-		self.loop = asyncio.get_event_loop()
+		self.loop = asyncio.get_running_loop()
 		self.enable_stdio_capture()
 		self.add_signal_handlers()
 		self.init_job_data()
 		self.init_ws()
 		self.setup_watchers()
-		self.all_start_urls             = open(cf("all_start_urls")).read().rstrip("\n").split("\n")
+		with open(cf("all_start_urls")) as f:
+			self.all_start_urls         = f.read().rstrip("\n").split("\n")
 		self.all_start_netlocs          = set(urllib.parse.urlparse(url).netloc for url in self.all_start_urls)
 		self.skipped_videos             = open(cf("skipped_videos"),             "w", encoding="utf-8")
 		self.skipped_max_content_length = open(cf("skipped_max_content_length"), "w", encoding="utf-8")
@@ -221,9 +222,13 @@ class GrabSitePlugin(WpullPlugin):
 			self.real_stderr_write((str(e) + "\n").encode("utf-8"))
 
 	def init_job_data(self):
+		with open(cf("id")) as f:
+			ident = f.read().strip()
+		with open(cf("start_url")) as f:
+			start_url = f.read().strip()
 		self.job_data = {
-			"ident":                   open(cf("id")).read().strip(),
-			"url":                     open(cf("start_url")).read().strip(),
+			"ident":                   ident,
+			"url":                     start_url,
 			"started_at":              os.stat(cf("start_url")).st_mtime,
 			"max_content_length":      -1,
 			"suppress_ignore_reports": True,

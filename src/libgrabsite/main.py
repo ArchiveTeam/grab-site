@@ -209,7 +209,7 @@ permanent_error_status_codes, which_wpull_args_partial, which_wpull_command):
 
 	if not id:
 		id = binascii.hexlify(os.urandom(16)).decode('utf-8')
-	ymd                  = datetime.datetime.utcnow().isoformat()[:10]
+	ymd                  = datetime.datetime.now(datetime.timezone.utc).isoformat()[:10]
 	no_proto_no_trailing = claim_start_url.split('://', 1)[1].rstrip('/')[:100]
 	unwanted_chars_re    = r'[^-_a-zA-Z0-9%\.,;@+=]'
 	warc_name            = "{}-{}-{}".format(re.sub(unwanted_chars_re, '-', no_proto_no_trailing).lstrip('-'), ymd, id[:8])
@@ -341,7 +341,8 @@ permanent_error_status_codes, which_wpull_args_partial, which_wpull_command):
 
 	with open("{}/ignores".format(working_dir), "w") as f:
 		if import_ignores is not None:
-			f.write(open(import_ignores, "r").read())
+			with open(import_ignores, "r") as src:
+				f.write(src.read())
 
 	with open("{}/delay".format(working_dir), "w") as f:
 		f.write(delay)
