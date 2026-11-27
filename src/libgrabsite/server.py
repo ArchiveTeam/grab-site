@@ -34,10 +34,17 @@ def _has_fields(obj, fields):
     return None
 
 
+# Bytes a dashboard may have queued in its socket before we stop sending it
+# messages.  A dashboard that cannot keep up would otherwise make us buffer
+# without limit.
+MAX_DASHBOARD_BACKLOG = 1 << 20
+
+
 class GrabberServerProtocol(WebSocketServerProtocol):
     def __init__(self):
         super().__init__()
         self.mode = None
+        self.dropping = False
 
     def onConnect(self, request):
         self.peer = request.peer
@@ -146,8 +153,25 @@ class GrabberServerProtocol(WebSocketServerProtocol):
         # Encode once, then send the same bytes to every dashboard.
         payload = json.dumps(obj).encode("utf-8")
         for client in self.factory.clients:
-            if client.mode == "dashboard":
-                client.sendMessage(payload)
+            if client.mode != "dashboard":
+                continue
+            if client.backlog() > MAX_DASHBOARD_BACKLOG:
+                if not client.dropping:
+                    logger.warning(
+                        "%s is not keeping up; dropping messages until it catches up",
+                        client.peer,
+                    )
+                client.dropping = True
+                continue
+            client.dropping = False
+            client.sendMessage(payload)
+
+    def backlog(self):
+        """Bytes queued in this connection's socket but not yet written out."""
+        transport = getattr(self, "transport", None)
+        if transport is None:
+            return 0
+        return transport.get_write_buffer_size()
 
     # Called when we get an HTTP request instead of a WebSocket request
     def sendServerStatus(self, redirectUrl=None, redirectAfter=0):

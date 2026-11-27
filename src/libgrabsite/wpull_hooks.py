@@ -279,6 +279,10 @@ class GrabSitePlugin(WpullPlugin):
             self.watchers[f] = FileChangedWatcher(cf(f))
 
     def put_ws_queue(self, obj):
+        # The sender serializes later, while job_data keeps changing; copy it now
+        # so each event carries the counters as they were when it happened.
+        if "job_data" in obj:
+            obj = {**obj, "job_data": dict(obj["job_data"])}
         try:
             self.ws_queue.put_nowait(obj)
         except asyncio.QueueFull:

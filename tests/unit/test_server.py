@@ -26,9 +26,11 @@ def make_protocol(mode=None, dashboards=(), grabbers=()):
     return proto
 
 
-def make_dashboard():
+def make_dashboard(backlog=0):
     d = mock.Mock()
     d.mode = "dashboard"
+    d.backlog.return_value = backlog
+    d.dropping = False
     return d
 
 
@@ -208,6 +210,42 @@ class MainDefaultsTests(unittest.TestCase):
         loop = self.run_main({"GRAB_SITE_PORT": "29000,29001"})
         ports = [c.args[2] for c in loop.create_server.call_args_list]
         self.assertEqual(ports, [29000, 29001])
+
+
+class BacklogTests(unittest.TestCase):
+    def test_backlog_reads_the_transport_write_buffer(self):
+        proto = make_protocol(mode="dashboard")
+        proto.transport = mock.Mock()
+        proto.transport.get_write_buffer_size.return_value = 42
+        self.assertEqual(proto.backlog(), 42)
+
+    def test_backlog_is_zero_before_connection(self):
+        proto = make_protocol(mode="dashboard")
+        self.assertEqual(proto.backlog(), 0)
+
+    def test_stalled_dashboard_is_skipped(self):
+        stalled = make_dashboard(backlog=server.MAX_DASHBOARD_BACKLOG + 1)
+        healthy = make_dashboard(backlog=0)
+        grabber = make_protocol(mode="grabber", dashboards=[stalled, healthy])
+        grabber.onMessage(
+            json.dumps(
+                {"type": "stdout", "job_data": JOB_DATA, "message": "x"}
+            ).encode(),
+            False,
+        )
+        stalled.sendMessage.assert_not_called()
+        self.assertEqual(healthy.sendMessage.call_count, 1)
+
+    def test_dashboard_resumes_when_backlog_clears(self):
+        dashboard = make_dashboard(backlog=server.MAX_DASHBOARD_BACKLOG + 1)
+        grabber = make_protocol(mode="grabber", dashboards=[dashboard])
+        message = json.dumps(
+            {"type": "stdout", "job_data": JOB_DATA, "message": "x"}
+        ).encode()
+        grabber.onMessage(message, False)
+        dashboard.backlog.return_value = 0
+        grabber.onMessage(message, False)
+        self.assertEqual(dashboard.sendMessage.call_count, 1)
 
 
 if __name__ == "__main__":

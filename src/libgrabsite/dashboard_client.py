@@ -35,6 +35,9 @@ async def send_object(ws, obj):
 
 async def sender(plugin, uri):
     decayer = Decayer(0.25, 1.5, 8)
+    # A message already taken from the queue but not yet sent. It is kept across
+    # reconnects, so a failed send is retried rather than lost.
+    pending = None
     while True:
         try:
             async with websockets.connect(uri) as ws:
@@ -45,11 +48,18 @@ async def sender(plugin, uri):
                     {"type": "hello", "mode": "grabber", "url": plugin.job_data["url"]},
                 )
                 while True:
-                    obj = await plugin.ws_queue.get()
-                    try:
-                        await send_object(ws, obj)
-                    finally:
-                        plugin.ws_queue.task_done()
+                    if pending is None:
+                        obj = await plugin.ws_queue.get()
+                        try:
+                            pending = json.dumps(obj).encode("utf-8")
+                        except (TypeError, ValueError):
+                            # Retrying can't help, so drop it rather than loop on it.
+                            logger.exception("Dropping message that cannot be encoded")
+                            plugin.ws_queue.task_done()
+                            continue
+                    await ws.send(pending)
+                    pending = None
+                    plugin.ws_queue.task_done()
         except Exception as e:
             delay = decayer.decay()
             logger.warning("Disconnected from ws:// server: %r", e)

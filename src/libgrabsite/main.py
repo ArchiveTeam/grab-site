@@ -122,6 +122,9 @@ def load_resume_state(working_dir):
     return state
 
 
+REMOTE_INPUT_TIMEOUT_SECS = 60
+
+
 def write_control_files(
     working_dir,
     input_file,
@@ -146,13 +149,13 @@ def write_control_files(
             # TODO: use wpull with correct user agent instead of urllib.request
             # wpull -O fails: https://github.com/chfoo/wpull/issues/275
             logger.info("Downloading input file from %s", input_file)
-            u = urllib.request.urlopen(input_file)
-            with open(dir_input_file, "wb") as f:
-                while True:
-                    s = u.read(1024 * 1024)
-                    if not s:
-                        break
-                    f.write(s)
+            # The timeout bounds each socket operation, so a stalled server
+            # can't hang the start-up forever.
+            with urllib.request.urlopen(
+                input_file, timeout=REMOTE_INPUT_TIMEOUT_SECS
+            ) as u:
+                with open(dir_input_file, "wb") as f:
+                    shutil.copyfileobj(u, f, 1024 * 1024)
         else:
             shutil.copyfile(input_file, dir_input_file)
 

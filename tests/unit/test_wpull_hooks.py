@@ -612,5 +612,20 @@ class HandleResultBytesTests(unittest.TestCase):
         self.assertEqual(p.job_data["bytes_downloaded"], 10)
 
 
+class PutWsQueueTests(unittest.TestCase):
+    def test_queued_job_data_is_a_snapshot(self):
+        # The sender serializes later, so the event must keep the counters it
+        # had when it happened, not whatever job_data holds at send time.
+        import asyncio
+
+        p = wh.GrabSitePlugin.__new__(wh.GrabSitePlugin)
+        p.job_data = {"items_queued": 1}
+        p.ws_queue = asyncio.Queue(maxsize=10)
+        p.put_ws_queue({"type": "download", "job_data": p.job_data})
+        p.job_data["items_queued"] = 99
+        queued = p.ws_queue.get_nowait()
+        self.assertEqual(queued["job_data"]["items_queued"], 1)
+
+
 if __name__ == "__main__":
     unittest.main()

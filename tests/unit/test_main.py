@@ -257,5 +257,67 @@ class WarcNameTests(unittest.TestCase):
         self.assertRegex(dirs[0], self.SAFE)
 
 
+class RemoteInputFileTests(unittest.TestCase):
+    class FakeResponse:
+        def __init__(self, data):
+            self._buf = io.BytesIO(data)
+            self.closed = False
+
+        def read(self, n=-1):
+            return self._buf.read(n)
+
+        def close(self):
+            self.closed = True
+
+        def __enter__(self):
+            return self
+
+        def __exit__(self, *exc):
+            self.close()
+            return False
+
+    def setUp(self):
+        self._tmp = tempfile.TemporaryDirectory()
+        self.addCleanup(self._tmp.cleanup)
+
+    def fetch(self, response):
+        from unittest import mock
+
+        with mock.patch(
+            "libgrabsite.main.urllib.request.urlopen", return_value=response
+        ) as opener:
+            write_control_files(
+                self._tmp.name,
+                "http://a.test/list.txt",
+                True,
+                "abc123",
+                "http://a.test/",
+                ("http://a.test/",),
+                "w",
+                2,
+                -1,
+                "",
+                False,
+                True,
+                False,
+                None,
+                "0",
+            )
+        return opener
+
+    def test_download_uses_a_timeout(self):
+        opener = self.fetch(self.FakeResponse(b"http://a.test/1\n"))
+        self.assertIsNotNone(opener.call_args.kwargs.get("timeout"))
+
+    def test_response_is_closed_after_download(self):
+        response = self.FakeResponse(b"http://a.test/1\n")
+        self.fetch(response)
+        self.assertTrue(response.closed)
+
+    def test_contents_are_written(self):
+        self.fetch(self.FakeResponse(b"http://a.test/1\n"))
+        with open(os.path.join(self._tmp.name, "input_file"), "rb") as f:
+            self.assertEqual(f.read(), b"http://a.test/1\n")
+
 if __name__ == "__main__":
     unittest.main()
