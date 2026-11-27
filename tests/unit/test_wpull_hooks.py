@@ -305,8 +305,9 @@ class SwallowExceptionTests(unittest.TestCase):
         def f():
             raise ValueError("boom")
 
-        with mock.patch.object(wh.traceback, "print_exc"):
+        with mock.patch.object(wh.logger, "exception") as log_exc:
             self.assertIsNone(f())
+        log_exc.assert_called_once()
 
 
 class PluginLogicTests(unittest.TestCase):

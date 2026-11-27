@@ -22,7 +22,7 @@ def configure_logging():
     lib_logger = logging.getLogger("libgrabsite")
     if lib_logger.handlers:
         return
-    lib_logger.setLevel(logging.INFO)
+    lib_logger.setLevel(libgrabsite.log_level())
     out = logging.StreamHandler(sys.stdout)
     out.setFormatter(logging.Formatter("%(message)s"))
     out.addFilter(lambda record: record.levelno < logging.WARNING)
@@ -287,10 +287,10 @@ def main(
     configure_logging()
 
     if not (input_file or start_url):
-        logger.error("Neither a START_URL or --input-file= was specified; see --help")
+        logger.error("Neither START_URL nor --input-file was given; see --help")
         sys.exit(1)
     elif input_file and start_url:
-        logger.error("Can't specify both START_URL and --input-file=; see --help")
+        logger.error("Specify either START_URL or --input-file, not both; see --help")
         sys.exit(1)
 
     span_hosts_allow = "page-requisites,linked-pages"
@@ -428,6 +428,7 @@ def main(
         if input_file_is_remote:
             # TODO: use wpull with correct user agent instead of urllib.request
             # wpull -O fails: https://github.com/chfoo/wpull/issues/275
+            logger.info("Downloading input file from %s", input_file)
             u = urllib.request.urlopen(input_file)
             with open(DIR_input_file, "wb") as f:
                 while True:

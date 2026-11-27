@@ -53,4 +53,5 @@ async def sender(plugin, uri):
         except Exception as e:
             delay = decayer.decay()
             logger.warning("Disconnected from ws:// server: %r", e)
+            logger.info("Reconnecting in %.2f s", delay)
             await asyncio.sleep(delay)

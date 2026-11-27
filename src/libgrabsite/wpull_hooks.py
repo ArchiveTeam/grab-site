@@ -7,7 +7,6 @@ import signal
 import posixpath
 import random
 import functools
-import traceback
 import asyncio
 import logging
 import urllib.parse
@@ -71,7 +70,7 @@ def swallow_exception(f):
         try:
             return f(*args, **kwargs)
         except Exception:
-            traceback.print_exc()
+            logger.exception("Ignoring error in %s", f.__name__)
 
     return wrapper
 
@@ -144,9 +143,7 @@ def get_content_length(response) -> int:
         # Header names are case-insensitive (RFC 9110).
         return int(
             list(
-                p
-                for p in response.fields.get_all()
-                if p[0].lower() == "content-length"
+                p for p in response.fields.get_all() if p[0].lower() == "content-length"
             )[0][1]
         )
     except (IndexError, ValueError):
@@ -203,6 +200,9 @@ class GrabSitePlugin(WpullPlugin):
         self.enable_stdio_capture()
         self.add_signal_handlers()
         self.init_job_data()
+        logger.info(
+            "Starting crawl %s of %s", self.job_data["ident"], self.job_data["url"]
+        )
         self.init_ws()
         self.setup_watchers()
         with open(cf("all_start_urls")) as f:
@@ -228,6 +228,7 @@ class GrabSitePlugin(WpullPlugin):
         sys.stdout.buffer.flush()
 
     def graceful_stop_callback(self):
+        logger.info("SIGINT received; stopping after in-progress downloads")
         self.print_to_terminal(
             "\n^C detected, creating 'stop' file, please wait for exit..."
         )
@@ -235,6 +236,7 @@ class GrabSitePlugin(WpullPlugin):
             pass
 
     def forceful_stop_callback(self):
+        logger.warning("SIGTERM received; stopping now")
         self.loop.stop()
 
     def add_signal_handlers(self):
@@ -317,6 +319,7 @@ class GrabSitePlugin(WpullPlugin):
         ws_host = os.environ.get("GRAB_SITE_HOST", "127.0.0.1")
         ws_port = int(os.environ.get("GRAB_SITE_PORT", 29000))
         ws_url = f"ws://{ws_host}:{ws_port}"
+        logger.debug("Dashboard target is %s", ws_url)
 
         self.loop.create_task(dashboard_client.sender(self, ws_url))
 
@@ -325,7 +328,9 @@ class GrabSitePlugin(WpullPlugin):
         if not self.watchers["max_content_length"].has_changed():
             return
         with open(self.watchers["max_content_length"].fname, "r") as f:
-            self.job_data["max_content_length"] = int(f.read().strip())
+            limit = int(f.read().strip())
+        self.job_data["max_content_length"] = limit
+        logger.info("Max content length set to %s", limit)
 
     @swallow_exception
     def update_delay(self):
@@ -339,6 +344,11 @@ class GrabSitePlugin(WpullPlugin):
                 )
             else:
                 self.job_data["delay_min"] = self.job_data["delay_max"] = int(content)
+            logger.info(
+                "Delay set to %s-%s ms",
+                self.job_data["delay_min"],
+                self.job_data["delay_max"],
+            )
 
     @swallow_exception
     def update_concurrency(self):
@@ -348,11 +358,11 @@ class GrabSitePlugin(WpullPlugin):
             concurrency = int(f.read().strip())
             if concurrency < 1:
                 logger.warning(
-                    "using 1 for concurrency instead of %s because it cannot be < 1",
-                    concurrency,
+                    "Concurrency %s is below 1; using 1 instead", concurrency
                 )
                 concurrency = 1
             self.job_data["concurrency"] = concurrency
+            logger.info("Concurrency set to %s", concurrency)
         self.app_session.factory["PipelineSeries"].concurrency = concurrency
 
     stop_path = cf("stop")
@@ -380,6 +390,8 @@ class GrabSitePlugin(WpullPlugin):
     @swallow_exception
     def update_scrape(self):
         scrape = path_exists_with_cache(self.scrape_path)
+        if scrape != self.job_data.get("scrape"):
+            logger.info("Scraping for new URLs is %s", "on" if scrape else "off")
         self.job_data["scrape"] = scrape
         if not scrape:
             # Empty the list of scrapers, which will stop scraping for new URLs
@@ -492,6 +504,7 @@ class GrabSitePlugin(WpullPlugin):
         )
 
         if self.should_stop():
+            logger.info("Stop file found; stopping")
             return Actions.STOP
 
         return Actions.NORMAL
@@ -527,6 +540,7 @@ class GrabSitePlugin(WpullPlugin):
     @hook(PluginFunctions.handle_error)
     def handle_error(self, item_session: ItemSession, error_info: BaseException):
         url_info = item_session.request.url_info
+        logger.debug("Error fetching %s: %r", url_info.raw, error_info)
         record_info = item_session.url_record
         response = item_session.response
         return self.handle_result(url_info, record_info, error_info, response)
