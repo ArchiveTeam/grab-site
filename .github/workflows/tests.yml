@@ -28,7 +28,6 @@ jobs:
         uses: actions/setup-python@v7
         with:
           python-version: ${{ matrix.python-version }}
-          allow-prereleases: true
           architecture: 'x64'
       - name: Install OS dependencies
         run: |
@@ -65,3 +64,40 @@ jobs:
             coverage report --data-file=.coverage || echo "No coverage data was produced."
             echo '```'
           } >> "$GITHUB_STEP_SUMMARY"
+
+  integration:
+    name: Build and run (Python ${{ matrix.python-version }})
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version: ['3.12', '3.13', '3.14', '3.15']
+
+    steps:
+      - uses: actions/checkout@v7
+      - name: Set up Python
+        uses: actions/setup-python@v7
+        with:
+          python-version: ${{ matrix.python-version }}
+          architecture: 'x64'
+      - name: Install OS dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install --no-install-recommends wget curl ca-certificates git build-essential libssl-dev zlib1g-dev libbz2-dev libreadline-dev libsqlite3-dev libffi-dev libxml2-dev libxslt1-dev libre2-dev pkg-config
+      - name: Build wheel
+        run: |
+          python -m pip install --upgrade pip build
+          python -m build --wheel --outdir dist
+      - name: Install the built wheel into a clean venv
+        run: |
+          python -m venv "$RUNNER_TEMP/venv"
+          "$RUNNER_TEMP/venv/bin/pip" install --upgrade pip
+          "$RUNNER_TEMP/venv/bin/pip" install --no-binary lxml lxml
+          "$RUNNER_TEMP/venv/bin/pip" install dist/*.whl
+          echo "$RUNNER_TEMP/venv/bin" >> "$GITHUB_PATH"
+      - name: Smoke test (offline)
+        run: bash tests/offline-tests
+      - name: Crawl a local server (online)
+        run: bash tests/online-tests
+      - name: Start gs-server, crawl, and check output
+        run: bash tests/integration-tests

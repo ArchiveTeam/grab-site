@@ -1,0 +1,89 @@
+#!/usr/bin/env bash
+# Starts gs-server and a local HTTP server, runs a real crawl against it, and
+# checks that the crawl output and the dashboard server behave correctly.
+# Expects grab-site, gs-server and gs-dump-urls on PATH.
+
+set -eu -o pipefail
+
+fail() { echo "FAIL: $*" >&2; exit 1; }
+
+work=$(mktemp -d)
+pids=()
+cleanup() {
+	for pid in "${pids[@]}"; do kill "$pid" 2>/dev/null || true; done
+	wait 2>/dev/null || true
+}
+trap cleanup EXIT
+
+wait_for() { # wait_for DESCRIPTION COMMAND...
+	local desc=$1; shift
+	for _ in $(seq 100); do
+		if "$@" >/dev/null 2>&1; then return 0; fi
+		sleep 0.1
+	done
+	fail "timed out waiting for $desc"
+}
+
+# Serve a small site: index -> page2, plus a 404 target.
+mkdir "$work/site"
+echo '<html><body><a href="page2.html">two</a> <a href="missing.html">gone</a></body></html>' > "$work/site/index.html"
+echo '<html><body>second page</body></html>' > "$work/site/page2.html"
+(cd "$work/site" && exec python -u -m http.server 0 --bind 127.0.0.1 > "$work/site.log" 2>&1) &
+pids+=($!)
+wait_for "http.server" grep -q 'port [0-9]' "$work/site.log"
+site_port=$(grep -P -o 'port \K\d+' "$work/site.log" | head -1)
+site="http://127.0.0.1:$site_port/"
+
+# Start the dashboard server.
+export GRAB_SITE_PORT=29555
+export GRAB_SITE_INTERFACE=127.0.0.1
+export PYTHONUNBUFFERED=1  # gs-server logs are block-buffered when redirected to a file
+gs-server > "$work/server.log" 2>&1 &
+pids+=($!)
+wait_for "gs-server" grep -q "listening on 127.0.0.1:$GRAB_SITE_PORT" "$work/server.log"
+
+echo "== dashboard HTTP checks"
+code=$(curl -s -o "$work/dash.html" -w '%{http_code}' "http://127.0.0.1:$GRAB_SITE_PORT/")
+[[ $code == 200 ]] || fail "GET / returned $code"
+grep -qi '<html' "$work/dash.html" || fail "dashboard.html does not look like HTML"
+code=$(curl -s -o /dev/null -w '%{http_code}' "http://127.0.0.1:$GRAB_SITE_PORT/favicon.ico")
+[[ $code == 200 ]] || fail "GET /favicon.ico returned $code"
+code=$(curl -s -o /dev/null -w '%{http_code}' "http://127.0.0.1:$GRAB_SITE_PORT/nope")
+[[ $code == 404 ]] || fail "GET /nope returned $code"
+
+echo "== crawl"
+cd "$work"
+GRAB_SITE_HOST=127.0.0.1 timeout 120 grab-site --no-dupespotter \
+	--wpull-args=--no-skip-getaddrinfo --dir "$work/crawl" "$site" \
+	> "$work/crawl.log" 2>&1 || { cat "$work/crawl.log"; fail "grab-site exited non-zero"; }
+
+grep -q "Finished grab .* with exit code 0" "$work/crawl.log" || fail "crawl did not finish with exit code 0"
+! grep -q Traceback "$work/crawl.log" || { cat "$work/crawl.log"; fail "traceback in crawl output"; }
+
+echo "== crawl output checks"
+for f in id start_url igsets ignores wpull.db wpull.log; do
+	[[ -e "$work/crawl/$f" ]] || fail "missing $f in crawl dir"
+done
+[[ $(cat "$work/crawl/start_url") == "$site" ]] || fail "start_url file has wrong content"
+ls "$work"/crawl/*.warc.gz >/dev/null 2>&1 || fail "no .warc.gz produced"
+ls "$work"/crawl/*.cdx >/dev/null 2>&1 || fail "no .cdx produced"
+
+done_urls=$(gs-dump-urls "$work/crawl/wpull.db" done)
+echo "$done_urls"
+grep -qxF "${site}" <<<"$done_urls"           || fail "index not crawled"
+grep -qxF "${site}page2.html" <<<"$done_urls" || fail "page2.html not crawled"
+# Pages must actually be stored in the WARC.
+python - "$work"/crawl/*.warc.gz "$site" <<'PY' || fail "WARC content check failed"
+import gzip, sys
+data = b"".join(gzip.open(f).read() for f in sys.argv[1:-1])
+assert b"second page" in data, "page2 body not in WARC"
+assert b"WARC-Target-URI: " + sys.argv[-1].encode() + b"page2.html" in data
+PY
+
+echo "== dashboard server saw the crawl"
+wait_for "grabber connection in gs-server log" grep -q "is grabbing $site" "$work/server.log"
+
+echo "== ignore sets and --which-wpull-command"
+grab-site --1 --which-wpull-args-partial "$site" | grep -q -- '--no-parent' || fail "unexpected --which-wpull-args-partial output"
+
+echo "OK"
