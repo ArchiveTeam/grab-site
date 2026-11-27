@@ -571,6 +571,12 @@ def main(
         # A fresh temp/ avoids stale "resp_cb" files from the interrupted run.
         shutil.rmtree(temp_dir, ignore_errors=True)
         os.makedirs(temp_dir)
+        # DIR/stop was created by the graceful stop that ended the previous run;
+        # if it survived, the resumed crawl would stop on its first response.
+        try:
+            os.remove(os.path.join(working_dir, "stop"))
+        except FileNotFoundError:
+            pass
         logger.info("Resuming crawl in %s", working_dir)
     else:
         os.makedirs(working_dir)

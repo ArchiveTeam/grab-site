@@ -174,6 +174,30 @@ class ResumeMainTests(unittest.TestCase):
         self.assertFalse(os.path.exists(stale))
         self.assertTrue(os.path.isdir(os.path.join(self.dir, "temp")))
 
+    def test_resume_clears_stop_file(self):
+        # Ctrl-C and `touch DIR/stop` both create DIR/stop. Without removing it,
+        # the first response on resume sees it and the crawl stops immediately.
+        self.start_crawl()
+        stop = os.path.join(self.dir, "stop")
+        open(stop, "w").close()
+        run_main(resume=True, dir=self.dir, which_wpull_command=True)
+        self.assertFalse(os.path.exists(stop))
+
+    def test_resume_without_stop_file_still_works(self):
+        self.start_crawl()
+        out, code = run_main(resume=True, dir=self.dir, which_wpull_command=True)
+        self.assertIsNone(code)
+        self.assertIn("--warc-append", out)
+
+    def test_which_wpull_args_dry_run_keeps_stop_file(self):
+        # The dry run prints the command and exits without starting a crawl, so
+        # it must not change the crawl directory.
+        self.start_crawl()
+        stop = os.path.join(self.dir, "stop")
+        open(stop, "w").close()
+        run_main(resume=True, dir=self.dir, which_wpull_args_partial=True)
+        self.assertTrue(os.path.exists(stop))
+
     def test_resume_input_file_crawl_uses_stored_input_file(self):
         src = os.path.join(self._tmp.name, "urls.txt")
         with open(src, "w") as f:
