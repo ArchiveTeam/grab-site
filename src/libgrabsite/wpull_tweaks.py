@@ -10,11 +10,12 @@ from libgrabsite import dupespotter, __version__
 from libgrabsite.dupes import DupesOnDisk
 
 
-def response_body_size(response) -> int:
+def response_body_size(response) -> int | None:
+    """Return the body size in bytes, or None if it cannot be determined."""
     try:
         return response.body.size()
     except Exception:
-        return 0
+        return None
 
 
 class NoFsyncSQLTable(SQLiteURLTable):
@@ -34,7 +35,10 @@ class DupeSpottingProcessingRule(ProcessingRule):
         url_info = item_session.request.url_info
         url = url_info.raw
 
-        if response_body_size(response) < 30 * 1024 * 1024:
+        # Only hash bodies whose size is known and small. An unknown size is
+        # treated like a large body: skip dedupe, but still extract links.
+        size = response_body_size(response)
+        if size is not None and size < 30 * 1024 * 1024:
             dupes_db = self.dupes_db
             body = response.body.content()
             if HTMLReader.is_response(response):
