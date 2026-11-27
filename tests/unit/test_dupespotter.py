@@ -84,6 +84,18 @@ class ProcessBodyTests(unittest.TestCase):
         self.assertEqual(a, b)
 
 
+class UserAgentTests(unittest.TestCase):
+    def test_is_current_windows_chrome_format(self):
+        # Chrome freezes the minor version fields to .0.0.0 in its UA string,
+        # so only the major version needs updating.  The Safari token is not
+        # pinned; only its shape is checked.
+        ua = dupespotter.UA
+        self.assertTrue(ua.startswith("Mozilla/5.0 (Windows NT 10.0; Win64; x64)"), ua)
+        self.assertRegex(ua, r" Chrome/\d+\.0\.0\.0 Safari/\d+(\.\d+)+$")
+        major = int(ua.split(" Chrome/")[1].split(".")[0])
+        self.assertGreaterEqual(major, 158)
+
+
 class Md5UrlTests(unittest.TestCase):
     def test_known_value(self):
         self.assertEqual(dupespotter.md5_url("a"), "0cc175b9c0f1b6a831c399e269772661")

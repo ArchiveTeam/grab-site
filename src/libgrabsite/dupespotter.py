@@ -21,7 +21,13 @@ def get_cache_filename(url):
     return os.path.join(cache_dir, md5_url(url))
 
 
-UA = "Mozilla/5.0 (Windows NT 6.3; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/41.0.2272.76 Safari/537.36"
+# User-Agent sent when fetching page bodies with wget.  Expected form: a desktop
+# Chrome UA on Windows 10/11, e.g.
+#   Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like
+#   Gecko) Chrome/<major>.0.0.0 Safari/537.36
+# Chrome freezes the minor version fields to .0.0.0, so only the major version
+# needs updating when Chrome releases a new stable version.
+UA = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/158.0.0.0 Safari/537.36"
 
 
 def get_body(url):
