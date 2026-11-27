@@ -1,1 +1,1 @@
-^https?://.*\meetup\.com/login/
+^https?://([^/]*\.)?meetup\.com/login/

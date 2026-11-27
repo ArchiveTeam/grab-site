@@ -52,10 +52,9 @@ class CombinedRegexpTests(unittest.TestCase):
             wh.re_compile("(")
 
     @unittest.skipUnless(_REAL_RE2, "needs the real google-re2 package")
-    @unittest.expectedFailure
     def test_lookaround_falls_back_to_re(self):
-        # Known bug: google-re2 raises re2.error, which is not a subclass of
-        # re.error, so the fallback to `re` in re_compile never runs.
+        # google-re2 raises re2.error, which is not a subclass of re.error, so
+        # re_compile must catch both to fall back to `re`.
         rx = wh.re_compile(r"foo(?=bar)")
         self.assertTrue(rx.search("foobar"))
         self.assertIsNone(rx.search("foobaz"))
@@ -70,18 +69,13 @@ class IgnoreSetTests(unittest.TestCase):
         import os
 
         for name in sorted(os.listdir(wh.ignore_sets_path)):
-            if name == "meetupeverywhere":
-                continue  # see test_meetupeverywhere_compiles
             with self.subTest(igset=name):
                 for p in wh.get_patterns_for_ignore_set(name):
                     if wh.include_ignore_line(p):
                         # netloc placeholder is substituted at runtime
                         wh.re_compile(p.replace("{any_start_netloc}", "example\\.com"))
 
-    @unittest.expectedFailure
     def test_meetupeverywhere_compiles(self):
-        # Known bug: the pattern contains "\\m", an invalid regexp escape, so
-        # enabling this ignore set raises re.error.
         for p in wh.get_patterns_for_ignore_set("meetupeverywhere"):
             if wh.include_ignore_line(p):
                 wh.re_compile(p)
@@ -115,16 +109,12 @@ class ResponseHelperTests(unittest.TestCase):
         )
         self.assertFalse(wh.has_content_type_video(FakeResponse()))
 
-    @unittest.expectedFailure
     def test_content_length_header_name_case_insensitive(self):
-        # Known bug: header names are compared case-sensitively.
         self.assertEqual(
             wh.get_content_length(FakeResponse([("content-length", "5")])), 5
         )
 
-    @unittest.expectedFailure
     def test_content_type_header_name_case_insensitive(self):
-        # Known bug: header names are compared case-sensitively.
         self.assertTrue(
             wh.has_content_type_video(FakeResponse([("content-type", "video/mp4")]))
         )

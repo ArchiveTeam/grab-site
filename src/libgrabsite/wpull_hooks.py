@@ -35,7 +35,7 @@ def re_compile(regexp):
     re.compile(regexp)
     try:
         return re2.compile(regexp)
-    except re.error:
+    except (re.error, re2.error):
         # Regular expressions with lookaround expressions cannot be compiled with
         # re2, so on error try compiling with re.
         return re.compile(regexp)
@@ -138,8 +138,13 @@ def find_icy_reason(response) -> str | None:
 
 def get_content_length(response) -> int:
     try:
+        # Header names are case-insensitive (RFC 9110).
         return int(
-            list(p for p in response.fields.get_all() if p[0] == "Content-Length")[0][1]
+            list(
+                p
+                for p in response.fields.get_all()
+                if p[0].lower() == "content-length"
+            )[0][1]
         )
     except (IndexError, ValueError):
         return -1
@@ -147,7 +152,10 @@ def get_content_length(response) -> int:
 
 def has_content_type_video(response) -> bool:
     try:
-        t = list(p for p in response.fields.get_all() if p[0] == "Content-Type")[0][1]
+        # Header names are case-insensitive (RFC 9110).
+        t = list(
+            p for p in response.fields.get_all() if p[0].lower() == "content-type"
+        )[0][1]
         return t.lower().startswith("video/")
     except (IndexError, ValueError):
         return False
