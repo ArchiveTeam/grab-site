@@ -365,13 +365,10 @@ class GrabSitePlugin(WpullPlugin):
         if not self.watchers["delay"].has_changed():
             return
         with open(self.watchers["delay"].fname, "r") as f:
-            content = f.read().strip()
-            if "-" in content:
-                self.job_data["delay_min"], self.job_data["delay_max"] = list(
-                    int(s) for s in content.split("-", 1)
-                )
-            else:
-                self.job_data["delay_min"] = self.job_data["delay_max"] = int(content)
+            content = f.read()
+            self.job_data["delay_min"], self.job_data["delay_max"] = (
+                libgrabsite.parse_delay(content)
+            )
             self.watchers["delay"].mark_seen()
             logger.info(
                 "Delay set to %s-%s ms",

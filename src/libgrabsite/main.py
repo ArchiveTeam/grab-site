@@ -41,6 +41,22 @@ def print_version(ctx, param, value):
     ctx.exit()
 
 
+def validate_delay(ctx, param, value):
+    try:
+        libgrabsite.parse_delay(value)
+    except ValueError as e:
+        raise click.BadParameter(str(e))
+    return value
+
+
+def validate_non_negative_or_inf(ctx, param, value):
+    try:
+        libgrabsite.parse_non_negative_or_inf(value)
+    except ValueError as e:
+        raise click.BadParameter(str(e))
+    return value
+
+
 def replace_2arg(args, arg, replacement):
     try:
         idx = args.index(arg)
@@ -196,6 +212,7 @@ def write_control_files(
     "--delay",
     default="0",
     metavar="DELAY",
+    callback=validate_delay,
     help="Time to wait between requests, in milliseconds (default: 0).  "
     'Can be "NUM", or "MIN-MAX" to use a random delay between MIN and MAX '
     "for each request.  Delay applies to each concurrent fetcher, not globally.",
@@ -262,12 +279,14 @@ def write_control_files(
     "--level",
     default="inf",
     metavar="NUM",
+    callback=validate_non_negative_or_inf,
     help="Recurse this many levels (default: inf).",
 )
 @click.option(
     "--page-requisites-level",
     default="5",
     metavar="NUM",
+    callback=validate_non_negative_or_inf,
     help="Recursive this many levels for page requisites (default: 5).",
 )
 @click.option(
