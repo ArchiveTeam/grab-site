@@ -1,3 +1,4 @@
+import contextlib
 import click
 import sqlite3
 import libgrabsite
@@ -31,28 +32,31 @@ def main(wpull_db_file, status):
 
     STATUS is one of "done", "error", "in_progress", "skipped", or "todo".
     """
-    conn = sqlite3.connect(wpull_db_file)
-    c = conn.cursor()
+    with contextlib.closing(sqlite3.connect(wpull_db_file)) as conn:
+        c = conn.cursor()
 
-    try:
-        # query for wpull 2.0+ wpull.db
-        rows = c.execute(
-            "SELECT url_strings.url FROM queued_urls "
-            "JOIN url_strings ON queued_urls.url_string_id=url_strings.id "
-            "WHERE status=?;",
-            (status,),
-        )
-    except sqlite3.OperationalError:
-        # query for wpull 1.x wpull.db
-        rows = c.execute(
-            "SELECT url_strings.url FROM urls "
-            "JOIN url_strings ON urls.url_str_id=url_strings.id "
-            "WHERE status=?;",
-            (status,),
-        )
+        # Only the schema probe is guarded: a missing table raises here.
+        # Errors while iterating rows are not schema mismatches, so they
+        # must not trigger the 1.x fallback.
+        try:
+            # query for wpull 2.0+ wpull.db (also used by wpull 5.x)
+            rows = c.execute(
+                "SELECT url_strings.url FROM queued_urls "
+                "JOIN url_strings ON queued_urls.url_string_id=url_strings.id "
+                "WHERE status=?;",
+                (status,),
+            )
+        except sqlite3.OperationalError:
+            # query for wpull 1.x wpull.db
+            rows = c.execute(
+                "SELECT url_strings.url FROM urls "
+                "JOIN url_strings ON urls.url_str_id=url_strings.id "
+                "WHERE status=?;",
+                (status,),
+            )
 
-    for row in rows:
-        print(row[0])
+        for row in rows:
+            print(row[0])
 
 
 if __name__ == "__main__":
