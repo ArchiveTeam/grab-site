@@ -42,6 +42,7 @@ on a specific version of Python (3.12 or newer) and with specific dependency ver
 - [Install on Ubuntu 24.04 or newer, Debian 13 (trixie) or newer](#install-on-ubuntu-2404-or-newer-debian-13-trixie-or-newer)
 - [Install on NixOS](#install-on-nixos)
 - [Install on another distribution lacking Python 3.12](#install-on-another-distribution-lacking-python-312)
+- [Run with Docker](#run-with-docker)
 - [Install on macOS](#install-on-macos)
 - [Install on Windows 10 (experimental)](#install-on-windows-10-experimental)
 - [Upgrade an existing install](#upgrade-an-existing-install)
@@ -136,6 +137,56 @@ After installing [uv](https://docs.astral.sh/uv/), you can run
 ```
 uv tool install --python=3.12 --no-binary-package lxml git+https://github.com/ArchiveTeam/grab-site/
 ```
+
+
+Run with Docker
+---
+
+A prebuilt image is published to the GitHub Container Registry
+(`ghcr.io/archiveteam/grab-site`) from the `master` branch; version tags are
+published too.  It runs on Python 3.14 and includes `grab-site`, `gs-server` and
+`gs-dump-urls`.
+
+Crawl output goes in the container's `/data` directory, so mount a host
+directory there.  The container runs as UID 1000, so make sure that user can
+write to it:
+
+```
+mkdir -p crawls
+docker run --rm -u "$(id -u):$(id -g)" -v "$PWD/crawls:/data" \
+    ghcr.io/archiveteam/grab-site https://example.com/
+```
+
+The image's entrypoint is `grab-site`, so any `grab-site` option can follow the
+image name (see [Usage](#usage)).
+
+To use the dashboard, start `gs-server` in its own container and point the
+crawls at it with `GRAB_SITE_HOST`:
+
+```
+docker network create grab-site
+docker run -d --name gs-server --network grab-site -p 29000:29000 \
+    --entrypoint gs-server ghcr.io/archiveteam/grab-site
+docker run --rm --network grab-site -e GRAB_SITE_HOST=gs-server \
+    -u "$(id -u):$(id -g)" -v "$PWD/crawls:/data" \
+    ghcr.io/archiveteam/grab-site https://example.com/
+```
+
+Then open <http://127.0.0.1:29000/>.  `gs-server` listens on all interfaces
+inside the container; use `-p 127.0.0.1:29000:29000` to keep the dashboard
+reachable only from your own machine.
+
+To build the image yourself:
+
+```
+docker build -t grab-site .
+```
+
+To change ignores or the delay of a running crawl, edit the files in that crawl's
+directory under `crawls/` on the host, as described in
+[Changing ignores during the crawl](#changing-ignores-during-the-crawl).  To
+stop a crawl gracefully, run it with `-it` and press ctrl-c.  `docker stop`
+sends SIGTERM, which stops the crawl immediately instead.
 
 
 Install on macOS
