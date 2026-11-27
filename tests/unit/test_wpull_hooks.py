@@ -1,4 +1,5 @@
 import re
+import types
 import unittest
 
 from tests.unit import _stubs  # noqa: F401
@@ -389,6 +390,46 @@ def _item(url):
         url_record = None
 
     return Item()
+
+
+class _FakeLoop:
+    def __init__(self, raises=None):
+        self.handlers = {}
+        self._raises = raises
+
+    def add_signal_handler(self, sig, callback):
+        if self._raises is not None:
+            raise self._raises
+        self.handlers[sig] = callback
+
+
+def _fake_self(loop):
+    return types.SimpleNamespace(
+        loop=loop,
+        graceful_stop_callback=lambda: None,
+        forceful_stop_callback=lambda: None,
+    )
+
+
+class AddSignalHandlersTests(unittest.TestCase):
+    def test_registers_sigint_and_sigterm(self):
+        import signal
+
+        loop = _FakeLoop()
+        wh.GrabSitePlugin.add_signal_handlers(_fake_self(loop))
+        self.assertEqual(set(loop.handlers), {signal.SIGINT, signal.SIGTERM})
+
+    def test_not_implemented_is_tolerated(self):
+        # Windows event loops raise NotImplementedError here; startup must
+        # continue without stop-signal handlers instead of crashing.
+        loop = _FakeLoop(raises=NotImplementedError())
+        wh.GrabSitePlugin.add_signal_handlers(_fake_self(loop))
+        self.assertEqual(loop.handlers, {})
+
+    def test_other_errors_propagate(self):
+        loop = _FakeLoop(raises=RuntimeError("loop closed"))
+        with self.assertRaises(RuntimeError):
+            wh.GrabSitePlugin.add_signal_handlers(_fake_self(loop))
 
 
 if __name__ == "__main__":
