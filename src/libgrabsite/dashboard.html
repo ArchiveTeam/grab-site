@@ -7,102 +7,302 @@
 <title>grab-site dashboard</title>
 <style>
 :root {
-	--font-ui: system-ui, -apple-system, Roboto, "Segoe UI", Tahoma, Arial, sans-serif;
-	--font-brand: Roboto, Arial, sans-serif;
-	--page-bg: #d4c7b8;
-	--paper: #FFF7E1;
-	--input-bg: #eee;
-	--border: #999;
-	--muted: #999;
-	--ident-text: #645444;
-	--done-text: #767676;
-	--aborted-text: #9B00D7;
-	--fatal-text: #DD0000;
-	--line-stdout-bg: #DCD8CB;
-	--line-error-bg: #FFB9B9;
-	--line-warning-bg: #F7DB7D;
-	--line-redirect-bg: #E7CEEA;
-	--menu-hover: #4281F4;
+	color-scheme: light dark;
+	--font-ui: system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+	--font-mono: ui-monospace, "SF Mono", Menlo, Consolas, "Liberation Mono", monospace;
+
+	/* Each color is light-dark(light, dark). The page follows the OS setting unless
+	 * data-theme overrides color-scheme (see below). */
+	--page-bg: light-dark(#f1ede7, #121418);
+	--surface: light-dark(#ffffff, #1b1e24);
+	--log-bg: light-dark(#fbf8f2, #15171c);
+	--text: light-dark(#1d1b18, #e7e4df);
+	--text-muted: light-dark(#6b645b, #9ba1ab);
+	--border: light-dark(#dcd4c8, #2e333c);
+	--accent: light-dark(#5b3f22, #d9b47a);
+	--accent-text: light-dark(#ffffff, #1a1409);
+	--focus: light-dark(#2563eb, #7aa7ff);
+	--link: light-dark(#2952a3, #8fb4ff);
+	--ident: light-dark(#7a6a57, #b8a88f);
+	--done: light-dark(#6b645b, #9ba1ab);
+	--aborted: light-dark(#7e3fb8, #c99bff);
+	--fatal: light-dark(#c81e1e, #ff7a7a);
+	--line-stdout-bg: light-dark(#f1ede6, #22252c);
+	--line-error-bg: light-dark(#ffdcd8, #4a1f25);
+	--line-warning-bg: light-dark(#fbeeb8, #4a3d12);
+	--line-redirect-bg: light-dark(#efe3f6, #3a2a4c);
+	--menu-hover: light-dark(#2563eb, #3b6fd6);
+	--shadow: 0 1px 2px rgb(0 0 0 / 0.06), 0 4px 14px rgb(0 0 0 / 0.05);
+	--gutter: clamp(12px, 2.5vw, 32px);
 }
 
-/* Always show scrollbar to prevent jumpiness when filtering */
+:root[data-theme="light"] {
+	color-scheme: light;
+}
+
+:root[data-theme="dark"] {
+	color-scheme: dark;
+}
+
+*,
+*::before,
+*::after {
+	box-sizing: border-box;
+}
+
 html {
+	/* Always show the scrollbar to prevent jumpiness when filtering. */
 	overflow-y: scroll;
-}
-
-html, body {
-	font-family: var(--font-ui);
-	font-size: 13px;
-	background-color: var(--page-bg);
-	/* Opt out of Chrome's Scroll Anchoring, which makes this page scroll up as
+	/* Opt out of Chrome's Scroll Anchoring, which makes the page scroll up as
 	 * new lines appear in log windows.
 	 * https://bugs.chromium.org/p/chromium/issues/detail?id=650017 */
 	overflow-anchor: none;
 }
 
-.padded-page {
-	padding: 20px 27px;
+body {
+	margin: 0;
+	font-family: var(--font-ui);
+	font-size: 13px;
+	line-height: 1.4;
+	background-color: var(--page-bg);
+	color: var(--text);
+	overflow-anchor: none;
+}
+
+a {
+	color: var(--link);
+	text-decoration: none;
+}
+
+kbd {
+	font-family: var(--font-mono);
+	font-size: 12px;
+	padding: 1px 5px;
+	border: 1px solid var(--border);
+	border-bottom-width: 2px;
+	border-radius: 4px;
+	background-color: var(--page-bg);
+}
+
+:focus-visible {
+	outline: 2px solid var(--focus);
+	outline-offset: 2px;
+}
+
+/* ---- Toolbar ---- */
+
+.toolbar {
+	position: sticky;
+	top: 0;
+	z-index: 10;
+	display: flex;
+	flex-wrap: wrap;
+	align-items: center;
+	justify-content: space-between;
+	gap: 12px 24px;
+	padding: 12px var(--gutter);
+	background-color: color-mix(in oklab, var(--page-bg) 85%, transparent);
+	backdrop-filter: blur(10px);
+	border-bottom: 1px solid var(--border);
+}
+
+.brand {
+	display: flex;
+	align-items: baseline;
+	gap: 10px;
+}
+
+.brand h1 {
+	margin: 0;
+	font-size: 17px;
+	font-weight: 700;
+	letter-spacing: -0.01em;
+}
+
+.crawl-count {
+	color: var(--text-muted);
+	font-variant-numeric: tabular-nums;
+}
+
+.filter {
+	display: flex;
+	align-items: center;
+	gap: 8px;
+	flex: 1 1 360px;
+	max-width: 640px;
+	min-width: 0;
+}
+
+.filter label {
+	color: var(--text-muted);
+}
+
+#filter-box {
+	flex: 1;
+	min-width: 0;
+	font: inherit;
+	font-size: 14px;
+	padding: 6px 10px;
+	border: 1px solid var(--border);
+	border-radius: 8px;
+	background-color: var(--surface);
+	color: var(--text);
+
+	&[aria-invalid="true"] {
+		border-color: var(--fatal);
+		box-shadow: 0 0 0 3px color-mix(in oklab, var(--fatal) 25%, transparent);
+	}
+}
+
+.actions {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 6px;
+}
+
+.btn {
+	font: inherit;
+	font-size: 13px;
+	font-weight: 600;
+	padding: 6px 12px;
+	border: 1px solid var(--border);
+	border-radius: 8px;
+	background-color: var(--surface);
+	color: var(--text);
+	box-shadow: var(--shadow);
+	cursor: pointer;
+	white-space: nowrap;
+
+	&:hover {
+		border-color: color-mix(in oklab, var(--accent) 50%, var(--border));
+	}
+
+	&:active {
+		transform: translateY(1px);
+	}
+
+	&[aria-pressed="true"],
+	&[aria-expanded="true"] {
+		background-color: var(--accent);
+		border-color: var(--accent);
+		color: var(--accent-text);
+	}
+}
+
+/* ---- Page ---- */
+
+.page {
+	padding: 16px var(--gutter) 40px;
 }
 
 @media (width >= 1440px) {
-	.padded-page {
+	.page {
 		padding: 20px 54px 47px;
 	}
 }
 
-.header {
-	font-family: var(--font-brand);
-	font-weight: bold;
-	font-size: 18px;
-	margin: 0 0 20px;
-	display: flex;
-	align-items: flex-end;
-	justify-content: space-between;
-	flex-flow: row nowrap;
-}
-
-#filter-box {
-	background-color: var(--input-bg);
+#help {
+	max-width: 70ch;
+	margin: 0 0 16px;
+	padding: 4px 20px 12px;
+	background-color: var(--surface);
 	border: 1px solid var(--border);
-	padding: 1px 3px;
-	font-size: 18px;
-	border-radius: 3px;
+	border-radius: 12px;
+	box-shadow: var(--shadow);
+	font-size: 14px;
 
-	&[aria-invalid="true"] {
-		outline: 2px solid var(--fatal-text);
+	p {
+		margin: 10px 0;
+	}
+
+	ul {
+		padding-left: 1.4em;
+	}
+
+	p a {
+		text-decoration: underline;
 	}
 }
 
-.button {
-	font-size: 18px;
+#traffic pre {
+	overflow: auto;
+	padding: 8px;
+	border: 1px solid var(--border);
+	border-radius: 8px;
+	background-color: var(--surface);
+	font-family: var(--font-mono);
+	font-size: 12px;
+}
+
+/* ---- Job cards ---- */
+
+.job-card {
+	margin-bottom: 12px;
+	padding: 10px 14px 12px;
+	background-color: var(--surface);
+	border: 1px solid var(--border);
+	border-radius: 12px;
+	box-shadow: var(--shadow);
+	min-width: 0;
+
+	/* Flag problem crawls at a glance. */
+	&:has(.job-info-fatal) {
+		border-left: 4px solid var(--fatal);
+	}
+
+	&:has(.job-info-aborted) {
+		border-left: 4px solid var(--aborted);
+	}
 }
 
 .job-header {
 	display: flex;
-	align-items: flex-end;
+	align-items: center;
 	justify-content: space-between;
-	flex-flow: row nowrap;
+	gap: 12px;
+	min-width: 0;
 }
 
 .job-info {
-	white-space: nowrap;
+	min-width: 0;
 	overflow: hidden;
-}
-
-.stats-elements:hover {
-	background-color: #ffffff40;
+	white-space: nowrap;
+	color: var(--text-muted);
 }
 
 .job-info-done {
-	color: var(--done-text);
+	color: var(--done);
 }
 
 .job-info-aborted {
-	color: var(--aborted-text) !important;
+	color: var(--aborted) !important;
 }
 
 .job-info-fatal {
-	color: var(--fatal-text) !important;
+	color: var(--fatal) !important;
+}
+
+.job-url {
+	font-size: 14px;
+	font-weight: 650;
+	color: var(--text);
+	text-decoration: none;
+
+	&:hover {
+		color: var(--link);
+		text-decoration: underline;
+	}
+}
+
+.stats-elements {
+	padding: 1px 4px;
+	border-radius: 6px;
+	cursor: pointer;
+
+	&:hover {
+		background-color: color-mix(in oklab, var(--accent) 14%, transparent);
+		color: var(--text);
+	}
 }
 
 /* Keep digits aligned in fonts like San Francisco. */
@@ -113,22 +313,18 @@ html, body {
 	font-variant-numeric: tabular-nums;
 }
 
-.job-url {
-	font-family: var(--font-brand);
-	font-size: 14px;
-	font-weight: bold;
-	text-decoration: none;
-	color: inherit;
-}
-
 .job-ident {
-	font-family: var(--font-brand), Tahoma, Arial, sans-serif;
-	margin: 0 1px 0 0;
-	padding: 0;
-	border: 0;
+	flex: none;
+	min-width: 0;
+	padding: 2px 10px;
+	border: 1px solid var(--border);
+	border-radius: 999px;
 	background-color: var(--page-bg);
-	color: var(--ident-text);
+	color: var(--ident);
+	font-family: var(--font-mono);
+	font-size: 11px;
 	text-align: right;
+	cursor: text;
 }
 
 .job-ignores {
@@ -139,19 +335,27 @@ html, body {
 	}
 }
 
+.bold {
+	font-weight: bold;
+}
+
+/* ---- Log windows ---- */
+
 .log-window {
-	transition: height 0.18s ease;
-	background-color: var(--paper);
-	overflow-y: scroll;
+	transition: height 0.18s ease, margin 0.18s ease, border-width 0.18s ease;
 	height: 192px;
-	border: 1px solid var(--border);
-	margin: 0 0 1em;
-	border-radius: 3px;
-	box-shadow: 4px 4px 17px 0 #0000001c;
+	margin-top: 10px;
+	overflow-y: scroll;
 	overscroll-behavior: contain;
+	background-color: var(--log-bg);
+	border: 1px solid var(--border);
+	border-radius: 8px;
+	font-family: var(--font-mono);
+	font-size: 12px;
+	line-height: 1.5;
 
 	&.log-window-stopped {
-		box-shadow: 4px 4px 17px 0 #00000052;
+		border-color: var(--focus);
 	}
 
 	&.log-window-expanded {
@@ -161,8 +365,8 @@ html, body {
 	/* Hidden windows skip rendering their contents, which keeps appends cheap. */
 	&.log-window-hidden {
 		height: 0;
-		border-width: 0 1px;
-		margin: 0;
+		margin-top: 0;
+		border-width: 0;
 		content-visibility: hidden;
 	}
 }
@@ -173,84 +377,42 @@ html, body {
 	}
 }
 
-/* One base class plus a background per response category. */
 .line {
 	display: block;
 	white-space: pre;
 	width: 100%;
-	padding-left: 5px;
+	padding: 0 8px;
 	box-sizing: border-box;
-}
-
-.line-error { background-color: var(--line-error-bg); }
-.line-warning { background-color: var(--line-warning-bg); }
-.line-redirect { background-color: var(--line-redirect-bg); }
-.line-stdout { background-color: var(--line-stdout-bg); }
-.line-ignore { color: var(--muted); }
-
-a {
-	color: #000;
+	color: var(--text);
 	text-decoration: none;
 
-	&.ignore {
-		color: var(--muted) !important;
-	}
-}
-
-.bold {
-	font-weight: bold;
-}
-
-#help {
-	background-color: var(--paper);
-	font-family: var(--font-brand);
-	font-size: 14px;
-	border-radius: 5px;
-	padding: 0.01em 1em;
-	margin-bottom: 1em;
-
-	p {
-		padding: 0.2em 0;
-	}
-
-	p a {
+	&:hover {
 		text-decoration: underline;
 	}
 }
 
-#context-menu {
-	/* Override the popover defaults of centering the element in the viewport. */
-	inset: auto;
-	margin: 0;
-	padding: 2px 0;
-	background-color: white;
-	color: black;
-	border: 1px solid #BABABA;
-	box-shadow: 2px 2px 3px #8E8E8E;
-	cursor: default;
+.line-stdout {
+	background-color: var(--line-stdout-bg);
 }
 
-.context-menu-entry {
-	display: block;
-	box-sizing: border-box;
-	width: 100%;
-	max-width: 960px;
-	height: 26px;
-	line-height: 26px;
-	padding: 0 26px;
-	overflow: hidden;
-	white-space: nowrap;
-	border: 0;
-	background: none;
-	color: inherit;
-	font: 12px/26px system-ui, -apple-system, Roboto, "Segoe UI", "Helvetica Neue", sans-serif;
-	text-align: left;
-	user-select: none;
+.line-error {
+	background-color: var(--line-error-bg);
+}
 
-	&:hover {
-		background-color: var(--menu-hover);
-		color: #fff;
-	}
+.line-warning {
+	background-color: var(--line-warning-bg);
+}
+
+.line-redirect {
+	background-color: var(--line-redirect-bg);
+}
+
+.line-ignore {
+	color: var(--text-muted);
+}
+
+a.ignore {
+	color: var(--text-muted) !important;
 }
 
 /* "Align!" mode: fixed column widths for the stats, set on the container. */
@@ -310,24 +472,85 @@ a {
 		width: 0;
 	}
 }
+
+/* ---- Context menu (popover) ---- */
+
+#context-menu {
+	/* Override the popover defaults of centering the element in the viewport. */
+	inset: auto;
+	margin: 0;
+	min-width: 16rem;
+	padding: 4px;
+	background-color: var(--surface);
+	color: var(--text);
+	border: 1px solid var(--border);
+	border-radius: 10px;
+	box-shadow: 0 10px 30px rgb(0 0 0 / 0.25);
+	cursor: default;
+}
+
+.context-menu-entry {
+	display: block;
+	box-sizing: border-box;
+	width: 100%;
+	max-width: 960px;
+	height: 28px;
+	padding: 0 10px;
+	border: 0;
+	border-radius: 6px;
+	background: none;
+	color: inherit;
+	font: 12px/28px var(--font-ui);
+	text-align: left;
+	text-decoration: none;
+	white-space: nowrap;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	user-select: none;
+
+	&:hover,
+	&:focus-visible {
+		background-color: var(--menu-hover);
+		color: #fff;
+		outline: none;
+	}
+}
+
+@media (width < 700px) {
+	.job-header {
+		flex-wrap: wrap;
+	}
+
+	.job-info {
+		white-space: normal;
+	}
+
+	.log-window {
+		height: 160px;
+	}
+}
 </style>
 </head>
 <body>
 <div id="context-menu" popover="auto"></div>
-<main class="padded-page">
-	<header class="header">
-		<div>
-			grab-site server tracking <span id="num-crawls">0 crawls</span>.
-			Show: <input id="filter-box" type="search" size="21" aria-label="Filter crawls by URL regular expression" aria-invalid="false">
-			<button type="button" class="button" data-filter="">All</button>
-			<button type="button" class="button" data-filter="^$">None</button>
-		</div>
-		<div>
-			<button type="button" class="button" data-action="align">Align!</button>
-			<button type="button" class="button" data-action="help">Help!</button>
-		</div>
-	</header>
-
+<header class="toolbar">
+	<div class="brand">
+		<h1>grab-site</h1>
+		<span class="crawl-count" id="num-crawls">0 crawls</span>
+	</div>
+	<div class="filter">
+		<label for="filter-box">Show</label>
+		<input id="filter-box" type="search" placeholder="URL regular expression" aria-label="Filter crawls by URL regular expression" aria-invalid="false">
+		<button type="button" class="btn" data-filter="">All</button>
+		<button type="button" class="btn" data-filter="^$">None</button>
+	</div>
+	<div class="actions">
+		<button type="button" class="btn" data-action="align" aria-pressed="false">Align!</button>
+		<button type="button" class="btn" data-action="help" aria-expanded="false" aria-controls="help">Help!</button>
+		<button type="button" class="btn" data-action="theme">Theme: auto</button>
+	</div>
+</header>
+<main class="page">
 	<section id="critical-info">
 		<noscript>Needs JavaScript and WebSocket</noscript>
 		<section id="help" hidden>
@@ -391,6 +614,28 @@ const el = (tag, props, ...children) => {
 };
 
 const hasText = (s) => typeof s === "string" && s.trim() !== "";
+
+/** Theme preference: "auto" follows the OS, "light" and "dark" override it. */
+const THEMES = ["auto", "light", "dark"];
+const THEME_STORAGE_KEY = "grab-site-theme";
+
+const readStoredTheme = () => {
+	try {
+		const saved = localStorage.getItem(THEME_STORAGE_KEY);
+		return THEMES.includes(saved) ? saved : "auto";
+	} catch {
+		// Storage is unavailable in some private windows and sandboxed frames.
+		return "auto";
+	}
+};
+
+const writeStoredTheme = (theme) => {
+	try {
+		localStorage.setItem(THEME_STORAGE_KEY, theme);
+	} catch {
+		// The choice then lasts only until the page is reloaded.
+	}
+};
 
 /** Returns the URL if it is http, https or ftp, else null. Grabber URLs are untrusted. */
 const safeHref = (url) => (typeof url === "string" && /^(https?|ftp):\/\//i.test(url) ? url : null);
@@ -688,6 +933,7 @@ class JobsRenderer {
 
 	#updateAlign() {
 		this.#container.classList.toggle("aligned", this.#aligned);
+		document.querySelector("[data-action=align]").setAttribute("aria-pressed", String(this.#aligned));
 	}
 
 	#updateCrawlCount() {
@@ -760,7 +1006,7 @@ class JobsRenderer {
 			),
 		);
 
-		const container = el("div", null,
+		const container = el("div", { className: "job-card" },
 			el("div", { className: "job-header" },
 				jobInfo,
 				el("input", {
@@ -976,6 +1222,7 @@ class Dashboard {
 	#decayer = new Decayer(1000, 1.5, 60000);
 	#batchTimeWhenVisible;
 	#batchTimeWhenHidden = 5000;
+	#theme = readStoredTheme();
 
 	constructor() {
 		const args = new URLSearchParams(location.search);
@@ -1013,6 +1260,7 @@ class Dashboard {
 			}
 		}, this.#batchTimeWhenVisible);
 
+		this.#applyTheme();
 		this.#bindEvents(contextMenu);
 		this.#connect();
 	}
@@ -1077,6 +1325,8 @@ class Dashboard {
 			this.#renderer.toggleAlign();
 		} else if (button.dataset.action === "help") {
 			this.#toggleHelp();
+		} else if (button.dataset.action === "theme") {
+			this.#cycleTheme();
 		}
 	}
 
@@ -1094,6 +1344,24 @@ class Dashboard {
 	#toggleHelp() {
 		const help = $("help");
 		help.hidden = !help.hidden;
+		document.querySelector("[data-action=help]").setAttribute("aria-expanded", String(!help.hidden));
+	}
+
+	#cycleTheme() {
+		const next = THEMES[(THEMES.indexOf(this.#theme) + 1) % THEMES.length];
+		this.#theme = next;
+		writeStoredTheme(next);
+		this.#applyTheme();
+	}
+
+	#applyTheme() {
+		const root = document.documentElement;
+		if (this.#theme === "auto") {
+			delete root.dataset.theme;
+		} else {
+			root.dataset.theme = this.#theme;
+		}
+		document.querySelector("[data-action=theme]").textContent = `Theme: ${this.#theme}`;
 	}
 
 	#handleMessage(data) {
