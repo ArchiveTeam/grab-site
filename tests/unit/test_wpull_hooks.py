@@ -778,5 +778,77 @@ class UpdateIgnoresTests(unittest.TestCase):
         self.assertTrue(self.p.combined_ignore_regexp.search("http://a/x.jpg"))
 
 
+class StartUrlTests(unittest.TestCase):
+    """Start URLs for START_URL and --input-file crawls."""
+
+    def setUp(self):
+        import os
+        import tempfile
+        from unittest import mock
+
+        wh.clear_file_caches()
+        self.addCleanup(wh.clear_file_caches)
+        self.tmp = tempfile.TemporaryDirectory()
+        self.addCleanup(self.tmp.cleanup)
+        patcher = mock.patch.object(wh, "working_dir", self.tmp.name)
+        patcher.start()
+        self.addCleanup(patcher.stop)
+        self.dir = self.tmp.name
+        self.os = os
+
+    def write(self, name, text):
+        with open(self.os.path.join(self.dir, name), "w", encoding="utf-8") as f:
+            f.write(text)
+
+    def test_start_url_crawl_drops_blank_lines(self):
+        self.write("all_start_urls", "http://a.test/\n\n")
+        self.assertEqual(wh.read_start_urls(), ["http://a.test/"])
+
+    def test_input_file_crawl_reads_urls_from_input_file(self):
+        # --input-file crawls record no start URL, so all_start_urls is empty.
+        self.write("all_start_urls", "")
+        self.write("input_file", "http://a.test/1\n\n  http://b.test/2  \n\n")
+        self.assertEqual(wh.read_start_urls(), ["http://a.test/1", "http://b.test/2"])
+
+    def test_empty_crawl_has_no_start_urls(self):
+        self.write("all_start_urls", "")
+        self.assertEqual(wh.read_start_urls(), [])
+
+    def test_no_empty_netloc_from_input_file_crawl(self):
+        self.write("all_start_urls", "")
+        self.write("input_file", "http://a.test/1\n")
+        netlocs = wh.start_netlocs(wh.read_start_urls())
+        self.assertEqual(netlocs, {"a.test"})
+        self.assertNotIn("", netlocs)
+
+    def test_any_start_netloc_expands_to_input_file_hosts_only(self):
+        self.write("all_start_urls", "")
+        self.write("input_file", "http://a.test/1\nhttp://b.test/2\n")
+        p = wh.GrabSitePlugin.__new__(wh.GrabSitePlugin)
+        p.all_start_netlocs = wh.start_netlocs(wh.read_start_urls())
+        out = p.ignore_pattern_to_regexp_strings(r"^https?://{any_start_netloc}/x")
+        self.assertEqual(
+            sorted(out),
+            sorted(
+                [
+                    r"^https?://" + re.escape("a.test") + "/x",
+                    r"^https?://" + re.escape("b.test") + "/x",
+                ]
+            ),
+        )
+
+    def test_input_file_start_url_is_exempt_from_ignores(self):
+        self.write("all_start_urls", "")
+        self.write("input_file", "http://a.test/x.jpg\n")
+        p = wh.GrabSitePlugin.__new__(wh.GrabSitePlugin)
+        p.update_ignores = lambda: None
+        p.all_start_urls = set(wh.read_start_urls())
+        p.job_data = {"suppress_ignore_reports": True}
+        p.combined_ignore_regexp = wh.compile_combined_regexp([r"\.jpg$"])
+        p.compiled_ignores = []
+        # Without the exemption this would be ignored (False).
+        self.assertTrue(p.accept_url(_item("http://a.test/x.jpg"), True, {}))
+
+
 if __name__ == "__main__":
     unittest.main()

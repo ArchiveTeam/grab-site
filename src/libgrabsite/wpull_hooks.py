@@ -31,6 +31,33 @@ def cf(fname):
     return os.path.join(working_dir, fname)
 
 
+def split_url_lines(text):
+    """Return the non-blank lines of text, stripped."""
+    return [line.strip() for line in text.splitlines() if line.strip()]
+
+
+def start_netlocs(urls):
+    """Return the set of non-empty hostnames of urls."""
+    # An empty netloc would expand {any_start_netloc} into a pattern that
+    # matches every URL without a host, so leave those out.
+    netlocs = (urllib.parse.urlparse(url).netloc for url in urls)
+    return {netloc for netloc in netlocs if netloc}
+
+
+def read_start_urls():
+    """Return the crawl's start URLs, without blank entries.
+
+    A START_URL crawl records its URLs in all_start_urls. An --input-file crawl
+    records none there, so its URLs come from the copy of the input file in the DIR.
+    """
+    with open(cf("all_start_urls"), encoding="utf-8") as f:
+        urls = split_url_lines(f.read())
+    if not urls and os.path.exists(cf("input_file")):
+        with open(cf("input_file"), encoding="utf-8") as f:
+            urls = split_url_lines(f.read())
+    return urls
+
+
 def re_compile(regexp):
     # Validate with re first, because re2 may be more prone to segfaulting on
     # bad regexps, and because re returns useful errors.
@@ -302,11 +329,8 @@ class GrabSitePlugin(WpullPlugin):
         )
         self.init_ws()
         self.setup_watchers()
-        with open(cf("all_start_urls")) as f:
-            self.all_start_urls = f.read().rstrip("\n").split("\n")
-        self.all_start_netlocs = set(
-            urllib.parse.urlparse(url).netloc for url in self.all_start_urls
-        )
+        self.all_start_urls = set(read_start_urls())
+        self.all_start_netlocs = start_netlocs(self.all_start_urls)
         self.skipped_videos = open(cf("skipped_videos"), "w", encoding="utf-8")
         self.skipped_max_content_length = open(
             cf("skipped_max_content_length"), "w", encoding="utf-8"
