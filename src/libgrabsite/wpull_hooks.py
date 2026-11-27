@@ -516,7 +516,7 @@ class GrabSitePlugin(WpullPlugin):
 			# see wpull/item.py:LinkType
 			extra_urls = [dict(url=new_url, link_type="media", inline=True)]
 		# Quora shows login-required screen unless you add ?share=1
-		elif url.startswith("https://www.quora.com/") and not "?" in url:
+		elif url.startswith("https://www.quora.com/") and "?" not in url:
 			new_url = url + "?share=1"
 			extra_urls = [dict(url=new_url, link_type="html")]
 		return extra_urls

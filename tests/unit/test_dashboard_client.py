@@ -18,7 +18,8 @@ class DecayerTests(unittest.TestCase):
 
 	def test_reset_restarts_sequence(self):
 		d = Decayer(1, 2, 100)
-		d.decay(); d.decay(); d.decay()
+		for _ in range(3):
+			d.decay()
 		d.reset()
 		self.assertEqual(d.decay(), 1)
 

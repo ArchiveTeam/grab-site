@@ -89,7 +89,6 @@ def process_body(body, url):
 		body = kill_path(shorter_path, body)
 
 	if len(u.query) >= 3:
-		encoded_query = u.query.encode("utf-8")
 		body = body.replace(('?' + u.query).encode("utf-8"), b"")
 		body = body.replace(quote('?' + u.query).encode("utf-8"), b"")
 
@@ -183,7 +182,7 @@ def compare_bodies(body1, body2, url1, url2):
 		body2.decode("utf-8", "replace").splitlines(keepends=True),
 		fromfile=url1,
 		tofile=url2):
-		if not "\n" in line:
+		if "\n" not in line:
 			line += "\n"
 		sys.stdout.buffer.write(line.encode("utf-8"))
 

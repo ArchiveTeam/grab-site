@@ -46,3 +46,18 @@ where = ["src"]
 
 [tool.setuptools.package-data]
 libgrabsite = ["*.html", "*.ico", "*.txt", "ignore_sets/*"]
+
+[tool.ruff]
+target-version = "py312"
+src = ["src", "tests"]
+extend-exclude = ["build", ".venv"]
+
+[tool.ruff.lint]
+# Pyflakes errors plus pycodestyle errors that are always bugs.
+select = ["E4", "E7", "E9", "F"]
+
+[tool.ruff.lint.per-file-ignores]
+# main.py and server.py must run code (faulthandler.enable(), txaio.use_asyncio())
+# before importing modules that depend on it, so E402 is intentional there.
+"src/libgrabsite/main.py" = ["E402"]
+"src/libgrabsite/server.py" = ["E402"]

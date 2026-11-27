@@ -4,7 +4,6 @@ import txaio
 txaio.use_asyncio()
 import os
 import json
-import pprint
 import asyncio
 from autobahn.asyncio.websocket import WebSocketServerFactory, WebSocketServerProtocol
 
