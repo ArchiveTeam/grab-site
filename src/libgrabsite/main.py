@@ -22,8 +22,10 @@ def print_version(ctx, param, value):
 
 
 def replace_2arg(args, arg, replacement):
-    idx = args.index(arg)
-    if idx == -1:
+    try:
+        idx = args.index(arg)
+    except ValueError:
+        # arg is not present: nothing to replace
         return
     args.pop(idx)
     args.pop(idx)

@@ -25,12 +25,26 @@ class Replace2ArgTests(unittest.TestCase):
         replace_2arg(args, "--x", [])
         self.assertEqual(args, ["--x", "2"])
 
-    @unittest.expectedFailure
     def test_missing_argument_is_a_noop(self):
-        # Known bug: args.index() raises ValueError, so the `== -1` check is dead.
         args = ["a", "b"]
         replace_2arg(args, "--x", [])
         self.assertEqual(args, ["a", "b"])
+
+    def test_missing_argument_does_not_insert_replacement(self):
+        args = ["a", "b"]
+        replace_2arg(args, "--x", ["--y", "2"])
+        self.assertEqual(args, ["a", "b"])
+
+    def test_missing_argument_in_empty_list(self):
+        args = []
+        replace_2arg(args, "--x", ["--y", "2"])
+        self.assertEqual(args, [])
+
+    def test_similar_argument_is_not_matched(self):
+        # Only an exact token match counts, not a prefix or a value.
+        args = ["--xy", "1", "a"]
+        replace_2arg(args, "--x", ["--z", "9"])
+        self.assertEqual(args, ["--xy", "1", "a"])
 
 
 if __name__ == "__main__":
