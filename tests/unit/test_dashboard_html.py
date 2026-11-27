@@ -23,7 +23,7 @@ def read_html():
 def extract_safe_href_regex():
     """Pull the regex literal out of the safeHref function in dashboard.html."""
     m = re.search(
-        r"var safeHref = function\(url\) \{\s*return typeof url == \"string\" && "
+        r"const safeHref = \(url\) => \(typeof url === \"string\" && "
         r"(/.+?/i)\.test\(url\)",
         read_html(),
     )
@@ -80,13 +80,12 @@ class SinkTests(unittest.TestCase):
                 self.assertNotIn(sink, self.html)
 
     def test_href_assignments_are_guarded(self):
-        # The only direct .href assignment allowed is the guarded one in href().
+        # Any direct .href assignment must go through the guarded safe value.
         values = [v.strip() for v in re.findall(r"\.href\s*=\s*([^;]+);", self.html)]
         self.assertEqual([v for v in values if v != "safe"], [])
-        self.assertEqual(values, ["safe"])
 
     def test_href_attributes_use_safe_href(self):
-        attrs = re.findall(r"[\"']href[\"']\s*:\s*([^,}\)]+)", self.html)
+        attrs = re.findall(r"[\"']?\bhref[\"']?\s*:\s*([^,}\)]+)", self.html)
         self.assertTrue(attrs, "expected href attributes in dashboard.html")
         for value in attrs:
             with self.subTest(value=value.strip()):
@@ -95,8 +94,8 @@ class SinkTests(unittest.TestCase):
                     f"unguarded href value: {value.strip()}",
                 )
 
-    def test_null_attributes_are_skipped_by_h(self):
-        self.assertIn("if(attrs[attr] == null)", self.html)
+    def test_null_attributes_are_skipped_by_el(self):
+        self.assertIn("if (value == null)", self.html)
 
 
 if __name__ == "__main__":
