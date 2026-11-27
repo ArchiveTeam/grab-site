@@ -4,6 +4,7 @@ import txaio
 
 txaio.use_asyncio()
 import os
+import sys
 import json
 import asyncio
 import logging
@@ -213,7 +214,11 @@ def main():
     )
     loop = asyncio.new_event_loop()
     asyncio.set_event_loop(loop)
-    ports = parse_ports()
+    try:
+        ports = parse_ports()
+    except ValueError as e:
+        logger.error("%s", e)
+        sys.exit(1)
     factory = GrabberServerFactory()
     # Loopback by default: the dashboard has no authentication, so anyone who
     # can reach the port could inject events. Set GRAB_SITE_INTERFACE to expose it.

@@ -11,7 +11,17 @@ def parse_ports(value=None):
     """Parse GRAB_SITE_PORT, a port or a comma-separated list of ports (default 29000)."""
     if value is None:
         value = os.environ.get("GRAB_SITE_PORT", "29000")
-    ports = [int(p) for p in value.split(",") if p.strip()]
+    ports = []
+    for part in value.split(","):
+        if not part.strip():
+            continue
+        try:
+            ports.append(int(part))
+        except ValueError:
+            raise ValueError(
+                f"GRAB_SITE_PORT={value!r} is not a port number or a "
+                "comma-separated list of port numbers"
+            ) from None
     if not ports:
         raise ValueError(f"No ports in GRAB_SITE_PORT={value!r}")
     return ports

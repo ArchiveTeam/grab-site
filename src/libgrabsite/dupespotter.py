@@ -250,7 +250,7 @@ def main():
 
     if len(sys.argv) == 2:
         # Just save and print the body
-        print(get_body(sys.argv[1]))
+        sys.stdout.buffer.write(get_body(sys.argv[1]))
     elif len(sys.argv) == 3:
         url1, url2 = sys.argv[1], sys.argv[2]
         compare_unprocessed_bodies(get_body(url1), get_body(url2), url1, url2)

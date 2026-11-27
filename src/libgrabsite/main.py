@@ -429,6 +429,14 @@ def main(
     """
     configure_logging()
 
+    # Check GRAB_SITE_PORT before anything is created, so a bad value doesn't
+    # leave a half-made DIR behind.
+    try:
+        libgrabsite.parse_ports()
+    except ValueError as e:
+        logger.error("%s", e)
+        sys.exit(1)
+
     if resume:
         if not dir:
             logger.error("--resume requires --dir; see --help")
