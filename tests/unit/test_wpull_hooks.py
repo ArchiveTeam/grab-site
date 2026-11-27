@@ -277,17 +277,115 @@ class CachingDecoratorTests(unittest.TestCase):
 
 
 class FileChangedWatcherTests(unittest.TestCase):
-    def test_changed_then_unchanged_then_changed(self):
+    def test_changed_until_marked_seen(self):
         from unittest import mock
 
         w = wh.FileChangedWatcher("/some/file")
         with (
-            mock.patch.object(wh, "mtime_with_cache", side_effect=[10, 10, 11]),
+            mock.patch.object(wh, "mtime_with_cache", side_effect=[10, 10, 10, 11]),
             mock.patch("builtins.print"),
         ):
             self.assertTrue(w.has_changed())
+            # Not marked seen (e.g. parse failed): still reported as changed.
+            self.assertTrue(w.has_changed())
+            w.mark_seen()
             self.assertFalse(w.has_changed())
             self.assertTrue(w.has_changed())
+
+    def test_missing_file_is_unchanged_not_error(self):
+        w = wh.FileChangedWatcher("/nonexistent/definitely/missing")
+        wh.clear_file_caches()
+        self.assertFalse(w.has_changed())
+        w.mark_seen()  # no-op
+        self.assertEqual(w.last_mtime, -1)
+
+
+class FileCacheTests(unittest.TestCase):
+    def setUp(self):
+        wh.clear_file_caches()
+        self.addCleanup(wh.clear_file_caches)
+
+    def test_mtime_missing_file_returns_none(self):
+        self.assertIsNone(wh.mtime_with_cache("/nonexistent/definitely/missing"))
+
+    def test_cache_clear_forces_refresh(self):
+        import os
+        import tempfile
+
+        with tempfile.TemporaryDirectory() as d:
+            path = os.path.join(d, "f")
+            self.assertFalse(wh.path_exists_with_cache(path))
+            open(path, "w").close()
+            self.assertFalse(wh.path_exists_with_cache(path))  # cached
+            wh.clear_file_caches()
+            self.assertTrue(wh.path_exists_with_cache(path))
+
+    def test_decorator_cache_clear(self):
+        calls = []
+
+        @wh.caching_decorator
+        def f(path):
+            calls.append(path)
+
+        f("p")
+        f.cache_clear()
+        f("p")
+        self.assertEqual(calls, ["p", "p"])
+
+
+class UpdateRetryTests(unittest.TestCase):
+    """A failed parse must not consume the change."""
+
+    def setUp(self):
+        import os
+        import tempfile
+
+        wh.clear_file_caches()
+        self.addCleanup(wh.clear_file_caches)
+        self.tmp = tempfile.TemporaryDirectory()
+        self.addCleanup(self.tmp.cleanup)
+        self.path = os.path.join(self.tmp.name, "delay")
+        self.p = wh.GrabSitePlugin.__new__(wh.GrabSitePlugin)
+        self.p.job_data = {}
+        self.p.watchers = {"delay": wh.FileChangedWatcher(self.path)}
+
+    def write(self, text):
+        with open(self.path, "w") as f:
+            f.write(text)
+        wh.clear_file_caches()
+
+    def test_delay_retried_after_bad_parse(self):
+        from unittest import mock
+
+        self.write("12-")  # half-written
+        with mock.patch.object(wh.logger, "exception"):
+            self.p.update_delay()
+        self.assertNotIn("delay_min", self.p.job_data)
+
+        # Rewritten (possibly with an identical mtime); must still be picked up.
+        self.write("100-200")
+        self.p.update_delay()
+        self.assertEqual(self.p.job_data["delay_min"], 100)
+        self.assertEqual(self.p.job_data["delay_max"], 200)
+
+    def test_delay_not_reparsed_after_success(self):
+        self.write("5")
+        self.p.update_delay()
+        self.p.job_data["delay_min"] = -1
+        wh.clear_file_caches()
+        self.p.update_delay()
+        self.assertEqual(self.p.job_data["delay_min"], -1)
+
+    def test_deleted_file_does_not_raise_or_log(self):
+        import os
+        from unittest import mock
+
+        self.write("5")
+        os.remove(self.path)
+        wh.clear_file_caches()
+        with mock.patch.object(wh.logger, "exception") as log_exc:
+            self.p.update_delay()
+        log_exc.assert_not_called()
 
 
 class SwallowExceptionTests(unittest.TestCase):

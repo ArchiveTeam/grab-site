@@ -92,7 +92,14 @@ def caching_decorator(f):
         # logger.debug("returning new value %s %s", path, val)
         return val
 
+    wrapper.cache_clear = cache.clear
     return wrapper
+
+
+def clear_file_caches():
+    """Reset the cached stat/exists results (for tests and long-running processes)."""
+    path_exists_with_cache.cache_clear()
+    mtime_with_cache.cache_clear()
 
 
 @caching_decorator
@@ -102,23 +109,42 @@ def path_exists_with_cache(path):
 
 @caching_decorator
 def mtime_with_cache(path):
-    return os.stat(path).st_mtime
+    """Return the file's mtime, or None if it cannot be stat'ed (e.g. deleted)."""
+    try:
+        return os.stat(path).st_mtime
+    except OSError:
+        return None
 
 
 class FileChangedWatcher(object):
+    """Detects changes to a control file.
+
+    has_changed() only reports; the new mtime is recorded by mark_seen(), which
+    callers invoke after successfully parsing the file. A failed parse (e.g. a
+    half-written file) is therefore retried on the next poll.
+    """
+
     def __init__(self, fname):
         self.fname = fname
         # Use a bogus mtime so that has_changed() returns True
         # at least once
         self.last_mtime = -1
+        self._pending_mtime = None
 
     def has_changed(self):
         now_mtime = mtime_with_cache(self.fname)
-        changed = now_mtime != self.last_mtime
-        self.last_mtime = now_mtime
-        if changed:
+        if now_mtime is None:
+            # Missing/unreadable file: nothing to parse.
+            self._pending_mtime = None
+            return False
+        self._pending_mtime = now_mtime
+        return now_mtime != self.last_mtime
+
+    def mark_seen(self):
+        if self._pending_mtime is not None:
+            self.last_mtime = self._pending_mtime
+            self._pending_mtime = None
             logger.info("Imported %s", self.fname)
-        return changed
 
 
 ICY_FIELD_PATTERN = re2.compile("(?i)^(icy-|ice-|x-audiocast-)")
@@ -330,6 +356,7 @@ class GrabSitePlugin(WpullPlugin):
         with open(self.watchers["max_content_length"].fname, "r") as f:
             limit = int(f.read().strip())
         self.job_data["max_content_length"] = limit
+        self.watchers["max_content_length"].mark_seen()
         logger.info("Max content length set to %s", limit)
 
     @swallow_exception
@@ -344,6 +371,7 @@ class GrabSitePlugin(WpullPlugin):
                 )
             else:
                 self.job_data["delay_min"] = self.job_data["delay_max"] = int(content)
+            self.watchers["delay"].mark_seen()
             logger.info(
                 "Delay set to %s-%s ms",
                 self.job_data["delay_min"],
@@ -364,6 +392,7 @@ class GrabSitePlugin(WpullPlugin):
             self.job_data["concurrency"] = concurrency
             logger.info("Concurrency set to %s", concurrency)
         self.app_session.factory["PipelineSeries"].concurrency = concurrency
+        self.watchers["concurrency"].mark_seen()
 
     stop_path = cf("stop")
 
@@ -400,10 +429,10 @@ class GrabSitePlugin(WpullPlugin):
 
     @swallow_exception
     def update_ignores(self):
-        if not (
-            self.watchers["igsets"].has_changed()
-            or self.watchers["ignores"].has_changed()
-        ):
+        # Check both (no short-circuit) so each records its pending mtime.
+        igsets_changed = self.watchers["igsets"].has_changed()
+        ignores_changed = self.watchers["ignores"].has_changed()
+        if not (igsets_changed or ignores_changed):
             return
 
         ignores = set()
@@ -430,6 +459,8 @@ class GrabSitePlugin(WpullPlugin):
 
         self.compiled_ignores = [(ig, re_compile(ig)) for ig in ignores]
         self.combined_ignore_regexp = compile_combined_regexp(ignores)
+        self.watchers["igsets"].mark_seen()
+        self.watchers["ignores"].mark_seen()
 
     def ignore_pattern_to_regexp_strings(self, pattern):
         if "{any_start_netloc}" not in pattern:
