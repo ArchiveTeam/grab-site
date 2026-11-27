@@ -4,6 +4,7 @@ import os
 import sys
 import time
 import signal
+import posixpath
 import random
 import functools
 import traceback
@@ -177,8 +178,11 @@ video_exts = set("webm mp4 m4v mkv ts 3gp 3g2 flv mov wmv ogv ogm".split(" "))
 
 
 def has_video_ext(url: str) -> bool:
-    ext = url.rsplit(".")[-1]
-    return ext.lower() in video_exts
+    # Only the path counts: the query string and fragment are not part of the
+    # filename, and dots in the host or in directory names must be ignored.
+    path = urllib.parse.urlparse(url).path
+    ext = posixpath.splitext(path)[1]
+    return ext[1:].lower() in video_exts
 
 
 class GrabSitePlugin(WpullPlugin):

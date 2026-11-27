@@ -157,15 +157,33 @@ class VideoExtTests(unittest.TestCase):
         for u in ("http://a/page.html", "http://a/img.png", "http://a/mp4"):
             self.assertFalse(wh.has_video_ext(u), u)
 
-    @unittest.expectedFailure
     def test_extension_followed_by_query(self):
-        # Known bug: the query string is included in the "extension".
         self.assertTrue(wh.has_video_ext("http://a/v.mp4?token=1"))
+        self.assertTrue(wh.has_video_ext("http://a/v.webm?x=1&y=2"))
 
-    @unittest.expectedFailure
+    def test_extension_followed_by_fragment(self):
+        self.assertTrue(wh.has_video_ext("http://a/v.mp4#t=10"))
+        self.assertTrue(wh.has_video_ext("http://a/v.mkv?x=1#t=10"))
+
     def test_extension_in_query_only(self):
-        # Known bug: only the final dot-separated chunk of the whole URL is checked.
         self.assertFalse(wh.has_video_ext("http://a/page.php?file=x.mp4"))
+        self.assertFalse(wh.has_video_ext("http://example.com/a.php?f=x.mp4"))
+        self.assertFalse(wh.has_video_ext("http://a/page?f=x.mp4#y.webm"))
+
+    def test_dot_in_host_or_directory_ignored(self):
+        self.assertFalse(wh.has_video_ext("http://x.mp4/page"))
+        self.assertFalse(wh.has_video_ext("http://a/clip.mp4/page"))
+        self.assertFalse(wh.has_video_ext("http://a/dir.mp4/index.html"))
+
+    def test_no_extension_with_dotted_directory(self):
+        self.assertFalse(wh.has_video_ext("http://a/dir.webm/file"))
+
+    def test_uppercase_extension_in_path(self):
+        self.assertTrue(wh.has_video_ext("http://a/V.MP4?x=1"))
+
+    def test_url_without_path(self):
+        self.assertFalse(wh.has_video_ext("http://a"))
+        self.assertFalse(wh.has_video_ext("http://a?f=x.mp4"))
 
 
 class IcyPatternTests(unittest.TestCase):
