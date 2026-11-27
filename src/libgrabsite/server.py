@@ -7,6 +7,7 @@ import os
 import json
 import asyncio
 from autobahn.asyncio.websocket import WebSocketServerFactory, WebSocketServerProtocol
+from libgrabsite import dashboard_assets
 
 
 # Fields a grabber must send, per message type, and the Python type each must have.
@@ -129,12 +130,13 @@ class GrabberServerProtocol(WebSocketServerProtocol):
     # Called when we get an HTTP request instead of a WebSocket request
     def sendServerStatus(self, redirectUrl=None, redirectAfter=0):
         requestPath = self.http_request_uri.split("?")[0]
-        if requestPath == "/":
-            self.send_page("dashboard.html", 200, "OK", "text/html; charset=UTF-8")
-        elif requestPath == "/favicon.ico":
-            self.send_page("favicon.ico", 200, "OK", "image/x-icon")
+        asset = dashboard_assets.lookup(requestPath)
+        if asset is not None:
+            self.send_page(asset.file, 200, "OK", asset.content_type)
         else:
-            self.send_page("404.html", 404, "Not Found", "text/html; charset=UTF-8")
+            self.send_page(
+                dashboard_assets.NOT_FOUND_PAGE, 404, "Not Found", dashboard_assets.HTML
+            )
 
     # Based on AutoBahn's WebSocketServerProtocol.sendHtml
     def send_page(self, fname, code, status, content_type):
@@ -143,6 +145,8 @@ class GrabberServerProtocol(WebSocketServerProtocol):
         response = f"HTTP/1.1 {code} {status}\r\n"
         response += f"Content-Type: {content_type}\r\n"
         response += f"Content-Length: {len(response_body)}\r\n"
+        # Revalidate on every load so an upgrade never leaves a stale module cached.
+        response += "Cache-Control: no-cache\r\n"
         response += "X-Frame-Options: DENY\r\n"
         response += "\r\n"
         self.sendData(response.encode("utf-8"))

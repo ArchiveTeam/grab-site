@@ -45,7 +45,7 @@ no-binary-package = ["lxml"]
 where = ["src"]
 
 [tool.setuptools.package-data]
-libgrabsite = ["*.html", "*.ico", "*.txt", "ignore_sets/*"]
+libgrabsite = ["*.html", "*.ico", "*.txt", "ignore_sets/*", "dashboard/*.js", "dashboard/*.css"]
 
 [tool.ruff]
 target-version = "py312"

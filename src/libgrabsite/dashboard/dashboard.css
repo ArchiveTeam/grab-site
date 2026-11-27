@@ -1,0 +1,523 @@
+:root {
+	color-scheme: light dark;
+	--font-ui: system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+	--font-mono: ui-monospace, "SF Mono", Menlo, Consolas, "Liberation Mono", monospace;
+
+	/* Each color is light-dark(light, dark). The page follows the OS setting unless
+	 * data-theme overrides color-scheme (see below). */
+	--page-bg: light-dark(#f1ede7, #121418);
+	--surface: light-dark(#ffffff, #1b1e24);
+	--log-bg: light-dark(#fbf8f2, #15171c);
+	--text: light-dark(#1d1b18, #e7e4df);
+	--text-muted: light-dark(#6b645b, #9ba1ab);
+	--border: light-dark(#dcd4c8, #2e333c);
+	--accent: light-dark(#5b3f22, #d9b47a);
+	--accent-text: light-dark(#ffffff, #1a1409);
+	--focus: light-dark(#2563eb, #7aa7ff);
+	--link: light-dark(#2952a3, #8fb4ff);
+	--ident: light-dark(#7a6a57, #b8a88f);
+	--done: light-dark(#6b645b, #9ba1ab);
+	--aborted: light-dark(#7e3fb8, #c99bff);
+	--fatal: light-dark(#c81e1e, #ff7a7a);
+	--line-stdout-bg: light-dark(#f1ede6, #22252c);
+	--line-error-bg: light-dark(#ffdcd8, #4a1f25);
+	--line-warning-bg: light-dark(#fbeeb8, #4a3d12);
+	--line-redirect-bg: light-dark(#efe3f6, #3a2a4c);
+	--menu-hover: light-dark(#2563eb, #3b6fd6);
+	--shadow: 0 1px 2px rgb(0 0 0 / 0.06), 0 4px 14px rgb(0 0 0 / 0.05);
+	--gutter: clamp(12px, 2.5vw, 32px);
+}
+
+:root[data-theme="light"] {
+	color-scheme: light;
+}
+
+:root[data-theme="dark"] {
+	color-scheme: dark;
+}
+
+*,
+*::before,
+*::after {
+	box-sizing: border-box;
+}
+
+html {
+	/* Always show the scrollbar to prevent jumpiness when filtering. */
+	overflow-y: scroll;
+	/* Opt out of Chrome's Scroll Anchoring, which makes the page scroll up as
+	 * new lines appear in log windows.
+	 * https://bugs.chromium.org/p/chromium/issues/detail?id=650017 */
+	overflow-anchor: none;
+}
+
+body {
+	margin: 0;
+	font-family: var(--font-ui);
+	font-size: 13px;
+	line-height: 1.4;
+	background-color: var(--page-bg);
+	color: var(--text);
+	overflow-anchor: none;
+}
+
+a {
+	color: var(--link);
+	text-decoration: none;
+}
+
+kbd {
+	font-family: var(--font-mono);
+	font-size: 12px;
+	padding: 1px 5px;
+	border: 1px solid var(--border);
+	border-bottom-width: 2px;
+	border-radius: 4px;
+	background-color: var(--page-bg);
+}
+
+:focus-visible {
+	outline: 2px solid var(--focus);
+	outline-offset: 2px;
+}
+
+/* ---- Toolbar ---- */
+
+.toolbar {
+	position: sticky;
+	top: 0;
+	z-index: 10;
+	display: flex;
+	flex-wrap: wrap;
+	align-items: center;
+	justify-content: space-between;
+	gap: 12px 24px;
+	padding: 12px var(--gutter);
+	background-color: color-mix(in oklab, var(--page-bg) 85%, transparent);
+	backdrop-filter: blur(10px);
+	border-bottom: 1px solid var(--border);
+}
+
+.brand {
+	display: flex;
+	align-items: baseline;
+	gap: 10px;
+}
+
+.brand h1 {
+	margin: 0;
+	font-size: 17px;
+	font-weight: 700;
+	letter-spacing: -0.01em;
+}
+
+.crawl-count {
+	color: var(--text-muted);
+	font-variant-numeric: tabular-nums;
+}
+
+.filter {
+	display: flex;
+	align-items: center;
+	gap: 8px;
+	flex: 1 1 360px;
+	max-width: 640px;
+	min-width: 0;
+}
+
+.filter label {
+	color: var(--text-muted);
+}
+
+#filter-box {
+	flex: 1;
+	min-width: 0;
+	font: inherit;
+	font-size: 14px;
+	padding: 6px 10px;
+	border: 1px solid var(--border);
+	border-radius: 8px;
+	background-color: var(--surface);
+	color: var(--text);
+
+	&[aria-invalid="true"] {
+		border-color: var(--fatal);
+		box-shadow: 0 0 0 3px color-mix(in oklab, var(--fatal) 25%, transparent);
+	}
+}
+
+.actions {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 6px;
+}
+
+.btn {
+	font: inherit;
+	font-size: 13px;
+	font-weight: 600;
+	padding: 6px 12px;
+	border: 1px solid var(--border);
+	border-radius: 8px;
+	background-color: var(--surface);
+	color: var(--text);
+	box-shadow: var(--shadow);
+	cursor: pointer;
+	white-space: nowrap;
+
+	&:hover {
+		border-color: color-mix(in oklab, var(--accent) 50%, var(--border));
+	}
+
+	&:active {
+		transform: translateY(1px);
+	}
+
+	&[aria-pressed="true"],
+	&[aria-expanded="true"] {
+		background-color: var(--accent);
+		border-color: var(--accent);
+		color: var(--accent-text);
+	}
+}
+
+/* ---- Page ---- */
+
+.page {
+	padding: 16px var(--gutter) 40px;
+}
+
+@media (width >= 1440px) {
+	.page {
+		padding: 20px 54px 47px;
+	}
+}
+
+#help {
+	max-width: 70ch;
+	margin: 0 0 16px;
+	padding: 4px 20px 12px;
+	background-color: var(--surface);
+	border: 1px solid var(--border);
+	border-radius: 12px;
+	box-shadow: var(--shadow);
+	font-size: 14px;
+
+	p {
+		margin: 10px 0;
+	}
+
+	ul {
+		padding-left: 1.4em;
+	}
+
+	p a {
+		text-decoration: underline;
+	}
+}
+
+#traffic pre {
+	overflow: auto;
+	padding: 8px;
+	border: 1px solid var(--border);
+	border-radius: 8px;
+	background-color: var(--surface);
+	font-family: var(--font-mono);
+	font-size: 12px;
+}
+
+/* ---- Job cards ---- */
+
+.job-card {
+	margin-bottom: 12px;
+	padding: 10px 14px 12px;
+	background-color: var(--surface);
+	border: 1px solid var(--border);
+	border-radius: 12px;
+	box-shadow: var(--shadow);
+	min-width: 0;
+
+	/* Flag problem crawls at a glance. */
+	&:has(.job-info-fatal) {
+		border-left: 4px solid var(--fatal);
+	}
+
+	&:has(.job-info-aborted) {
+		border-left: 4px solid var(--aborted);
+	}
+}
+
+.job-header {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	gap: 12px;
+	min-width: 0;
+}
+
+.job-info {
+	min-width: 0;
+	overflow: hidden;
+	white-space: nowrap;
+	color: var(--text-muted);
+}
+
+.job-info-done {
+	color: var(--done);
+}
+
+.job-info-aborted {
+	color: var(--aborted) !important;
+}
+
+.job-info-fatal {
+	color: var(--fatal) !important;
+}
+
+.job-url {
+	font-size: 14px;
+	font-weight: 650;
+	color: var(--text);
+	text-decoration: none;
+
+	&:hover {
+		color: var(--link);
+		text-decoration: underline;
+	}
+}
+
+.stats-elements {
+	padding: 1px 4px;
+	border-radius: 6px;
+	cursor: pointer;
+
+	&:hover {
+		background-color: color-mix(in oklab, var(--accent) 14%, transparent);
+		color: var(--text);
+	}
+}
+
+/* Keep digits aligned in fonts like San Francisco. */
+.inline-stat {
+	display: inline-block;
+	vertical-align: bottom;
+	white-space: pre;
+	font-variant-numeric: tabular-nums;
+}
+
+.job-ident {
+	flex: none;
+	min-width: 0;
+	padding: 2px 10px;
+	border: 1px solid var(--border);
+	border-radius: 999px;
+	background-color: var(--page-bg);
+	color: var(--ident);
+	font-family: var(--font-mono);
+	font-size: 11px;
+	text-align: right;
+	cursor: text;
+}
+
+.job-ignores {
+	font-weight: bold;
+
+	&.job-igoff {
+		font-weight: normal !important;
+	}
+}
+
+.bold {
+	font-weight: bold;
+}
+
+/* ---- Log windows ---- */
+
+.log-window {
+	transition: height 0.18s ease, margin 0.18s ease, border-width 0.18s ease;
+	height: 192px;
+	margin-top: 10px;
+	overflow-y: scroll;
+	overscroll-behavior: contain;
+	background-color: var(--log-bg);
+	border: 1px solid var(--border);
+	border-radius: 8px;
+	font-family: var(--font-mono);
+	font-size: 12px;
+	line-height: 1.5;
+
+	&.log-window-stopped {
+		border-color: var(--focus);
+	}
+
+	&.log-window-expanded {
+		height: 384px;
+	}
+
+	/* Hidden windows skip rendering their contents, which keeps appends cheap. */
+	&.log-window-hidden {
+		height: 0;
+		margin-top: 0;
+		border-width: 0;
+		content-visibility: hidden;
+	}
+}
+
+@media (prefers-reduced-motion: reduce) {
+	.log-window {
+		transition: none;
+	}
+}
+
+.line {
+	display: block;
+	white-space: pre;
+	width: 100%;
+	padding: 0 8px;
+	box-sizing: border-box;
+	color: var(--text);
+	text-decoration: none;
+
+	&:hover {
+		text-decoration: underline;
+	}
+}
+
+.line-stdout {
+	background-color: var(--line-stdout-bg);
+}
+
+.line-error {
+	background-color: var(--line-error-bg);
+}
+
+.line-warning {
+	background-color: var(--line-warning-bg);
+}
+
+.line-redirect {
+	background-color: var(--line-redirect-bg);
+}
+
+.line-ignore {
+	color: var(--text-muted);
+}
+
+a.ignore {
+	color: var(--text-muted) !important;
+}
+
+/* "Align!" mode: fixed column widths for the stats, set on the container. */
+#logs.aligned {
+	.job-url {
+		width: 260px;
+		overflow: hidden;
+		text-overflow: ellipsis;
+	}
+
+	.job-note {
+		display: none;
+	}
+
+	.job-nick {
+		width: 60px;
+		overflow: hidden;
+	}
+
+	.job-mb {
+		width: 78px;
+		overflow: hidden;
+		text-align: right;
+	}
+
+	.job-responses {
+		width: 92px;
+		overflow: hidden;
+		text-align: right;
+	}
+
+	.job-responses-per-second {
+		width: 27px;
+		overflow: hidden;
+		text-align: right;
+	}
+
+	.job-in-queue {
+		width: 92px;
+		overflow: hidden;
+		text-align: right;
+	}
+
+	.job-connections {
+		width: 14px;
+		overflow: hidden;
+		text-align: right;
+	}
+
+	.job-delay {
+		width: 130px;
+		overflow: hidden;
+		text-align: right;
+	}
+
+	&:not(.show-nicks) .job-nick {
+		width: 0;
+	}
+}
+
+/* ---- Context menu (popover) ---- */
+
+#context-menu {
+	/* Override the popover defaults of centering the element in the viewport. */
+	inset: auto;
+	margin: 0;
+	min-width: 16rem;
+	padding: 4px;
+	background-color: var(--surface);
+	color: var(--text);
+	border: 1px solid var(--border);
+	border-radius: 10px;
+	box-shadow: 0 10px 30px rgb(0 0 0 / 0.25);
+	cursor: default;
+}
+
+.context-menu-entry {
+	display: block;
+	box-sizing: border-box;
+	width: 100%;
+	max-width: 960px;
+	height: 28px;
+	padding: 0 10px;
+	border: 0;
+	border-radius: 6px;
+	background: none;
+	color: inherit;
+	font: 12px/28px var(--font-ui);
+	text-align: left;
+	text-decoration: none;
+	white-space: nowrap;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	user-select: none;
+
+	&:hover,
+	&:focus-visible {
+		background-color: var(--menu-hover);
+		color: #fff;
+		outline: none;
+	}
+}
+
+@media (width < 700px) {
+	.job-header {
+		flex-wrap: wrap;
+	}
+
+	.job-info {
+		white-space: normal;
+	}
+
+	.log-window {
+		height: 160px;
+	}
+}

@@ -1,6 +1,6 @@
 """
-Static checks on dashboard.html. The page's JavaScript cannot run under the
-unit-test runner, so these tests extract the URL check and inspect the sinks
+Static checks on the dashboard's JavaScript modules. The page cannot run under
+the unit-test runner, so these tests extract the URL check and inspect the sinks
 that take message data.
 """
 
@@ -10,25 +10,30 @@ import unittest
 
 from tests.unit import _stubs  # noqa: F401
 
-HTML_PATH = os.path.join(
-    os.path.dirname(__file__), "..", "..", "src", "libgrabsite", "dashboard.html"
-)
+from libgrabsite import dashboard_assets
+
+PACKAGE_DIR = os.path.join(os.path.dirname(__file__), "..", "..", "src", "libgrabsite")
 
 
-def read_html():
-    with open(HTML_PATH, encoding="utf-8") as f:
-        return f.read()
+def read_js():
+    """All dashboard JavaScript, concatenated. Every module is checked, not just one."""
+    sources = []
+    for path, asset in sorted(dashboard_assets.ASSETS.items()):
+        if asset.content_type.startswith("text/javascript"):
+            with open(os.path.join(PACKAGE_DIR, asset.file), encoding="utf-8") as f:
+                sources.append(f.read())
+    return "\n".join(sources)
 
 
 def extract_safe_href_regex():
-    """Pull the regex literal out of the safeHref function in dashboard.html."""
+    """Pull the regex literal out of the safeHref function."""
     m = re.search(
         r"const safeHref = \(url\) => \(typeof url === \"string\" && "
         r"(/.+?/i)\.test\(url\)",
-        read_html(),
+        read_js(),
     )
     if m is None:
-        raise AssertionError("safeHref not found in dashboard.html")
+        raise AssertionError("safeHref not found in the dashboard JavaScript")
     # Strip the surrounding slashes and the trailing flag.
     return re.compile(m.group(1)[1:-2], re.IGNORECASE)
 
@@ -72,7 +77,7 @@ class SinkTests(unittest.TestCase):
     """Every link built from message data goes through safeHref, and nothing uses innerHTML."""
 
     def setUp(self):
-        self.html = read_html()
+        self.html = read_js()
 
     def test_no_html_injection_sinks(self):
         for sink in ("innerHTML", "outerHTML", "insertAdjacentHTML"):
@@ -86,7 +91,7 @@ class SinkTests(unittest.TestCase):
 
     def test_href_attributes_use_safe_href(self):
         attrs = re.findall(r"[\"']?\bhref[\"']?\s*:\s*([^,}\)]+)", self.html)
-        self.assertTrue(attrs, "expected href attributes in dashboard.html")
+        self.assertTrue(attrs, "expected href attributes in the dashboard JavaScript")
         for value in attrs:
             with self.subTest(value=value.strip()):
                 self.assertTrue(
