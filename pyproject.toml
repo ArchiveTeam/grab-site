@@ -1,5 +1,5 @@
 [build-system]
-requires = ["setuptools>=61"]
+requires = ["setuptools>=84"]
 build-backend = "setuptools.build_meta"
 
 [project]
@@ -7,14 +7,14 @@ name = "grab-site"
 dynamic = ["version"]
 description = "The archivist's web crawler: WARC output, dashboard for all crawls, dynamic ignore patterns"
 readme = "README.md"
-license = { file = "LICENSE" }
+license = "MIT"
+license-files = ["LICENSE"]
 authors = [{ name = "Ivan Kozik", email = "ivan@ludios.org" }]
 requires-python = ">=3.12"
 classifiers = [
   "Programming Language :: Python :: 3",
   "Development Status :: 5 - Production/Stable",
   "Intended Audience :: End Users/Desktop",
-  "License :: OSI Approved :: MIT License",
   "Topic :: Internet :: WWW/HTTP",
 ]
 dependencies = [
