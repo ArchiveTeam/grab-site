@@ -9,7 +9,7 @@ description = "The archivist's web crawler: WARC output, dashboard for all crawl
 readme = "README.md"
 license = { file = "LICENSE" }
 authors = [{ name = "Ivan Kozik", email = "ivan@ludios.org" }]
-requires-python = ">=3.8"
+requires-python = ">=3.12"
 classifiers = [
   "Programming Language :: Python :: 3",
   "Development Status :: 5 - Production/Stable",
@@ -19,7 +19,7 @@ classifiers = [
 ]
 dependencies = [
   "click>=6.3",
-  "wpull @ https://github.com/ArchiveTeam/ludios_wpull/archive/refs/tags/3.0.9.zip",
+  "wpull @ https://github.com/ArchiveTeam/ludios_wpull/releases/download/5.1.0/wpull-5.1.0-py3-none-any.whl",
   "manhole>=1.0.0",
   "lmdb>=0.89",
   "autobahn>=0.12.1",
