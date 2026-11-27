@@ -6,309 +6,335 @@ from libgrabsite import wpull_hooks as wh
 
 
 class FakeFields:
-	def __init__(self, pairs):
-		self.pairs = pairs
+    def __init__(self, pairs):
+        self.pairs = pairs
 
-	def get_all(self):
-		return list(self.pairs)
+    def get_all(self):
+        return list(self.pairs)
 
 
 class FakeResponse:
-	def __init__(self, pairs=()):
-		self.fields = FakeFields(pairs)
+    def __init__(self, pairs=()):
+        self.fields = FakeFields(pairs)
 
 
 _REAL_RE2 = hasattr(__import__("re2"), "_re2")
 
 
 class IgnoreLineTests(unittest.TestCase):
-	def test_comment_and_blank_excluded(self):
-		self.assertFalse(wh.include_ignore_line("# comment"))
-		self.assertFalse(wh.include_ignore_line(""))
+    def test_comment_and_blank_excluded(self):
+        self.assertFalse(wh.include_ignore_line("# comment"))
+        self.assertFalse(wh.include_ignore_line(""))
 
-	def test_pattern_included(self):
-		self.assertTrue(wh.include_ignore_line(r"\.jpg$"))
+    def test_pattern_included(self):
+        self.assertTrue(wh.include_ignore_line(r"\.jpg$"))
 
 
 class CombinedRegexpTests(unittest.TestCase):
-	def test_no_patterns_ignores_nothing(self):
-		rx = wh.compile_combined_regexp([])
-		self.assertIsNone(rx.search("http://example.com/"))
+    def test_no_patterns_ignores_nothing(self):
+        rx = wh.compile_combined_regexp([])
+        self.assertIsNone(rx.search("http://example.com/"))
 
-	def test_matches_any_pattern(self):
-		rx = wh.compile_combined_regexp([r"\.jpg$", r"/logout"])
-		self.assertTrue(rx.search("http://a/x.jpg"))
-		self.assertTrue(rx.search("http://a/logout?x=1"))
-		self.assertIsNone(rx.search("http://a/page.html"))
+    def test_matches_any_pattern(self):
+        rx = wh.compile_combined_regexp([r"\.jpg$", r"/logout"])
+        self.assertTrue(rx.search("http://a/x.jpg"))
+        self.assertTrue(rx.search("http://a/logout?x=1"))
+        self.assertIsNone(rx.search("http://a/page.html"))
 
-	def test_alternation_inside_pattern_is_grouped(self):
-		# Each pattern is wrapped in a group so "a|b" can't leak into others.
-		rx = wh.compile_combined_regexp([r"^x$", r"foo|bar"])
-		self.assertIsNone(rx.search("zzz"))
-		self.assertTrue(rx.search("xbar"))
+    def test_alternation_inside_pattern_is_grouped(self):
+        # Each pattern is wrapped in a group so "a|b" can't leak into others.
+        rx = wh.compile_combined_regexp([r"^x$", r"foo|bar"])
+        self.assertIsNone(rx.search("zzz"))
+        self.assertTrue(rx.search("xbar"))
 
-	def test_invalid_regexp_raises(self):
-		with self.assertRaises(re.error):
-			wh.re_compile("(")
+    def test_invalid_regexp_raises(self):
+        with self.assertRaises(re.error):
+            wh.re_compile("(")
 
-	@unittest.skipUnless(_REAL_RE2, "needs the real google-re2 package")
-	@unittest.expectedFailure
-	def test_lookaround_falls_back_to_re(self):
-		# Known bug: google-re2 raises re2.error, which is not a subclass of
-		# re.error, so the fallback to `re` in re_compile never runs.
-		rx = wh.re_compile(r"foo(?=bar)")
-		self.assertTrue(rx.search("foobar"))
-		self.assertIsNone(rx.search("foobaz"))
+    @unittest.skipUnless(_REAL_RE2, "needs the real google-re2 package")
+    @unittest.expectedFailure
+    def test_lookaround_falls_back_to_re(self):
+        # Known bug: google-re2 raises re2.error, which is not a subclass of
+        # re.error, so the fallback to `re` in re_compile never runs.
+        rx = wh.re_compile(r"foo(?=bar)")
+        self.assertTrue(rx.search("foobar"))
+        self.assertIsNone(rx.search("foobaz"))
 
 
 class IgnoreSetTests(unittest.TestCase):
-	def test_global_set_loads(self):
-		patterns = wh.get_patterns_for_ignore_set("global")
-		self.assertTrue(any(wh.include_ignore_line(p) for p in patterns))
+    def test_global_set_loads(self):
+        patterns = wh.get_patterns_for_ignore_set("global")
+        self.assertTrue(any(wh.include_ignore_line(p) for p in patterns))
 
-	def test_every_shipped_set_compiles(self):
-		import os
-		for name in sorted(os.listdir(wh.ignore_sets_path)):
-			if name == "meetupeverywhere":
-				continue  # see test_meetupeverywhere_compiles
-			with self.subTest(igset=name):
-				for p in wh.get_patterns_for_ignore_set(name):
-					if wh.include_ignore_line(p):
-						# netloc placeholder is substituted at runtime
-						wh.re_compile(p.replace("{any_start_netloc}", "example\\.com"))
+    def test_every_shipped_set_compiles(self):
+        import os
 
-	@unittest.expectedFailure
-	def test_meetupeverywhere_compiles(self):
-		# Known bug: the pattern contains "\\m", an invalid regexp escape, so
-		# enabling this ignore set raises re.error.
-		for p in wh.get_patterns_for_ignore_set("meetupeverywhere"):
-			if wh.include_ignore_line(p):
-				wh.re_compile(p)
+        for name in sorted(os.listdir(wh.ignore_sets_path)):
+            if name == "meetupeverywhere":
+                continue  # see test_meetupeverywhere_compiles
+            with self.subTest(igset=name):
+                for p in wh.get_patterns_for_ignore_set(name):
+                    if wh.include_ignore_line(p):
+                        # netloc placeholder is substituted at runtime
+                        wh.re_compile(p.replace("{any_start_netloc}", "example\\.com"))
 
-	def test_empty_name_rejected(self):
-		with self.assertRaises(AssertionError):
-			wh.get_patterns_for_ignore_set("")
+    @unittest.expectedFailure
+    def test_meetupeverywhere_compiles(self):
+        # Known bug: the pattern contains "\\m", an invalid regexp escape, so
+        # enabling this ignore set raises re.error.
+        for p in wh.get_patterns_for_ignore_set("meetupeverywhere"):
+            if wh.include_ignore_line(p):
+                wh.re_compile(p)
 
-	def test_unknown_set_raises(self):
-		with self.assertRaises(FileNotFoundError):
-			wh.get_patterns_for_ignore_set("no-such-set")
+    def test_empty_name_rejected(self):
+        with self.assertRaises(AssertionError):
+            wh.get_patterns_for_ignore_set("")
+
+    def test_unknown_set_raises(self):
+        with self.assertRaises(FileNotFoundError):
+            wh.get_patterns_for_ignore_set("no-such-set")
 
 
 class ResponseHelperTests(unittest.TestCase):
-	def test_content_length(self):
-		r = FakeResponse([("Content-Length", "123")])
-		self.assertEqual(wh.get_content_length(r), 123)
+    def test_content_length(self):
+        r = FakeResponse([("Content-Length", "123")])
+        self.assertEqual(wh.get_content_length(r), 123)
 
-	def test_content_length_missing_or_invalid(self):
-		self.assertEqual(wh.get_content_length(FakeResponse()), -1)
-		self.assertEqual(wh.get_content_length(FakeResponse([("Content-Length", "x")])), -1)
+    def test_content_length_missing_or_invalid(self):
+        self.assertEqual(wh.get_content_length(FakeResponse()), -1)
+        self.assertEqual(
+            wh.get_content_length(FakeResponse([("Content-Length", "x")])), -1
+        )
 
-	def test_content_type_video(self):
-		self.assertTrue(wh.has_content_type_video(FakeResponse([("Content-Type", "Video/MP4")])))
-		self.assertFalse(wh.has_content_type_video(FakeResponse([("Content-Type", "text/html")])))
-		self.assertFalse(wh.has_content_type_video(FakeResponse()))
+    def test_content_type_video(self):
+        self.assertTrue(
+            wh.has_content_type_video(FakeResponse([("Content-Type", "Video/MP4")]))
+        )
+        self.assertFalse(
+            wh.has_content_type_video(FakeResponse([("Content-Type", "text/html")]))
+        )
+        self.assertFalse(wh.has_content_type_video(FakeResponse()))
 
-	@unittest.expectedFailure
-	def test_content_length_header_name_case_insensitive(self):
-		# Known bug: header names are compared case-sensitively.
-		self.assertEqual(wh.get_content_length(FakeResponse([("content-length", "5")])), 5)
+    @unittest.expectedFailure
+    def test_content_length_header_name_case_insensitive(self):
+        # Known bug: header names are compared case-sensitively.
+        self.assertEqual(
+            wh.get_content_length(FakeResponse([("content-length", "5")])), 5
+        )
 
-	@unittest.expectedFailure
-	def test_content_type_header_name_case_insensitive(self):
-		# Known bug: header names are compared case-sensitively.
-		self.assertTrue(wh.has_content_type_video(FakeResponse([("content-type", "video/mp4")])))
+    @unittest.expectedFailure
+    def test_content_type_header_name_case_insensitive(self):
+        # Known bug: header names are compared case-sensitively.
+        self.assertTrue(
+            wh.has_content_type_video(FakeResponse([("content-type", "video/mp4")]))
+        )
 
-	def test_status_code_http(self):
-		class R:
-			status_code = 404
-		self.assertEqual(wh.response_status_code(R()), 404)
+    def test_status_code_http(self):
+        class R:
+            status_code = 404
 
-	def test_status_code_ftp(self):
-		class Reply:
-			code = 226
-		class R:
-			reply = Reply()
-		self.assertEqual(wh.response_status_code(R()), 226)
+        self.assertEqual(wh.response_status_code(R()), 404)
 
-	def test_status_code_unknown(self):
-		self.assertEqual(wh.response_status_code(object()), 0)
+    def test_status_code_ftp(self):
+        class Reply:
+            code = 226
+
+        class R:
+            reply = Reply()
+
+        self.assertEqual(wh.response_status_code(R()), 226)
+
+    def test_status_code_unknown(self):
+        self.assertEqual(wh.response_status_code(object()), 0)
 
 
 class VideoExtTests(unittest.TestCase):
-	def test_known_extensions(self):
-		for u in ("http://a/v.mp4", "http://a/v.WEBM", "http://a/x.y.mkv"):
-			self.assertTrue(wh.has_video_ext(u), u)
+    def test_known_extensions(self):
+        for u in ("http://a/v.mp4", "http://a/v.WEBM", "http://a/x.y.mkv"):
+            self.assertTrue(wh.has_video_ext(u), u)
 
-	def test_non_video(self):
-		for u in ("http://a/page.html", "http://a/img.png", "http://a/mp4"):
-			self.assertFalse(wh.has_video_ext(u), u)
+    def test_non_video(self):
+        for u in ("http://a/page.html", "http://a/img.png", "http://a/mp4"):
+            self.assertFalse(wh.has_video_ext(u), u)
 
-	@unittest.expectedFailure
-	def test_extension_followed_by_query(self):
-		# Known bug: the query string is included in the "extension".
-		self.assertTrue(wh.has_video_ext("http://a/v.mp4?token=1"))
+    @unittest.expectedFailure
+    def test_extension_followed_by_query(self):
+        # Known bug: the query string is included in the "extension".
+        self.assertTrue(wh.has_video_ext("http://a/v.mp4?token=1"))
 
-	@unittest.expectedFailure
-	def test_extension_in_query_only(self):
-		# Known bug: only the final dot-separated chunk of the whole URL is checked.
-		self.assertFalse(wh.has_video_ext("http://a/page.php?file=x.mp4"))
+    @unittest.expectedFailure
+    def test_extension_in_query_only(self):
+        # Known bug: only the final dot-separated chunk of the whole URL is checked.
+        self.assertFalse(wh.has_video_ext("http://a/page.php?file=x.mp4"))
 
 
 class IcyPatternTests(unittest.TestCase):
-	def test_icy_fields_match(self):
-		for f in ("icy-name", "ICY-Genre", "x-audiocast-name", "ice-audio-info"):
-			self.assertTrue(wh.ICY_FIELD_PATTERN.match(f), f)
+    def test_icy_fields_match(self):
+        for f in ("icy-name", "ICY-Genre", "x-audiocast-name", "ice-audio-info"):
+            self.assertTrue(wh.ICY_FIELD_PATTERN.match(f), f)
 
-	def test_normal_fields_do_not_match(self):
-		for f in ("Content-Type", "Server", "Date"):
-			self.assertFalse(wh.ICY_FIELD_PATTERN.match(f), f)
+    def test_normal_fields_do_not_match(self):
+        for f in ("Content-Type", "Server", "Date"):
+            self.assertFalse(wh.ICY_FIELD_PATTERN.match(f), f)
 
-	def test_server_value(self):
-		self.assertTrue(wh.ICY_VALUE_PATTERN.match("Icecast 2.4"))
-		self.assertFalse(wh.ICY_VALUE_PATTERN.match("nginx"))
+    def test_server_value(self):
+        self.assertTrue(wh.ICY_VALUE_PATTERN.match("Icecast 2.4"))
+        self.assertFalse(wh.ICY_VALUE_PATTERN.match("nginx"))
 
 
 class CachingDecoratorTests(unittest.TestCase):
-	def test_caches_within_window(self):
-		calls = []
+    def test_caches_within_window(self):
+        calls = []
 
-		@wh.caching_decorator
-		def f(path):
-			calls.append(path)
-			return len(calls)
+        @wh.caching_decorator
+        def f(path):
+            calls.append(path)
+            return len(calls)
 
-		self.assertEqual(f("p"), 1)
-		self.assertEqual(f("p"), 1)
-		self.assertEqual(calls, ["p"])
+        self.assertEqual(f("p"), 1)
+        self.assertEqual(f("p"), 1)
+        self.assertEqual(calls, ["p"])
 
-	def test_separate_paths_cached_separately(self):
-		@wh.caching_decorator
-		def f(path):
-			return path.upper()
+    def test_separate_paths_cached_separately(self):
+        @wh.caching_decorator
+        def f(path):
+            return path.upper()
 
-		self.assertEqual(f("a"), "A")
-		self.assertEqual(f("b"), "B")
+        self.assertEqual(f("a"), "A")
+        self.assertEqual(f("b"), "B")
 
-	def test_expires(self):
-		from unittest import mock
-		calls = []
+    def test_expires(self):
+        from unittest import mock
 
-		@wh.caching_decorator
-		def f(path):
-			calls.append(1)
-			return len(calls)
+        calls = []
 
-		with mock.patch.object(wh.time, "monotonic", side_effect=[100.0, 100.0, 200.0, 200.0]):
-			self.assertEqual(f("p"), 1)
-			self.assertEqual(f("p"), 2)
+        @wh.caching_decorator
+        def f(path):
+            calls.append(1)
+            return len(calls)
+
+        with mock.patch.object(
+            wh.time, "monotonic", side_effect=[100.0, 100.0, 200.0, 200.0]
+        ):
+            self.assertEqual(f("p"), 1)
+            self.assertEqual(f("p"), 2)
 
 
 class FileChangedWatcherTests(unittest.TestCase):
-	def test_changed_then_unchanged_then_changed(self):
-		from unittest import mock
-		w = wh.FileChangedWatcher("/some/file")
-		with mock.patch.object(wh, "mtime_with_cache", side_effect=[10, 10, 11]), \
-				mock.patch("builtins.print"):
-			self.assertTrue(w.has_changed())
-			self.assertFalse(w.has_changed())
-			self.assertTrue(w.has_changed())
+    def test_changed_then_unchanged_then_changed(self):
+        from unittest import mock
+
+        w = wh.FileChangedWatcher("/some/file")
+        with (
+            mock.patch.object(wh, "mtime_with_cache", side_effect=[10, 10, 11]),
+            mock.patch("builtins.print"),
+        ):
+            self.assertTrue(w.has_changed())
+            self.assertFalse(w.has_changed())
+            self.assertTrue(w.has_changed())
 
 
 class SwallowExceptionTests(unittest.TestCase):
-	def test_returns_value(self):
-		@wh.swallow_exception
-		def f(x):
-			return x + 1
-		self.assertEqual(f(1), 2)
+    def test_returns_value(self):
+        @wh.swallow_exception
+        def f(x):
+            return x + 1
 
-	def test_swallows_exceptions(self):
-		from unittest import mock
+        self.assertEqual(f(1), 2)
 
-		@wh.swallow_exception
-		def f():
-			raise ValueError("boom")
+    def test_swallows_exceptions(self):
+        from unittest import mock
 
-		with mock.patch.object(wh.traceback, "print_exc"):
-			self.assertIsNone(f())
+        @wh.swallow_exception
+        def f():
+            raise ValueError("boom")
+
+        with mock.patch.object(wh.traceback, "print_exc"):
+            self.assertIsNone(f())
 
 
 class PluginLogicTests(unittest.TestCase):
-	"""Exercise plugin methods that don't need a running wpull."""
+    """Exercise plugin methods that don't need a running wpull."""
 
-	def make_plugin(self, netlocs=("example.com",)):
-		p = wh.GrabSitePlugin.__new__(wh.GrabSitePlugin)
-		p.all_start_netlocs = set(netlocs)
-		return p
+    def make_plugin(self, netlocs=("example.com",)):
+        p = wh.GrabSitePlugin.__new__(wh.GrabSitePlugin)
+        p.all_start_netlocs = set(netlocs)
+        return p
 
-	def test_pattern_without_placeholder(self):
-		p = self.make_plugin()
-		self.assertEqual(p.ignore_pattern_to_regexp_strings(r"\.jpg$"), [r"\.jpg$"])
+    def test_pattern_without_placeholder(self):
+        p = self.make_plugin()
+        self.assertEqual(p.ignore_pattern_to_regexp_strings(r"\.jpg$"), [r"\.jpg$"])
 
-	def test_netloc_placeholder_expanded_and_escaped(self):
-		p = self.make_plugin(["a.example.com", "b.org"])
-		out = sorted(p.ignore_pattern_to_regexp_strings("^https?://{any_start_netloc}/x"))
-		self.assertEqual(out, [
-			"^https?://" + re.escape("a.example.com") + "/x",
-			"^https?://" + re.escape("b.org") + "/x",
-		])
+    def test_netloc_placeholder_expanded_and_escaped(self):
+        p = self.make_plugin(["a.example.com", "b.org"])
+        out = sorted(
+            p.ignore_pattern_to_regexp_strings("^https?://{any_start_netloc}/x")
+        )
+        self.assertEqual(
+            out,
+            [
+                "^https?://" + re.escape("a.example.com") + "/x",
+                "^https?://" + re.escape("b.org") + "/x",
+            ],
+        )
 
-	def test_get_specific_ignore_pattern(self):
-		p = self.make_plugin()
-		p.compiled_ignores = [(ig, wh.re_compile(ig)) for ig in (r"\.jpg$", r"/logout")]
-		self.assertEqual(p.get_specific_ignore_pattern("http://a/logout"), "/logout")
-		self.assertIsNone(p.get_specific_ignore_pattern("http://a/ok"))
+    def test_get_specific_ignore_pattern(self):
+        p = self.make_plugin()
+        p.compiled_ignores = [(ig, wh.re_compile(ig)) for ig in (r"\.jpg$", r"/logout")]
+        self.assertEqual(p.get_specific_ignore_pattern("http://a/logout"), "/logout")
+        self.assertIsNone(p.get_specific_ignore_pattern("http://a/ok"))
 
-	def test_get_urls_twitter_orig(self):
-		p = self.make_plugin()
-		item = _item("https://pbs.twimg.com/media/abc.jpg:large")
-		extra = p.get_urls(item)
-		self.assertEqual(extra[0]["url"], "https://pbs.twimg.com/media/abc.jpg:orig")
+    def test_get_urls_twitter_orig(self):
+        p = self.make_plugin()
+        item = _item("https://pbs.twimg.com/media/abc.jpg:large")
+        extra = p.get_urls(item)
+        self.assertEqual(extra[0]["url"], "https://pbs.twimg.com/media/abc.jpg:orig")
 
-	def test_get_urls_quora(self):
-		p = self.make_plugin()
-		extra = p.get_urls(_item("https://www.quora.com/Some-Question"))
-		self.assertEqual(extra[0]["url"], "https://www.quora.com/Some-Question?share=1")
-		self.assertIsNone(p.get_urls(_item("https://www.quora.com/Q?share=1")))
+    def test_get_urls_quora(self):
+        p = self.make_plugin()
+        extra = p.get_urls(_item("https://www.quora.com/Some-Question"))
+        self.assertEqual(extra[0]["url"], "https://www.quora.com/Some-Question?share=1")
+        self.assertIsNone(p.get_urls(_item("https://www.quora.com/Q?share=1")))
 
-	def test_get_urls_other(self):
-		self.assertIsNone(self.make_plugin().get_urls(_item("http://example.com/")))
+    def test_get_urls_other(self):
+        self.assertIsNone(self.make_plugin().get_urls(_item("http://example.com/")))
 
-	def test_accept_url_drops_data_urls_and_applies_ignores(self):
-		p = self.make_plugin()
-		p.update_ignores = lambda: None
-		p.all_start_urls = ["http://example.com/"]
-		p.job_data = {"suppress_ignore_reports": True}
-		p.combined_ignore_regexp = wh.compile_combined_regexp([r"\.jpg$"])
-		p.compiled_ignores = []
+    def test_accept_url_drops_data_urls_and_applies_ignores(self):
+        p = self.make_plugin()
+        p.update_ignores = lambda: None
+        p.all_start_urls = ["http://example.com/"]
+        p.job_data = {"suppress_ignore_reports": True}
+        p.combined_ignore_regexp = wh.compile_combined_regexp([r"\.jpg$"])
+        p.compiled_ignores = []
 
-		self.assertFalse(p.accept_url(_item("data:text/plain,hi"), True, {}))
-		self.assertFalse(p.accept_url(_item("http://example.com/x.jpg"), True, {}))
-		self.assertTrue(p.accept_url(_item("http://example.com/x.html"), True, {}))
-		self.assertFalse(p.accept_url(_item("http://example.com/x.html"), False, {}))
+        self.assertFalse(p.accept_url(_item("data:text/plain,hi"), True, {}))
+        self.assertFalse(p.accept_url(_item("http://example.com/x.jpg"), True, {}))
+        self.assertTrue(p.accept_url(_item("http://example.com/x.html"), True, {}))
+        self.assertFalse(p.accept_url(_item("http://example.com/x.html"), False, {}))
 
-	def test_start_urls_are_never_ignored(self):
-		p = self.make_plugin()
-		p.update_ignores = lambda: None
-		p.all_start_urls = ["http://example.com/x.jpg"]
-		p.job_data = {"suppress_ignore_reports": True}
-		p.combined_ignore_regexp = wh.compile_combined_regexp([r"\.jpg$"])
-		self.assertTrue(p.accept_url(_item("http://example.com/x.jpg"), True, {}))
-		self.assertFalse(p.accept_url(_item("http://example.com/x.jpg"), False, {}))
+    def test_start_urls_are_never_ignored(self):
+        p = self.make_plugin()
+        p.update_ignores = lambda: None
+        p.all_start_urls = ["http://example.com/x.jpg"]
+        p.job_data = {"suppress_ignore_reports": True}
+        p.combined_ignore_regexp = wh.compile_combined_regexp([r"\.jpg$"])
+        self.assertTrue(p.accept_url(_item("http://example.com/x.jpg"), True, {}))
+        self.assertFalse(p.accept_url(_item("http://example.com/x.jpg"), False, {}))
 
 
 def _item(url):
-	class UrlInfo:
-		raw = url
+    class UrlInfo:
+        raw = url
 
-	class Request:
-		url_info = UrlInfo()
+    class Request:
+        url_info = UrlInfo()
 
-	class Item:
-		request = Request()
-		url_record = None
+    class Item:
+        request = Request()
+        url_record = None
 
-	return Item()
+    return Item()
 
 
 if __name__ == "__main__":
-	unittest.main()
+    unittest.main()
