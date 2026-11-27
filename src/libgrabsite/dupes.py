@@ -3,6 +3,7 @@ Duplicate page content database.
 """
 
 import logging
+import os
 
 logger = logging.getLogger(__name__)
 
@@ -12,6 +13,9 @@ class DupesOnDisk:
         import lmdb
 
         last_error = None
+        # lmdb creates a directory by default; if the path is an existing
+        # file, open it as a single-file environment instead of failing.
+        subdir = not os.path.isfile(filename)
         # Try 1TB, 2GB, 1GB, 512MB, 256MB, 128MB, then give up.
         # "Must be <2GB on 32-bit" https://lmdb.readthedocs.org/en/release/
         # but sometimes needs to be even lower.
@@ -26,6 +30,7 @@ class DupesOnDisk:
             try:
                 self._env = lmdb.open(
                     filename,
+                    subdir=subdir,
                     # Can't use writemap=True on OS X because it does not fully support sparse files
                     # https://acid.readthedocs.org/en/latest/engines.html
                     #

@@ -18,7 +18,7 @@ from wpull.pipeline.item import URLRecord
 from wpull.pipeline.session import ItemSession
 from wpull.url import URLInfo
 
-from libgrabsite import wpull_tweaks, dashboard_client
+from libgrabsite import wpull_tweaks, dashboard_client, parse_ports
 import libgrabsite
 
 logger = logging.getLogger(__name__)
@@ -343,7 +343,8 @@ class GrabSitePlugin(WpullPlugin):
         self.ws_queue = asyncio.Queue(maxsize=250)
 
         ws_host = os.environ.get("GRAB_SITE_HOST", "127.0.0.1")
-        ws_port = int(os.environ.get("GRAB_SITE_PORT", 29000))
+        # GRAB_SITE_PORT may list several ports for gs-server; connect to the first.
+        ws_port = parse_ports()[0]
         ws_url = f"ws://{ws_host}:{ws_port}"
         logger.debug("Dashboard target is %s", ws_url)
 

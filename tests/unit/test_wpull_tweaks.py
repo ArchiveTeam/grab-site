@@ -74,8 +74,12 @@ class ScrapeDocumentTests(unittest.TestCase):
         html.start()
         self.addCleanup(html.stop)
 
-    def make_rule(self, db=None):
+    def make_rule(self, db):
         return wt.DupeSpottingProcessingRule(fetch_rule=None, dupes_db=db)
+
+    def test_dupes_db_is_required(self):
+        with self.assertRaises(KeyError):
+            wt.DupeSpottingProcessingRule(fetch_rule=None)
 
     def test_small_body_is_read_and_deduplicated(self):
         db = FakeDupesDB()

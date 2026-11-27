@@ -8,7 +8,7 @@ import json
 import asyncio
 import logging
 from autobahn.asyncio.websocket import WebSocketServerFactory, WebSocketServerProtocol
-from libgrabsite import dashboard_assets, log_level
+from libgrabsite import dashboard_assets, log_level, parse_ports
 
 logger = logging.getLogger(__name__)
 
@@ -189,7 +189,7 @@ def main():
     )
     loop = asyncio.new_event_loop()
     asyncio.set_event_loop(loop)
-    ports = list(int(p) for p in os.environ.get("GRAB_SITE_PORT", "29000").split(","))
+    ports = parse_ports()
     factory = GrabberServerFactory()
     # Loopback by default: the dashboard has no authentication, so anyone who
     # can reach the port could inject events. Set GRAB_SITE_INTERFACE to expose it.

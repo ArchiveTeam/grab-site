@@ -371,6 +371,13 @@ Options can come before or after the URL.
 	for sites that are directory listings, because they frequently trigger false
 	positives.
 
+	The dupespotter keeps its digests in `DIR/dupes_db`, an LMDB database that
+	is opened without fsync (`sync=False`, `metasync=False`) for speed.  After a
+	hard crash of the machine (power loss, kernel panic; killing the process is
+	fine) that database may be corrupt, which would also stop `--resume` from continuing the crawl.  If
+	that happens, delete `DIR/dupes_db` and resume; the crawl then starts
+	deduplicating from scratch.
+
 *	`--concurrency=N`: Use `N` connections to fetch in parallel (default: 2).
 	Can be changed during the crawl by editing the `DIR/concurrency` file.
 
@@ -670,12 +677,13 @@ Advanced `gs-server` options
 These environmental variables control what `gs-server` listens on:
 
 *	`GRAB_SITE_INTERFACE` (default `127.0.0.1`; the Docker image sets `0.0.0.0`).  The dashboard has no authentication, so only expose it on a network you trust.
-*	`GRAB_SITE_PORT` (default `29000`)
+*	`GRAB_SITE_PORT` (default `29000`).  May be a comma-separated list of ports to listen on.
 
 These environmental variables control which server each `grab-site` process connects to:
 
 *	`GRAB_SITE_HOST` (default `127.0.0.1`)
-*	`GRAB_SITE_PORT` (default `29000`)
+*	`GRAB_SITE_PORT` (default `29000`).  If it is a comma-separated list such as
+	`29000,29001`, `grab-site` connects to the first port.
 
 
 

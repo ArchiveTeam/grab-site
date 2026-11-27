@@ -30,7 +30,7 @@ class NoFsyncSQLTable(SQLiteURLTable):
 
 class DupeSpottingProcessingRule(ProcessingRule):
     def __init__(self, *args, **kwargs):
-        self.dupes_db = kwargs.pop("dupes_db", None)
+        self.dupes_db = kwargs.pop("dupes_db")
         super().__init__(*args, **kwargs)
 
     def scrape_document(self, item_session):
@@ -47,18 +47,14 @@ class DupeSpottingProcessingRule(ProcessingRule):
             if HTMLReader.is_response(response):
                 body = dupespotter.process_body(body, url)
             digest = hashlib.md5(body).digest()
-            if dupes_db is not None:
-                dupe_of = dupes_db.get_old_url(digest)
-            else:
-                dupe_of = None
+            dupe_of = dupes_db.get_old_url(digest)
             if dupe_of is not None:
                 # Don't extract links from pages we've already seen
                 # to avoid loops that descend a directory endlessly
                 logger.info("DUPE %s\n  OF %s", url, dupe_of)
                 return
             else:
-                if dupes_db is not None:
-                    dupes_db.set_old_url(digest, url)
+                dupes_db.set_old_url(digest, url)
 
         super().scrape_document(item_session)
 
