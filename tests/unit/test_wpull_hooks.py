@@ -84,8 +84,13 @@ class IgnoreSetTests(unittest.TestCase):
                 wh.re_compile(p)
 
     def test_empty_name_rejected(self):
-        with self.assertRaises(AssertionError):
+        with self.assertRaises(ValueError):
             wh.get_patterns_for_ignore_set("")
+
+    def test_path_traversal_name_rejected(self):
+        for name in ("../global", "a/b", "/etc/hostname", "..", "global.txt"):
+            with self.subTest(name=name), self.assertRaises(ValueError):
+                wh.get_patterns_for_ignore_set(name)
 
     def test_unknown_set_raises(self):
         with self.assertRaises(FileNotFoundError):
@@ -625,6 +630,152 @@ class PutWsQueueTests(unittest.TestCase):
         p.job_data["items_queued"] = 99
         queued = p.ws_queue.get_nowait()
         self.assertEqual(queued["job_data"]["items_queued"], 1)
+
+
+class CombinedRegexpRobustnessTests(unittest.TestCase):
+    """One bad ignore pattern must not disable the rest."""
+
+    def test_bad_pattern_rejected_others_still_match(self):
+        rx = wh.compile_combined_regexp([r"\.jpg$", r"foo(?i)bar", r"/logout"])
+        self.assertTrue(rx.search("http://a/x.jpg"))
+        self.assertTrue(rx.search("http://a/logout"))
+        self.assertIsNone(rx.search("http://a/page.html"))
+        self.assertEqual([p for p, _ in rx.rejected], [r"foo(?i)bar"])
+        self.assertEqual(rx.accepted, [r"\.jpg$", r"/logout"])
+
+    def test_rejected_pattern_has_error_message(self):
+        rx = wh.compile_combined_regexp(["("])
+        self.assertEqual(len(rx.rejected), 1)
+        self.assertTrue(rx.rejected[0][1])
+
+    def test_leading_inline_flag_pattern_matches(self):
+        # Valid alone, but "(?i)" is not allowed inside a larger alternation.
+        rx = wh.compile_combined_regexp([r"(?i)FOO", r"\.jpg$"])
+        self.assertTrue(rx.search("http://a/foo"))
+        self.assertTrue(rx.search("http://a/x.jpg"))
+        self.assertEqual(rx.rejected, [])
+
+    def test_numbered_backref_alone_matches(self):
+        # Wrapping used to make \1 refer to the wrapper group and fail to compile.
+        rx = wh.compile_combined_regexp([r"^(a)\1$"])
+        self.assertTrue(rx.search("aa"))
+        self.assertIsNone(rx.search("ab"))
+
+    def test_backref_in_later_pattern_binds_to_its_own_group(self):
+        # Joining renumbers groups: \1 used to point at the first pattern's group.
+        rx = wh.compile_combined_regexp([r"^b(x)$", r"^(a)\1$"])
+        self.assertTrue(rx.search("aa"))
+        self.assertTrue(rx.search("bx"))
+        self.assertIsNone(rx.search("ax"))
+
+    def test_capturing_group_pattern_still_matches(self):
+        rx = wh.compile_combined_regexp([r"(foo|bar)baz", r"/logout"])
+        self.assertTrue(rx.search("http://a/xbarbaz"))
+        self.assertTrue(rx.search("http://a/logout"))
+        self.assertIsNone(rx.search("http://a/foobar"))
+
+    def test_search_returns_match_object(self):
+        rx = wh.compile_combined_regexp([r"\.jpg$"])
+        self.assertEqual(rx.search("http://a/x.jpg").group(0), ".jpg")
+
+
+class DefaultIgnoreStateTests(unittest.TestCase):
+    def test_accept_url_before_ignores_load_does_not_raise(self):
+        # Regression: combined_ignore_regexp used to be unset until the first
+        # successful update_ignores(), so accept_url raised AttributeError.
+        p = wh.GrabSitePlugin.__new__(wh.GrabSitePlugin)
+        self.assertIsNone(p.should_ignore_url("http://a/x.jpg", None))
+        self.assertEqual(p.compiled_ignores, [])
+
+
+class UpdateIgnoresTests(unittest.TestCase):
+    def setUp(self):
+        import os
+        import tempfile
+        from unittest import mock
+
+        wh.clear_file_caches()
+        self.addCleanup(wh.clear_file_caches)
+        self.tmp = tempfile.TemporaryDirectory()
+        self.addCleanup(self.tmp.cleanup)
+        patcher = mock.patch.object(wh, "working_dir", self.tmp.name)
+        patcher.start()
+        self.addCleanup(patcher.stop)
+        self.igsets = os.path.join(self.tmp.name, "igsets")
+        self.ignores = os.path.join(self.tmp.name, "ignores")
+        self.p = wh.GrabSitePlugin.__new__(wh.GrabSitePlugin)
+        self.p.all_start_netlocs = set()
+        self.p.print_to_terminal = lambda s: None
+        self.p.watchers = {
+            "igsets": wh.FileChangedWatcher(self.igsets),
+            "ignores": wh.FileChangedWatcher(self.ignores),
+        }
+
+    def write(self, path, text):
+        with open(path, "w") as f:
+            f.write(text)
+        wh.clear_file_caches()
+
+    def test_bad_igset_name_skipped_and_logged_once(self):
+        from unittest import mock
+
+        self.write(self.igsets, "no-such-set,../../etc/hostname")
+        self.write(self.ignores, r"\.jpg$")
+        with (
+            mock.patch.object(wh.logger, "error") as log_err,
+            mock.patch.object(wh.logger, "exception") as log_exc,
+        ):
+            self.p.update_ignores()
+            self.p.update_ignores()  # same files: must not re-run or re-log
+        self.assertEqual(log_err.call_count, 2)  # one per bad name, once
+        log_exc.assert_not_called()
+        self.assertTrue(self.p.combined_ignore_regexp.search("http://a/x.jpg"))
+
+    def test_bad_regex_skipped_others_still_apply_logged_once(self):
+        from unittest import mock
+
+        self.write(self.igsets, "")
+        self.write(self.ignores, "foo(?i)bar\n\\.jpg$\n")
+        with mock.patch.object(wh.logger, "error") as log_err:
+            self.p.update_ignores()
+            self.p.update_ignores()
+        self.assertEqual(log_err.call_count, 1)
+        self.assertTrue(self.p.combined_ignore_regexp.search("http://a/x.jpg"))
+        self.assertIsNone(self.p.combined_ignore_regexp.search("http://a/page"))
+
+    def test_unexpected_failure_keeps_previous_set_and_is_marked_seen(self):
+        from unittest import mock
+
+        self.write(self.igsets, "")
+        self.write(self.ignores, r"\.jpg$")
+        self.p.update_ignores()
+        self.assertTrue(self.p.combined_ignore_regexp.search("http://a/x.jpg"))
+
+        self.write(self.ignores, r"\.png$")
+        with (
+            mock.patch.object(
+                self.p, "_rebuild_ignores", side_effect=RuntimeError("boom")
+            ),
+            mock.patch.object(wh.logger, "exception") as log_exc,
+        ):
+            self.p.update_ignores()
+            self.p.update_ignores()  # already marked seen: no second attempt
+        self.assertEqual(log_exc.call_count, 1)
+        self.assertTrue(self.p.combined_ignore_regexp.search("http://a/x.jpg"))
+
+    def test_missing_igsets_file_still_applies_ignores_logged_once(self):
+        from unittest import mock
+
+        self.write(self.ignores, r"\.jpg$")  # igsets file never written
+        with (
+            mock.patch.object(wh.logger, "error") as log_err,
+            mock.patch.object(wh.logger, "exception") as log_exc,
+        ):
+            self.p.update_ignores()
+            self.p.update_ignores()
+        self.assertEqual(log_err.call_count, 1)
+        log_exc.assert_not_called()
+        self.assertTrue(self.p.combined_ignore_regexp.search("http://a/x.jpg"))
 
 
 if __name__ == "__main__":

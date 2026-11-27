@@ -319,5 +319,36 @@ class RemoteInputFileTests(unittest.TestCase):
         with open(os.path.join(self._tmp.name, "input_file"), "rb") as f:
             self.assertEqual(f.read(), b"http://a.test/1\n")
 
+
+class IgsetOptionTests(unittest.TestCase):
+    """Bad --igsets names exit before anything is created on disk."""
+
+    def setUp(self):
+        self._tmp = tempfile.TemporaryDirectory()
+        self.addCleanup(self._tmp.cleanup)
+        self.dir = os.path.join(self._tmp.name, "crawl")
+
+    def assert_rejected(self, igsets):
+        _, code = run_main(igsets=igsets, start_url=("http://a.test/",), dir=self.dir)
+        self.assertEqual(code, 1, igsets)
+        self.assertFalse(os.path.exists(self.dir), igsets)
+
+    def test_traversal_name_rejected(self):
+        self.assert_rejected("../../../../etc/hostname")
+
+    def test_unknown_set_rejected(self):
+        self.assert_rejected("no-such-set")
+
+    def test_non_plain_name_rejected(self):
+        self.assert_rejected("blogs.txt")
+
+    def test_known_set_accepted(self):
+        _, code = run_main(
+            igsets="blogs, twitter,", start_url=("http://a.test/",),
+            dir=self.dir, which_wpull_command=True,
+        )
+        self.assertIsNone(code)
+
+
 if __name__ == "__main__":
     unittest.main()

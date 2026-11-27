@@ -43,23 +43,89 @@ def re_compile(regexp):
         return re.compile(regexp)
 
 
+def _can_join(pattern):
+    """Return True if pattern still compiles when wrapped as one alternative.
+
+    Inline global flags such as (?i) must be at the start of a regexp, so a
+    pattern that starts with one is valid alone but not inside a larger
+    alternation.
+    """
+    try:
+        re.compile(f"(?:{pattern})")
+    except re.error:
+        return False
+    return True
+
+
+class CombinedRegexp:
+    """Matches a URL if any of several ignore patterns matches it.
+
+    It behaves like one big alternation, but each pattern is compiled on its own
+    first. A bad pattern is listed in .rejected and left out, instead of breaking
+    the whole set. Patterns that can't be joined safely are searched one by one:
+
+    - patterns with capturing groups, because joining renumbers the groups and
+      breaks numbered backreferences such as \\1;
+    - patterns that don't compile inside an alternation, such as "(?i)foo".
+    """
+
+    def __init__(self, patterns):
+        self.accepted = []  # patterns that compiled, in input order
+        self.compiled = []  # (pattern, compiled regexp) for each accepted pattern
+        self.rejected = []  # (pattern, error message)
+        joinable = []  # (pattern, compiled regexp) that go into the joined regexp
+        self._separate = []  # compiled regexps searched one at a time
+        for pattern in patterns:
+            try:
+                groups = re.compile(pattern).groups
+                rx = re_compile(pattern)
+            except re.error as e:
+                self.rejected.append((pattern, str(e)))
+                continue
+            self.accepted.append(pattern)
+            self.compiled.append((pattern, rx))
+            if groups or not _can_join(pattern):
+                self._separate.append(rx)
+            else:
+                joinable.append((pattern, rx))
+
+        self._combined = None
+        if joinable:
+            joined = "|".join(f"(?:{pattern})" for pattern, _ in joinable)
+            try:
+                self._combined = re_compile(joined)
+            except re.error:
+                # Not expected, since each pattern was checked alone. Still
+                # better to search them one at a time than to drop them.
+                self._separate.extend(rx for _, rx in joinable)
+
+    def search(self, url):
+        if self._combined is not None:
+            match = self._combined.search(url)
+            if match:
+                return match
+        for rx in self._separate:
+            match = rx.search(url)
+            if match:
+                return match
+        return None
+
+
 def compile_combined_regexp(patterns):
-    # If there are no patterns, we want to ignore nothing, not everything.
-    if not patterns:
-        return re_compile("$^")
-    regexp = "|".join(map(lambda pattern: f"({pattern})", patterns))
-    return re_compile(regexp)
+    """Return a CombinedRegexp for patterns. With no patterns it ignores nothing."""
+    return CombinedRegexp(patterns)
 
 
 def include_ignore_line(line):
     return line and not line.startswith("#")
 
 
-ignore_sets_path = os.path.join(os.path.dirname(libgrabsite.__file__), "ignore_sets")
+ignore_sets_path = libgrabsite.IGNORE_SETS_DIR
 
 
 def get_patterns_for_ignore_set(name: str):
-    assert name != "", name
+    # Validate the name so it can't reach outside ignore_sets_path (e.g. "../x").
+    libgrabsite.check_igset_name(name)
     with open(os.path.join(ignore_sets_path, name), "r", encoding="utf-8") as f:
         return f.read().strip("\n").split("\n")
 
@@ -220,6 +286,11 @@ def has_video_ext(url: str) -> bool:
 
 
 class GrabSitePlugin(WpullPlugin):
+    # Defaults so accept_url works even if update_ignores never got to run
+    # (or failed). Nothing is ignored until the ignore files load.
+    combined_ignore_regexp = CombinedRegexp([])
+    compiled_ignores = []
+
     def activate(self):
         wpull_tweaks.activate(self.app_session)
         self.loop = asyncio.get_running_loop()
@@ -429,7 +500,6 @@ class GrabSitePlugin(WpullPlugin):
             # but still keep going through what is already in the queue.
             self.app_session.factory["DemuxDocumentScraper"]._document_scrapers = []
 
-    @swallow_exception
     def update_ignores(self):
         # Check both (no short-circuit) so each records its pending mtime.
         igsets_changed = self.watchers["igsets"].has_changed()
@@ -437,15 +507,36 @@ class GrabSitePlugin(WpullPlugin):
         if not (igsets_changed or ignores_changed):
             return
 
+        try:
+            self._rebuild_ignores()
+        except Exception:
+            # Keep the previous ignore set. This runs on every URL, so it must
+            # not raise, and the files are marked seen below so the error is
+            # logged once per change to them rather than once per URL.
+            logger.exception("Could not load ignores; keeping the previous set")
+        finally:
+            self.watchers["igsets"].mark_seen()
+            self.watchers["ignores"].mark_seen()
+
+    def _rebuild_ignores(self):
         ignores = set()
 
-        with open(cf("igsets"), "r") as f:
-            igsets = f.read().strip("\r\n\t ,").split(",")
-            if igsets == [""]:
-                igsets = []
+        try:
+            with open(cf("igsets"), "r") as f:
+                igset_names = libgrabsite.split_igsets(f.read())
+        except OSError as e:
+            # Still apply the user's own ignores file below.
+            logger.error("Could not read igsets, using no ignore sets: %s", e)
+            igset_names = []
 
-        for igset in igsets:
-            for pattern in get_patterns_for_ignore_set(igset):
+        for name in igset_names:
+            try:
+                patterns = get_patterns_for_ignore_set(name)
+            except (OSError, ValueError) as e:
+                # Skip just this set; the others still apply.
+                logger.error("Skipping ignore set %r: %s", name, e)
+                continue
+            for pattern in patterns:
                 if include_ignore_line(pattern):
                     ignores.update(self.ignore_pattern_to_regexp_strings(pattern))
 
@@ -455,14 +546,16 @@ class GrabSitePlugin(WpullPlugin):
                 if include_ignore_line(pattern):
                     ignores.update(self.ignore_pattern_to_regexp_strings(pattern))
 
-        self.print_to_terminal(f"Using these {len(ignores)} ignores:")
-        for ig in sorted(ignores):
+        combined = compile_combined_regexp(sorted(ignores))
+        for pattern, error in combined.rejected:
+            logger.error("Skipping invalid ignore pattern %r: %s", pattern, error)
+
+        self.print_to_terminal(f"Using these {len(combined.accepted)} ignores:")
+        for ig in sorted(combined.accepted):
             self.print_to_terminal(f"\t{ig}")
 
-        self.compiled_ignores = [(ig, re_compile(ig)) for ig in ignores]
-        self.combined_ignore_regexp = compile_combined_regexp(ignores)
-        self.watchers["igsets"].mark_seen()
-        self.watchers["ignores"].mark_seen()
+        self.compiled_ignores = combined.compiled
+        self.combined_ignore_regexp = combined
 
     def ignore_pattern_to_regexp_strings(self, pattern):
         if "{any_start_netloc}" not in pattern:

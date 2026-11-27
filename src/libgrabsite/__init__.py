@@ -63,3 +63,23 @@ def log_level():
     """Return the level named by GRAB_SITE_LOG_LEVEL (default INFO); unknown names fall back to INFO."""
     name = os.environ.get("GRAB_SITE_LOG_LEVEL", "INFO").upper()
     return logging.getLevelNamesMapping().get(name, logging.INFO)
+
+
+IGNORE_SETS_DIR = os.path.join(os.path.dirname(__file__), "ignore_sets")
+
+# A plain name: no path separators, so it can't point outside IGNORE_SETS_DIR.
+_IGSET_NAME = re.compile(r"[A-Za-z0-9][A-Za-z0-9_-]*")
+
+
+def check_igset_name(name):
+    """Raise ValueError unless name is a plain ignore set name such as "global"."""
+    if not _IGSET_NAME.fullmatch(name):
+        raise ValueError(
+            f"ignore set name {name!r} must be letters, digits, '-' or '_' only"
+        )
+    return name
+
+
+def split_igsets(value):
+    """Split a comma-separated ignore set list, dropping blank entries."""
+    return [part.strip() for part in value.split(",") if part.strip()]

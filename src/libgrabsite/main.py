@@ -471,6 +471,19 @@ def main(
     if ignore_sets != "":
         igsets = ignore_sets
 
+    # Check ignore set names before anything is created, so a typo fails fast
+    # and a name like ../something can't read files outside the ignore sets.
+    for name in libgrabsite.split_igsets(igsets):
+        try:
+            libgrabsite.check_igset_name(name)
+        except ValueError as e:
+            logger.error("%s", e)
+            sys.exit(1)
+        if not os.path.isfile(os.path.join(libgrabsite.IGNORE_SETS_DIR, name)):
+            available = ", ".join(sorted(os.listdir(libgrabsite.IGNORE_SETS_DIR)))
+            logger.error("Unknown ignore set %r; available: %s", name, available)
+            sys.exit(1)
+
     input_file_is_remote = bool(input_file) and bool(
         re.match("^(ftp|https?)://", input_file)
     )
