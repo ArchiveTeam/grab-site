@@ -396,6 +396,13 @@ Options can come before or after the URL.
 *	`--dir=DIR`: Put control files, temporary files, and unfinished WARCs in `DIR`
 	(default: a directory name based on the URL, date, and first 8 characters of the id).
 
+*	`--resume`: resume an interrupted crawl in the existing directory given by
+	`--dir`. The URL queue, control files (ignores, delay, etc.) and WARC progress
+	are reused, and `START_URL`/`--input-file`/`--id` are read from the directory
+	(do not pass them). Options that are not stored in the directory (`--level`,
+	`--ua`, `--wpull-args`, `--warc-max-size`, ...) must be repeated. New WARC
+	segments are written alongside the existing ones.
+
 *	`--finished-warc-dir=FINISHED_WARC_DIR`: absolute path to a directory into
 	which finished `.warc.gz` and `.cdx` files will be moved.
 
@@ -426,6 +433,26 @@ Options can come before or after the URL.
 *	`--debug`: print a lot of debug information.
 
 *	`--help`: print help text.
+
+### Resuming an interrupted crawl
+
+If a crawl was interrupted (machine reboot, killed process, crash), continue it
+with `--resume` and the same `--dir` it was started with:
+
+```
+grab-site --dir=/path/to/DIR --resume
+```
+
+Resuming reuses the crawl's URL queue (`DIR/wpull.db`), so URLs that were
+already fetched are not fetched again and URLs that were in flight are retried.
+New WARC segments are written next to the existing ones, and control files such
+as `ignores` and `delay` are kept as you last edited them.
+
+`START_URL`, `--input-file` and `--id` are read from `DIR`, so do not pass them.
+Options that are not stored in `DIR` (`--level`, `--page-requisites-level`,
+`--ua`, `--warc-max-size`, `--wpull-args`, `--finished-warc-dir`, ...) must be
+repeated if you used non-default values.  Crawls started before `--resume`
+existed can be resumed too, as long as `DIR` still has its `wpull.db` and a `.cdx` file.
 
 ### Warnings
 

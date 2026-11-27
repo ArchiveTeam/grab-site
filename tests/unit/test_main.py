@@ -1,7 +1,12 @@
 import unittest
 
 from tests.unit import _stubs  # noqa: F401
-from libgrabsite.main import replace_2arg
+import contextlib
+import io
+import os
+import tempfile
+
+from libgrabsite.main import main, replace_2arg, load_resume_state, write_control_files
 
 
 class Replace2ArgTests(unittest.TestCase):
@@ -45,6 +50,140 @@ class Replace2ArgTests(unittest.TestCase):
         args = ["--xy", "1", "a"]
         replace_2arg(args, "--x", ["--z", "9"])
         self.assertEqual(args, ["--xy", "1", "a"])
+
+
+class ResumeStateTests(unittest.TestCase):
+    def make_dir(self, tmp, **kw):
+        write_control_files(
+            tmp, None, False, "abc123", "http://a.test/", ("http://a.test/",),
+            kw.get("warc_name", "a.test-2026-01-01-abc123"), 2, -1, "", False,
+            True, False, None, "0",
+        )
+        open(os.path.join(tmp, "wpull.db"), "w").close()
+
+    def test_roundtrip(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            self.make_dir(tmp)
+            st = load_resume_state(tmp)
+            self.assertEqual(st["id"], "abc123")
+            self.assertEqual(st["warc_name"], "a.test-2026-01-01-abc123")
+            self.assertEqual(st["all_start_urls"], ["http://a.test/"])
+
+    def test_warc_name_falls_back_to_cdx(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            self.make_dir(tmp)
+            os.remove(os.path.join(tmp, "warc_name"))
+            open(os.path.join(tmp, "old-name.cdx"), "w").close()
+            self.assertEqual(load_resume_state(tmp)["warc_name"], "old-name")
+
+    def test_missing_database_exits(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            self.make_dir(tmp)
+            os.remove(os.path.join(tmp, "wpull.db"))
+            with self.assertRaises(SystemExit):
+                load_resume_state(tmp)
+
+
+def run_main(**overrides):
+    """Call main() with its defaults; returns (stdout, exit code or None)."""
+    kwargs = dict(
+        concurrency=2, concurrent=-1, delay="0", recursive=True, offsite_links=True,
+        igsets="", ignore_sets="", no_global_igset=False, import_ignores=None,
+        igon=False, debug=False, video=True, level="inf", page_requisites_level="5",
+        max_content_length=-1, sitemaps=True, dupespotter=True,
+        warc_max_size=5368709120, ua="ua", input_file=None, wpull_args="",
+        start_url=(), id=None, dir=None, resume=False, finished_warc_dir=None,
+        permanent_error_status_codes="404", which_wpull_args_partial=False,
+        which_wpull_command=False,
+    )
+    kwargs.update(overrides)
+    fn = getattr(main, "callback", main)
+    out = io.StringIO()
+    code = None
+    with contextlib.redirect_stdout(out):
+        try:
+            fn(**kwargs)
+        except SystemExit as e:
+            code = e.code
+    return out.getvalue(), code
+
+
+class ResumeMainTests(unittest.TestCase):
+    def setUp(self):
+        self._tmp = tempfile.TemporaryDirectory()
+        self.addCleanup(self._tmp.cleanup)
+        self.dir = os.path.join(self._tmp.name, "crawl")
+
+    def start_crawl(self, **kw):
+        out, code = run_main(
+            start_url=("http://a.test/",), dir=self.dir, which_wpull_command=True, **kw
+        )
+        self.assertIsNone(code)
+        open(os.path.join(self.dir, "wpull.db"), "w").close()
+        return out
+
+    def read(self, name):
+        with open(os.path.join(self.dir, name)) as f:
+            return f.read()
+
+    def test_new_crawl_records_warc_name(self):
+        out = self.start_crawl()
+        self.assertTrue(self.read("warc_name").startswith("a.test-"))
+        self.assertNotIn("--warc-append", out)
+
+    def test_resume_requires_dir(self):
+        _, code = run_main(resume=True)
+        self.assertEqual(code, 1)
+
+    def test_resume_rejects_start_url_input_file_and_id(self):
+        self.start_crawl()
+        for extra in ({"start_url": ("http://b.test/",)}, {"input_file": "f"}, {"id": "x"}):
+            _, code = run_main(resume=True, dir=self.dir, which_wpull_command=True, **extra)
+            self.assertEqual(code, 1, extra)
+
+    def test_resume_missing_dir_exits(self):
+        _, code = run_main(resume=True, dir=self.dir)
+        self.assertEqual(code, 1)
+
+    def test_resume_reuses_state_and_appends_warcs(self):
+        self.start_crawl()
+        warc_name = self.read("warc_name")
+        crawl_id = self.read("id")
+        out, code = run_main(resume=True, dir=self.dir, which_wpull_command=True)
+        self.assertIsNone(code)
+        self.assertIn("--warc-append", out)
+        self.assertIn("http://a.test/", out)
+        self.assertIn(os.path.join(self.dir, warc_name), out)
+        self.assertEqual(self.read("id"), crawl_id)
+
+    def test_resume_does_not_overwrite_control_files(self):
+        self.start_crawl()
+        with open(os.path.join(self.dir, "ignores"), "w") as f:
+            f.write("edited")
+        with open(os.path.join(self.dir, "delay"), "w") as f:
+            f.write("500")
+        run_main(resume=True, dir=self.dir, which_wpull_command=True)
+        self.assertEqual(self.read("ignores"), "edited")
+        self.assertEqual(self.read("delay"), "500")
+
+    def test_resume_clears_temp_dir(self):
+        self.start_crawl()
+        stale = os.path.join(self.dir, "temp", "stale")
+        open(stale, "w").close()
+        run_main(resume=True, dir=self.dir, which_wpull_command=True)
+        self.assertFalse(os.path.exists(stale))
+        self.assertTrue(os.path.isdir(os.path.join(self.dir, "temp")))
+
+    def test_resume_input_file_crawl_uses_stored_input_file(self):
+        src = os.path.join(self._tmp.name, "urls.txt")
+        with open(src, "w") as f:
+            f.write("http://a.test/1\n")
+        out, code = run_main(input_file=src, dir=self.dir, which_wpull_command=True)
+        self.assertIsNone(code)
+        open(os.path.join(self.dir, "wpull.db"), "w").close()
+        out, code = run_main(resume=True, dir=self.dir, which_wpull_command=True)
+        self.assertIsNone(code)
+        self.assertIn("--input-file " + os.path.join(self.dir, "input_file"), out)
 
 
 if __name__ == "__main__":

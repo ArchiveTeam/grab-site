@@ -4,6 +4,7 @@ import logging
 faulthandler.enable()
 
 import re
+import glob
 import os
 import sys
 import urllib.request
@@ -68,6 +69,117 @@ def patch_dns_inet_is_multicast():
             return False
 
     dns.inet.is_multicast = is_multicast
+
+
+def load_resume_state(working_dir):
+    """Read the identity of an interrupted crawl back from its control files."""
+    if not os.path.isdir(working_dir):
+        logger.error("--resume: %s is not a directory", working_dir)
+        sys.exit(1)
+
+    def read(name):
+        with open(os.path.join(working_dir, name), "r") as f:
+            return f.read()
+
+    try:
+        state = {"id": read("id").strip(), "start_url": read("start_url").strip()}
+        state["all_start_urls"] = read("all_start_urls").split()
+        if not os.path.exists(os.path.join(working_dir, "wpull.db")):
+            raise FileNotFoundError("wpull.db")
+    except FileNotFoundError as e:
+        logger.error(
+            "--resume: %s does not look like a crawl directory (missing %s)",
+            working_dir,
+            e.filename or e,
+        )
+        sys.exit(1)
+
+    try:
+        state["warc_name"] = read("warc_name").strip()
+    except FileNotFoundError:
+        # Crawls started before warc_name was recorded: infer it from the CDX file.
+        cdx = sorted(glob.glob(os.path.join(working_dir, "*.cdx")))
+        if not cdx:
+            logger.error("--resume: cannot determine the WARC name in %s", working_dir)
+            sys.exit(1)
+        state["warc_name"] = os.path.basename(cdx[0])[: -len(".cdx")]
+    return state
+
+
+def write_control_files(
+    working_dir,
+    input_file,
+    input_file_is_remote,
+    id,
+    claim_start_url,
+    start_url,
+    warc_name,
+    concurrency,
+    max_content_length,
+    igsets,
+    no_global_igset,
+    video,
+    igon,
+    import_ignores,
+    delay,
+):
+    dir_input_file = os.path.join(working_dir, "input_file")
+    if input_file is not None:
+        # wpull -i doesn't support URLs, so download the input file ourselves if necessary
+        if input_file_is_remote:
+            # TODO: use wpull with correct user agent instead of urllib.request
+            # wpull -O fails: https://github.com/chfoo/wpull/issues/275
+            logger.info("Downloading input file from %s", input_file)
+            u = urllib.request.urlopen(input_file)
+            with open(dir_input_file, "wb") as f:
+                while True:
+                    s = u.read(1024 * 1024)
+                    if not s:
+                        break
+                    f.write(s)
+        else:
+            shutil.copyfile(input_file, dir_input_file)
+
+    with open("{}/id".format(working_dir), "w") as f:
+        f.write(id)
+
+    with open("{}/start_url".format(working_dir), "w") as f:
+        f.write(claim_start_url)
+
+    with open("{}/all_start_urls".format(working_dir), "w") as f:
+        for u in start_url:
+            f.write(u + "\n")
+
+    with open("{}/concurrency".format(working_dir), "w") as f:
+        f.write(str(concurrency))
+
+    with open("{}/max_content_length".format(working_dir), "w") as f:
+        f.write(str(max_content_length))
+
+    with open("{}/igsets".format(working_dir), "w") as f:
+        f.write("{}{}".format("" if no_global_igset else "global,", igsets))
+
+    if video:
+        with open("{}/video".format(working_dir), "w") as f:
+            pass
+
+    if not igon:
+        with open("{}/igoff".format(working_dir), "w") as f:
+            pass
+
+    with open("{}/ignores".format(working_dir), "w") as f:
+        if import_ignores is not None:
+            with open(import_ignores, "r") as src:
+                f.write(src.read())
+
+    with open("{}/delay".format(working_dir), "w") as f:
+        f.write(delay)
+
+    with open("{}/scrape".format(working_dir), "w") as f:
+        pass
+
+    with open("{}/warc_name".format(working_dir), "w") as f:
+        f.write(warc_name)
 
 
 @click.command()
@@ -212,6 +324,14 @@ def patch_dns_inet_is_multicast():
     "characters of the id).",
 )
 @click.option(
+    "--resume",
+    is_flag=True,
+    help="Resume an interrupted crawl in the existing directory given by --dir.  "
+    "The URL queue, control files, and WARC progress are reused; "
+    "START_URL and --input-file are taken from the directory.  "
+    "Other options (e.g. --level, --ua) are not remembered and must be repeated.",
+)
+@click.option(
     "--finished-warc-dir",
     default=None,
     type=str,
@@ -274,6 +394,7 @@ def main(
     start_url,
     id,
     dir,
+    resume,
     finished_warc_dir,
     permanent_error_status_codes,
     which_wpull_args_partial,
@@ -286,7 +407,24 @@ def main(
     """
     configure_logging()
 
-    if not (input_file or start_url):
+    if resume:
+        if not dir:
+            logger.error("--resume requires --dir; see --help")
+            sys.exit(1)
+        if input_file or start_url or id:
+            logger.error(
+                "--resume takes START_URL, --input-file and --id from DIR; "
+                "do not specify them"
+            )
+            sys.exit(1)
+        resume_state = load_resume_state(os.path.abspath(dir))
+        id = resume_state["id"]
+        warc_name = resume_state["warc_name"]
+        claim_start_url = resume_state["start_url"]
+        start_url = tuple(resume_state["all_start_urls"])
+        if not start_url:
+            input_file = os.path.join(os.path.abspath(dir), "input_file")
+    elif not (input_file or start_url):
         logger.error("Neither START_URL nor --input-file was given; see --help")
         sys.exit(1)
     elif input_file and start_url:
@@ -303,23 +441,27 @@ def main(
     if ignore_sets != "":
         igsets = ignore_sets
 
-    if start_url:
-        claim_start_url = start_url[0]
-    else:
-        input_file_is_remote = bool(re.match("^(ftp|https?)://", input_file))
-        if input_file_is_remote:
+    input_file_is_remote = bool(input_file) and bool(
+        re.match("^(ftp|https?)://", input_file)
+    )
+    if not resume:
+        if start_url:
+            claim_start_url = start_url[0]
+        elif input_file_is_remote:
             claim_start_url = input_file
         else:
             claim_start_url = "file://" + os.path.abspath(input_file)
 
-    if not id:
-        id = binascii.hexlify(os.urandom(16)).decode("utf-8")
-    ymd = datetime.datetime.now(datetime.timezone.utc).isoformat()[:10]
-    no_proto_no_trailing = claim_start_url.split("://", 1)[1].rstrip("/")[:100]
-    unwanted_chars_re = r"[^-_a-zA-Z0-9%\.,;@+=]"
-    warc_name = "{}-{}-{}".format(
-        re.sub(unwanted_chars_re, "-", no_proto_no_trailing).lstrip("-"), ymd, id[:8]
-    )
+        if not id:
+            id = binascii.hexlify(os.urandom(16)).decode("utf-8")
+        ymd = datetime.datetime.now(datetime.timezone.utc).isoformat()[:10]
+        no_proto_no_trailing = claim_start_url.split("://", 1)[1].rstrip("/")[:100]
+        unwanted_chars_re = r"[^-_a-zA-Z0-9%\.,;@+=]"
+        warc_name = "{}-{}-{}".format(
+            re.sub(unwanted_chars_re, "-", no_proto_no_trailing).lstrip("-"),
+            ymd,
+            id[:8],
+        )
 
     # make absolute because wpull will start in temp/
     if not dir:
@@ -395,6 +537,11 @@ def main(
     if recursive:
         args += ["--recursive"]
 
+    if resume:
+        # wpull reuses the existing database (releasing in-progress URLs back to
+        # the queue) and, with --warc-append, skips WARC files that already exist.
+        args += ["--warc-append"]
+
     if wpull_args:
         args += shlex.split(wpull_args)
 
@@ -419,63 +566,32 @@ def main(
         return
 
     # Create DIR and DIR files only after which_wpull_args_* checks
-    os.makedirs(working_dir)
     temp_dir = os.path.join(working_dir, "temp")
-    os.makedirs(temp_dir)
-
-    if input_file is not None:
-        # wpull -i doesn't support URLs, so download the input file ourselves if necessary
-        if input_file_is_remote:
-            # TODO: use wpull with correct user agent instead of urllib.request
-            # wpull -O fails: https://github.com/chfoo/wpull/issues/275
-            logger.info("Downloading input file from %s", input_file)
-            u = urllib.request.urlopen(input_file)
-            with open(DIR_input_file, "wb") as f:
-                while True:
-                    s = u.read(1024 * 1024)
-                    if not s:
-                        break
-                    f.write(s)
-        else:
-            shutil.copyfile(input_file, DIR_input_file)
-
-    with open("{}/id".format(working_dir), "w") as f:
-        f.write(id)
-
-    with open("{}/start_url".format(working_dir), "w") as f:
-        f.write(claim_start_url)
-
-    with open("{}/all_start_urls".format(working_dir), "w") as f:
-        for u in start_url:
-            f.write(u + "\n")
-
-    with open("{}/concurrency".format(working_dir), "w") as f:
-        f.write(str(concurrency))
-
-    with open("{}/max_content_length".format(working_dir), "w") as f:
-        f.write(str(max_content_length))
-
-    with open("{}/igsets".format(working_dir), "w") as f:
-        f.write("{}{}".format("" if no_global_igset else "global,", igsets))
-
-    if video:
-        with open("{}/video".format(working_dir), "w") as f:
-            pass
-
-    if not igon:
-        with open("{}/igoff".format(working_dir), "w") as f:
-            pass
-
-    with open("{}/ignores".format(working_dir), "w") as f:
-        if import_ignores is not None:
-            with open(import_ignores, "r") as src:
-                f.write(src.read())
-
-    with open("{}/delay".format(working_dir), "w") as f:
-        f.write(delay)
-
-    with open("{}/scrape".format(working_dir), "w") as f:
-        pass
+    if resume:
+        # A fresh temp/ avoids stale "resp_cb" files from the interrupted run.
+        shutil.rmtree(temp_dir, ignore_errors=True)
+        os.makedirs(temp_dir)
+        logger.info("Resuming crawl in %s", working_dir)
+    else:
+        os.makedirs(working_dir)
+        os.makedirs(temp_dir)
+        write_control_files(
+            working_dir,
+            input_file,
+            input_file_is_remote,
+            id,
+            claim_start_url,
+            start_url,
+            warc_name,
+            concurrency,
+            max_content_length,
+            igsets,
+            no_global_igset,
+            video,
+            igon,
+            import_ignores,
+            delay,
+        )
 
     # We don't actually need to write control files for this mode to work, but the
     # only reason to use this is if you're starting wpull manually with modified
