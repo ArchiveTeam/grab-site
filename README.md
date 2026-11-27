@@ -39,7 +39,7 @@ on a specific version of Python (3.12 or newer) and with specific dependency ver
 
 **Contents**
 
-- [Install on Ubuntu 18.04, 20.04, 22.04, Debian 10 (buster), Debian 11 (bullseye)](#install-on-ubuntu-1804-2004-2204-debian-10-buster-debian-11-bullseye)
+- [Install on Ubuntu 24.04 or newer, Debian 13 (trixie) or newer](#install-on-ubuntu-2404-or-newer-debian-13-trixie-or-newer)
 - [Install on NixOS](#install-on-nixos)
 - [Install on another distribution lacking Python 3.12](#install-on-another-distribution-lacking-python-312)
 - [Install on macOS](#install-on-macos)
@@ -62,8 +62,11 @@ on a specific version of Python (3.12 or newer) and with specific dependency ver
 
 
 
-Install on Ubuntu 18.04, 20.04, 22.04, Debian 10 (buster), Debian 11 (bullseye)
+Install on Ubuntu 24.04 or newer, Debian 13 (trixie) or newer
 ---
+
+grab-site requires Python 3.12 or newer. Ubuntu 24.04 ships Python 3.12 and
+Debian 13 ships Python 3.13, so the system Python is used directly.
 
 1.	On Debian, use `su` to become root if `sudo` is not configured to give you access.
 
@@ -72,19 +75,13 @@ Install on Ubuntu 18.04, 20.04, 22.04, Debian 10 (buster), Debian 11 (bullseye)
 	sudo apt-get install --no-install-recommends \
 	    wget ca-certificates git build-essential libssl-dev zlib1g-dev \
 	    libbz2-dev libreadline-dev libsqlite3-dev libffi-dev libxml2-dev \
-	    libxslt1-dev libre2-dev pkg-config
+	    libxslt1-dev libre2-dev pkg-config python3 python3-dev python3-venv
 	```
-
-	If you see `Unable to locate package`, run the two commands again.
 
 2.	As a **non-root** user:
 
 	```
-	wget https://raw.githubusercontent.com/pyenv/pyenv-installer/master/bin/pyenv-installer
-	chmod +x pyenv-installer
-	./pyenv-installer
-	~/.pyenv/bin/pyenv install 3.12.16
-	~/.pyenv/versions/3.12.16/bin/python -m venv ~/gs-venv
+	python3 -m venv ~/gs-venv
 	~/gs-venv/bin/pip install --no-binary lxml --upgrade git+https://github.com/ArchiveTeam/grab-site
 	```
 
@@ -97,6 +94,23 @@ Install on Ubuntu 18.04, 20.04, 22.04, Debian 10 (buster), Debian 11 (bullseye)
 	```
 
 	and then restart your shell (e.g. by opening a new terminal tab/window).
+
+
+Alternatively, install with [uv](https://docs.astral.sh/uv/) instead of steps 2 and 3.
+As a **non-root** user:
+
+```
+curl -LsSf https://astral.sh/uv/install.sh | sh
+```
+
+Then restart your shell (so `uv` is on your `PATH`) and run:
+
+```
+uv tool install --python=3.12 --no-binary-package lxml git+https://github.com/ArchiveTeam/grab-site/
+```
+
+`uv tool install` puts the `grab-site` commands in `~/.local/bin`, which the uv
+installer adds to your `PATH`.
 
 
 Install on NixOS
@@ -204,7 +218,7 @@ On Windows 10 Fall Creators Update (1703) or newer:
 
 7. Wait for install and create a user when prompted.
 
-8. Follow the [Ubuntu 18.04, 20.04, 22.04, Debian 10 (buster), Debian 11 (bullseye)](#install-on-ubuntu-1804-2004-2204-debian-10-buster-debian-11-bullseye) steps.
+8. Follow the [Ubuntu 24.04 or newer, Debian 13 (trixie) or newer](#install-on-ubuntu-2404-or-newer-debian-13-trixie-or-newer) steps.
 
 
 
