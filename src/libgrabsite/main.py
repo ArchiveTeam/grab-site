@@ -475,7 +475,9 @@ def main(
             id = binascii.hexlify(os.urandom(16)).decode("utf-8")
         ymd = datetime.datetime.now(datetime.timezone.utc).isoformat()[:10]
         no_proto_no_trailing = claim_start_url.split("://", 1)[1].rstrip("/")[:100]
-        unwanted_chars_re = r"[^-_a-zA-Z0-9%\.,;@+=]"
+        # Only characters that need no quoting in shells or cmd.exe, so the
+        # names (and the default DIR) can be typed without escaping.
+        unwanted_chars_re = r"[^-_a-zA-Z0-9\.,+]"
         warc_name = "{}-{}-{}".format(
             re.sub(unwanted_chars_re, "-", no_proto_no_trailing).lstrip("-"),
             ymd,

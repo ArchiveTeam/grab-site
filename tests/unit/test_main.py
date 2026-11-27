@@ -4,6 +4,7 @@ from tests.unit import _stubs  # noqa: F401
 import contextlib
 import io
 import os
+import re
 import tempfile
 
 from libgrabsite.main import main, replace_2arg, load_resume_state, write_control_files
@@ -208,6 +209,52 @@ class ResumeMainTests(unittest.TestCase):
         out, code = run_main(resume=True, dir=self.dir, which_wpull_command=True)
         self.assertIsNone(code)
         self.assertIn("--input-file " + os.path.join(self.dir, "input_file"), out)
+
+
+class WarcNameTests(unittest.TestCase):
+    """The WARC and default DIR names are derived from the start URL.
+
+    They should only contain characters that need no quoting in a shell or
+    cmd.exe: letters, digits, and -_.,+ .
+    """
+
+    SAFE = re.compile(r"^[-_a-zA-Z0-9.,+]+$")
+
+    def setUp(self):
+        self._tmp = tempfile.TemporaryDirectory()
+        self.addCleanup(self._tmp.cleanup)
+        self.cwd = os.getcwd()
+        os.chdir(self._tmp.name)
+        self.addCleanup(os.chdir, self.cwd)
+
+    def warc_name_for(self, url):
+        out, code = run_main(start_url=(url,), which_wpull_command=True)
+        self.assertIsNone(code)
+        name = None
+        for line in out.splitlines():
+            if "--warc-file" in line:
+                name = line.split("--warc-file ", 1)[1].split()[0]
+        return name
+
+    def test_url_with_shell_special_characters_is_sanitized(self):
+        name = self.warc_name_for("http://a.test/x;y%20z@q=1&r=2")
+        base = os.path.basename(name)
+        self.assertRegex(base, self.SAFE)
+        for ch in ";%@=":
+            self.assertNotIn(ch, base)
+
+    def test_safe_characters_are_kept(self):
+        name = self.warc_name_for("http://a.test/v1.2,b+c")
+        self.assertIn("a.test-v1.2,b+c-", os.path.basename(name))
+
+    def test_default_dir_is_named_after_warc(self):
+        out, code = run_main(
+            start_url=("http://a.test/;evil",), which_wpull_command=True
+        )
+        self.assertIsNone(code)
+        dirs = [d for d in os.listdir(self._tmp.name) if os.path.isdir(d)]
+        self.assertEqual(len(dirs), 1)
+        self.assertRegex(dirs[0], self.SAFE)
 
 
 if __name__ == "__main__":
